@@ -1,5 +1,11 @@
 name: deploy to lambda
+
+permissions:
+  id-token: write
+  contents: read
+
 on: [push]
+
 jobs:
   deploy_source:
     name: build and deploy lambda
@@ -15,20 +21,23 @@ jobs:
           
       - name: Build
         run: go build -v ./...
+        
+#      - name: Test
+#        run: go test -v ./...
  
       - name: Zip
         uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r ./bundle.zip ./
  
-      - name: Default Deploy
-        uses: appleboy/lambda-action@master
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: us-east-1
-          function_name: HelloWorldGo
-          zip_file: bundle.zip
+          role-to-assume: arn:aws:iam::928923391422:role/GitHubActionsLambdaDeploy
+          role-duration-seconds: 900
+          aws-region: us-east-1
+ 
+      - name: Deploy New Function Version
+        run: aws lambda update-function-code --function-name HelloWorldGo --zip-file bundle.zip
          
-#      - name: Test
-#        run: go test -v ./...
+      
