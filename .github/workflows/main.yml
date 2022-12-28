@@ -21,7 +21,7 @@ jobs:
           cache-dependency-path: backend/go.sum
           
       - name: Build
-        run: go build -v backend/...
+        run: go build -v ./backend/...
         
 #      - name: Test
 #        run: go test -v ./...
@@ -29,7 +29,7 @@ jobs:
       - name: Zip
         uses: montudor/action-zip@v0.1.0
         with:
-          args: zip -qq -r ./bundle.zip backend/
+          args: zip -qq -r ./bundle.zip ./backend/
  
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -39,6 +39,6 @@ jobs:
           aws-region: us-east-1
  
       - name: Deploy New Function Version
-        run: aws lambda update-function-code --function-name HelloWorldGo --zip-file bundle.zip
+        run: aws lambda update-function-code --function-name HelloWorldGo --zip-file fileb://bundle.zip
          
       
