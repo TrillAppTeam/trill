@@ -1,0 +1,34 @@
+name: deploy to lambda
+on: [push]
+jobs:
+  deploy_source:
+    name: build and deploy lambda
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: '1.19.x'
+          cache: true
+          
+      - name: Build
+        run: go build -v ./...
+ 
+      - name: Zip
+        uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -qq -r ./bundle.zip ./
+ 
+      - name: Default Deploy
+        uses: appleboy/lambda-action@master
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: us-east-1
+          function_name: HelloWorldGo
+          zip_file: bundle.zip
+         
+#      - name: Test
+#        run: go test -v ./...
