@@ -4,16 +4,15 @@ permissions:
   id-token: write
   contents: read
 
-defaults:
-  run:
-    working-directory: backend
-
 on: [push]
 
 jobs:
   deploy_source:
     name: build and deploy lambda
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v3
       
