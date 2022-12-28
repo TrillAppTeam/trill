@@ -5,10 +5,10 @@ jobs:
     name: build and deploy lambda
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
       
       - name: Set up Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v3
         with:
           go-version: '1.19.x'
           cache: true
