@@ -4,7 +4,10 @@ permissions:
   id-token: write
   contents: read
 
-on: [push]
+on: 
+  push:
+    branches:
+    - master
 
 jobs:
   deploy_source:
@@ -41,7 +44,10 @@ jobs:
           role-duration-seconds: 900
           aws-region: us-east-1
  
-      - name: Deploy All Functions 
-        run: sls deploy
+      - name: serverless deploy
+        uses: serverless/github-action@v3.1
+        with:
+          args: deploy
+        
          
       
