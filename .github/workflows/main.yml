@@ -41,7 +41,7 @@ jobs:
           role-duration-seconds: 900
           aws-region: us-east-1
  
-      - name: Deploy New Function Version
-        run: aws lambda update-function-code --function-name HelloWorldGo --zip-file fileb://../bundle.zip
+      - name: Deploy All Functions 
+        run: sls deploy
          
       
