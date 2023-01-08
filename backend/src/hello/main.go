@@ -2,8 +2,8 @@ package main
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -16,7 +16,10 @@ import (
 type Response events.APIGatewayProxyResponse
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
-func Handler(ctx context.Context) (Response, error) {
+func Handler(req events.APIGatewayProxyRequest) (Response, error) {
+	fmt.Println(req.QueryStringParameters["id"])
+	return Response{StatusCode: 200}, nil
+
 	var buf bytes.Buffer
 
 	body, err := json.Marshal(map[string]interface{}{

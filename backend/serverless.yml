@@ -20,9 +20,24 @@ service: trill
 # Check out our docs for more details
 frameworkVersion: '3'
 
+custom: ${file(../.secrets.yml)}
+
 provider:
   name: aws
   runtime: go1.x
+  vpc:
+    securityGroupIds:
+      - ${self:custom.SECURITY_GROUP_ID}
+    subnetIds:
+      - ${self:custom.SUBNET_A}
+      - ${self:custom.SUBNET_B}
+      - ${self:custom.SUBNET_C}
+  environment:
+    MYSQLHOST: ${self:custom.MYSQLHOST}
+    MYSQLPORT: ${self:custom.MYSQLPORT}
+    MYSQLUSER: ${self:custom.MYSQLUSER}
+    MYSQLPASS: ${self:custom.MYSQLPASS}
+    MYSQLDATABASE: ${self:custom.MYSQLDATABASE}
 
 # you can overwrite defaults here
 #  stage: dev
@@ -68,6 +83,13 @@ functions:
       - httpApi:
           path: /world
           method: get
+  users:
+    handler: bin/users
+    events:
+      - httpApi:
+          path: /users
+          method: get
+
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
 #    Check the event documentation for details
