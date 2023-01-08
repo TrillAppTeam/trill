@@ -25,17 +25,6 @@ jobs:
           go-version: '1.19.x'
           cache: true
           cache-dependency-path: ./backend/go.sum
-          
-      - name: Build
-        run: go build -v ./...
-        
-#      - name: Test
-#        run: go test -v ./...
- 
-      - name: Zip
-        uses: montudor/action-zip@v0.1.0
-        with:
-          args: zip -qq -r ./bundle.zip ./backend/
  
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -47,7 +36,7 @@ jobs:
       - name: serverless deploy
         uses: serverless/github-action@v3.1
         with:
-          args: -c "cd ./backend/ && sls deploy"
+          args: -c "cd ./backend/ && make deploy"
           entrypoint: /bin/sh
         
          
