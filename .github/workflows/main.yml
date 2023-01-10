@@ -17,16 +17,20 @@ jobs:
       run:
         working-directory: ./backend/
     steps:
-      - uses: actions/checkout@v2
+      - name: checkout repo
+        uses: actions/checkout@v3
       
-      - name: Set up Go
+      - name: set up Go
         uses: actions/setup-go@v3
         with:
           go-version: '1.19.x'
           cache: true
           cache-dependency-path: ./backend/go.sum
  
-      - name: Configure AWS Credentials
+      - name: build functions
+        run: make build
+
+      - name: configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::928923391422:role/GitHubActionsLambdaDeploy
@@ -36,7 +40,7 @@ jobs:
       - name: serverless deploy
         uses: serverless/github-action@v3.1
         with:
-          args: -c "cd ./backend/ && make deploy"
+          args: -c "cd ./backend/ && sls deploy --verbose"
           entrypoint: /bin/sh
         
          

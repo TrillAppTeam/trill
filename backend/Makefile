@@ -1,12 +1,25 @@
-.PHONY: build clean deploy
+# if deploy is explicitly provided, deploy only the provided functions
+# ifeq (deploy,$(firstword $(MAKECMDGOALS)))
+# SUBDIRS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+# SUBDIRS := $(patsubst %, src/%, $(SUBDIRS))
+# $(eval $(SUBDIRS):;@:)
+# endif
 
-build:
-	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/hello src/hello/main.go
-	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/world src/world/main.go
-	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/users src/users/main.go
+# ifeq ($(SUBDIRS),)
+# $(shell echo $(SUBDIRS))
+SUBDIRS := $(wildcard src/*)
+# endif
 
-clean:
+build: $(SUBDIRS)
+
+$(SUBDIRS):
+	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/$(@F) $@/main.go
+
+clean: 
 	rm -rf ./bin
 
 deploy: clean build
 	sls deploy --verbose
+
+.PHONY: build clean all $(SUBDIRS) deploy
+.DEFAULT_GOAL := deploy

@@ -22,6 +22,9 @@ frameworkVersion: '3'
 
 custom: ${file(../.secrets.yml)}
 
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   runtime: go1.x
