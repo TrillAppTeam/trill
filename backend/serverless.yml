@@ -22,8 +22,8 @@ frameworkVersion: '3'
 
 custom: ${file(.secrets.yml)}
 
-plugins:
-  - serverless-offline
+# plugins:
+  # - serverless-offline
 
 provider:
   name: aws
