@@ -20,7 +20,7 @@ service: trill
 # Check out our docs for more details
 frameworkVersion: '3'
 
-custom: ${file(../.secrets.yml)}
+custom: ${file(.secrets.yml)}
 
 plugins:
   - serverless-offline

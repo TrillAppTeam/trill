@@ -27,6 +27,13 @@ jobs:
           cache: true
           cache-dependency-path: ./backend/go.sum
  
+      - name: generate secrets
+        run: |
+            echo "$SECRETS" >> .secrets.yml
+        shell: bash
+        env:
+          SECRETS: ${{secrets.secrets}}
+
       - name: build functions
         run: make build
 
@@ -43,5 +50,8 @@ jobs:
           args: -c "cd ./backend/ && sls deploy --verbose"
           entrypoint: /bin/sh
         
-         
+      - name: remove secrets
+        run: |
+            rm .secrets.yml
+        shell: bash
       
