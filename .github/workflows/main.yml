@@ -16,6 +16,9 @@ jobs:
     outputs:
       changed: ${{ steps.changed.outputs.backend }}
     steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+
       - uses: dorny/paths-filter@v2
         id: changed
         with:
