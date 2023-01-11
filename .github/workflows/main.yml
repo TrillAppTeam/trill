@@ -10,9 +10,23 @@ on:
     - main
 
 jobs:
-  deploy_source:
-    name: build and deploy lambda
+  check_backend_changes:
+    name: check changes to backend
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.changes.outputs.src }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: changed
+        with:
+          filters: |
+              backend:
+                - 'backend/**'
+  deploy_source:
+    name: build backend and deploy
+    runs-on: ubuntu-latest
+    needs: [ check_backend_changes ]
+    if: needs.check_backend_changes.changed == 'true'
     defaults:
       run:
         working-directory: ./backend/
@@ -20,6 +34,19 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
       
+      - name: get changed files in backend
+        id: changed-files-backend
+        uses: tj-actions/changed-files@v35
+        with:
+          files: |
+              backend/**
+
+      - name: exit successfully if nothing changed
+        id: steps.changed-files-backend.outputs.any_changed == 'true'
+        run: |
+            exit 0
+
+
       - name: set up Go
         uses: actions/setup-go@v3
         with:
