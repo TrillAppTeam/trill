@@ -25,7 +25,8 @@ The general hierarchy of the project is as follows:
 ```
 .
 ├── mobile   (The mobile app, built with )
-└── web      (The web app, built with React)
+├── web      (The web app, built with React)
+└── backend  (The backend code, built with Golang & Serverless)
 ```
 
 ### Developer Tools
