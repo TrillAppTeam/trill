@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -42,10 +43,30 @@ var secrets = Secrets{
 	os.Getenv("MYSQLPASS"),
 }
 
-func Handler(req events.APIGatewayProxyRequest) (Response, error) {
-	connectionString := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database,
-	)
+// https://github.com/gugazimmermann/fazendadojuca/blob/master/animals/main.go
+var connectionString = fmt.Sprintf(
+	"%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database,
+)
+
+func handler(req events.APIGatewayProxyRequest) (Response, error) {
+	switch req.HTTPMethod {
+	case "POST":
+		return create(req)
+	case "GET":
+		return read(req)
+	case "PUT":
+		return update(req)
+	case "DELETE":
+		return delete(req)
+	default:
+		err := errors.New(fmt.Sprintf("HTTP Method '%s' not allowed"))
+		return Response{StatusCode: 405, Body: err.Error()}, err
+	}
+}
+
+func create(req events.APIGatewayProxyRequest) (Response, error) {
+	
+}
 
 	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 
@@ -72,5 +93,5 @@ func Handler(req events.APIGatewayProxyRequest) (Response, error) {
 }
 
 func main() {
-	lambda.Start(Handler)
+	lambda.Start(handler)
 }
