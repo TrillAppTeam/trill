@@ -41,12 +41,6 @@ jobs:
           files: |
               backend/**
 
-      - name: exit successfully if nothing changed
-        id: steps.changed-files-backend.outputs.any_changed == 'true'
-        run: |
-            exit 0
-
-
       - name: set up Go
         uses: actions/setup-go@v3
         with:
