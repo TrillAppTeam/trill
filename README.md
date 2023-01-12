@@ -32,5 +32,6 @@ The general hierarchy of the project is as follows:
 
 For Web:
 
-1. To run ESLint, use `npm run lint` and it will check all files in `src`
-2. To run prettier, use `npm run format`
+1. To run the Vite app, use `npm run dev`
+<!-- 2. To run ESLint, use `npm run lint` and it will check all files in `src`
+3. To run prettier, use `npm run format` -->
