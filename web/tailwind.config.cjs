@@ -13,7 +13,7 @@ module.exports = {
         'bold': 900,
       },
       colors: {
-        'trillPurple': '#1F1D36',
+        'trillPurple': '#1A1B29',
         'trillBlue': '#3FBCF4',
         'white': '#FFFFFF',
       },

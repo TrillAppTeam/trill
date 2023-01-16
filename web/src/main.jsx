@@ -8,6 +8,9 @@ import ListenLater from './pages/ListenLater';
 import Landing from './pages/Landing';
 import Error from './pages/Error';
 import Home from './pages/Home';
+import CreateAccount from './pages/CreateAccount';
+import Login from './pages/Login';
+
 
 import {
   createBrowserRouter,
@@ -21,6 +24,16 @@ const router = createBrowserRouter([
     errorElement: <Error />,
     children: [
     ],
+  },
+  {
+    path: "/CreateAccount",
+    element: <CreateAccount />,
+    errorElement: <Error />
+  },
+  {
+    path: "/Login",
+    element: <Login />,
+    errorElement: <Error />
   },
   {
     path: "/User",
