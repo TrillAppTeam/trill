@@ -8,7 +8,7 @@ A social network for music lovers. Built for Senior Design.
 
 Senior Design COP 4934 - Group 48
 
-- [Ashley Voglewede](https://github.com/avwede) - Project Manager, Frontend Developer
+- [Ashley Voglewede](https://github.com/avwede) - Project Manager, Fullstack Developer
 - [Cathy Chian](https://github.com/CathyChian) - Mobile Developer, Backend Developer
 - [Chris Herrera](https://github.com/cjherrera1) - Backend Developer
 - [Conrad Smith](https://github.com/conradsmi) - Backend Developer, DevOps Developer
@@ -19,13 +19,12 @@ Senior Design COP 4934 - Group 48
 
 ### Structure
 
-This repository is a monorepo, containing both the mobile and web apps for Trill.
-The general hierarchy of the project is as follows:
+This repository is a monorepo—the general hierarchy of the project is as follows:
 
 ```
 .
-├── mobile   (The mobile app, built with )
-├── web      (The web app, built with React)
+├── mobile   (The mobile app, built with Flutter)
+└── web      (The web app, built with React and TailwindCSS)
 └── backend  (The backend code, built with Golang & Serverless)
 ```
 
@@ -33,5 +32,6 @@ The general hierarchy of the project is as follows:
 
 For Web:
 
-1. To run ESLint, use `npm run lint` and it will check all files in `src`
-2. To run prettier, use `npm run format`
+1. To run the Vite app, use `npm run dev`
+<!-- 2. To run ESLint, use `npm run lint` and it will check all files in `src`
+3. To run prettier, use `npm run format` -->
