@@ -37,7 +37,7 @@ class LogInScreen extends StatelessWidget {
               child: Text('Login'),
               onPressed: () {
                 // Log the user in
-                Navigator.pushNamed(context, '/home');
+                Navigator.pushNamed(context, '/main');
               },
             ),
             SizedBox(height: 10),

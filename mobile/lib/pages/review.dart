@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottomnav.dart';
 
 class ReviewScreen extends StatelessWidget {
   @override
@@ -8,7 +7,6 @@ class ReviewScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Write Review'),
       ),
-      bottomNavigationBar: TrillBottomNavigatorState(),
     );
   }
 }

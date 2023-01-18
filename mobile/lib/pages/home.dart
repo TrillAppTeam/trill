@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../widgets/bottomnav.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -8,18 +7,6 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Trill'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              final model = Provider.of<TrillBottomNavigatorModel>(context,
-                  listen: false);
-              model.setSelectedIndex(1);
-              // Open Search Menu
-              Navigator.pushNamed(context, '/search');
-            },
-          )
-        ],
       ),
       drawer: Drawer(
         child: Container(
@@ -193,7 +180,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: TrillBottomNavigatorState(),
     );
   }
 }

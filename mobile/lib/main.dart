@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:trill/mainpage.dart';
 import 'package:trill/pages/album.dart';
-import 'package:trill/pages/home.dart';
 import 'package:trill/pages/login.dart';
-import 'package:trill/pages/profile.dart';
 import 'package:trill/pages/review.dart';
-import 'package:trill/pages/search.dart';
 import 'package:trill/pages/signup.dart';
 import 'package:trill/pages/splash.dart';
-import 'package:trill/widgets/bottomnav.dart';
 
-void main() => runApp(ChangeNotifierProvider(
-    create: (context) => TrillBottomNavigatorModel(), child: MyApp()));
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
@@ -20,8 +15,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Trill',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.black,
+        primaryColor: Color(0xFFBC6AAB),
+        scaffoldBackgroundColor: Color(0xFF1A1B29),
         textTheme: Typography.whiteMountainView,
         inputDecorationTheme: InputDecorationTheme(
           hintStyle: TextStyle(color: Colors.white),
@@ -31,12 +26,9 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => LogInScreen(),
         '/signup': (context) => SignUpScreen(),
-        '/home': (context) => HomeScreen(),
-        '/search': (context) => SearchScreen(),
-        '/searchResults': (context) => SearchResultsScreen(),
+        '/main': (context) => MainPage(),
         '/album': (context) => AlbumScreen(),
         '/review': (context) => ReviewScreen(),
-        '/profile': (context) => ProfileScreen()
       },
     );
   }

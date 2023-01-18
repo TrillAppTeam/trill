@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottomnav.dart';
 
 class SearchResultsScreen extends StatelessWidget {
   @override
@@ -27,7 +26,6 @@ class SearchResultsScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: TrillBottomNavigatorState(),
     );
   }
 }
@@ -53,7 +51,6 @@ class SearchScreen extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: TrillBottomNavigatorState(),
     );
   }
 }

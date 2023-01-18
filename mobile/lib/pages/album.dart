@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottomnav.dart';
 
 class AlbumScreen extends StatelessWidget {
   @override
@@ -8,7 +7,6 @@ class AlbumScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Album Name'),
       ),
-      bottomNavigationBar: TrillBottomNavigatorState(),
     );
   }
 }

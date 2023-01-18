@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/bottomnav.dart';
 
 class ProfileScreen extends StatelessWidget {
   @override
@@ -8,7 +7,6 @@ class ProfileScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Username\'s Profile'),
       ),
-      bottomNavigationBar: TrillBottomNavigatorState(),
     );
   }
 }
