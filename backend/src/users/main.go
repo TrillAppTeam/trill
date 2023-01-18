@@ -1,9 +1,7 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"gorm.io/driver/mysql"
@@ -44,52 +42,59 @@ var secrets = Secrets{
 }
 
 // https://github.com/gugazimmermann/fazendadojuca/blob/master/animals/main.go
-var connectionString = fmt.Sprintf(
-	"%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database,
-)
+
+func connectDB() (*gorm.DB, error) {
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database)
+	if db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{}); err != nil {
+		return nil, fmt.Errorf("Error: Failed to connect to AWS RDS: %w", err)
+	} else {
+		return db, nil
+	}
+}
 
 func handler(req events.APIGatewayProxyRequest) (Response, error) {
 	switch req.HTTPMethod {
 	case "POST":
 		return create(req)
-	case "GET":
-		return read(req)
-	case "PUT":
-		return update(req)
-	case "DELETE":
-		return delete(req)
+	// case "GET":
+	// 	return read(req)
+	// case "PUT":
+	// 	return update(req)
+	// case "DELETE":
+	// 	return delete(req)
 	default:
-		err := errors.New(fmt.Sprintf("HTTP Method '%s' not allowed"))
+		err := fmt.Errorf("HTTP Method '%s' not allowed", req.HTTPMethod)
 		return Response{StatusCode: 405, Body: err.Error()}, err
 	}
 }
 
 func create(req events.APIGatewayProxyRequest) (Response, error) {
-	
-}
-
-	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
-
+	_, err := connectDB()
 	if err != nil {
-		log.Fatal("Error: Failed to connect to AWS RDS.")
+		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	user := User{FirstName: "Based", LastName: "User", Username: "baseduser123", Password: "pass", Email: "123", Bio: "Sooo based"}
-	log.Printf("%+v\n", user)
+	return Response{StatusCode: 200, Body: fmt.Sprintf("+v", req.RequestContext.Authorizer["claims"])}, nil
 
-	db.AutoMigrate(&User{})
+	// handle email in use
+	// handle username in use
 
-	var users []User
-	log.Printf("%+v\n", users)
+	// user := User{FirstName: "Based", LastName: "User", Username: "baseduser123", Password: "pass", Email: "123", Bio: "Sooo based"}
+	// log.Printf("%+v\n", user)
 
-	// db.Exec("INSERT INTO users (firstName, lastName, username, password, email, bio) VALUES ("Ash", "V", "avv", "pw", "av@g", "hi");")
+	// db.AutoMigrate(&User{})
 
-	// https://stackoverflow.com/questions/30361671/how-can-i-check-for-errors-in-crud-operations-using-gorm
-	if res := db.Create(&user); res.Error != nil {
-		return Response{StatusCode: 500, Body: res.Error.Error()}, res.Error
-	} else {
-		return Response{StatusCode: 200, Body: fmt.Sprint(user.ID, user.FirstName, user.LastName)}, nil
-	}
+	// var users []User
+	// log.Printf("%+v\n", users)
+
+	// // db.Exec("INSERT INTO users (firstName, lastName, username, password, email, bio) VALUES ("Ash", "V", "avv", "pw", "av@g", "hi");")
+
+	// // https://stackoverflow.com/questions/30361671/how-can-i-check-for-errors-in-crud-operations-using-gorm
+	// if res := db.Create(&user); res.Error != nil {
+	// 	return Response{StatusCode: 500, Body: res.Error.Error()}, res.Error
+	// } else {
+	// 	return Response{StatusCode: 200, Body: fmt.Sprint(user.ID, user.FirstName, user.LastName)}, nil
+	// }
 }
 
 func main() {
