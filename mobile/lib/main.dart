@@ -21,6 +21,16 @@ class MyApp extends StatelessWidget {
         inputDecorationTheme: InputDecorationTheme(
           hintStyle: TextStyle(color: Colors.white),
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF3FBCF4),
+            foregroundColor: Colors.black,
+            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+        ),
       ),
       home: SplashScreen(),
       routes: {
