@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: Color(0xFFBC6AAB),
         scaffoldBackgroundColor: Color(0xFF1A1B29),
+        fontFamily: 'Source Sans Pro',
         textTheme: Typography.whiteMountainView,
         inputDecorationTheme: InputDecorationTheme(
           hintStyle: TextStyle(color: Colors.white),

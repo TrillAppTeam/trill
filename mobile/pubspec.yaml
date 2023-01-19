@@ -66,7 +66,7 @@ flutter:
 
   assets:
     - images/logo.png
-    - images/beatles.jpg
+    - images/beatles.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -93,3 +93,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+fonts:
+  - family: Source Sans Pro
+    fonts:
+      - asset: fonts/SourceSansPro-Black.ttf
+      - asset: fonts/SourceSansPro-BlackItalic.ttf
+      - asset: fonts/SourceSansPro-Bold.ttf
+      - asset: fonts/SourceSansPro-BoldItalic.ttf
+      - asset: fonts/SourceSansPro-ExtraLight.ttf
+      - asset: fonts/SourceSansPro-ExtraLightItalic.ttf
+      - asset: fonts/SourceSansPro-Italic.ttf
+      - asset: fonts/SourceSansPro-Light.ttf
+      - asset: fonts/SourceSansPro-LightItalic.ttf
+      - asset: fonts/SourceSansPro-Regular.ttf
+      - asset: fonts/SourceSansPro-SemiBold.ttf
+      - asset: fonts/SourceSansPro-SemiBoldItalic.ttf
