@@ -37,21 +37,21 @@ class HomeScreen extends StatelessWidget {
                 title: const Text('Reviews'),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/profile');
+                  Navigator.pushNamed(context, '/reviews');
                 },
               ),
               ListTile(
                 title: const Text('Lists'),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/profile');
+                  Navigator.pushNamed(context, '/lists');
                 },
               ),
               ListTile(
                 title: const Text('Likes'),
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, '/profile');
+                  Navigator.pushNamed(context, '/likes');
                 },
               ),
               SizedBox(height: 30),

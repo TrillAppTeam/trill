@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class LogInScreen extends StatelessWidget {
@@ -15,7 +16,7 @@ class LogInScreen extends StatelessWidget {
             Image.asset('images/logo.png'),
             SizedBox(height: 30),
             Text(
-              'Please sign in to continue.',
+              'Please log in to continue.',
               style: TextStyle(
                 fontSize: 10,
               ),
@@ -36,17 +37,26 @@ class LogInScreen extends StatelessWidget {
             ElevatedButton(
               child: Text('Login'),
               onPressed: () {
-                // Log the user in
                 Navigator.pushNamed(context, '/main');
               },
             ),
             SizedBox(height: 10),
-            Text(
-              'Don\'t have an account? Head to the Sign Up page.',
-              style: TextStyle(
-                fontSize: 10,
+            RichText(
+              text: TextSpan(
+                text: 'Don\'t have an account? Head to the ',
+                style: TextStyle(
+                  fontSize: 10,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: 'Sign Up',
+                      style: TextStyle(color: Color(0xFF3FBCF4)),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => Navigator.pushNamed(context, '/signup')),
+                  TextSpan(text: ' page.'),
+                ],
               ),
-            ),
+            )
           ],
         ),
       ),
