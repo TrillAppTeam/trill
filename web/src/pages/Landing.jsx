@@ -51,7 +51,7 @@ function Landing() {
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"> music lovers.</span>
                         </h1>
                         <p className="italic text-2xl text-white py-5 md:text-3xl">Track albums you've listened to. Save those you want to hear. Tell your friends what's good.</p>
-                        <button className="font-bold text-lg bg-trillBlue rounded-lg text-trillPurple py-2 px-4 md:text-2xl">Get Started - It's Free!</button>
+                        <button className="font-bold text-lg bg-trillBlue rounded-lg text-trillPurple py-2 px-4 md:text-2xl hover:bg-cyan-300 ">Get Started - It's Free!</button>
                     </div>
                 </div>
             </section>
