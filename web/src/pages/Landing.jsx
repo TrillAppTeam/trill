@@ -1,6 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
+import React, { useEffect, useRef, useState } from 'react'
+
+// Components and Utils
+import Transition from '../utils/Transition'
+import ClickableCard from "../components/ClickableCard"
+import Footer from "../components/Footer"
+
+// Material UI Icons
+import PeopleIcon from '@mui/icons-material/People'
+import HearingIcon from '@mui/icons-material/Hearing'
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic'
+import StarRateIcon from '@mui/icons-material/StarRate'
 
 function Landing() {
+    const [tab, setTab] = useState(1)
+    const tabs = useRef(null)
+
+    const heightFix = () => {
+        if (tabs.current.children[tab]) {
+          tabs.current.style.height = tabs.current.children[tab - 1].offsetHeight + 'px'
+        }
+      }
+    
+      useEffect(() => {
+        heightFix()
+      }, [tab])
+
     return (
         <div className="bg-trillPurple min-h-screen text-center">           
 
@@ -17,8 +42,10 @@ function Landing() {
                         <Link to="CreateAccount" className="font-bold text-lg text-slate-100 p-5 hover:text-trillBlue"> CREATE ACCOUNT </Link>
                     </div>
 
+                    {/* Main Hero Image - Abbey Road */}
                     <img className="w-[auto] h-[700px] mix-blend-lighten opacity-95" src='/beatles.png' alt='The Beatles' /> 
 
+                    {/* Trill Slogan */}
                     <div className="items-end pt-[330px] absolute top-80 z-1">
                         <h1 className="font-bold text-5xl md:text-7xl text-white"> A social network for
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"> music lovers.</span>
@@ -26,7 +53,6 @@ function Landing() {
                         <p className="italic text-2xl text-white py-5 md:text-3xl">Track albums you've listened to. Save those you want to hear. Tell your friends what's good.</p>
                         <button className="font-bold text-lg bg-trillBlue rounded-lg text-trillPurple py-2 px-4 md:text-2xl">Get Started - It's Free!</button>
                     </div>
-
                 </div>
             </section>
 
@@ -44,79 +70,161 @@ function Landing() {
 
             {/* Features Section */}
             <section>
+                <div className="relative mx-auto px-4 sm:px-6 mb-8">
+                    <h1 className="p-10 italic font-bold text-xl md:text-4xl text-gray-200 pb-10">Explore Trill's Features</h1>
 
-                <div className="max-w-6xl mx-auto text-center pb-12 md:pb-20">
-                    <h2 className="italic font-bold text-xl md:text-4xl text-gray-200 pb-10">Explore Trill's Features</h2>
-        
-                    <div className="max-w-sm mx-auto grid gap-6 md:grid-cols-3 lg:grid-cols-4 items-start md:max-w-2xl lg:max-w-none text-white">
+                    <div className="w-full  min-w-48">
+                        <div className="md:grid md:grid-cols-12 md:gap-6 max-w-6xl mx-auto">
 
-                        {/* Discover New Music */}
-                        <div className="relative flex flex-col items-center p-6 bg-slate-700 rounded shadow-xl">
-                            <svg className="w-16 h-16 p-1 -mt-1 mb-2" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                                <g fill="none" fillRule="evenodd">
-                                <rect className="fill-current text-trillBlue" width="64" height="64" rx="32" />
-                                <g strokeWidth="2" transform="translate(19.429 20.571)">
-                                    <circle className="stroke-current" strokeLinecap="square" cx="12.571" cy="12.571" r="1.143" />
-                                    <path className="stroke-current" d="M19.153 23.267c3.59-2.213 5.99-6.169 5.99-10.696C25.143 5.63 19.514 0 12.57 0 5.63 0 0 5.629 0 12.571c0 4.527 2.4 8.483 5.99 10.696" />
-                                    <path className="stroke-current" d="M16.161 18.406a6.848 6.848 0 003.268-5.835 6.857 6.857 0 00-6.858-6.857 6.857 6.857 0 00-6.857 6.857 6.848 6.848 0 003.268 5.835" />
-                                </g>
-                                </g>
-                            </svg>
-                            <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Discover New Music</h4>
-                            <p className="italic text-center">Find out what albums are trending each week</p>
+                        {/* Content */}
+                        <div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-7 lg:col-span-6" data-aos="fade-right">
+                            <div className="mb-8 md:mb-0">
+                                <a
+                                    className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 1 ? 'bg-white shadow-md border-gray-200 hover:shadow-lg' : 'bg-gray-300 border-transparent'}`}
+                                    href="#0"
+                                    onClick={(e) => { e.preventDefault(); setTab(1) }}
+                                >
+                                    <div className="w-full flex justify-between font-bold leading-snug tracking-tight mb-1">
+                                        <div>Discover New Music</div>
+                                        <LibraryMusicIcon />
+                                    </div>
+                                </a>
+                                <a
+                                    className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 2 ? 'bg-white shadow-md border-gray-200 hover:shadow-lg' : 'bg-gray-300 border-transparent'}`}
+                                    href="#0"
+                                    onClick={(e) => { e.preventDefault(); setTab(2) }}
+                                >
+                                    <div className="w-full flex justify-between font-bold leading-snug tracking-tight mb-1">
+                                        <div>Rate and Review</div>
+                                        <StarRateIcon />
+                                    </div>
+                                </a>
+                                <a
+                                    className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 3 ? 'bg-white shadow-md border-gray-200 hover:shadow-lg' : 'bg-gray-300 border-transparent'}`}
+                                    href="#0"
+                                    onClick={(e) => { e.preventDefault(); setTab(3) }}
+                                >
+                                    <div className="w-full flex justify-between font-bold leading-snug tracking-tight mb-1">
+                                        <div>Follow Friends</div>
+                                        <PeopleIcon />
+                                    </div>
+                                </a>
+                                <a
+                                    className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 4 ? 'bg-white shadow-md border-gray-200 hover:shadow-lg' : 'bg-gray-300 border-transparent'}`}
+                                    href="#0"
+                                    onClick={(e) => { e.preventDefault(); setTab(4) }}
+                                >
+                                    <div className="w-full flex justify-between font-bold leading-snug tracking-tight mb-1">
+                                        <div>Listen Later</div>
+                                        <HearingIcon />
+                                    </div>
+                                </a>
+                            </div>
                         </div>
 
-                         {/* Rate and Review */}
-                        <div className="relative flex flex-col items-center p-6 bg-slate-700 rounded shadow-xl">
-                            <svg className="w-16 h-16 p-1 -mt-1 mb-2" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                                <g fill="none" fillRule="evenodd">
-                                <rect className="fill-current text-trillBlue" width="64" height="64" rx="32" />
-                                <g transform="translate(22.857 19.429)" strokeWidth="2">
-                                    <path className="stroke-current " strokeLinecap="square" d="M12.571 4.571V0H0v25.143h12.571V20.57" />
-                                    <path className="stroke-current " d="M16 12.571h8" />
-                                    <path className="stroke-current " strokeLinecap="square" d="M19.429 8L24 12.571l-4.571 4.572" />
-                                    <circle className="stroke-current " strokeLinecap="square" cx="12.571" cy="12.571" r="3.429" />
-                                </g>
-                                </g>
-                            </svg>              
-                            <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Rate and Review</h4>
-                            <p className="italic text-center">Rate each album on a five-star scale to record your review</p>
+                        {/* Tabs items */}
+                        <div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-5 lg:col-span-6 mb-8 md:mb-0 md:order-1" data-aos="zoom-y-out" ref={tabs}>
+                            <div className="relative flex flex-col text-center lg:text-right h-full">
+
+                                {/* Item 1 */}
+                                <Transition
+                                    show={tab === 1}
+                                    appear={true}
+                                    className="w-full h-full"
+                                    enter="transition ease-in-out duration-700 transform order-first"
+                                    enterStart="opacity-0 translate-y-16"
+                                    enterEnd="opacity-100 translate-y-0"
+                                    leave="transition ease-in-out duration-300 transform absolute"
+                                    leaveStart="opacity-100 translate-y-0"
+                                    leaveEnd="opacity-0 -translate-y-16"
+                                >
+                                    <ClickableCard
+                                    icon={<LibraryMusicIcon fontSize="large" sx={{ color: 'white' }} />}
+                                    title="Discover New Music"
+                                    body={
+                                        <p className="text-gray-600 text-xl text-center pb-5">
+                                            Find out what albums are trending each week and find your new favorite. 
+                                        </p>}
+                                    />
+                                </Transition>
+
+                                {/* Item 2 */}
+                                <Transition
+                                    show={tab === 2}
+                                    appear={true}
+                                    className="w-full h-full"
+                                    enter="transition ease-in-out duration-700 transform order-first"
+                                    enterStart="opacity-0 translate-y-16"
+                                    enterEnd="opacity-100 translate-y-0"
+                                    leave="transition ease-in-out duration-300 transform absolute"
+                                    leaveStart="opacity-100 translate-y-0"
+                                    leaveEnd="opacity-0 -translate-y-16"
+                                >
+                                    <ClickableCard
+                                    icon={<StarRateIcon fontSize="large" sx={{ color: 'white' }} />}
+                                    title="Rate and Review"
+                                    body={
+                                        <p className="text-gray-600 text-xl text-center pb-5">
+                                        Channel the inner music critic in you and share your thoughts on albums. Rate each album on a five-star scale to record your review. 
+                                        </p>
+                                    }
+                                    />
+                                </Transition>
+
+                                {/* Item 3 */}
+                                <Transition
+                                    show={tab === 3}
+                                    appear={true}
+                                    className="w-full h-full"
+                                    enter="transition ease-in-out duration-700 transform order-first"
+                                    enterStart="opacity-0 translate-y-16"
+                                    enterEnd="opacity-100 translate-y-0"
+                                    leave="transition ease-in-out duration-300 transform absolute"
+                                    leaveStart="opacity-100 translate-y-0"
+                                    leaveEnd="opacity-0 -translate-y-16"
+                                >
+                                    <ClickableCard
+                                    icon={<PeopleIcon fontSize="large" sx={{ color: 'white' }} />}
+                                    title="Follow Friends"
+                                    body={
+                                        <p className="text-gray-600 text-xl text-center pb-5">
+                                        Stay up to date with what your friends are listening to via your curated Friends Feed. Share your favorite music with friends and discover new songs together. 
+                                        </p>}
+                                    big
+                                    />
+                                </Transition>
+
+                                {/* Item 4 */}
+                                <Transition
+                                    show={tab === 4}
+                                    appear={true}
+                                    className="w-full h-full"
+                                    enter="transition ease-in-out duration-700 transform order-first"
+                                    enterStart="opacity-0 translate-y-16"
+                                    enterEnd="opacity-100 translate-y-0"
+                                    leave="transition ease-in-out duration-300 transform absolute"
+                                    leaveStart="opacity-100 translate-y-0"
+                                    leaveEnd="opacity-0 -translate-y-16"
+                                >
+                                    <ClickableCard
+                                    icon={<HearingIcon fontSize="large" sx={{ color: 'white' }} />}
+                                    title="Listen Later"
+                                    body={
+                                        <p className="text-gray-600 text-xl text-center pb-5">
+                                            Keep track of all your must-hear tracks with your personalized "Listen Later" playlist.
+                                        </p>
+                                    }
+                                    big
+                                    />
+                                </Transition>
+
+                            </div>
+                            </div >
                         </div>
-
-                        {/* Follow Friends */}
-                        <div className="relative flex flex-col items-center p-6 bg-slate-700 rounded shadow-xl">
-                            <svg className="w-16 h-16 p-1 -mt-1 mb-2" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                                <g fill="none" fillRule="evenodd">
-                                <rect className="fill-current text-trillBlue" width="64" height="64" rx="32" />
-                                <g strokeLinecap="square" strokeWidth="2">
-                                    <path className="stroke-current " d="M38.826 22.504a9.128 9.128 0 00-13.291-.398M35.403 25.546a4.543 4.543 0 00-6.635-.207" />
-                                    <path className="stroke-current " d="M19.429 25.143A6.857 6.857 0 0126.286 32v1.189L28 37.143l-1.714.571V40A2.286 2.286 0 0124 42.286h-2.286v2.285M44.571 25.143A6.857 6.857 0 0037.714 32v1.189L36 37.143l1.714.571V40A2.286 2.286 0 0040 42.286h2.286v2.285" />
-                                </g>
-                                </g>
-                            </svg>
-                            <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Follow Friends</h4>
-                            <p className="italic text-center">Stay up to date with what your friends are listening to</p>
-                        </div>
-
-                        {/* Listen Later */}
-                        <div className="relative flex flex-col items-center p-6 bg-slate-700 rounded shadow-xl">
-                            <svg className="w-16 h-16 p-1 -mt-1 mb-2" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-                                <g fill="none" fillRule="evenodd">
-                                <rect className="fill-current text-trillBlue" width="64" height="64" rx="32" />
-                                <g strokeLinecap="square" strokeWidth="2">
-                                    <path className="stroke-current " d="M20.571 20.571h13.714v17.143H20.571z" />
-                                    <path className="stroke-current " d="M38.858 26.993l6.397 1.73-4.473 16.549-13.24-3.58" />
-                                </g>
-                                </g>
-                            </svg>
-                            <h4 className="text-xl font-bold leading-snug tracking-tight mb-1">Listen Later</h4>
-                            <p className="italic text-center">Compile a list of albums you want to listen to</p>
-                        </div>
-
-
-                    </div>
-                </div>
+                    </div >
+                </div >
             </section>
+            <Footer />
         </div>
     );
 }
