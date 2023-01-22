@@ -4,9 +4,6 @@ class SearchResultsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Search Results'),
-      ),
       body: Column(
         children: [
           Expanded(
@@ -45,7 +42,7 @@ class SearchScreen extends StatelessWidget {
               decoration: InputDecoration(
                   hintText: 'Enter search query', border: OutlineInputBorder()),
               onSubmitted: (query) {
-                Navigator.pushNamed(context, '/searchResults');
+                SearchResultsScreen();
               },
             ),
           ),
