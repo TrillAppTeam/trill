@@ -41,6 +41,8 @@ provider:
     MYSQLUSER: ${self:custom.MYSQLUSER}
     MYSQLPASS: ${self:custom.MYSQLPASS}
     MYSQLDATABASE: ${self:custom.MYSQLDATABASE}
+    COGNITO_APP_CLIENT_ID: ${self:custom.COGNITO_APP_CLIENT_ID}
+    COGNITO_USER_POOL_ID: ${self:custom.COGNITO_USER_POOL_ID}
 
 # you can overwrite defaults here
 #  stage: dev
@@ -91,6 +93,15 @@ functions:
     events:
       - httpApi:
           path: /users
+          method: get
+      - httpApi:
+          path: /users
+          method: post
+  auth:
+    handler: bin/auth
+    events:
+      - httpApi:
+          path: /auth
           method: get
 
 #    The following are a few example events you can configure

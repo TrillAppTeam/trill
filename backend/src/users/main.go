@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -21,6 +22,7 @@ type Secrets struct {
 	database string `yaml:"MYSQLDATABASE"`
 	user     string `yaml:"MYSQLUSER"`
 	password string `yaml:"MYSQLPASS"`
+	region   string `yaml:"AWS_DEFAULT_REGION"`
 }
 
 type User struct {
@@ -39,6 +41,7 @@ var secrets = Secrets{
 	os.Getenv("MYSQLDATABASE"),
 	os.Getenv("MYSQLUSER"),
 	os.Getenv("MYSQLPASS"),
+	os.Getenv("AWS_DEFAULT_REGION"),
 }
 
 // https://github.com/gugazimmermann/fazendadojuca/blob/master/animals/main.go
@@ -52,10 +55,10 @@ func connectDB() (*gorm.DB, error) {
 	}
 }
 
-func handler(req events.APIGatewayProxyRequest) (Response, error) {
+func handler(ctx context.Context, req events.APIGatewayProxyRequest) (Response, error) {
 	switch req.HTTPMethod {
 	case "POST":
-		return create(req)
+		return create(ctx, req)
 	// case "GET":
 	// 	return read(req)
 	// case "PUT":
@@ -68,13 +71,26 @@ func handler(req events.APIGatewayProxyRequest) (Response, error) {
 	}
 }
 
-func create(req events.APIGatewayProxyRequest) (Response, error) {
+func create(ctx context.Context, req events.APIGatewayProxyRequest) (Response, error) {
 	_, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
+	return Response{StatusCode: 200, Body: "Success"}, nil
 
-	return Response{StatusCode: 200, Body: fmt.Sprintf("+v", req.RequestContext.Authorizer["claims"])}, nil
+	// cfg, err := config.LoadDefaultConfig(
+	// 	ctx, config.WithRegion("{aws-region}"),
+	// )
+	// if err != nil {
+	// 	return Response{StatusCode: 500, Body: err.Error()}, err
+	// }
+
+	// cognito := cognitoidentityprovider.NewFromConfig(cfg)
+	// req := cognito.SignUp(ctx, &cognitoidentityprovider.SignUpInput{
+	// 	ClientId: aws.String(),
+	// })
+
+	// return Response{StatusCode: 200, Body: fmt.Sprintf("+v", req.RequestContext.Authorizer["claims"])}, nil
 
 	// handle email in use
 	// handle username in use
