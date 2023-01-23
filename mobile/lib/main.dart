@@ -5,6 +5,11 @@ import 'package:trill/pages/login.dart';
 import 'package:trill/pages/review.dart';
 import 'package:trill/pages/signup.dart';
 import 'package:trill/pages/splash.dart';
+import 'package:trill/pages/userlists.dart';
+import 'package:trill/pages/userreviews.dart';
+import 'package:trill/pages/ratedalbums.dart';
+import 'package:trill/pages/list.dart';
+import 'package:trill/pages/likedalbums.dart';
 
 void main() => runApp(MyApp());
 
@@ -39,7 +44,12 @@ class MyApp extends StatelessWidget {
         '/signup': (context) => SignUpScreen(),
         '/main': (context) => MainPage(),
         '/album': (context) => AlbumScreen(),
+        '/albums': (context) => RatedAlbumsScreen(),
+        '/likes': (context) => LikedAlbumsScreen(),
         '/review': (context) => ReviewScreen(),
+        '/reviews': (context) => UserReviewsScreen(),
+        '/list': (context) => ListScreen(),
+        '/lists': (context) => UserListsScreen(),
       },
     );
   }
