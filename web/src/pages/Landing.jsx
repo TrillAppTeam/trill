@@ -51,19 +51,19 @@ function Landing() {
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"> music lovers.</span>
                         </h1>
                         <p className="italic text-2xl text-white py-5 md:text-3xl">Track albums you've listened to. Save those you want to hear. Tell your friends what's good.</p>
-                        <button className="font-bold text-lg bg-trillBlue rounded-lg text-trillPurple py-2 px-4 md:text-2xl">Get Started - It's Free!</button>
+                        <button className="font-bold text-lg bg-trillBlue rounded-lg text-trillPurple py-2 px-4 md:text-2xl hover:bg-cyan-300 ">Get Started - It's Free!</button>
                     </div>
                 </div>
             </section>
 
             {/* Albums Section */}
             <section>
-                <div className="text-white flex flex-row justify-center gap-8 m-[10px] pb-[100px]">
-                    <div className="ring-2 ring-gray-500"><img src="/blondAlbum.jpg" width="210" /></div>
-                    <div className="ring-2 ring-gray-500"><img src="/allThingsMustPassAlbum.jpg" width="210" /></div>
-                    <div className="ring-2 ring-gray-500"><img src="/currentsAlbum.jpg" width="210" /></div>
-                    <div className="ring-2 ring-gray-500"><img src="/whereTheLightIsAlbum.jpg" width="210" /></div>
-                    <div className="ring-2 ring-gray-500"><img src="/frontiersAlbum.jpg" width="210
+                <div className="text-white flex flex-row justify-center gap-8 m-[10px] pb-[100px] 0">
+                    <div className="ring-2 ring-gray-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110" data-aos="fade-up"><img src="/blondAlbum.jpg" width="210" /></div>
+                    <div className="ring-2 ring-gray-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110"><img src="/allThingsMustPassAlbum.jpg" width="210" /></div>
+                    <div className="ring-2 ring-gray-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110"><img src="/currentsAlbum.jpg" width="210" /></div>
+                    <div className="ring-2 ring-gray-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110"><img src="/whereTheLightIsAlbum.jpg" width="210" /></div>
+                    <div className="ring-2 ring-gray-500 transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-110"><img src="/frontiersAlbum.jpg" width="210
                     "/></div>
                 </div>
             </section>
