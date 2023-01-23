@@ -5,7 +5,7 @@ class UserListsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Lists'),
+        title: Text('Your Lists'),
       ),
     );
   }

@@ -10,7 +10,7 @@ class HomeScreen extends StatelessWidget {
       ),
       drawer: Drawer(
         child: Container(
-          color: Colors.black,
+          color: Color(0xFF1A1B29),
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
@@ -46,14 +46,14 @@ class HomeScreen extends StatelessWidget {
                         child: RichText(
                           text: TextSpan(
                             text: 'Followers: 100',
-                            style: TextStyle(fontSize: 11),
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                             recognizer: TapGestureRecognizer()
                             ..onTap = () => Navigator.pushNamed(context, '/followers')
                           ),
                         ),
                       ),
                     ),
-                    Spacer(),
+                    Spacer(flex: 2),
                     Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                         child: RichText(
                           text: TextSpan(
                               text: 'Following: 100',
-                              style: TextStyle(fontSize: 11),
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () => Navigator.pushNamed(context, '/following')
                           ),
@@ -82,30 +82,35 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ListTile(
+                leading: Icon(Icons.home_outlined, color: Colors.white),
                 title: const Text('Home'),
                 onTap: () {
                   Navigator.pushNamed(context, '/main');
                 },
               ),
               ListTile(
+                leading: Icon(Icons.library_music_outlined, color: Colors.white),
                 title: const Text('Albums'),
                 onTap: () {
                   Navigator.pushNamed(context, '/albums');
                 },
               ),
               ListTile(
+                leading: Icon(Icons.rate_review_outlined, color: Colors.white),
                 title: const Text('Reviews'),
                 onTap: () {
                   Navigator.pushNamed(context, '/reviews');
                 },
               ),
               ListTile(
+                leading: Icon(Icons.format_list_bulleted_outlined, color: Colors.white),
                 title: const Text('Lists'),
                 onTap: () {
                   Navigator.pushNamed(context, '/lists');
                 },
               ),
               ListTile(
+                leading: Icon(Icons.favorite_outline_outlined, color: Colors.white),
                 title: const Text('Likes'),
                 onTap: () {
                   Navigator.pushNamed(context, '/likes');
@@ -113,6 +118,7 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 30),
               ListTile(
+                leading: Icon(Icons.logout_outlined, color: Colors.white),
                 title: const Text('Log Out'),
                 onTap: () {
                   Navigator.pushNamed(context, '/login');
