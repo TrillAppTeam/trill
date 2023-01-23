@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:trill/mainpage.dart';
-import 'package:trill/pages/album.dart';
 import 'package:trill/pages/login.dart';
 import 'package:trill/pages/review.dart';
 import 'package:trill/pages/signup.dart';
 import 'package:trill/pages/splash.dart';
-import 'package:trill/pages/userlists.dart';
-import 'package:trill/pages/userreviews.dart';
-import 'package:trill/pages/ratedalbums.dart';
-import 'package:trill/pages/list.dart';
-import 'package:trill/pages/likedalbums.dart';
+import 'package:trill/pages/lists/album.dart';
+import 'package:trill/pages/lists/followers.dart';
+import 'package:trill/pages/lists/following.dart';
+import 'package:trill/pages/lists/userlists.dart';
+import 'package:trill/pages/lists/userreviews.dart';
+import 'package:trill/pages/lists/ratedalbums.dart';
+import 'package:trill/pages/lists/list.dart';
+import 'package:trill/pages/lists/likedalbums.dart';
 
 void main() => runApp(MyApp());
 
@@ -50,6 +52,8 @@ class MyApp extends StatelessWidget {
         '/reviews': (context) => UserReviewsScreen(),
         '/list': (context) => ListScreen(),
         '/lists': (context) => UserListsScreen(),
+        '/followers': (context) => FollowersScreen(),
+        '/following': (context) => FollowingScreen()
       },
     );
   }
