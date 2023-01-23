@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -42,9 +43,13 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       child: Center(
-                        child: Text(
-                          'Followers: 100',
-                           style: TextStyle(fontSize: 11)
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Followers: 100',
+                            style: TextStyle(fontSize: 11),
+                            recognizer: TapGestureRecognizer()
+                            ..onTap = () => Navigator.pushNamed(context, '/followers')
+                          ),
                         ),
                       ),
                     ),
@@ -53,17 +58,21 @@ class HomeScreen extends StatelessWidget {
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Color(0xFFBC6AAB),
-                          width: 1
+                            color: Color(0xFFBC6AAB),
+                            width: 1
                         ),
                         borderRadius: BorderRadius.all(
                             Radius.circular(30)
                         ),
                       ),
                       child: Center(
-                        child: Text(
-                          'Following: 100',
-                          style: TextStyle(fontSize: 11)
+                        child: RichText(
+                          text: TextSpan(
+                              text: 'Following: 100',
+                              style: TextStyle(fontSize: 11),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => Navigator.pushNamed(context, '/following')
+                          ),
                         ),
                       ),
                     ),
@@ -75,35 +84,30 @@ class HomeScreen extends StatelessWidget {
               ListTile(
                 title: const Text('Home'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/home');
+                  Navigator.pushNamed(context, '/main');
                 },
               ),
               ListTile(
                 title: const Text('Albums'),
                 onTap: () {
-                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/albums');
                 },
               ),
               ListTile(
                 title: const Text('Reviews'),
                 onTap: () {
-                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/reviews');
                 },
               ),
               ListTile(
                 title: const Text('Lists'),
                 onTap: () {
-                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/lists');
                 },
               ),
               ListTile(
                 title: const Text('Likes'),
                 onTap: () {
-                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/likes');
                 },
               ),
@@ -111,7 +115,6 @@ class HomeScreen extends StatelessWidget {
               ListTile(
                 title: const Text('Log Out'),
                 onTap: () {
-                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/login');
                 },
               ),
