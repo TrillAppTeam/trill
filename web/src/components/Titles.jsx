@@ -4,10 +4,10 @@ import ArrowRightIcon from '@mui/icons-material/ArrowRight';
 function Titles(props) {
     return (
         <div>
-            <div className="flex max-w-6xl mx-auto justify-between text-gray-400">
+            <div className="flex max-w-6xl mx-auto justify-between text-gray-400 pr-1 pl-1">
                 {props.title}
 
-                <Link to="">
+                <Link to="More">
                     More
                     <ArrowRightIcon />
                 </Link>
