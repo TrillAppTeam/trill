@@ -13,15 +13,14 @@ function Error() {
        
         <div className="z-10 flex-1 min-h-full min-w-full rounded-3xl bg-white shadow-xl p-10 lg:p-20 text-gray-800 relative md:flex items-center text-center md:text-left">
             <div className="w-full md:w-1/2">
-                <div className="mb-10 md:mb-20 text-gray-600 font-light">
-                    <h1 className="font-black uppercase text-3xl lg:text-8xl text-black mb-10">404 Error</h1>
-                    <h1 className="font-black uppercase text-3xl lg:text-5xl text-trillBlue mb-10">You seem to be lost!</h1>
-                    <h2 className="font-black text-2xl lg:text-3xl text-gray-400 mb-10">An error has occurred.</h2>
+                <div className="mb-10 md:mb-20 text-gray-600 font-bold">
+                    <h1 className="uppercase text-3xl lg:text-5xl text-black mb-6">Ooops... You weren't supposed to see this</h1>
+                    <h2 className="text-2xl lg:text-3xl text-gray-500 mb-6">An error has occurred.</h2>
                 </div>
                 <div className="mb-20 md:mb-0">
                     {/* TO DO: Update once routing is fixed */}
                     <Link to="User/Home">
-                        <button className="text-lg font-light outline-none focus:outline-none transform transition-all bg-gray-300 rounded p-3 hover:scale-110 text-black hover:text-trillBlue">
+                        <button className="text-lg transform transition-all bg-gray-800 rounded p-3 hover:scale-110 text-gray-200 hover:text-trillBlue font-bold">
                             Return to Home
                         </button>
                     </Link>
