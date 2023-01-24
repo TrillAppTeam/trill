@@ -3,9 +3,9 @@ import React from 'react'
 function Footer () {
   return (
     <footer>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 bg-trillPurple pt-5">
 
-        <div className="grid grid-cols-2 border-t border-gray-200 pt-5 pb-5">
+        <div className="grid grid-cols-2 border-t border-gray-200 pt-5 pb-5 ">
 
           {/* Trill Logo */}
           <div className="flex justify-center">
