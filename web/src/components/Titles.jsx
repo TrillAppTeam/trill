@@ -7,10 +7,12 @@ function Titles(props) {
             <div className="flex max-w-6xl mx-auto justify-between text-gray-400 pr-1 pl-1">
                 {props.title}
 
-                <Link to="More">
-                    More
-                    <ArrowRightIcon />
-                </Link>
+                {props.title === "News" ? "" : 
+                    <Link to="/User/More">
+                        More <ArrowRightIcon />
+                    </Link> 
+                }
+                
             </div>
 
             <div className="border-t border-gray-400 pt-5 pb-5 max-w-6xl mx-auto" />
