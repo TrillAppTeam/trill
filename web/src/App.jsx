@@ -4,7 +4,7 @@ import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div className="bg-trillPurple h-screen">
+    <div className="bg-trillPurple min-h-screen">
       <Navbar />
       <Outlet />
       <Footer />
