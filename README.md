@@ -1,4 +1,4 @@
-# Trill
+# [Trill](https://trytrill.com)
 
 A social network for music lovers. Built for Senior Design.
 
