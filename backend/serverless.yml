@@ -28,6 +28,13 @@ custom: ${file(.secrets.yml)}
 provider:
   name: aws
   runtime: go1.x
+  httpApi:
+    disableDefaultEndpoint: true
+    shouldStartNameWithService: true
+    authorizers:
+      customAuthorizer:
+        type: request
+        functionName: auth
   vpc:
     securityGroupIds:
       - ${self:custom.SECURITY_GROUP_ID}
@@ -76,12 +83,16 @@ package:
     - ./bin/**
 
 functions:
+  auth:
+    handler: bin/auth
   hello:
     handler: bin/hello
     events:
       - httpApi:
           path: /hello
           method: get
+          authorizer: 
+            name: auth
   world:
     handler: bin/world
     events:
@@ -97,12 +108,6 @@ functions:
       - httpApi:
           path: /users
           method: post
-  auth:
-    handler: bin/auth
-    events:
-      - httpApi:
-          path: /auth
-          method: get
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
