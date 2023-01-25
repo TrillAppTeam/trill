@@ -6,6 +6,7 @@ import './index.css'
 import FriendsFeed from './pages/FriendsFeed';
 import ListenLater from './pages/ListenLater';
 import Landing from './pages/Landing';
+import ListAlbums from './pages/ListAlbums';
 import Error from './pages/Error';
 import Home from './pages/Home';
 import CreateAccount from './pages/CreateAccount';
@@ -53,6 +54,11 @@ const router = createBrowserRouter([
       {
         path: "ListenLater",
         element: <ListenLater />,
+        errorElement: <Error />
+      },
+      {
+        path: "More",
+        element: <ListAlbums />,
         errorElement: <Error />
       }
     ],

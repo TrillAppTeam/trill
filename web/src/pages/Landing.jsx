@@ -70,7 +70,7 @@ function Landing() {
 
             {/* Features Section */}
             <section>
-                <div className="relative mx-auto px-4 sm:px-6 mb-8">
+                <div className="relative mx-auto px-4 sm:px-6 mb-8 pb-10">
                     <h1 className="p-10 italic font-bold text-xl md:text-4xl text-gray-200 pb-10">Explore Trill's Features</h1>
 
                     <div className="w-full  min-w-48">
