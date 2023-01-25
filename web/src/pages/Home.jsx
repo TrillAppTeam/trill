@@ -8,11 +8,11 @@ const userData = {
     email: "avwede@gmail.com"
 };
 
+
 function Home() {
     const {userName, firstName, lastName, email} = userData;
     return (
         <div>
-
             {/* Welcome Message */}
             <section>
                 <h1 className="font-bold text-3xl md:text-5xl text-white text-center pt-[20px]"> Welcome back,

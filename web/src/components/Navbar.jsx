@@ -18,6 +18,7 @@ function classNames(...classes) {
 
 function Navbar() {
   return (
+
       <Disclosure as="nav" className="bg-gray-700">
       {({ open }) => (
         <>
