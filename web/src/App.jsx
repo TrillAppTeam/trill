@@ -4,9 +4,14 @@ import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div className="bg-trillPurple min-h-screen">
+    <div className="bg-trillPurple min-h-screen flex flex-col">
       <Navbar />
-      <Outlet />
+
+      {/* Page Content */}
+      <div className="flex-grow">
+        <Outlet />
+      </div>
+
       <Footer />
     </div>
   );
