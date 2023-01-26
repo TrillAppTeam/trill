@@ -9,7 +9,7 @@ function Footer() {
                     <img src={TrillLogo} className="w-12" />
                     <p className="italic text-sm my-auto">Copyright Trill © 2023 - All right reserved</p>
                 </div>
-                <div className="my-auto">
+                <div className="my-auto tooltip" data-tip="Check out our GitHub!">
                     <a href="https://github.com/TrillAppTeam/trill" target="_blank"><GitHubIcon /></a> 
                 </div>
             </div>  
