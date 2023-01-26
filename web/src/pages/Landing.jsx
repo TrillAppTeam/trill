@@ -73,14 +73,14 @@ function Landing() {
                 <div className="relative mx-auto px-4 sm:px-6 mb-8 pb-10">
                     <h1 className="p-10 italic font-bold text-xl md:text-4xl text-gray-200 pb-10">Explore Trill's Features</h1>
 
-                    <div className="w-full  min-w-48">
+                    <div className="w-full min-w-48">
                         <div className="md:grid md:grid-cols-12 md:gap-6 max-w-6xl mx-auto">
 
                         {/* Content */}
                         <div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-7 lg:col-span-6" data-aos="fade-right">
                             <div className="mb-8 md:mb-0">
                                 <a
-                                    className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 1 ? 'bg-white shadow-md border-gray-200 hover:shadow-lg' : 'bg-gray-300 border-transparent'}`}
+                                    className={`flex items-center text-lg bg-gray-600 text-white p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 1 ? 'border-transparent' : 'bg-gray-500 '}`}
                                     href="#0"
                                     onClick={(e) => { e.preventDefault(); setTab(1) }}
                                 >
@@ -90,7 +90,7 @@ function Landing() {
                                     </div>
                                 </a>
                                 <a
-                                    className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 2 ? 'bg-white shadow-md border-gray-200 hover:shadow-lg' : 'bg-gray-300 border-transparent'}`}
+                                    className={`flex items-center text-lg bg-gray-600 text-white p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 2 ? 'border-transparent' : 'bg-gray-500'}`}
                                     href="#0"
                                     onClick={(e) => { e.preventDefault(); setTab(2) }}
                                 >
@@ -100,7 +100,7 @@ function Landing() {
                                     </div>
                                 </a>
                                 <a
-                                    className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 3 ? 'bg-white shadow-md border-gray-200 hover:shadow-lg' : 'bg-gray-300 border-transparent'}`}
+                                    className={`flex items-center text-lg bg-gray-600 text-white p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 3 ? 'border-transparent' : 'bg-gray-500'}`}
                                     href="#0"
                                     onClick={(e) => { e.preventDefault(); setTab(3) }}
                                 >
@@ -110,7 +110,7 @@ function Landing() {
                                     </div>
                                 </a>
                                 <a
-                                    className={`flex items-center text-lg p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 4 ? 'bg-white shadow-md border-gray-200 hover:shadow-lg' : 'bg-gray-300 border-transparent'}`}
+                                    className={`flex items-center text-lg bg-gray-600 text-white p-5 rounded border transition duration-300 ease-in-out mb-3 ${tab !== 4 ? 'border-transparent' : 'bg-gray-500 '}`}
                                     href="#0"
                                     onClick={(e) => { e.preventDefault(); setTab(4) }}
                                 >
@@ -122,9 +122,9 @@ function Landing() {
                             </div>
                         </div>
 
-                        {/* Tabs items */}
+                        {/* Cards for Features */}
                         <div className="max-w-xl md:max-w-none md:w-full mx-auto md:col-span-5 lg:col-span-6 mb-8 md:mb-0 md:order-1" data-aos="zoom-y-out" ref={tabs}>
-                            <div className="relative flex flex-col text-center lg:text-right h-full">
+                            <div className="relative flex flex-col text-center text-gray-900 lg:text-right h-full">
 
                                 {/* Item 1 */}
                                 <Transition
@@ -142,7 +142,7 @@ function Landing() {
                                     icon={<LibraryMusicIcon fontSize="large" sx={{ color: 'white' }} />}
                                     title="Discover New Music"
                                     body={
-                                        <p className="text-gray-600 text-xl text-center pb-5">
+                                        <p className="text-white text-xl text-center pb-5">
                                             Find out what albums are trending each week and find your new favorite. 
                                         </p>}
                                     />
@@ -164,7 +164,7 @@ function Landing() {
                                     icon={<StarRateIcon fontSize="large" sx={{ color: 'white' }} />}
                                     title="Rate and Review"
                                     body={
-                                        <p className="text-gray-600 text-xl text-center pb-5">
+                                        <p className="text-gray-200 text-xl text-center pb-5">
                                         Channel the inner music critic in you and share your thoughts on albums. Rate each album on a five-star scale to record your review. 
                                         </p>
                                     }
@@ -187,7 +187,7 @@ function Landing() {
                                     icon={<PeopleIcon fontSize="large" sx={{ color: 'white' }} />}
                                     title="Follow Friends"
                                     body={
-                                        <p className="text-gray-600 text-xl text-center pb-5">
+                                        <p className="text-gray-200 text-xl text-center pb-5">
                                         Stay up to date with what your friends are listening to via your curated Friends Feed. Share your favorite music with friends and discover new songs together. 
                                         </p>}
                                     big
@@ -210,7 +210,7 @@ function Landing() {
                                     icon={<HearingIcon fontSize="large" sx={{ color: 'white' }} />}
                                     title="Listen Later"
                                     body={
-                                        <p className="text-gray-600 text-xl text-center pb-5">
+                                        <p className="text-gray-200 text-xl text-center pb-5">
                                             Keep track of all your must-hear tracks with your personalized "Listen Later" playlist.
                                         </p>
                                     }
