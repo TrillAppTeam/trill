@@ -38,18 +38,20 @@ function Navbar() {
               </div>
               
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
-                  <img
-                    className="block h-11 w-auto lg:hidden"
-                    src={TrillLogo}
-                    alt="Trill"
-                  />
-                  <img
-                    className="hidden h-11 w-auto lg:block"
-                    src={TrillLogo}
-                    alt="Trill"
-                  />
-                </div>
+                <Link to="Home">
+                  <div className="flex flex-shrink-0 items-center">
+                    <img
+                      className="block h-11 w-auto lg:hidden"
+                      src={TrillLogo}
+                      alt="Trill"
+                    />
+                    <img
+                      className="hidden h-11 w-auto lg:block"
+                      src={TrillLogo}
+                      alt="Trill"
+                    />
+                  </div>
+                </Link>
                 <div className="hidden sm:ml-6 sm:block">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
