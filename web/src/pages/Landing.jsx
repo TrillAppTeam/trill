@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 // Components and Utils
 import Transition from '../utils/Transition'
 import ClickableCard from "../components/ClickableCard"
-import Footer from "../components/Footer"
+import FooterLanding from "../components/FooterLanding"
 
 // Material UI Icons
 import PeopleIcon from '@mui/icons-material/People'
@@ -224,7 +224,7 @@ function Landing() {
                     </div >
                 </div >
             </section>
-            <Footer />
+            <FooterLanding />
         </div>
     );
 }
