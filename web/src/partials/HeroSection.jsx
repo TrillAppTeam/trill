@@ -9,7 +9,10 @@ function HeroSection() {
                 </div>
 
                 <div className="absolute right-0 lg:flex lg:items-center lg:w-auto items-start z-10 pt-6 pr-10">
-                    <Link to="Login" className="font-bold text-lg text-slate-100 p-5 hover:text-trillBlue"> LOGIN </Link>
+                    <a href="https://auth.trytrill.com/signup?client_id=126gi8rqrvn4rbv1kt7ef714oa&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome"
+                        className="font-bold text-lg text-slate-100 p-5 hover:text-trillBlue">
+                        LOGIN
+                    </a>
                     <Link to="CreateAccount" className="font-bold text-lg text-slate-100 p-5 hover:text-trillBlue"> CREATE ACCOUNT </Link>
                 </div>
 
