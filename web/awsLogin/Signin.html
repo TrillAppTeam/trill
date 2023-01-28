@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html class="a-ws a-js a-audio a-video a-canvas a-svg a-drag-drop a-geolocation a-history a-webworker a-autofocus a-input-placeholder a-textarea-placeholder a-local-storage a-gradients a-transform3d a-touch-scrolling a-text-shadow a-text-stroke a-box-shadow a-border-radius a-border-image a-opacity a-transform a-transition" data-aui-build-date="3.17.16.3-2017-10-11" lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link href="Signin_files/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="Signin_files/cognito-login.css" rel="stylesheet" media="screen">
+    
+    <title>Signin</title>
+
+    <script src="Signin_files/amazon-cognito-advanced-security-data.min.js"></script>
+    <script>
+    function getAdvancedSecurityData(formReference) {
+        if (typeof AmazonCognitoAdvancedSecurityData === "undefined") {
+            return true;
+        }
+
+        // UserpoolId is not available on frontend for springboard. We do not use userPoolId
+        // anyway other than put in context data. 
+        var userPoolId = "";
+        var clientId = getUrlParameter("client_id");
+
+        var username = "";
+        var usernameInput = document.getElementsByName("username")[0];
+        if (usernameInput && usernameInput.value) {
+            username = usernameInput.value;
+        }
+
+        var asfData = AmazonCognitoAdvancedSecurityData.getData(username, userPoolId, clientId);
+        if (typeof asfData === "undefined") {
+            return true;
+        }
+
+        if (formReference && formReference.cognitoAsfData) {
+            formReference.cognitoAsfData.value = asfData
+        }
+
+        return true;
+    }
+
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    function onSubmit(evt, formRef) {
+        formRef.querySelector('button[type="submit"]').disabled = true;
+        if (!!formRef.submitted) {
+            evt.preventDefault();
+            return false;
+        } else {
+            formRef.submitted = true;
+            return getAdvancedSecurityData(formRef);
+        }
+    }
+</script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body spellcheck="false">
+    <div class="container">
+        <div class="modal-dialog">
+            <div class="modal-content background-customizable modal-content-mobile visible-xs visible-sm">
+                <div><div>
+                    <div class="banner-customizable">
+                        <center>
+                            
+                        </center>
+                    </div>
+                </div></div>
+                <div class="modal-body">
+                    <div><div>
+    
+</div></div>
+                    <div>
+                        <div><div>
+    
+</div></div>
+                        <div><div>
+    
+</div></div>
+                        <div>
+                            
+                            <div><div>
+    
+        <span class="textDescription-customizable ">Sign in with your username and password</span>
+        <form action="/login?client_id=126gi8rqrvn4rbv1kt7ef714oa&amp;response_type=code&amp;scope=email+openid+phone&amp;redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome" method="POST" name="cognitoSignInForm" class="cognito-asf" onsubmit="getAdvancedSecurityData(this);"><input type="hidden" name="_csrf" value="94ae2059-6e4a-4415-986e-19e5f9a82884">
+
+            
+
+            
+            <label for="signInFormUsername" class="label-customizable">Username</label>
+            <div>
+                
+                
+                <input id="signInFormUsername" name="username" type="text" class="form-control inputField-customizable" placeholder="Username" autocapitalize="none" required="">
+            </div>
+
+            <label for="signInFormPassword" class="label-customizable">Password</label>
+            <div><input id="signInFormPassword" name="password" type="password" class="form-control inputField-customizable" placeholder="Password" required=""></div>
+            <input type="hidden" class="form-control inputField-customizable" name="cognitoAsfData">
+            <div>
+                <a class="redirect-customizable" href="https://auth.trytrill.com/forgotPassword?client_id=126gi8rqrvn4rbv1kt7ef714oa&amp;response_type=code&amp;scope=email+openid+phone&amp;redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome">Forgot your password?</a>
+            </div>
+            <input name="signInSubmitButton" type="Submit" value="Sign in" class="btn btn-primary submitButton-customizable" aria-label="submit">
+            <br>
+            <div>
+                <p class="redirect-customizable"><span>Need an account?</span>&nbsp;<a href="https://auth.trytrill.com/signup?client_id=126gi8rqrvn4rbv1kt7ef714oa&amp;response_type=code&amp;scope=email+openid+phone&amp;redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome">Sign up</a></p>
+            </div>
+        </form>
+    
+</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <div class="modal-content background-customizable modal-content-mobile visible-md visible-lg">
+                <div><div>
+                    <div class="banner-customizable">
+                        <center>
+                            
+                        </center>
+                    </div>
+                </div></div>
+                <div class="modal-body">
+                    <div><div>
+    
+</div></div>
+                    <div>
+                        <div>
+                            <div><div>
+    
+</div></div>
+                            <div><div>
+    
+</div></div>
+                        </div>
+                        <div>
+                            <div><div>
+    
+        <span class="textDescription-customizable ">Sign in with your username and password</span>
+        <form action="/login?client_id=126gi8rqrvn4rbv1kt7ef714oa&amp;response_type=code&amp;scope=email+openid+phone&amp;redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome" method="POST" name="cognitoSignInForm" class="cognito-asf" onsubmit="getAdvancedSecurityData(this);"><input type="hidden" name="_csrf" value="94ae2059-6e4a-4415-986e-19e5f9a82884">
+
+            
+
+            
+            <label for="signInFormUsername" class="label-customizable">Username</label>
+            <div>
+                
+                
+                <input id="signInFormUsername" name="username" type="text" class="form-control inputField-customizable" placeholder="Username" autocapitalize="none" required="">
+            </div>
+
+            <label for="signInFormPassword" class="label-customizable">Password</label>
+            <div><input id="signInFormPassword" name="password" type="password" class="form-control inputField-customizable" placeholder="Password" required=""></div>
+            <input type="hidden" class="form-control inputField-customizable" name="cognitoAsfData">
+            <div>
+                <a class="redirect-customizable" href="https://auth.trytrill.com/forgotPassword?client_id=126gi8rqrvn4rbv1kt7ef714oa&amp;response_type=code&amp;scope=email+openid+phone&amp;redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome">Forgot your password?</a>
+            </div>
+            <input name="signInSubmitButton" type="Submit" value="Sign in" class="btn btn-primary submitButton-customizable" aria-label="submit">
+            <br>
+            <div>
+                <p class="redirect-customizable"><span>Need an account?</span>&nbsp;<a href="https://auth.trytrill.com/signup?client_id=126gi8rqrvn4rbv1kt7ef714oa&amp;response_type=code&amp;scope=email+openid+phone&amp;redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome">Sign up</a></p>
+            </div>
+        </form>
+    
+</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="Signin_files/jquery-3.5.1.min.js"></script>
+    <script>
+    var $inputs = $(":input");
+    $inputs.on('input', function () {
+        var self = this;
+        var matches = $('input[name="' + this.name + '"]');
+        var selfIndex = matches.index($(self));
+        matches.each(function (index, element) {
+            if (selfIndex !== index) {
+                $(element).val($(self).val());
+            }
+        });
+    });
+</script>
+
+
+
+<div class="fwcim-container"></div></body></html>
