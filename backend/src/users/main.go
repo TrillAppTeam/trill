@@ -27,12 +27,12 @@ type Secrets struct {
 
 type User struct {
 	gorm.Model
-	FirstName string // `sql:"varchar(200)"`
-	LastName  string // `sql:"varchar(200)"`
-	Username  string // `sql:"varchar(200)"`
-	Password  string // `sql:"varchar(200)"`
-	Email     string // `sql:"varchar(200)"`
-	Bio       string // `sql:"varchar(200)"`
+	FirstNames string // `sql:"varchar(200)"`
+	LastName   string // `sql:"varchar(200)"`
+	Username   string // `sql:"varchar(200)"`
+	Password   string // `sql:"varchar(200)"`
+	Email      string // `sql:"varchar(200)"`
+	Bio        string // `sql:"varchar(200)"`
 }
 
 var secrets = Secrets{

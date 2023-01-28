@@ -20,40 +20,48 @@ service: trill
 # Check out our docs for more details
 frameworkVersion: '3'
 
-custom: ${file(.secrets.yml)}
+plugins:
+  - serverless-domain-manager
 
-# plugins:
-  # - serverless-offline
+custom: 
+  secrets: ${file(.secrets.yml)}
+  customDomain:
+    apiType: http
+    domainName: api.trytrill.com
+    basepath: ""
+    endpointType: 'regional'
+    region: ${self:provider.region}
+    certificateName: "*.trytrill.com"
+    createRoute53Record: true
 
 provider:
   name: aws
   runtime: go1.x
   httpApi:
     disableDefaultEndpoint: true
-    shouldStartNameWithService: true
+    # shouldStartNameWithService: true
     authorizers:
       customAuthorizer:
         type: request
         functionName: auth
-  vpc:
-    securityGroupIds:
-      - ${self:custom.SECURITY_GROUP_ID}
-    subnetIds:
-      - ${self:custom.SUBNET_A}
-      - ${self:custom.SUBNET_B}
-      - ${self:custom.SUBNET_C}
+  # vpc:
+  #   securityGroupIds:
+  #     - ${self:custom.secrets.SECURITY_GROUP_ID}
+  #   subnetIds:
+  #     - ${self:custom.secrets.SUBNET_A}
+  #     - ${self:custom.secrets.SUBNET_B}
+  #     - ${self:custom.secrets.SUBNET_C}
   environment:
-    MYSQLHOST: ${self:custom.MYSQLHOST}
-    MYSQLPORT: ${self:custom.MYSQLPORT}
-    MYSQLUSER: ${self:custom.MYSQLUSER}
-    MYSQLPASS: ${self:custom.MYSQLPASS}
-    MYSQLDATABASE: ${self:custom.MYSQLDATABASE}
-    COGNITO_APP_CLIENT_ID: ${self:custom.COGNITO_APP_CLIENT_ID}
-    COGNITO_USER_POOL_ID: ${self:custom.COGNITO_USER_POOL_ID}
+    MYSQLHOST: ${self:custom.secrets.MYSQLHOST}
+    MYSQLPORT: ${self:custom.secrets.MYSQLPORT}
+    MYSQLUSER: ${self:custom.secrets.MYSQLUSER}
+    MYSQLPASS: ${self:custom.secrets.MYSQLPASS}
+    MYSQLDATABASE: ${self:custom.secrets.MYSQLDATABASE}
+    COGNITO_APP_CLIENT_ID: ${self:custom.secrets.COGNITO_APP_CLIENT_ID}
+    COGNITO_USER_POOL_ID: ${self:custom.secrets.COGNITO_USER_POOL_ID}
 
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+  stage: dev
+  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
@@ -73,10 +81,6 @@ provider:
 #                - "Ref" : "ServerlessDeploymentBucket"
 #                - "/*"
 
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
 package:
   patterns:
     - '!./**'
@@ -92,22 +96,28 @@ functions:
           path: /hello
           method: get
           authorizer: 
-            name: auth
+            name: customAuthorizer
   world:
     handler: bin/world
     events:
       - httpApi:
           path: /world
           method: get
+          authorizer:
+            name: customAuthorizer
   users:
     handler: bin/users
     events:
       - httpApi:
           path: /users
           method: get
+          authorizer: 
+            name: customAuthorizer
       - httpApi:
           path: /users
           method: post
+          authorizer: 
+            name: customAuthorizer
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
