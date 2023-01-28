@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -16,7 +17,8 @@ import (
 
 const SECRETS_PATH = "../../.secrets.yml"
 
-type Response events.APIGatewayCustomAuthorizerResponse
+type Response events.APIGatewayV2CustomAuthorizerIAMPolicyResponse
+type SimpleResponse events.APIGatewayV2CustomAuthorizerSimpleResponse
 
 type CognitoClient struct {
 	Client      *cognitoidentityprovider.Client
@@ -64,49 +66,53 @@ func initClient(ctx context.Context) (*CognitoClient, error) {
 	}, nil
 }
 
-func verifyToken(ctx context.Context, req events.APIGatewayCustomAuthorizerRequest) (Response, error) {
+func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2Request) (Response, error) {
 	cognitoClient, err := initClient(ctx)
+
 	if err != nil {
-		return Response{}, err
+		return generatePolicy("", "Deny", req.RouteArn, ErrorAuthorizationHeader), nil
 	}
 
-	authHeader := req.AuthorizationToken
-	/*splitAuthHeader := strings.Split(authHeader, " ")
+	authHeader := req.Headers["authorization"]
+	fmt.Printf("authHeader: %s\n", authHeader)
+	splitAuthHeader := strings.Split(authHeader, " ")
 	if len(splitAuthHeader) != 2 {
-		return Response{}, ErrorAuthorizationHeader
-	}*/
+		return generatePolicy("", "Deny", req.RouteArn, ErrorAuthorizationHeader), nil
+	}
 
 	pubKeyURL := "https://cognito-idp.%s.amazonaws.com/%s/.well-known/jwks.json"
 	formattedURL := fmt.Sprintf(pubKeyURL, "us-east-1", cognitoClient.UserPoolId) // TODO: change region to var
+	fmt.Println("Formatted public key URL")
 
 	keySet, err := jwk.Fetch(ctx, formattedURL)
 	if err != nil {
-		return Response{}, err
+		return generatePolicy("", "Deny", req.RouteArn, err), nil
 	}
 
+	fmt.Println(authHeader)
+	fmt.Println("Fetched key set")
 	token, err := jwt.Parse(
-		// []byte(splitAuthHeader[1]),
-		[]byte(authHeader),
+		[]byte(splitAuthHeader[1]),
 		jwt.WithKeySet(keySet),
 		jwt.WithValidate(true),
 		jwt.WithClaimValue("token_use", "access"),
 		jwt.WithRequiredClaim("username"),
 	)
 	if err != nil {
-		return Response{}, err
+		return generatePolicy("", "Deny", req.RouteArn, err), nil
 	}
 
 	fmt.Printf("Token value: %v+\n", token)
 
 	username, found := token.Get("username")
 	if !found {
-		return Response{}, ErrorUsernameNotFound
+		return generatePolicy("", "Deny", req.RouteArn, ErrorUsernameNotFound), nil
 	}
 
-	return generatePolicy(username.(string), "Allow", req.MethodArn), nil
+	return generatePolicy(username.(string), "Allow", req.RouteArn, nil), nil
 }
 
-func generatePolicy(principalID, effect, resource string) Response {
+func generatePolicy(principalID, effect, resource string, err error) Response {
 	authResponse := Response{PrincipalID: principalID}
 
 	if effect != "" && resource != "" {
@@ -121,6 +127,13 @@ func generatePolicy(principalID, effect, resource string) Response {
 			},
 		}
 	}
+
+	if err != nil {
+		authResponse.Context = make(map[string]interface{})
+		authResponse.Context["message"] = err.Error()
+	}
+
+	fmt.Printf("%+v\n", authResponse)
 	return authResponse
 }
 
