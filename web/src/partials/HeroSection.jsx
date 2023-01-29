@@ -15,6 +15,7 @@ function HeroSection() {
                         className="font-bold text-lg md:text-2xl text-slate-100 p-5 hover:text-trillBlue">
                         LOGIN
                     </a>
+                    {/* commenty comment */}
                     <a href="https://auth.trytrill.com/signup?client_id=126gi8rqrvn4rbv1kt7ef714oa&=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fapi.trytrill.com%2Fmain%2Fhello"
                         className="font-bold text-lg md:text-2xl text-slate-100 p-5 hover:text-trillBlue">
                         CREATE ACCOUNT
