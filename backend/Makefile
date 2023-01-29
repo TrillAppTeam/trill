@@ -19,7 +19,7 @@ clean:
 	rm -rf ./bin
 
 deploy: clean build
-	sls deploy --verbose
+	sls deploy --verbose --stage $(shell git rev-parse --abbrev-ref HEAD)
 
 .PHONY: build clean all $(SUBDIRS) deploy
 .DEFAULT_GOAL := deploy
