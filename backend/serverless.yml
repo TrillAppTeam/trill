@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: trill
+service: trill-${sls:stage, 'main'}
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -25,32 +25,28 @@ plugins:
 
 custom: 
   secrets: ${file(.secrets.yml)}
+  exportGitVariables: false
   customDomain:
     apiType: http
-    domainName: api.trytrill.com
-    basepath: ""
-    endpointType: 'regional'
+    domainName: 'api.trytrill.com'
+    basePath: ${sls:stage}
+    stage: ${sls:stage}
+    endpointType: regional
     region: ${self:provider.region}
     certificateName: "*.trytrill.com"
     createRoute53Record: true
+
 
 provider:
   name: aws
   runtime: go1.x
   httpApi:
     disableDefaultEndpoint: true
-    # shouldStartNameWithService: true
+    shouldStartNameWithService: true
     authorizers:
       customAuthorizer:
         type: request
         functionName: auth
-  # vpc:
-  #   securityGroupIds:
-  #     - ${self:custom.secrets.SECURITY_GROUP_ID}
-  #   subnetIds:
-  #     - ${self:custom.secrets.SUBNET_A}
-  #     - ${self:custom.secrets.SUBNET_B}
-  #     - ${self:custom.secrets.SUBNET_C}
   environment:
     MYSQLHOST: ${self:custom.secrets.MYSQLHOST}
     MYSQLPORT: ${self:custom.secrets.MYSQLPORT}
@@ -59,8 +55,7 @@ provider:
     MYSQLDATABASE: ${self:custom.secrets.MYSQLDATABASE}
     COGNITO_APP_CLIENT_ID: ${self:custom.secrets.COGNITO_APP_CLIENT_ID}
     COGNITO_USER_POOL_ID: ${self:custom.secrets.COGNITO_USER_POOL_ID}
-
-  stage: dev
+  stage: ${sls:stage}
   region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
