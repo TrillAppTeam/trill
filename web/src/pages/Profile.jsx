@@ -23,9 +23,9 @@ function Profile() {
     return (
         <div className="max-w-4xl mx-auto">
             {/* Profile Section */}
-            <div className="flex flex-row py-10 justify-between">
+            <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
         
-                <div className="flex flex-row">
+                <div className="flex flex-row m-5">
                     {/* Profile Picture */}
                     <div className="avatar placeholder">
                         <div className="bg-neutral-focus text-neutral-content rounded-full w-24 ring-2 ring-trillBlue">
@@ -47,18 +47,18 @@ function Profile() {
                 </div>
               
                 {/* User Statistics */}
-                <div className="stats stats-horizontal justify-self-end">
-                    <div className="stat bg-gray-700">
+                <div className="stats stats-horizontal justify-self-end max-h-[100px]">
+                    <div className="stat bg-gray-600">
                         <div className="stat-title text-white">Albums Rated</div>
                         <div className="stat-value text-trillBlue">310</div>
                     </div>
                     
-                    <div className="stat bg-gray-700">
+                    <div className="stat bg-gray-600">
                         <div className="stat-title text-white">Followers</div>
                         <div className="stat-value text-trillBlue">98</div>
                     </div>
                     
-                    <div className="stat bg-gray-700">
+                    <div className="stat bg-gray-600">
                         <div className="stat-title text-white">Following</div>
                         <div className="stat-value text-trillBlue">278</div>
                     </div>
