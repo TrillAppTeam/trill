@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       title: 'Trill',
       theme: ThemeData(
         primaryColor: Color(0xFFBC6AAB),
-        scaffoldBackgroundColor: Color(0xFF1A1B29),
+        scaffoldBackgroundColor: Color(0x321A1B29),
         fontFamily: 'Source Sans Pro',
         textTheme: Typography.whiteMountainView,
         inputDecorationTheme: InputDecorationTheme(

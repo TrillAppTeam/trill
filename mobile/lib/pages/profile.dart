@@ -80,42 +80,40 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 15),
-              Container(
-                child: Row(
-                  children: [
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("455"),
-                          Text("Total Albums", style: TextStyle(fontSize: 11))
-                        ]
-                    ),
-                    Spacer(),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("3"),
-                          Text("Albums This Year", style: TextStyle(fontSize: 11))
-                        ]
-                    ),
-                    Spacer(),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("30"),
-                          Text("Lists", style: TextStyle(fontSize: 11))
-                        ]
-                    ),
-                    Spacer(),
-                    Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("5"),
-                          Text("Reviews", style: TextStyle(fontSize: 11))
-                        ]
-                    ),
-                  ]
-                )
+              Row(
+                children: [
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("455", style: TextStyle(fontSize: 20, color: Colors.blue, fontWeight: FontWeight.bold)),
+                        Text("Total Albums", style: TextStyle(fontSize: 11))
+                      ]
+                  ),
+                  Spacer(),
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("3", style: TextStyle(fontSize: 20, color: Color(0xFFBC6AAB), fontWeight: FontWeight.bold)),
+                        Text("Albums This Year", style: TextStyle(fontSize: 11))
+                      ]
+                  ),
+                  Spacer(),
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("30", style: TextStyle(fontSize: 20, color: Colors.blue, fontWeight: FontWeight.bold)),
+                        Text("Lists", style: TextStyle(fontSize: 11))
+                      ]
+                  ),
+                  Spacer(),
+                  Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("5", style: TextStyle(fontSize: 20, color: Color(0xFFBC6AAB), fontWeight: FontWeight.bold)),
+                        Text("Reviews", style: TextStyle(fontSize: 11))
+                      ]
+                  ),
+                ]
               ),
               SizedBox(height: 15),
               Center(
@@ -266,12 +264,13 @@ class ProfileScreen extends StatelessWidget {
               ),
               SizedBox(height: 15),
               Container(
-                padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                color: Color(0x1A1B29D7),
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                color: Color(0xFF392B3A),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
+                    Expanded (
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
@@ -284,7 +283,6 @@ class ProfileScreen extends StatelessWidget {
                             ),
                           ]
                         ),
-                        SizedBox(height: 2),
                         Row(
                             children: [
                               Text("Reviewed by ",
@@ -298,14 +296,20 @@ class ProfileScreen extends StatelessWidget {
                               Icon(Icons.star, color: Colors.white, size: 10),
                             ]
                         ),
-                        SizedBox(height: 2),
-                        Text("What was I thinkin'? Frederick Dierks Bentley",
+                        SizedBox(height: 5),
+                        Text("What was I thinkin'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resource"
+                        "with or without the use of tools to ulock a resource that has been secured with a password."
+                        " Password cracking tools may seem like powerful decryptors, but in reality are little more than"
+                        "    fast, sophisticated guessing machines.",
                             style: TextStyle(fontSize: 9),
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis
                         )
                       ]
                     ),
-                    Spacer(),
+                    ),
                     Container(
+                      padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
                       child: Image.asset("images/DierksBentleyTest.jpg", width: 100)
                     ),
                   ]
