@@ -40,22 +40,27 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListView.builder(
                     itemCount: searchResults.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        padding: EdgeInsets.all(16.0),
-                        child: Row(
-                          children: [
-                            Image.asset("images/DierksBentleyTest.jpg", width: 80, height: 80),
-                            SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(searchResults[index].name, style: TextStyle(fontSize: 18)),
-                                SizedBox(height: 4),
-                                Text("${searchResults[index].artistName} - ${searchResults[index].year}",
-                                     style: TextStyle(color: Colors.grey)),
-                              ],
-                            ),
-                          ],
+                      return InkWell(
+                        onTap: () {
+                        // Navigate to album page
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              Image.asset("images/DierksBentleyTest.jpg", width: 80, height: 80),
+                              SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(searchResults[index].name, style: TextStyle(fontSize: 18)),
+                                  SizedBox(height: 4),
+                                  Text("${searchResults[index].artistName} - ${searchResults[index].year}",
+                                       style: TextStyle(color: Colors.grey)),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     },
