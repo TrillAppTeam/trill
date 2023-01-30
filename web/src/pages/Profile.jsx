@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 // Components
 import Titles from "../components/Titles"
 import AvgReviews from "../components/AvgReviews"
+import UserStats from "../components/UserStats"
 
 function Profile() {
     const [user, setUser] = useState({});
@@ -24,10 +25,9 @@ function Profile() {
     }, []);
 
     return (
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
             {/* Profile Section */}
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
-        
                 <div className="flex flex-row m-5">
                     {/* Profile Picture */}
                     <div className="avatar placeholder">
@@ -52,29 +52,24 @@ function Profile() {
                 </div>
               
                 {/* User Statistics */}
-                <div className="stats stats-horizontal justify-self-end max-h-[100px]">
-                    <div className="stat bg-gray-600">
-                        <div className="stat-title text-white">Albums Rated</div>
-                        <div className="stat-value text-trillBlue">310</div>
-                    </div>
-                    
-                    <div className="stat bg-gray-600">
-                        <div className="stat-title text-white">Followers</div>
-                        <div className="stat-value text-trillBlue">98</div>
-                    </div>
-                    
-                    <div className="stat bg-gray-600">
-                        <div className="stat-title text-white">Following</div>
-                        <div className="stat-value text-trillBlue">278</div>
-                    </div>
+                <div className="pt-5">
+                    <UserStats />
                 </div>
+                
             </div>
             
-            <AvgReviews />
-            <Titles title="Favorite Albums"/>
-            <Titles title="Recent Reviews"/>
-            <Titles title="Popular Reviews"/>
-            <Titles title="Following"/>
+
+            <div className="flex flex-row justify-between flex-wrap">
+                <div className="w-2/3 pt-5">
+                    <Titles title="Favorite Albums"/>
+                    <Titles title="Recent Reviews"/>
+                    <Titles title="Popular Reviews"/>
+                    <Titles title="Following"/>
+                </div>
+                <div>
+                    <AvgReviews />
+                </div>
+            </div>
         </div>
     );
 }
