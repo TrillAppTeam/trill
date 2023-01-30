@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
  
+// Components
 import Titles from "../components/Titles"
+import AvgReviews from "../components/AvgReviews"
 
 function Profile() {
     const [user, setUser] = useState({});
@@ -40,7 +43,9 @@ function Profile() {
                     <div className="pl-10">
                         <div className="flex gap-2">
                             <h1 className="font-bold text-white text-3xl">{user.firstName}</h1>
-                            <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
+                            <Link to="/User/Settings">
+                                <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
+                            </Link>
                         </div>
                         <h2 className="text-xl pt-2">{user.bio}</h2>
                     </div>
@@ -64,8 +69,12 @@ function Profile() {
                     </div>
                 </div>
             </div>
-
+            
+            <AvgReviews />
             <Titles title="Favorite Albums"/>
+            <Titles title="Recent Reviews"/>
+            <Titles title="Popular Reviews"/>
+            <Titles title="Following"/>
         </div>
     );
 }
