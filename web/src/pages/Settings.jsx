@@ -27,7 +27,7 @@ function Settings() {
                           type="text"
                           name="firstName"
                           id="firstName"
-                          className="block w-full flex-1 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          className="block w-full flex-1 rounded-lg border-gray-300 focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
                           placeholder="Taylor"
                         />
                       </div>
@@ -43,7 +43,7 @@ function Settings() {
                           type="text"
                           name="lastName"
                           id="lastName"
-                          className="block w-full flex-1 rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                          className="block w-full flex-1 rounded-lg border-gray-300 focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
                           placeholder="Swift"
                         />
                       </div>
@@ -60,7 +60,7 @@ function Settings() {
                         id="bio"
                         name="bio"
                         rows={3}
-                        className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
                         placeholder="My life through music"
                         defaultValue={''}
                       />
@@ -77,7 +77,7 @@ function Settings() {
                       </span>
                       <button
                         type="button"
-                        className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-bold leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                        className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-bold leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-trillBlue"
                       >
                         Change
                       </button>
