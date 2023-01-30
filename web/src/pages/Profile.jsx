@@ -59,7 +59,7 @@ function Profile() {
             </div>
             
 
-            <div className="flex flex-row justify-between flex-wrap">
+            <div className="flex flex-row justify-between flex-wrap pl-10 pr-10">
                 <div className="w-2/3 pt-5">
                     <Titles title="Favorite Albums"/>
                     <Titles title="Recent Reviews"/>
