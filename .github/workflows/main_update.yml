@@ -37,12 +37,12 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v3
       
-      - name: get changed files in backend
-        id: changed-files-backend
-        uses: tj-actions/changed-files@v35
-        with:
-          files: |
-              backend/**
+      # - name: get changed files in backend
+      #   id: changed-files-backend
+      #   uses: tj-actions/changed-files@v35
+      #   with:
+      #     files: |
+      #         backend/**
 
       - name: set up Go
         uses: actions/setup-go@v3
@@ -58,9 +58,6 @@ jobs:
         env:
           SECRETS: ${{secrets.secrets}}
 
-      - name: build functions
-        run: make build
-
       - name: configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -71,7 +68,7 @@ jobs:
       - name: serverless deploy
         uses: serverless/github-action@v3.1
         with:
-          args: -c "cd ./backend/ && sls deploy --verbose"
+          args: -c "cd ./backend/ && make"
           entrypoint: /bin/sh
         
       - name: remove secrets

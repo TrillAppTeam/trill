@@ -8,6 +8,7 @@
 # ifeq ($(SUBDIRS),)
 # $(shell echo $(SUBDIRS))
 SUBDIRS := $(wildcard src/*)
+BRANCH_NAME := $(shell git rev-parse --abbrev-ref HEAD)
 # endif
 
 build: $(SUBDIRS)
@@ -19,7 +20,15 @@ clean:
 	rm -rf ./bin
 
 deploy: clean build
-	sls deploy --verbose --stage $(shell git rev-parse --abbrev-ref HEAD)
+	gawk -i inplace -F ' ' '{if($$1=="service:"){print "service: trill-$(BRANCH_NAME)"} else if($$1=="basePath:"){print "    basePath: $(BRANCH_NAME)"} else {print $0}}' serverless.yml
+	sls deploy --verbose
+	gawk -i inplace -F ' ' '{if($$1=="service:"){print "service: trill-main"} else if($$1=="basePath:"){print "    basePath: main"} else {print $0}}' serverless.yml
+
+remove: clean
+	gawk -i inplace -F ' ' '{if($$1=="service:"){print "service: trill-$(BRANCH_NAME)"} else if($$1=="basePath:"){print "    basePath: $(BRANCH_NAME)"} else {print $0}}' serverless.yml
+	sls remove --verbose
+	gawk -i inplace -F ' ' '{if($$1=="service:"){print "service: trill-main"} else if($$1=="basePath:"){print "    basePath: main"} else {print $0}}' serverless.yml
+
 
 .PHONY: build clean all $(SUBDIRS) deploy
 .DEFAULT_GOAL := deploy
