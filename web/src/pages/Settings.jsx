@@ -6,7 +6,7 @@ function Settings() {
             <div className="px-4 sm:px-0">
               <h3 className="text-3xl font-bold leading-6 text-white">Trill Profile</h3>
               <p className="mt-5 text-lg text-gray-200">
-                This information will be displayed publicly so be careful what you share.
+                Showcase your personality by customizing your profile page.
               </p>
             </div>
           </div>
