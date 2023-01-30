@@ -4,7 +4,7 @@ function Settings() {
         <div className="md:grid md:grid-cols-3 md:gap-6 m-24">
           <div className="md:col-span-1">
             <div className="px-4 sm:px-0">
-              <h3 className="text-3xl font-bold leading-6 text-white">Trill Profile</h3>
+              <h3 className="text-3xl font-bold leading-6 text-white">Trill Profile🎵</h3>
               <p className="mt-5 text-lg text-gray-200">
                 Showcase your personality by customizing your profile page.
               </p>
@@ -68,7 +68,7 @@ function Settings() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-bold text-gray-100">Photo</label>
+                    <label className="block text-sm font-bold text-gray-100">Profile Picture</label>
                     <div className="mt-1 flex items-center">
                       <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
                         <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
