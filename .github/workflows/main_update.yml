@@ -69,7 +69,7 @@ jobs:
         uses: serverless/github-action@v3.1
         with:
           args: -c "cd ./backend/ && make"
-          entrypoint: /bin/sh
+          entrypoint: /bin/bash
         
       - name: remove secrets
         run: |
