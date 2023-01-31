@@ -74,7 +74,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           
       - name: install backend packages
-        run: npm ci && npm -i serverless
+        run: npm ci && npm install -g serverless
  
 #       - name: serverless deploy
 #         uses: serverless/github-action@v3.1
