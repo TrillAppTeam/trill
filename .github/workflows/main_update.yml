@@ -28,8 +28,8 @@ jobs:
   deploy_source:
     name: build backend and deploy
     runs-on: ubuntu-latest
-    needs: [ check_backend_changes ]
-    if: needs.check_backend_changes.outputs.changed == 'true'
+#     needs: [ check_backend_changes ]
+#     if: needs.check_backend_changes.outputs.changed == 'true'
     defaults:
       run:
         working-directory: ./backend/
@@ -74,7 +74,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
           
       - name: install backend packages
-        run: npm ci
+        run: npm ci && npm -i serverless
  
 #       - name: serverless deploy
 #         uses: serverless/github-action@v3.1
