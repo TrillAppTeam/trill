@@ -1,9 +1,6 @@
-import { Link } from "react-router-dom"
-
 function HeroSection() {
     return (
         <div className="flex flex-col items-center pb-[250px]">
-
             {/* Logo and Login */}
             <div className="flex flex-row justify-between absolute mx-auto w-full max-w-5xl pt-10 items-center">
                 <div>
