@@ -19,7 +19,7 @@ function Error() {
                 </div>
                 <div className="mb-20 md:mb-0">
                     {/* TO DO: Update once routing is fixed */}
-                    <Link to="User/Home">
+                    <Link to="Landing">
                         <button className="text-lg transform transition-all bg-gray-800 rounded p-3 hover:scale-110 text-gray-200 hover:text-trillBlue font-bold">
                             Return to Home
                         </button>

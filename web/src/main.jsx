@@ -3,11 +3,12 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 
+// Pages
 import FriendsFeed from './pages/FriendsFeed';
 import ListenLater from './pages/ListenLater';
-import Landing from './pages/Landing';
 import ListAlbums from './pages/ListAlbums';
 import Error from './pages/Error';
+import Discover from './pages/Discover';
 import Home from './pages/Home';
 import CreateAccount from './pages/CreateAccount';
 import Login from './pages/Login';
@@ -22,7 +23,7 @@ import {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Landing />,
+    element: <App />,
     errorElement: <Error />,
     children: [
     ],
@@ -38,13 +39,14 @@ const router = createBrowserRouter([
     errorElement: <Error />
   },
   {
-    path: "/User",
-    element: <App />,
+    // TO DO: Update with userLoaderData once API is done
+    path: "/:username",
+    element: <Home />,
     errorElement: <Error />,
     children: [
       {
-        path: "Home",
-        element: <Home />,
+        path: "",
+        element: <Discover />,
         errorElement: <Error />
       },
       {
