@@ -21,6 +21,7 @@ class FollowersScreen extends StatelessWidget {
           return ListTile(
             onTap: () {
               // navigate to their profile, pass the associated User object
+              Navigator.pushNamed(context, '/user');
             },
             title: Text(
               Users[index].name,

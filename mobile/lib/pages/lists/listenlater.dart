@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class WriteReviewScreen extends StatelessWidget {
+class ListenLaterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Write Review'),
+        title: Text('Listen Later'),
       ),
     );
   }

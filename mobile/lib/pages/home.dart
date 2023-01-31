@@ -114,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                 leading: Icon(Icons.format_list_bulleted_outlined, color: Colors.white),
                 title: const Text('Listen Later'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/lists');
+                  Navigator.pushNamed(context, '/listenlater');
                 },
               ),
               ListTile(

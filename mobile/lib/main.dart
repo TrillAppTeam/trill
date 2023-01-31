@@ -12,6 +12,8 @@ import 'package:trill/pages/lists/userreviews.dart';
 import 'package:trill/pages/lists/ratedalbums.dart';
 import 'package:trill/pages/lists/list.dart';
 import 'package:trill/pages/lists/likedalbums.dart';
+import 'package:trill/pages/lists/listenlater.dart';
+import 'package:trill/pages/user.dart';
 
 void main() => runApp(MyApp());
 
@@ -48,12 +50,14 @@ class MyApp extends StatelessWidget {
         '/album': (context) => AlbumScreen(),
         '/albums': (context) => RatedAlbumsScreen(),
         '/likes': (context) => LikedAlbumsScreen(),
-        '/review': (context) => ReviewScreen(),
+        '/review': (context) => WriteReviewScreen(),
         '/reviews': (context) => UserReviewsScreen(),
         '/list': (context) => ListScreen(),
         '/lists': (context) => UserListsScreen(),
+        '/listenlater': (context) => ListenLaterScreen(),
         '/followers': (context) => FollowersScreen(),
-        '/following': (context) => FollowingScreen()
+        '/following': (context) => FollowingScreen(),
+        '/user': (context) => UserScreen(),
       },
     );
   }
