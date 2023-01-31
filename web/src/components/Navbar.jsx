@@ -7,7 +7,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import TrillLogo from "/trillTransparent.png"
 
 const navigation = [
-  { name: 'Home', link: 'Home', current: true },
+  { name: 'Discover', link: '', current: true },
   { name: 'Friends Feed', link: 'FriendsFeed', current: false },
   { name: 'Listen Later', link: 'ListenLater', current: false },
 ]
@@ -38,7 +38,7 @@ function Navbar() {
               </div>
               
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <Link to="Home">
+                <Link to="/">
                   <div className="flex flex-shrink-0 items-center">
                     <img
                       className="block h-11 w-auto lg:hidden"
