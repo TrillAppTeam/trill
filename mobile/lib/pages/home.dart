@@ -14,7 +14,15 @@ class HomeScreen extends StatelessWidget {
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              SizedBox(height: 70),
+              SizedBox(height: 30),
+              Container(
+                padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(1000.0),
+                  child: Image.asset("images/gerber.jpg", fit: BoxFit.cover)
+                ),
+              ),
+              SizedBox(height: 10),
               Column(children: [
                 const Text(
                   'Matthew Gerber',
@@ -104,7 +112,7 @@ class HomeScreen extends StatelessWidget {
               ),
               ListTile(
                 leading: Icon(Icons.format_list_bulleted_outlined, color: Colors.white),
-                title: const Text('Lists'),
+                title: const Text('Listen Later'),
                 onTap: () {
                   Navigator.pushNamed(context, '/lists');
                 },

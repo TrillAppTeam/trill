@@ -27,7 +27,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   onSubmitted: (query) {
                   // Make API call and get results
                   List<Album> response = [Album(name: "Dierks Bentley", artistName: "Dierks Bentley", year: 2003),
-                      Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010)];
+                      Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),
+                    Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),];
                   // Set results in state
                     setState(() {
                       searchResults = response;
@@ -36,37 +37,37 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
               ),
               SizedBox(height: 30),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: searchResults.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return InkWell(
-                        onTap: () {
-                        // Navigate to album page
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Image.asset("images/DierksBentleyTest.jpg", width: 80, height: 80),
-                              SizedBox(width: 16),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(searchResults[index].name, style: TextStyle(fontSize: 18)),
-                                  SizedBox(height: 4),
-                                  Text("${searchResults[index].artistName} - ${searchResults[index].year}",
-                                       style: TextStyle(color: Colors.grey)),
-                                ],
-                              ),
-                            ],
-                          ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: searchResults.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                      // Navigate to album page
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            Image.asset("images/DierksBentleyTest.jpg", width: 80, height: 80),
+                            SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(searchResults[index].name, style: TextStyle(fontSize: 18)),
+                                SizedBox(height: 4),
+                                Text("${searchResults[index].artistName} - ${searchResults[index].year}",
+                                     style: TextStyle(color: Colors.grey)),
+                              ],
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
-              ]
+              ),
+            ]
           ),
       ),
     );

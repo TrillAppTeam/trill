@@ -14,6 +14,10 @@ class ProfileScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              CircleAvatar(
+                  backgroundImage: AssetImage("images/gerber.jpg"),
+                  radius: 40.0
+              ),
               Column(children: [
                 const Text(
                   'Matthew Gerber',
@@ -25,6 +29,10 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const Text('@GerbersGrumblings'),
               ]),
+              SizedBox(height: 5),
+              Text("Dr. Matthew Gerber is a professor of Computer Science at the University of Central Florida. "
+                  "He specializes in being quirky.",
+                  style: TextStyle(fontSize: 11)),
               SizedBox(height: 15),
               Container(
                 child: Row(
