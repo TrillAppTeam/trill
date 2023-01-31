@@ -12,7 +12,7 @@ import Home from './pages/Home';
 import CreateAccount from './pages/CreateAccount';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
-
+import Settings from './pages/Settings';
 
 import {
   createBrowserRouter,
@@ -65,6 +65,11 @@ const router = createBrowserRouter([
       {
         path: "Profile",
         element: <Profile />,
+        errorElement: <Error />
+      },
+      {
+        path: "Settings",
+        element: <Settings />,
         errorElement: <Error />
       }
     ],
