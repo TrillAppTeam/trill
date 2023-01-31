@@ -14,8 +14,9 @@ import (
 // https://serverless.com/framework/docs/providers/aws/events/apigateway/#lambda-proxy-integration
 type Response events.APIGatewayProxyResponse
 
-// Handler is our lambda handler invoked by the `lambda.Start` function call
+// Handler is our lambda handler invoked by the `l/bin/sh: 1: make: not foundambda.Start` function call
 func Handler(req events.APIGatewayProxyRequest) (Response, error) {
+	// testy test
 	return Response{StatusCode: 200}, nil
 
 	var buf bytes.Buffer
