@@ -24,7 +24,6 @@ function Review(props) {
             </div>
 
             <div className="p-4 text-md text-gray-300 flex">
-
                 <Album album="/currentsAlbum.jpg" />
                 <p className="w-3/4 ml-10">{review}</p>
             </div>
