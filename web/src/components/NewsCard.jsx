@@ -2,7 +2,7 @@ function NewsCard(props) {
     const { title, newsLink, imgLink, body } = props.news;
 
     return (
-        <div className="card card-side bg-gray-700 shadow-xl max-w-6xl mx-auto">
+        <div className="card card-side bg-gray-700 shadow-xl max-w-6xl mx-auto mb-10">
             <figure className="w-1/3">
                 <img src={imgLink} alt="Rolling Stones Article"/>
             </figure>
