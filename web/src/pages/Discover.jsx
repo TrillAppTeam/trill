@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import Titles from "../components/Titles";
 import NewsCard from "../components/NewsCard";
-
+import Album from "../components/Album"
 
 const userData = {
     userName: "avwede",
@@ -33,9 +33,44 @@ function Discover() {
             {/* Album Discovery */}
             <section> 
                 <Titles title="Popular Albums This Week - Globally"/>
+                    <div className="text-white flex flex-row justify-center gap-8 pb-[50px] max-w-6xl mx-auto">
+                        <Album album="/blondAlbum.jpg" />
+                        <Album album="/allThingsMustPassAlbum.jpg" />
+                        <Album album="/currentsAlbum.jpg" />
+                        <Album album="/whereTheLightIsAlbum.jpg" />
+                        <Album album="/frontiersAlbum.jpg" />
+                        <Album album="/blondAlbum.jpg" />
+                    </div>
+
                 <Titles title="Popular Reviews This Week - Globally"/>
+                    <div className="text-white flex flex-row justify-center gap-8 pb-[50px] max-w-6xl mx-auto">
+                        <Album album="/blondAlbum.jpg" />
+                        <Album album="/allThingsMustPassAlbum.jpg" />
+                        <Album album="/currentsAlbum.jpg" />
+                        <Album album="/whereTheLightIsAlbum.jpg" />
+                        <Album album="/frontiersAlbum.jpg" />
+                        <Album album="/blondAlbum.jpg" />
+                    </div>
+
                 <Titles title="New From Friends"/>
+                    <div className="text-white flex flex-row justify-center gap-8 pb-[50px] max-w-6xl mx-auto">
+                        <Album album="/blondAlbum.jpg" />
+                        <Album album="/allThingsMustPassAlbum.jpg" />
+                        <Album album="/currentsAlbum.jpg" />
+                        <Album album="/whereTheLightIsAlbum.jpg" />
+                        <Album album="/frontiersAlbum.jpg" />
+                        <Album album="/blondAlbum.jpg" />
+                    </div>
+
                 <Titles title="Reviews from Friends"/>
+                    <div className="text-white flex flex-row justify-center gap-8 pb-[50px] max-w-6xl mx-auto">
+                        <Album album="/blondAlbum.jpg" />
+                        <Album album="/allThingsMustPassAlbum.jpg" />
+                        <Album album="/currentsAlbum.jpg" />
+                        <Album album="/whereTheLightIsAlbum.jpg" />
+                        <Album album="/frontiersAlbum.jpg" />
+                        <Album album="/blondAlbum.jpg" />
+                    </div>
             </section>
 
             {/* Music News */}

@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Titles from "../components/Titles"
 import AvgReviews from "../components/AvgReviews"
 import UserStats from "../components/UserStats"
+import Album from "../components/Album"
 
 function Profile() {
     const [user, setUser] = useState({});
@@ -62,6 +63,13 @@ function Profile() {
             <div className="flex flex-row justify-between flex-wrap pl-10 pr-10">
                 <div className="w-2/3 pt-5">
                     <Titles title="Favorite Albums"/>
+                        <div className="text-white flex flex-row justify-center gap-5 pb-[50px]">
+                            <Album album="/blondAlbum.jpg" />
+                            <Album album="/allThingsMustPassAlbum.jpg" />
+                            <Album album="/currentsAlbum.jpg" />
+                            <Album album="/whereTheLightIsAlbum.jpg" />
+                        </div>
+
                     <Titles title="Recent Reviews"/>
                     <Titles title="Popular Reviews"/>
                     <Titles title="Following"/>
