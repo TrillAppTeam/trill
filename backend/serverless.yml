@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: trill
+service: trill-main
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -29,7 +29,7 @@ custom:
   customDomain:
     apiType: http
     domainName: 'api.trytrill.com'
-    basePath: ''
+    basePath: main
     stage: dev
     endpointType: regional
     region: ${self:provider.region}
@@ -113,6 +113,15 @@ functions:
           method: post
           authorizer: 
             name: customAuthorizer
+  albums:
+    handler: bin/albums
+    events:
+      - httpApi:
+          path: /albums
+          method: get
+          authorizer:
+            name: customAuthorizer
+
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
