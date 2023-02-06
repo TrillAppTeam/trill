@@ -100,35 +100,35 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-  users:
-    handler: bin/users
-    events:
-      - httpApi:
-          path: /users
-          method: get
-          authorizer: 
-            name: customAuthorizer
-      - httpApi:
-          path: /users
-          method: post
-          authorizer: 
-            name: customAuthorizer
-  albums:
-    handler: bin/albums
-    events:
-      - httpApi:
-          path: /albums
-          method: get
-          authorizer:
-            name: customAuthorizer
-  album:
-    handler: bin/album
-    events:
-      - httpApi:
-          path: /album
-          method: get
-          authorizer:
-            name: customAuthorizer
+  # users:
+  #   handler: bin/users
+  #   events:
+  #     - httpApi:
+  #         path: /users
+  #         method: get
+  #         authorizer: 
+  #           name: customAuthorizer
+  #     - httpApi:
+  #         path: /users
+  #         method: post
+  #         authorizer: 
+  #           name: customAuthorizer
+  # albums:
+  #   handler: bin/albums
+  #   events:
+  #     - httpApi:
+  #         path: /albums
+  #         method: get
+  #         authorizer:
+  #           name: customAuthorizer
+  # album:
+  #   handler: bin/album
+  #   events:
+  #     - httpApi:
+  #         path: /album
+  #         method: get
+  #         authorizer:
+  #           name: customAuthorizer
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
