@@ -53,7 +53,7 @@ var (
 
 func initClient(ctx context.Context) (*CognitoClient, error) {
 	cfg, err := config.LoadDefaultConfig(
-		ctx, config.WithRegion("{aws-region}"),
+		ctx, config.WithRegion("us-east-1"),
 	)
 	if err != nil {
 		return nil, err
@@ -82,15 +82,12 @@ func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2R
 
 	pubKeyURL := "https://cognito-idp.%s.amazonaws.com/%s/.well-known/jwks.json"
 	formattedURL := fmt.Sprintf(pubKeyURL, "us-east-1", cognitoClient.UserPoolId) // TODO: change region to var
-	fmt.Println("Formatted public key URL")
-
 	keySet, err := jwk.Fetch(ctx, formattedURL)
 	if err != nil {
 		return generatePolicy("", "Deny", req.RouteArn, err), nil
 	}
 
-	fmt.Println(authHeader)
-	fmt.Println("Fetched key set")
+	fmt.Println(splitAuthHeader[1])
 	token, err := jwt.Parse(
 		[]byte(splitAuthHeader[1]),
 		jwt.WithKeySet(keySet),
@@ -102,7 +99,7 @@ func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2R
 		return generatePolicy("", "Deny", req.RouteArn, err), nil
 	}
 
-	fmt.Printf("Token value: %v+\n", token)
+	fmt.Printf("Token value: %+v\n", token)
 
 	username, found := token.Get("username")
 	if !found {

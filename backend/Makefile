@@ -14,7 +14,7 @@ BRANCH_NAME := $(shell git rev-parse --abbrev-ref HEAD)
 build: $(SUBDIRS)
 
 $(SUBDIRS):
-	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/$(@F) $@/main.go
+	env GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/$(@F) $@/main.go
 
 clean: 
 	rm -rf ./bin

@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 
+	"encoding/json"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
@@ -27,12 +29,12 @@ type Secrets struct {
 
 type User struct {
 	gorm.Model
-	FirstNames string // `sql:"varchar(200)"`
-	LastName   string // `sql:"varchar(200)"`
-	Username   string // `sql:"varchar(200)"`
-	Password   string // `sql:"varchar(200)"`
-	Email      string // `sql:"varchar(200)"`
-	Bio        string // `sql:"varchar(200)"`
+	FirstName string // `sql:"varchar(200)"`
+	LastName  string // `sql:"varchar(200)"`
+	Username  string // `sql:"varchar(200)"`
+	Password  string // `sql:"varchar(200)"`
+	Email     string // `sql:"varchar(200)"`
+	Bio       string // `sql:"varchar(200)"`
 }
 
 var secrets = Secrets{
@@ -59,10 +61,11 @@ func handler(ctx context.Context, req events.APIGatewayProxyRequest) (Response, 
 	switch req.HTTPMethod {
 	case "POST":
 		return create(ctx, req)
-	// case "GET":
-	// 	return read(req)
-	// case "PUT":
-	// 	return update(req)
+	case "GET":
+		return read(req)
+	case "PUT":
+		return update(req)
+	// EDIT: we dont think a user should be able to delete their account <3
 	// case "DELETE":
 	// 	return delete(req)
 	default:
@@ -95,7 +98,7 @@ func create(ctx context.Context, req events.APIGatewayProxyRequest) (Response, e
 	// handle email in use
 	// handle username in use
 
-	// user := User{FirstName: "Based", LastName: "User", Username: "baseduser123", Password: "pass", Email: "123", Bio: "Sooo based"}
+	// user := User{FirstName: "Based", LastName: "User", Username: "baseduser123", Password: "pass", Email: "123", Bio: " based"}
 	// log.Printf("%+v\n", user)
 
 	// db.AutoMigrate(&User{})
@@ -103,7 +106,7 @@ func create(ctx context.Context, req events.APIGatewayProxyRequest) (Response, e
 	// var users []User
 	// log.Printf("%+v\n", users)
 
-	// // db.Exec("INSERT INTO users (firstName, lastName, username, password, email, bio) VALUES ("Ash", "V", "avv", "pw", "av@g", "hi");")
+	// db.Exec("INSERT INTO users (firstName, lastName, username, password, email, bio) VALUES ("Ash", "V", "avv", "pw", "av@g", "hi");")
 
 	// // https://stackoverflow.com/questions/30361671/how-can-i-check-for-errors-in-crud-operations-using-gorm
 	// if res := db.Create(&user); res.Error != nil {
@@ -111,6 +114,67 @@ func create(ctx context.Context, req events.APIGatewayProxyRequest) (Response, e
 	// } else {
 	// 	return Response{StatusCode: 200, Body: fmt.Sprint(user.ID, user.FirstName, user.LastName)}, nil
 	// }
+}
+
+// GET: Returns user info
+func read(req events.APIGatewayProxyRequest) (Response, error) {
+	// Connect to the RDS Database
+	db, err := connectDB()
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	// Get the user's username from the request
+	userID := req.PathParameters["userID"]
+
+	// Get the user info from the database
+	var user User
+	result := db.Where("userID = ?", userID).First(&user)
+
+	if result.Error != nil {
+		return Response{StatusCode: 404, Body: "User not found."}, nil
+	}
+
+	// Convert the user to JSON
+	userJSON, err := json.Marshal(user)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	// Return the JSON response
+	return Response{StatusCode: 200, Body: string(userJSON)}, nil
+}
+
+func update(req events.APIGatewayProxyRequest) (Response, error) {
+	// Connect to the RDS database
+	db, err := connectDB()
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	// Get the user's username from the request
+	username := req.PathParameters["username"]
+
+	// Get the user info from the database
+	var user User
+	if result := db.Where("username = ?", username).First(&user); result.Error != nil {
+		return Response{StatusCode: 404, Body: "User not found."}, nil
+	}
+
+	// Unmarshal the JSON request body into the user struct
+	err = json.Unmarshal([]byte(req.Body), &user)
+	if err != nil {
+		return Response{StatusCode: 400, Body: "Invalid request body."}, nil
+	}
+
+	// Update the user in the database
+	result := db.Save(&user)
+	if result.Error != nil {
+		return Response{StatusCode: 500, Body: result.Error.Error()}, result.Error
+	}
+
+	// Return a success response
+	return Response{StatusCode: 200, Body: "User updated successfully."}, nil
 }
 
 func main() {
