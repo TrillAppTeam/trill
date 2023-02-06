@@ -149,7 +149,7 @@ func read(req events.APIGatewayProxyRequest) (Response, error) {
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
-	request.Header.Add("Authorization", "Bearer "+clientSecret)
+	request.Header.Add("Authorization", "Bearer " + AccessToken)
 	r, err := client.Do(request)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
