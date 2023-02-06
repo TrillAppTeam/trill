@@ -121,7 +121,14 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-
+  album:
+    handler: bin/album
+    events:
+      - httpApi:
+          path: /album
+          method: get
+          authorizer:
+            name: customAuthorizer
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
