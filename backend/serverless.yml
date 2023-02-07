@@ -113,6 +113,14 @@ functions:
           method: post
           authorizer: 
             name: customAuthorizer
+  follows:
+    handler: bin/follows
+    events:
+      - httpApi:
+          path: /follows
+          method: post
+          authorizer:
+            name: customAuthorizer
   # albums:
   #   handler: bin/albums
   #   events:
