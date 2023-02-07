@@ -125,9 +125,11 @@ func generatePolicy(principalID, effect, resource string, err error) Response {
 		}
 	}
 
+	authResponse.Context = make(map[string]interface{})
 	if err != nil {
-		authResponse.Context = make(map[string]interface{})
 		authResponse.Context["message"] = err.Error()
+	} else {
+		authResponse.Context["username"] = principalID
 	}
 
 	fmt.Printf("%+v\n", authResponse)
