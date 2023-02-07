@@ -18,7 +18,6 @@ import (
 const SECRETS_PATH = "../../.secrets.yml"
 
 type Response events.APIGatewayV2CustomAuthorizerIAMPolicyResponse
-type SimpleResponse events.APIGatewayV2CustomAuthorizerSimpleResponse
 
 type CognitoClient struct {
 	Client      *cognitoidentityprovider.Client
@@ -49,6 +48,7 @@ var secrets = Secrets{
 var (
 	ErrorAuthorizationHeader = errors.New("missing or invalid authorization header")
 	ErrorUsernameNotFound    = errors.New("username not found in token")
+	ErrorCantCastUsername    = errors.New("cannot cast username")
 )
 
 func initClient(ctx context.Context) (*CognitoClient, error) {
@@ -70,21 +70,21 @@ func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2R
 	cognitoClient, err := initClient(ctx)
 
 	if err != nil {
-		return generatePolicy("", "Deny", req.RouteArn, ErrorAuthorizationHeader), nil
+		return generatePolicy("", nil, "Deny", req.RouteArn, ErrorAuthorizationHeader), nil
 	}
 
 	authHeader := req.Headers["authorization"]
 	fmt.Printf("authHeader: %s\n", authHeader)
 	splitAuthHeader := strings.Split(authHeader, " ")
 	if len(splitAuthHeader) != 2 {
-		return generatePolicy("", "Deny", req.RouteArn, ErrorAuthorizationHeader), nil
+		return generatePolicy("", nil, "Deny", req.RouteArn, ErrorAuthorizationHeader), nil
 	}
 
 	pubKeyURL := "https://cognito-idp.%s.amazonaws.com/%s/.well-known/jwks.json"
 	formattedURL := fmt.Sprintf(pubKeyURL, "us-east-1", cognitoClient.UserPoolId) // TODO: change region to var
 	keySet, err := jwk.Fetch(ctx, formattedURL)
 	if err != nil {
-		return generatePolicy("", "Deny", req.RouteArn, err), nil
+		return generatePolicy("", nil, "Deny", req.RouteArn, err), nil
 	}
 
 	fmt.Println(splitAuthHeader[1])
@@ -96,20 +96,29 @@ func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2R
 		jwt.WithRequiredClaim("username"),
 	)
 	if err != nil {
-		return generatePolicy("", "Deny", req.RouteArn, err), nil
+		return generatePolicy("", nil, "Deny", req.RouteArn, err), nil
 	}
 
 	fmt.Printf("Token value: %+v\n", token)
 
-	username, found := token.Get("username")
+	rawUsername, found := token.Get("username")
 	if !found {
-		return generatePolicy("", "Deny", req.RouteArn, ErrorUsernameNotFound), nil
+		return generatePolicy("", nil, "Deny", req.RouteArn, ErrorUsernameNotFound), nil
+	}
+	username, ok := rawUsername.(string)
+	if !ok {
+		return generatePolicy("", nil, "Deny", req.RouteArn, ErrorCantCastUsername), nil
 	}
 
-	return generatePolicy(username.(string), "Allow", req.RouteArn, nil), nil
+	responseContext := map[string]interface{}{
+		"username": username,
+		"userID":   token.Subject(),
+	}
+
+	return generatePolicy(username, responseContext, "Allow", req.RouteArn, nil), nil
 }
 
-func generatePolicy(principalID, effect, resource string, err error) Response {
+func generatePolicy(principalID string, responseContext map[string]interface{}, effect string, resource string, err error) Response {
 	authResponse := Response{PrincipalID: principalID}
 
 	if effect != "" && resource != "" {
@@ -129,7 +138,7 @@ func generatePolicy(principalID, effect, resource string, err error) Response {
 	if err != nil {
 		authResponse.Context["message"] = err.Error()
 	} else {
-		authResponse.Context["username"] = principalID
+		authResponse.Context = responseContext
 	}
 
 	fmt.Printf("%+v\n", authResponse)
