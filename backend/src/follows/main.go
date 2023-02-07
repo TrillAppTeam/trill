@@ -89,35 +89,28 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 	if err != nil {
 		return Response{ StatusCode: 500, Body: err.Error() }, err
 	}
-	db.AutoMigrate(&User{})
-	db.AutoMigrate(&Follows{})
+	// db.AutoMigrate(&User{})
+	// db.AutoMigrate(&Follows{})
 
-	// Get sub 
-	// Unmarshal JSON request body into a Follow struct
+	// TO DO: Update database to be uuid instead of username, reflect here
+	// Unmarshal JSON request body into a Follows struct
 	friends := new(Follows)
 	err = json.Unmarshal([]byte(req.Body), &friends)
 	if err != nil {
 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
-	// Create the Follow in the database
+	// Add the follow relationship to the database
 	err = db.Create(&friends).Error
 	if err != nil {
 		return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
 	}
 
+	// Woo Hoo !!!
 	return Response{
 		StatusCode: 201,
 		Body:       "Successfully added to database",
 	}, nil
-
-	// FollowRelationship := Follow{Following: following, Followee: followee}
-
-	// if res := db.Create(&FollowRelationship); res.Error != nil {
-	// 	return Response{StatusCode: 500, Body: res.Error.Error()}, nil
-	// } else {
-	// 	return Response{StatusCode: 200, Body: fmt.Sprint(FollowRelationship.Following)}, nil
-	// }
 }
 
 // Get's list of people the user is following
