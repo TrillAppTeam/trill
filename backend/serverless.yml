@@ -36,7 +36,6 @@ custom:
     certificateName: "*.trytrill.com"
     createRoute53Record: true
 
-
 provider:
   name: aws
   runtime: go1.x
@@ -117,6 +116,24 @@ functions:
           path: /users
           method: put
           authorizer: 
+            name: customAuthorizer
+  follows:
+    handler: bin/follows
+    events:
+      - httpApi:
+          path: /follows
+          method: post
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /follows
+          method: delete
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /follows
+          method: get
+          authorizer:
             name: customAuthorizer
   # albums:
   #   handler: bin/albums
