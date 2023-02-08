@@ -8,12 +8,12 @@ function HeroSection() {
                 </div>
 
                 <div className="flex-wrap z-10">
-                    <a href="https://auth.trytrill.com/login?client_id=126gi8rqrvn4rbv1kt7ef714oa&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome"
+                    <a href="https://auth.trytrill.com/login?client_id=126gi8rqrvn4rbv1kt7ef714oa&response_type=code&scope=email+openid+phone+aws.cognito.signin.user.admin&redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome"
                         className="font-bold text-lg md:text-2xl text-slate-100 p-5 hover:text-trillBlue">
                         LOGIN
                     </a>
                     {/* commenty comment */}
-                    <a href="https://auth.trytrill.com/signup?client_id=126gi8rqrvn4rbv1kt7ef714oa&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fapi.trytrill.com%2Fmain%2Fhello"
+                    <a href="https://auth.trytrill.com/login?client_id=126gi8rqrvn4rbv1kt7ef714oa&response_type=code&scope=email+openid+phone+aws.cognito.signin.user.admin&redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome"
                         className="font-bold text-lg md:text-2xl text-slate-100 p-5 hover:text-trillBlue">
                         CREATE ACCOUNT
                     </a>

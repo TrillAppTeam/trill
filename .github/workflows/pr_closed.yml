@@ -1,11 +1,11 @@
-name: deploy to lambda
+name: remove serverless stack
 
 permissions:
   id-token: write
   contents: read
 
 on: 
-  pull_request:
+  pull_request_target:
     types:
     - closed
 
