@@ -147,6 +147,7 @@ functions:
           path: /reviews
           method: delete
           authorizer: 
+            name: customAuthorizer
   follows:
     handler: bin/follows
     events:
