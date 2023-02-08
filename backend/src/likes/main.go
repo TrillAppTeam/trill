@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -34,26 +33,6 @@ var secrets = Secrets{
 	os.Getenv("MYSQLUSER"),
 	os.Getenv("MYSQLPASS"),
 	os.Getenv("AWS_DEFAULT_REGION"),
-}
-
-type User struct {
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      time.Time `gorm:"index"`
-	Username       string
-	Bio            string
-	ProfilePicture string
-}
-
-type Review struct {
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
-	DeletedAt  time.Time `gorm:"index"`
-	ReviewID   int
-	Username   string
-	AlbumID    string
-	ReviewText string
-	Rating     int
 }
 
 type Like struct {
