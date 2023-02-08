@@ -113,6 +113,14 @@ functions:
           method: post
           authorizer: 
             name: customAuthorizer
+  likes:
+    handler: bin/likes
+    events:
+      - httpApi:
+          path: /likes
+          method: put
+          authorizer: 
+            name: customAuthorizer
   # albums:
   #   handler: bin/albums
   #   events:
