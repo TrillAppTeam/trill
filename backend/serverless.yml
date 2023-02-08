@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: trill-main
+service: trill-getAndUpdateUserApi
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -29,7 +29,7 @@ custom:
   customDomain:
     apiType: http
     domainName: 'api.trytrill.com'
-    basePath: main
+    basePath: getAndUpdateUserApi
     stage: dev
     endpointType: regional
     region: ${self:provider.region}
@@ -134,16 +134,6 @@ functions:
           path: /follows
           method: get
           authorizer:
-            name: customAuthorizer
-      - httpApi:
-          path: /users
-          method: put
-          authorizer: 
-            name: customAuthorizer
-      - httpApi:
-          path: /users
-          method: put
-          authorizer: 
             name: customAuthorizer
   # albums:
   #   handler: bin/albums
