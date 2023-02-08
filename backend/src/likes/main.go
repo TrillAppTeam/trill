@@ -139,7 +139,7 @@ func unlike(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 
 	// Delete the requested Like from the database
 	if err := db.Where("username = ? AND review_id = ?", &likeToDelete.Username, &likeToDelete.ReviewID).Delete(&likeToDelete).Error; err != nil {
-		return Response{StatusCode: 404, Body: "Cannot delete follow relationship."}, nil
+		return Response{StatusCode: 404, Body: err.Error()}, nil
 	}
 
 	return Response{
