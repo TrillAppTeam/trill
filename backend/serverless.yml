@@ -112,6 +112,41 @@ functions:
           method: post
           authorizer: 
             name: customAuthorizer
+  likes:
+    handler: bin/likes
+    events:
+      - httpApi:
+          path: /likes
+          method: get
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /likes
+          method: put
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /likes
+          method: delete
+          authorizer: 
+            name: customAuthorizer
+  reviews:
+    handler: bin/reviews
+    events:
+      # - httpApi:
+      #     path: /likes
+      #     method: get
+      #     authorizer: 
+      #       name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: put
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: delete
+          authorizer: 
   follows:
     handler: bin/follows
     events:
