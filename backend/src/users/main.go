@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	// "strings"
 	"os"
 	"time"
 
@@ -13,19 +14,29 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 )
 
 const SECRETS_PATH = "../../.secrets.yml"
 
-type Response events.APIGatewayProxyResponse
+type CognitoClient struct {
+	Client      *cognitoidentityprovider.Client
+	AppClientId string
+	UserPoolId  string
+}
+
+type Response events.APIGatewayV2HTTPResponse
 
 type Secrets struct {
-	host     string `yaml:"MYSQLHOST"`
-	port     string `yaml:"MYSQLPORT"`
-	database string `yaml:"MYSQLDATABASE"`
-	user     string `yaml:"MYSQLUSER"`
-	password string `yaml:"MYSQLPASS"`
-	region   string `yaml:"AWS_DEFAULT_REGION"`
+	host               string `yaml:"MYSQLHOST"`
+	port               string `yaml:"MYSQLPORT"`
+	database           string `yaml:"MYSQLDATABASE"`
+	user               string `yaml:"MYSQLUSER"`
+	password           string `yaml:"MYSQLPASS"`
+	region             string `yaml:"AWS_DEFAULT_REGION"`
+	cognitoAppClientId string `yaml:"COGNITO_APP_CLIENT_ID"`
+	cognitoUserPoolId  string `yaml:"COGNITO_USER_POOL_ID"`
 }
 
 type User struct {
@@ -45,12 +56,14 @@ var secrets = Secrets{
 	os.Getenv("MYSQLUSER"),
 	os.Getenv("MYSQLPASS"),
 	os.Getenv("AWS_DEFAULT_REGION"),
+	os.Getenv("COGNITO_APP_CLIENT_ID"),
+	os.Getenv("COGNITO_USER_POOL_ID"),
 }
 
 // https://github.com/gugazimmermann/fazendadojuca/blob/master/animals/main.go
 
 func connectDB() (*gorm.DB, error) {
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database)
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true&parseTime=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database)
 	if db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{}); err != nil {
 		return nil, fmt.Errorf("error: failed to connect to AWS RDS: %w", err)
 	} else {
@@ -58,12 +71,27 @@ func connectDB() (*gorm.DB, error) {
 	}
 }
 
+func initClient(ctx context.Context) (*CognitoClient, error) {
+	cfg, err := config.LoadDefaultConfig(
+		ctx, config.WithRegion("us-east-1"),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CognitoClient{
+		cognitoidentityprovider.NewFromConfig(cfg),
+		secrets.cognitoAppClientId,
+		secrets.cognitoUserPoolId,
+	}, nil
+}
+
 func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	switch req.RequestContext.HTTP.Method {
 	case "POST":
 		return create(ctx, req)
 	case "GET":
-		return read(req)
+		return read(ctx, req)
 	case "PUT":
 		return update(req)
 	default:
@@ -97,31 +125,50 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 }
 
 // GET: Returns user info
-func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
-	// Connect to the RDS Database
+func read(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
+		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
 
-	// Get the user's username from the request
-	userID := req.PathParameters["username"]
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	}
 
-	// Get the user info from the database
+	// This needs to get the token after "Bearer" but this does not return a string so string.Split does not work
+	// authToken := req.Headers["authorization"]
+
+	// userIn := cognitoidentityprovider.GetUserInput{
+	// 	AccessToken: &authToken,
+	// }
+
+	// User info from cognito would be here
+	// cogInfo, err := cognitoClient.Client.GetUser(ctx, &userIn)
+
+	// if err != nil {
+	// 	return Response{StatusCode: 500, Body: err.Error()}, nil
+	// }
+
+	// find and get user info from db
 	var user User
-	result := db.Where("username = ?", userID).First(&user)
+	result := db.Where("username = ?", username).First(&user)
 
 	if result.Error != nil {
 		return Response{StatusCode: 404, Body: "User not found."}, nil
 	}
 
-	// Convert the user to JSON
+	// cogInfoJSON, err := json.Marshal(cogInfo)
+	// if err != nil {
+	// 	return Response{StatusCode: 500, Body: err.Error()}, nil
+	// }
+
 	userJSON, err := json.Marshal(user)
 	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
+		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
 
-	// Return the JSON response
+	// return JSON
 	return Response{StatusCode: 200, Body: string(userJSON)}, nil
 }
 

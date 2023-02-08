@@ -103,11 +103,11 @@ functions:
   users:
     handler: bin/users
     events:
-      # - httpApi:
-      #     path: /users
-      #     method: get
-      #     authorizer: 
-      #       name: customAuthorizer
+      - httpApi:
+          path: /users
+          method: get
+          authorizer: 
+            name: customAuthorizer
       - httpApi:
           path: /users
           method: post
