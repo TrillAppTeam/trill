@@ -50,7 +50,7 @@ type Review struct {
 	Rating     int
 	ReviewText string
 	ReviewDate time.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	// Likes      []Like    `gorm:"foreignKey:ReviewID"`
+	Likes      []Like    `gorm:"-"`
 }
 
 // temp copy
@@ -73,7 +73,7 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 	// case "GET":
 	// 	return getLikeCount(ctx, req)
 	case "PUT":
-		return createReview(ctx, req)
+		return createOrUpdateReview(ctx, req)
 	case "DELETE":
 		return deleteReview(ctx, req)
 	default:
@@ -82,34 +82,43 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 	}
 }
 
-// User creates a review for a specific albumID
+// Given the username and album ID in request body, if the review exists, update it
+// Otherwise, create a new review in the database
 // Postman: PUT - /reviews
-func createReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
-	// todo: update review
-	// if user already has review for that album in database, update it
-
+func createOrUpdateReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
 	// Create new Review
-	newReview := new(Review)
-	err = json.Unmarshal([]byte(req.Body), &newReview)
+	review := new(Review)
+	err = json.Unmarshal([]byte(req.Body), &review)
 	if err != nil {
 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
 	// Add new Review to the database
-	err = db.Create(&newReview).Error
-	if err != nil {
-		return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
+	updateRes := db.Model(&review).Where("username = ? AND album_id = ?", &review.Username, &review.AlbumID).Updates(&review)
+	if updateRes.Error != nil {
+		return Response{StatusCode: 500, Body: "Error updating data in database"}, err
+	}
+	if updateRes.RowsAffected == 0 {
+		err = db.Create(&review).Error
+		if err != nil {
+			return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
+		}
+		return Response{
+			StatusCode: 201,
+			Body: fmt.Sprintf("Successfully added review to album %s from %s to database.",
+				review.AlbumID, review.Username),
+		}, nil
 	}
 
 	return Response{
 		StatusCode: 201,
-		Body: fmt.Sprintf("Successfully added review to album %s from %s to database.",
-			newReview.AlbumID, newReview.Username),
+		Body: fmt.Sprintf("Successfully updated review for album %s from %s in database.",
+			review.AlbumID, review.Username),
 	}, nil
 }
 
@@ -144,8 +153,10 @@ func deleteReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 // // - A list of reviews associated with the albumID (Sorted where most-liked reviews are first in the list).
 // // - The number of likes for each review, so that you can display this on the frontend
 // func read(req events.APIGatewayProxyRequest) (Response, error) {
-
+// todo: sort by popularity or date in query params
 // }
+
+// get a user's review for an album
 
 func main() {
 	lambda.Start(handler)
