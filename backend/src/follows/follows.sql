@@ -23,3 +23,10 @@ CREATE TABLE follows (
     CONSTRAINT FK_following FOREIGN KEY (following)
     REFERENCES users(username)
 );
+
+
+-- Request:
+-- {
+--     "followee": "avwede",
+--     "following": "csmi"
+-- }

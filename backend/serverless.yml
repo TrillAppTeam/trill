@@ -126,6 +126,11 @@ functions:
           method: delete
           authorizer:
             name: customAuthorizer
+      - httpApi:
+          path: /follows
+          method: get
+          authorizer:
+            name: customAuthorizer
   # albums:
   #   handler: bin/albums
   #   events:

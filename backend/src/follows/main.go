@@ -61,15 +61,15 @@ func connectDB() (*gorm.DB, error) {
 
 func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	switch req.RequestContext.HTTP.Method {
-	case "POST":
-		return create(ctx, req)
-	// case "GET":
-	// 	return read(req)
-	case "DELETE":
-		return delete(req)
-	default:
-		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
-		return Response{StatusCode: 405, Body: err.Error()}, err
+		case "POST":
+			return create(ctx, req)
+		case "GET":
+			return read(req)
+		case "DELETE":
+			return delete(req)
+		default:
+			err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
+			return Response{StatusCode: 405, Body: err.Error()}, err
 	}
 }
 
@@ -105,36 +105,32 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 }
 
 // Get's list of people the user is following
-// @PARAMS - username (string)
-// func read(req events.APIGatewayProxyRequest) (Response, error) {
-// 	db, err := connectDB()
-// 	if err != nil {
-// 		return Response{StatusCode: 500, Body: err.Error()}, err
-// 	}
+// @PARAMS - followee (string)
+func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
+	db, err := connectDB()
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
 
-// 	// Get the username from the JSON request body
-// 	username, ok := req.QueryStringParameters["username"]
+	// Get the username from the JSON request body
+	followee, ok := req.QueryStringParameters["username"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	}
 
-// 	// Given the username, find 
+	// Given the username, find 
+	var following []Follows
+	if err := db.Where("followee = ?", followee).Find(&following).Error; err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
 
-// 	friends := new(Follows)
-// 	err = json.Unmarshal([]byte(req.Body), &friends)
-// 	if err != nil {
-// 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
-// 	}
+	followingJSON, err := json.Marshal(following)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
 
-// 	var followings []Following
-// 	if err := db.Where("userID = ?", userID).Find(&followings).Error; err != nil {
-// 		return Response{StatusCode: 500, Body: err.Error()}, err
-// 	}
-
-// 	followingsJSON, err := json.Marshal(followings)
-// 	if err != nil {
-// 		return Response{StatusCode: 500, Body: err.Error()}, err
-// 	}
-
-// 	return Response{StatusCode: 200, Body: string(followingsJSON)}, nil
-// }
+	return Response{StatusCode: 200, Body: string(followingJSON)}, nil
+}
 
 // User unfollows someone
 func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
@@ -150,9 +146,9 @@ func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
-	// Find these two values in the database
+	// Find these two values in the database, then delete the record. 
 	if err := db.Where("followee = ? AND following = ?", &unfriend.Followee, &unfriend.Following).Delete(&unfriend).Error; err != nil {
-		return Response{StatusCode: 404, Body: "Cannot delete."}, nil
+		return Response{StatusCode: 404, Body: "Cannot delete follow relationship."}, nil
 	}
 
 	// Woo Hoo !!!
