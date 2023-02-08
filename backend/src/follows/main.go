@@ -64,7 +64,14 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 		case "POST":
 			return create(ctx, req)
 		case "GET":
-			return read(req)
+			if req.QueryStringParameters["type"] == "getFollowers" {
+				return getFollowers(req)
+			} else if req.QueryStringParameters["type"] == "getFollowing" {
+				return getFollowing(req)
+			} else {
+				err := fmt.Errorf("Invalid 'type' parameter for GET method")
+				return Response{StatusCode: 400, Body: err.Error()}, err
+			}
 		case "DELETE":
 			return delete(req)
 		default:
@@ -74,7 +81,7 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 }
 
 // Create a follow relationship 
-// @PARAMS - followee (string), following (string)
+// @PARAMS are in the JSON body : "followee" and "following"
 func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
@@ -104,9 +111,10 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 	}, nil
 }
 
-// Get's list of people the user is following
-// @PARAMS - followee (string)
-func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
+// Get Following
+// @PARAMS are QueryStringParameters : "username"
+// Postman: follows?type=getFollowing&username=avwede
+func getFollowing(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
@@ -132,7 +140,39 @@ func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	return Response{StatusCode: 200, Body: string(followingJSON)}, nil
 }
 
+// Get Followers
+// @PARAMS are QueryStringParameters : "username"
+// Postman: follows?type=getFollowers&username=avwede
+// Currently returns in this format: [{"Followee":"avwede","Following":"csmi"},{"Followee":"avwede","Following":"dmflo"}]
+func getFollowers(req events.APIGatewayV2HTTPRequest) (Response, error) {
+	db, err := connectDB()
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	// Get the username from the JSON request body
+	following, ok := req.QueryStringParameters["username"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	}
+
+	// Given the username, find 
+	var followers []Follows
+	if err := db.Where("following = ?", following).Find(&followers).Error; err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	followersJSON, err := json.Marshal(followers)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	return Response{StatusCode: 200, Body: string(followersJSON)}, nil
+}
+
 // User unfollows someone
+// @PARAMS are in the JSON body : "followee" and "following"
+// Currently returns in this format: [{"Followee":"csmi","Following":"avwede"}]
 func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
