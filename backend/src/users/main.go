@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	// "strings"
+	"strings"
 	"os"
 	"time"
 
@@ -137,27 +137,26 @@ func read(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, er
 	}
 
 	// <-Cognito getUser attempt -------------------------------------------->
-	// cognitoClient, err := initClient(ctx)
-	// if err != nil {
-	// 	return Response{StatusCode: 500, Body: err.Error()}, nil
-	// }
+	cognitoClient, err := initClient(ctx)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, nil
+	}
 
-	// authToken := strings.Split((req.Headers["authorization"]), " ")[1]
+	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
 
-	// userIn := cognitoidentityprovider.GetUserInput{
-	// 	AccessToken: &authToken,
-	// }
+	userIn := cognitoidentityprovider.GetUserInput{
+		AccessToken: &authToken,
+	}
 
-	// User info from cognito would be here
-	// cogInfo, err := cognitoClient.Client.GetUser(ctx, &userIn)
-	// if err != nil {
-	// 	return Response{StatusCode: 500, Body: err.Error()}, nil
-	// }
+	cogInfo, err := cognitoClient.Client.GetUser(ctx, &userIn)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, nil
+	}
 
-	// cogInfoJSON, err := json.Marshal(cogInfo)
-	// if err != nil {
-	// 	return Response{StatusCode: 500, Body: err.Error()}, nil
-	// }
+	cogInfoJSON, err := json.Marshal(cogInfo)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, nil
+	}
 	// <--------------------------------------------------------------------->
 
 	// find and get user info from db
@@ -173,9 +172,9 @@ func read(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, er
 	}
 
 	// Combines the two JSON's to one string
-	// responseStr := fmt.Sprintf("%+v,%+v", cogInfoJSON, userJSON)
+	responseStr := fmt.Sprintf("%+v,%+v", cogInfoJSON, userJSON)
 
-	return Response{StatusCode: 200, Body: string(userJSON)}, nil
+	return Response{StatusCode: 200, Body: string(responseStr)}, nil
 }
 
 func update(req events.APIGatewayV2HTTPRequest) (Response, error) {
