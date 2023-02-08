@@ -26,7 +26,8 @@ type CognitoClient struct {
 	UserPoolId  string
 }
 
-type Response events.APIGatewayV2HTTPResponse
+type Request = events.APIGatewayV2HTTPRequest
+type Response = events.APIGatewayV2HTTPResponse
 
 type Secrets struct {
 	host               string `yaml:"MYSQLHOST"`
@@ -86,10 +87,8 @@ func initClient(ctx context.Context) (*CognitoClient, error) {
 	}, nil
 }
 
-func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+func handler(ctx context.Context, req Request) (Response, error) {
 	switch req.RequestContext.HTTP.Method {
-	case "POST":
-		return create(ctx, req)
 	case "GET":
 		return read(ctx, req)
 	case "PUT":
@@ -100,32 +99,8 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 	}
 }
 
-func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
-	db, err := connectDB()
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, nil
-	}
-
-	// make new user
-	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
-	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
-	}
-
-	NewUser := User{Username: username, Bio: "", ProfilePicture: ""}
-
-	// db.AutoMigrate(&User{})
-
-	// https://stackoverflow.com/questions/30361671/how-can-i-check-for-errors-in-crud-operations-using-gorm
-	if res := db.Create(&NewUser); res.Error != nil {
-		return Response{StatusCode: 500, Body: res.Error.Error()}, nil
-	} else {
-		return Response{StatusCode: 200, Body: fmt.Sprint(NewUser.Username)}, nil
-	}
-}
-
 // GET: Returns user info
-func read(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+func read(ctx context.Context, req Request) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
@@ -177,7 +152,7 @@ func read(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, er
 	return Response{StatusCode: 200, Body: string(responseStr)}, nil
 }
 
-func update(req events.APIGatewayV2HTTPRequest) (Response, error) {
+func update(req Request) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
