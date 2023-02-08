@@ -135,6 +135,16 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
+      - httpApi:
+          path: /users
+          method: put
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /users
+          method: put
+          authorizer: 
+            name: customAuthorizer
   # albums:
   #   handler: bin/albums
   #   events:
