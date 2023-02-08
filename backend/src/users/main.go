@@ -136,8 +136,13 @@ func read(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, er
 		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
 	}
 
-	// This needs to get the token after "Bearer" but this does not return a string so string.Split does not work
-	// authToken := req.Headers["authorization"]
+	// <-Cognito getUser attempt -------------------------------------------->
+	// cognitoClient, err := initClient(ctx)
+	// if err != nil {
+	// 	return Response{StatusCode: 500, Body: err.Error()}, nil
+	// }
+
+	// authToken := strings.Split((req.Headers["authorization"]), " ")[1]
 
 	// userIn := cognitoidentityprovider.GetUserInput{
 	// 	AccessToken: &authToken,
@@ -145,62 +150,63 @@ func read(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, er
 
 	// User info from cognito would be here
 	// cogInfo, err := cognitoClient.Client.GetUser(ctx, &userIn)
-
 	// if err != nil {
 	// 	return Response{StatusCode: 500, Body: err.Error()}, nil
 	// }
-
-	// find and get user info from db
-	var user User
-	result := db.Where("username = ?", username).First(&user)
-
-	if result.Error != nil {
-		return Response{StatusCode: 404, Body: "User not found."}, nil
-	}
 
 	// cogInfoJSON, err := json.Marshal(cogInfo)
 	// if err != nil {
 	// 	return Response{StatusCode: 500, Body: err.Error()}, nil
 	// }
+	// <--------------------------------------------------------------------->
+
+	// find and get user info from db
+	var user User
+	result := db.Where("username = ?", username).First(&user)
+	if result.Error != nil {
+		return Response{StatusCode: 404, Body: "User not found."}, nil
+	}
 
 	userJSON, err := json.Marshal(user)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
 
-	// return JSON
+	// Combines the two JSON's to one string
+	// responseStr := fmt.Sprintf("%+v,%+v", cogInfoJSON, userJSON)
+
 	return Response{StatusCode: 200, Body: string(userJSON)}, nil
 }
 
 func update(req events.APIGatewayV2HTTPRequest) (Response, error) {
-	// Connect to the RDS database
 	db, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	// Get the user's username from the request
-	username := req.PathParameters["username"]
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	}
 
-	// Get the user info from the database
 	var user User
-	if result := db.Where("username = ?", username).First(&user); result.Error != nil {
+	result := db.Where("username = ?", username).First(&user)
+	if result.Error != nil {
 		return Response{StatusCode: 404, Body: "User not found."}, nil
 	}
 
-	// Unmarshal the JSON request body into the user struct
+	// put changes into new user struct
 	err = json.Unmarshal([]byte(req.Body), &user)
 	if err != nil {
 		return Response{StatusCode: 400, Body: "Invalid request body."}, nil
 	}
 
-	// Update the user in the database
-	result := db.Save(&user)
-	if result.Error != nil {
-		return Response{StatusCode: 500, Body: result.Error.Error()}, result.Error
+	// update user in the database
+	updatedUser := db.Save(&user)
+	if updatedUser.Error != nil {
+		return Response{StatusCode: 500, Body: updatedUser.Error.Error()}, nil
 	}
 
-	// Return a success response
 	return Response{StatusCode: 200, Body: "User updated successfully."}, nil
 }
 
