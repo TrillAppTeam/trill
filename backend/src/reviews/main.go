@@ -84,6 +84,7 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 
 // Given the username and album ID in request body, if the review exists, update it
 // Otherwise, create a new review in the database
+// Note: Currently, updating a review in the database will update its review date to the current timestamp
 // Postman: PUT - /reviews
 func createOrUpdateReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
@@ -91,14 +92,14 @@ func createOrUpdateReview(ctx context.Context, req events.APIGatewayV2HTTPReques
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	// Create new Review
+	// Create Review from request body
 	review := new(Review)
 	err = json.Unmarshal([]byte(req.Body), &review)
 	if err != nil {
 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
-	// Add new Review to the database
+	// Update database if the review exists, otherwise create a new review
 	updateRes := db.Model(&review).Where("username = ? AND album_id = ?", &review.Username, &review.AlbumID).Updates(&review)
 	if updateRes.Error != nil {
 		return Response{StatusCode: 500, Body: "Error updating data in database"}, err
