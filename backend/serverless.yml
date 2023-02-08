@@ -118,7 +118,17 @@ functions:
     events:
       - httpApi:
           path: /likes
+          method: get
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /likes
           method: put
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /likes
+          method: delete
           authorizer: 
             name: customAuthorizer
   # albums:
