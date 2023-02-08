@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"encoding/json"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -37,19 +36,11 @@ var secrets = Secrets{
 }
 
 type Follows struct {
-	gorm.Model
-	CreatedAt      	time.Time
-	UpdatedAt      	time.Time
-	DeletedAt      	time.Time 	`gorm:"index"`
 	Followee		string    `gorm:"foreignKey:Username"`
 	Following		string    `gorm:"foreignKey:Username"`
 }
 
 type User struct {
-	gorm.Model
-	CreatedAt      	time.Time
-	UpdatedAt      	time.Time
-	DeletedAt      	time.Time 	`gorm:"index"`
 	Username      	string    	`gorm:"primarykey;unique"`
 	Bio           	string    
 	ProfilePicture 	string    
@@ -74,16 +65,16 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 		return create(ctx, req)
 	// case "GET":
 	// 	return read(req)
-	// case "DELETE":
-	// 	return delete(req)
+	case "DELETE":
+		return delete(req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
 	}
 }
 
-// User follows someone
-// @PARAMS - username (string), following (string)
+// Create a follow relationship 
+// @PARAMS - followee (string), following (string)
 func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
@@ -114,15 +105,22 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 }
 
 // Get's list of people the user is following
+// @PARAMS - username (string)
 // func read(req events.APIGatewayProxyRequest) (Response, error) {
 // 	db, err := connectDB()
 // 	if err != nil {
 // 		return Response{StatusCode: 500, Body: err.Error()}, err
 // 	}
 
-// 	userID := req.QueryStringParameters["userID"]
-// 	if userID == "" {
-// 		return Response{StatusCode: 400, Body: "userID parameter is required"}, nil
+// 	// Get the username from the JSON request body
+// 	username, ok := req.QueryStringParameters["username"]
+
+// 	// Given the username, find 
+
+// 	friends := new(Follows)
+// 	err = json.Unmarshal([]byte(req.Body), &friends)
+// 	if err != nil {
+// 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 // 	}
 
 // 	var followings []Following
@@ -139,31 +137,30 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 // }
 
 // User unfollows someone
-// func delete(req events.APIGatewayProxyRequest) (Response, error) {
-// 	db, err := connectDB()
-// 	if err != nil {
-// 		return Response{StatusCode: 500, Body: err.Error()}, err
-// 	}
+func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
+	db, err := connectDB()
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
 
-// 	followingID := req.QueryStringParameters["followingID"]
-// 	userID := req.QueryStringParameters["userID"]
+	// Get the followee and follower from the JSON request
+	unfriend := new(Follows)
+	err = json.Unmarshal([]byte(req.Body), &unfriend)
+	if err != nil {
+		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
+	}
 
-// 	if followingID == "" || userID == "" {
-// 		err := fmt.Errorf("followingID and userID query parameters are required")
-// 		return Response{StatusCode: 400, Body: err.Error()}, err
-// 	}
+	// Find these two values in the database
+	if err := db.Where("followee = ? AND following = ?", &unfriend.Followee, &unfriend.Following).Delete(&unfriend).Error; err != nil {
+		return Response{StatusCode: 404, Body: "Cannot delete."}, nil
+	}
 
-// 	var following Following
-// 	if err := db.Where("userID = ? AND followingID = ?", userID, followingID).First(&following).Error; err != nil {
-// 		return Response{StatusCode: 404, Body: "Follow relationship not found"}, nil
-// 	}
-
-// 	if err := db.Delete(&following).Error; err != nil {
-// 		return Response{StatusCode: 500, Body: err.Error()}, err
-// 	}
-
-// 	return Response{StatusCode: 204}, nil
-// }
+	// Woo Hoo !!!
+	return Response{
+		StatusCode: 201,
+		Body:       "Successfully removed from database",
+	}, nil
+}
 
 func main() {
 	lambda.Start(handler)
