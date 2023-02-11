@@ -55,6 +55,8 @@ provider:
     MYSQLDATABASE: ${self:custom.secrets.MYSQLDATABASE}
     COGNITO_APP_CLIENT_ID: ${self:custom.secrets.COGNITO_APP_CLIENT_ID}
     COGNITO_USER_POOL_ID: ${self:custom.secrets.COGNITO_USER_POOL_ID}
+    SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
+    SPOTIFY_CLIENT_SECRET: ${self:custom.secrets.SPOTIFY_CLIENT_SECRET}
   stage: dev
   region: us-east-1
 
@@ -113,22 +115,40 @@ functions:
           method: post
           authorizer: 
             name: customAuthorizer
-  # albums:
-  #   handler: bin/albums
-  #   events:
-  #     - httpApi:
-  #         path: /albums
-  #         method: get
-  #         authorizer:
-  #           name: customAuthorizer
-  # album:
-  #   handler: bin/album
-  #   events:
-  #     - httpApi:
-  #         path: /album
-  #         method: get
-  #         authorizer:
-  #           name: customAuthorizer
+  albums:
+    handler: bin/albums
+    events:
+      - httpApi:
+          path: /albums
+          method: get
+          authorizer:
+            name: customAuthorizer
+  album:
+    handler: bin/album
+    events:
+      - httpApi:
+          path: /album
+          method: get
+          authorizer:
+            name: customAuthorizer
+  favoritealbums:
+    handler: bin/favoritealbums
+    events:
+      - httpApi:
+          path: /favoritealbums
+          method: get
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /favoritealbums
+          method: post
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /favoritealbums
+          method: delete
+          authorizer: 
+            name: customAuthorizer
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
