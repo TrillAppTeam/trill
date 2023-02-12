@@ -44,7 +44,7 @@ type Review struct {
 	ReviewText string
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	Likes      []Like    `gorm:"-"`
+	Likes      int       `gorm:"-"`
 }
 
 // temp copy
@@ -114,6 +114,13 @@ func getUserReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Res
 	if result.RowsAffected == 0 {
 		return Response{StatusCode: 204}, nil
 	}
+
+	var likeUsers []Like
+	result = db.Where("review_id = ?", review.ReviewID).Find(&likeUsers)
+	if err := result.Error; err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+	review.Likes = int(result.RowsAffected)
 
 	// Serialize review into JSON
 	reviewJSON, err := json.Marshal(review)
