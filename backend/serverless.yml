@@ -133,11 +133,11 @@ functions:
   reviews:
     handler: bin/reviews
     events:
-      # - httpApi:
-      #     path: /likes
-      #     method: get
-      #     authorizer: 
-      #       name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: get
+          authorizer: 
+            name: customAuthorizer
       - httpApi:
           path: /reviews
           method: put

@@ -1,10 +1,3 @@
-// TO DO:
-// GET: given a review ID, get the number of likes it has
-// GET: given a albumID, return the list of reviews but sort where the most like reviews are first
-// POST: add a new review
-// DELETE: delete a review
-// this api going be hefty, theres more endpoints we're missing but brain dead rn
-
 package main
 
 import (
@@ -49,7 +42,8 @@ type Review struct {
 	AlbumID    string
 	Rating     int
 	ReviewText string
-	ReviewDate time.Time `gorm:"default:CURRENT_TIMESTAMP"`
+	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
+	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	Likes      []Like    `gorm:"-"`
 }
 
@@ -60,7 +54,7 @@ type Like struct {
 }
 
 func connectDB() (*gorm.DB, error) {
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database)
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true&parseTime=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database)
 	if db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{}); err != nil {
 		return nil, fmt.Errorf("error: failed to connect to AWS RDS: %w", err)
 	} else {
@@ -70,8 +64,13 @@ func connectDB() (*gorm.DB, error) {
 
 func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	switch req.RequestContext.HTTP.Method {
-	// case "GET":
-	// 	return getLikeCount(ctx, req)
+	case "GET":
+		_, ok := req.QueryStringParameters["username"]
+		if ok {
+			return getUserReview(ctx, req)
+		} else {
+			return getReviews(ctx, req)
+		}
 	case "PUT":
 		return createOrUpdateReview(ctx, req)
 	case "DELETE":
@@ -80,6 +79,102 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
 	}
+}
+
+// Given a username and album ID, get the review
+// If review does not exist, return 204 status code
+// @PARAMS are QueryStringParameters: "username" & "album_id"
+// Postman: GET - /reviews?username={username}&album_id={album_id}
+func getUserReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	db, err := connectDB()
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	// Get the username
+	username, ok := req.QueryStringParameters["username"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	}
+
+	// Get the album ID
+	albumID, ok := req.QueryStringParameters["album_id"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse album ID"}, nil
+	}
+
+	// Find the review matching the username and album ID
+	var review Review
+	var result = db.Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(&review)
+	if err := result.Error; err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	// If review does not exist, return 204 (no content)
+	if result.RowsAffected == 0 {
+		return Response{StatusCode: 204}, nil
+	}
+
+	// Serialize review into JSON
+	reviewJSON, err := json.Marshal(review)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	return Response{StatusCode: 200, Body: string(reviewJSON)}, nil
+}
+
+// Given an albumID, return a list of reviews associated with the albumID
+// @PARAMS are QueryStringParameters: "sort" & "album_id"
+// Postman: GET - /reviews?sort={popular|newest|oldest}&album_id={album_id}
+func getReviews(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	db, err := connectDB()
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	// Get the sort
+	sort, ok := req.QueryStringParameters["sort"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse sort"}, nil
+	}
+
+	// Get the album ID
+	albumID, ok := req.QueryStringParameters["album_id"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse album ID"}, nil
+	}
+
+	// Query database based on sort parameter
+	var reviews []Review
+	var result *gorm.DB
+	switch sort {
+	case "newest":
+		result = db.Where("album_id = ?", albumID).Order("created_at desc").Find(&reviews)
+		break
+	case "oldest":
+		result = db.Where("album_id = ?", albumID).Order("created_at asc").Find(&reviews)
+		break
+	case "popular":
+		// todo
+		// result = db.Where("album_id = ?", albumID).Order("created_at desc").Find(&reviews)
+		break
+	default:
+		return Response{StatusCode: 500, Body: "Invalid sort parameter"}, err
+	}
+
+	if err := result.Error; err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	// Serialize reviews into JSON
+	reviewsJSON, err := json.Marshal(reviews)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
+
+	return Response{StatusCode: 200, Body: string(reviewsJSON)}, nil
+	// get number of likes for both gets
 }
 
 // Given the username and album ID in request body, if the review exists, update it
@@ -149,15 +244,6 @@ func deleteReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 			reviewToDelete.AlbumID, reviewToDelete.Username),
 	}, nil
 }
-
-// // Given a albumID, return the following:
-// // - A list of reviews associated with the albumID (Sorted where most-liked reviews are first in the list).
-// // - The number of likes for each review, so that you can display this on the frontend
-// func read(req events.APIGatewayProxyRequest) (Response, error) {
-// todo: sort by popularity or date in query params
-// }
-
-// get a user's review for an album
 
 func main() {
 	lambda.Start(handler)
