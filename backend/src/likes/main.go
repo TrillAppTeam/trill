@@ -2,11 +2,9 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
-	"strconv"
-
-	"encoding/json"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -37,102 +35,118 @@ var secrets = Secrets{
 	os.Getenv("AWS_DEFAULT_REGION"),
 }
 
-type Likes struct {
-	gorm.Model
-	reviewID int // `sql:"int"`
-	ReviewID int // `sql:"int"
+type Like struct {
+	Username string
+	ReviewID int
 }
-
-// https://github.com/gugazimmermann/fazendadojuca/blob/master/animals/main.go
 
 func connectDB() (*gorm.DB, error) {
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database)
 	if db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{}); err != nil {
-		return nil, fmt.Errorf("Error: Failed to connect to AWS RDS: %w", err)
+		return nil, fmt.Errorf("error: failed to connect to AWS RDS: %w", err)
 	} else {
 		return db, nil
 	}
 }
 
-func handler(ctx context.Context, req events.APIGatewayProxyRequest) (Response, error) {
-	switch req.HTTPMethod {
-	case "POST":
-		return create(ctx, req)
+func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	switch req.RequestContext.HTTP.Method {
 	case "GET":
-		return read(req)
+		return getLikeCount(ctx, req)
+	case "PUT":
+		return like(ctx, req)
 	case "DELETE":
-		return delete(req)
+		return unlike(ctx, req)
 	default:
-		err := fmt.Errorf("HTTP Method '%s' not allowed", req.HTTPMethod)
+		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
 	}
 }
 
-// User likes a review
-func create(ctx context.Context, req events.APIGatewayProxyRequest) (Response, error) {
+// Given a reviewID, get the number of likes for that review
+// @PARAMS are QueryStringParameters: "review_id"
+// Postman: GET - /likes?review_id={reviewID}
+func getLikeCount(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	likes := Likes{}
-	if err := json.Unmarshal([]byte(req.Body), &likes); err != nil {
-		return Response{StatusCode: 400, Body: err.Error()}, err
+	// Get the review ID
+	reviewID, ok := req.QueryStringParameters["review_id"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse review ID"}, nil
 	}
 
-	if err := db.Create(&likes).Error; err != nil {
+	// Given the review ID, find the users who liked it
+	var likeUsers []Like
+	var result = db.Where("review_id = ?", reviewID).Find(&likeUsers)
+	if err := result.Error; err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	return Response{StatusCode: 201, Body: "Likes relationship created"}, nil
+	// Serialize users into JSON; Return usersJSON if we want the list of users
+	// usersJSON, err := json.Marshal(likeUsers)
+	// if err != nil {
+	// 	return Response{StatusCode: 500, Body: err.Error()}, err
+	// }
+
+	return Response{StatusCode: 200, Body: fmt.Sprint(result.RowsAffected)}, nil
 }
 
-// Given a reviewID, get the number of likes for that review
-func read(req events.APIGatewayProxyRequest) (Response, error) {
+// User likes a review
+// Postman: PUT - /likes
+func like(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	reviewID := req.QueryStringParameters["reviewID"]
-	if reviewID == "" {
-		return Response{StatusCode: 400, Body: "reviewID parameter is required"}, nil
+	// Create new Like
+	newLike := new(Like)
+	err = json.Unmarshal([]byte(req.Body), &newLike)
+	if err != nil {
+		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
-	// Get the number of likes associated with the given reviewID
-	var numLikes int64
-	if err := db.Model(&Likes{}).Where("reviewID = ?", reviewID).Count(&numLikes).Error; err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
+	// Add new like to the database
+	err = db.Create(&newLike).Error
+	if err != nil {
+		return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
 	}
 
-	return Response{StatusCode: 200, Body: strconv.FormatInt(numLikes, 10)}, nil
+	return Response{
+		StatusCode: 201,
+		Body: fmt.Sprintf("Successfully added new like to review %d from %s to database.",
+			newLike.ReviewID, newLike.Username),
+	}, nil
 }
 
 // User unlikes a review
-func delete(req events.APIGatewayProxyRequest) (Response, error) {
+// Postman: DELETE - /likes
+func unlike(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	ReviewID := req.QueryStringParameters["ReviewID"]
-	reviewID := req.QueryStringParameters["reviewID"]
-
-	if ReviewID == "" || reviewID == "" {
-		err := fmt.Errorf("ReviewID and reviewID query parameters are required")
-		return Response{StatusCode: 400, Body: err.Error()}, err
+	// Create Like to be deleted
+	likeToDelete := new(Like)
+	err = json.Unmarshal([]byte(req.Body), &likeToDelete)
+	if err != nil {
+		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
-	var likes Likes
-	if err := db.Where("reviewID = ? AND ReviewID = ?", reviewID, ReviewID).First(&likes).Error; err != nil {
-		return Response{StatusCode: 404, Body: "Likes relationship not found"}, nil
+	// Delete the requested Like from the database
+	if err := db.Where("username = ? AND review_id = ?", &likeToDelete.Username, &likeToDelete.ReviewID).Delete(&likeToDelete).Error; err != nil {
+		return Response{StatusCode: 404, Body: err.Error()}, nil
 	}
 
-	if err := db.Delete(&likes).Error; err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-
-	return Response{StatusCode: 204}, nil
+	return Response{
+		StatusCode: 201,
+		Body: fmt.Sprintf("Successfully removed like to review %d from %s to database.",
+			likeToDelete.ReviewID, likeToDelete.Username),
+	}, nil
 }
 
 func main() {
