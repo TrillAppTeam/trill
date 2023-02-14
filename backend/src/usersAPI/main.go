@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"os"
@@ -94,8 +95,8 @@ func handler(ctx context.Context, req Request) (Response, error) {
 	case "PUT":
 		return update(req)
 	default:
-		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
-		return Response{StatusCode: 405, Body: err.Error()}, err
+		err := fmt.Errorf("HTTP method '%s' not allowed", req.RequestContext.HTTP.Method)
+		return Response{StatusCode: 405, Body: err.Error()}, nil
 	}
 }
 
@@ -108,10 +109,9 @@ func read(ctx context.Context, req Request) (Response, error) {
 
 	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "failed to parse username"}, nil
 	}
 
-	// <-Cognito getUser attempt -------------------------------------------->
 	cognitoClient, err := initClient(ctx)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
@@ -128,28 +128,48 @@ func read(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
 
-	cogInfoJSON, err := json.Marshal(cogInfo)
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, nil
+	// get email from user attributes
+	email := ""
+	nickname := ""
+	for _, v := range cogInfo.UserAttributes {
+		if *v.Name == "email" {
+			email = *v.Value
+		} else if *v.Name == "nickname" {
+			nickname = *v.Value
+		}
 	}
-	// <--------------------------------------------------------------------->
+	if len(email) == 0 {
+		return Response{StatusCode: 500, Body: "could not find user email"}, nil
+	}
 
 	// find and get user info from db
 	var user User
 	result := db.Where("username = ?", username).First(&user)
 	if result.Error != nil {
-		return Response{StatusCode: 404, Body: "User not found."}, nil
-	}
-
-	userJSON, err := json.Marshal(user)
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, nil
+		return Response{StatusCode: 404, Body: "user not found"}, nil
 	}
 
 	// Combines the two JSON's to one string
-	responseStr := fmt.Sprintf("%+v,%+v", cogInfoJSON, userJSON)
+	var buf bytes.Buffer
+	response, err := json.Marshal(map[string]interface{}{
+		"username":       username,
+		"nickname":       nickname,
+		"email":          email,
+		"bio":            user.Bio,
+		"profilePicture": user.ProfilePicture,
+	})
+	if err != nil {
+		return Response{StatusCode: 500, Body: "could not marshal JSON"}, nil
+	}
+	json.HTMLEscape(&buf, response)
 
-	return Response{StatusCode: 200, Body: string(responseStr)}, nil
+	return Response{
+		StatusCode: 200,
+		Body:       buf.String(),
+		Headers: map[string]string{
+			"Content-Type": "application/json",
+		},
+	}, nil
 }
 
 func update(req Request) (Response, error) {
@@ -160,19 +180,19 @@ func update(req Request) (Response, error) {
 
 	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "failed to parse username"}, nil
 	}
 
 	var user User
 	result := db.Where("username = ?", username).First(&user)
 	if result.Error != nil {
-		return Response{StatusCode: 404, Body: "User not found."}, nil
+		return Response{StatusCode: 404, Body: "user not found"}, nil
 	}
 
 	// put changes into new user struct
 	err = json.Unmarshal([]byte(req.Body), &user)
 	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request body."}, nil
+		return Response{StatusCode: 400, Body: "invalid request body"}, nil
 	}
 
 	// update user in the database
@@ -181,7 +201,7 @@ func update(req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: updatedUser.Error.Error()}, nil
 	}
 
-	return Response{StatusCode: 200, Body: "User updated successfully."}, nil
+	return Response{StatusCode: 200, Body: "user updated successfully"}, nil
 }
 
 func main() {
