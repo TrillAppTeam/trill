@@ -99,19 +99,26 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-  users:
-    handler: bin/users
+  usersAPI:
+    handler: bin/usersAPI
     events:
-      # - httpApi:
-      #     path: /users
-      #     method: get
-      #     authorizer: 
-      #       name: customAuthorizer
       - httpApi:
           path: /users
-          method: post
+          method: get
           authorizer: 
             name: customAuthorizer
+      - httpApi:
+          path: /users
+          method: put
+          authorizer: 
+            name: customAuthorizer
+  usersCognito:
+    handler: bin/usersCognito
+    events:
+      - cognitoUserPool:
+          pool: trill-users
+          existing: true
+          trigger: PostConfirmation
   likes:
     handler: bin/likes
     events:
