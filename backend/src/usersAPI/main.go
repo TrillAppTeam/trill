@@ -167,7 +167,9 @@ func read(ctx context.Context, req Request) (Response, error) {
 		StatusCode: 200,
 		Body:       buf.String(),
 		Headers: map[string]string{
-			"Content-Type": "application/json",
+			"Content-Type":                     "application/json",
+			"Access-Control-Allow-Origin":      "*",
+			"Access-Control-Allow-Credentials": "true",
 		},
 	}, nil
 }
