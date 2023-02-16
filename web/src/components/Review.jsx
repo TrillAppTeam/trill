@@ -10,7 +10,7 @@ function Review(props) {
     const { user, profilePic, rating, review, albumImg, albumName, albumYear, artist} = props.review;
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
 
             <div className="flex flex-row">
 
@@ -54,7 +54,7 @@ function Review(props) {
             </div>
 
             {/* Border Line */}
-            <div className="border-t border-gray-600 max-w-6xl mx-auto" />
+            {/* <div className="border-t border-gray-600 max-w-6xl mx-auto" /> */}
 
         </div>
     );
