@@ -45,32 +45,32 @@ function Discover() {
             <section> 
                 <Titles title="Popular Albums This Week - Globally"/>
                     <div className="text-white flex flex-row justify-center gap-8 pb-[50px] max-w-6xl mx-auto">
-                        <Album album="/blondAlbum.jpg" />
-                        <Album album="/allThingsMustPassAlbum.jpg" />
-                        <Album album="/currentsAlbum.jpg" />
-                        <Album album="/whereTheLightIsAlbum.jpg" />
-                        <Album album="/frontiersAlbum.jpg" />
-                        <Album album="/blondAlbum.jpg" />
+                        <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/allThingsMustPassAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/currentsAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/whereTheLightIsAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/frontiersAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
                     </div>
 
                 <Titles title="Popular Reviews This Week - Globally"/>
                     <div className="text-white flex flex-row justify-center gap-8 pb-[50px] max-w-6xl mx-auto">
-                        <Album album="/blondAlbum.jpg" />
-                        <Album album="/allThingsMustPassAlbum.jpg" />
-                        <Album album="/currentsAlbum.jpg" />
-                        <Album album="/whereTheLightIsAlbum.jpg" />
-                        <Album album="/frontiersAlbum.jpg" />
-                        <Album album="/blondAlbum.jpg" />
+                        <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/allThingsMustPassAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/currentsAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/whereTheLightIsAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/frontiersAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
                     </div>
 
                 <Titles title="New From Friends"/>
                     <div className="text-white flex flex-row justify-center gap-8 pb-[50px] max-w-6xl mx-auto">
-                        <Album album="/blondAlbum.jpg" />
-                        <Album album="/allThingsMustPassAlbum.jpg" />
-                        <Album album="/currentsAlbum.jpg" />
-                        <Album album="/whereTheLightIsAlbum.jpg" />
-                        <Album album="/frontiersAlbum.jpg" />
-                        <Album album="/blondAlbum.jpg" />
+                        <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/allThingsMustPassAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/currentsAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/whereTheLightIsAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/frontiersAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
                     </div>
 
                 <Titles title="Reviews from Friends"/>
