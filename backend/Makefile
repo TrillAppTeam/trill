@@ -7,7 +7,7 @@
 
 # ifeq ($(SUBDIRS),)
 # $(shell echo $(SUBDIRS))
-SUBDIRS := $(wildcard src/*)
+SUBDIRS := $(wildcard src/handlers/*)
 BRANCH_NAME := $(shell git rev-parse --abbrev-ref HEAD)
 # endif
 
