@@ -26,13 +26,19 @@ function Profile() {
         setUser(userData);
     }, []);
 
+    const userAvatar = {
+        firstName: user.firstName,
+        profilePic: user.profilePic,
+        size: "w-24"
+    }
+
     return (
         <div className="max-w-5xl mx-auto">
             {/* Profile Section */}
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
                 <div className="flex flex-row m-5">
                     {/* Profile Picture */}
-                    <Avatar user={ user } />
+                    <Avatar user={ userAvatar } />
 
                     {/* Name and Bio */}
                     <div className="pl-10">

@@ -1,13 +1,14 @@
 function Avatar(props) {
-    const { profilePic, firstName } = props.user;
+    const { profilePic, firstName, size } = props.user;
 
     return (
         <div className="avatar placeholder">
-            <div className="bg-neutral-focus text-neutral-content rounded-full w-24 ring-2 ring-trillBlue">
+            <div className={`bg-neutral-focus text-white rounded-full ring-2 ring-trillBlue hover:ring-white ${size}`}>
                 { profilePic ? 
-                    <img src={ profilePic } />
+                    <img src={ profilePic } className="aspect-w-1 aspect-h-1" />
                     :
-                    <span className="text-2xl text-white">{firstName ? firstName[0]: ""}</span> }      
+                    <span className="text-xl text-white">{firstName ? firstName[0]: ""}</span> 
+                }     
             </div>
         </div> 
     );
