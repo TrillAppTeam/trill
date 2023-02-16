@@ -27,6 +27,7 @@ function FriendsFeed() {
         <div>            
             <h1 className="font-bold text-3xl md:text-4xl text-white text-center pt-[20px] pb-10">Discover new songs together.</h1>
             <Review review={exampleReview}/>
+            <div className="border-t border-gray-600 max-w-6xl mx-auto" />
             <Review review={anotherExample}/>
         </div>
     );
