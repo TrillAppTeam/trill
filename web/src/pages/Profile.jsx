@@ -6,6 +6,7 @@ import Titles from "../components/Titles"
 import AvgReviews from "../components/AvgReviews"
 import UserStats from "../components/UserStats"
 import Album from "../components/Album"
+import Avatar from "../components/Avatar"
 
 function Profile() {
     const [user, setUser] = useState({});
@@ -19,7 +20,7 @@ function Profile() {
             following: 10,
             favs: [{}],
             reviews: [{}],
-            profilePic: null
+            profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg"
         };
 
         setUser(userData);
@@ -31,15 +32,8 @@ function Profile() {
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
                 <div className="flex flex-row m-5">
                     {/* Profile Picture */}
-                    <div className="avatar placeholder">
-                        <div className="bg-neutral-focus text-neutral-content rounded-full w-24 ring-2 ring-trillBlue">
-                            {user.profilePic ? 
-                                <span className="text-2xl text-white">{user.firstName ? user.firstName[0]: ""}</span>
-                                :
-                                <img src="https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg" />}      
-                        </div>
-                    </div> 
-                    
+                    <Avatar user={ user } />
+
                     {/* Name and Bio */}
                     <div className="pl-10">
                         <div className="flex gap-2">
@@ -64,10 +58,10 @@ function Profile() {
                 <div className="w-2/3 pt-5">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-center gap-5 pb-[50px]">
-                            <Album album="/blondAlbum.jpg" />
-                            <Album album="/allThingsMustPassAlbum.jpg" />
-                            <Album album="/currentsAlbum.jpg" />
-                            <Album album="/whereTheLightIsAlbum.jpg" />
+                            <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
+                            <Album album = {{ img: "/allThingsMustPassAlbum.jpg", size: "200"}} />
+                            <Album album = {{ img: "/currentsAlbum.jpg", size: "200"}} />
+                            <Album album = {{ img: "/whereTheLightIsAlbum.jpg", size: "200"}} />
                         </div>
 
                     <Titles title="Recent Reviews"/>

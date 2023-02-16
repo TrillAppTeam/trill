@@ -1,20 +1,33 @@
 import Album from "../components/Album"
 
 function Review(props) {
-    const { user, profilePic, rating, review, albumImg} = props.review;
+    const { user, profilePic, rating, review, albumImg, albumName, albumYear} = props.review;
 
     return (
         <div className="max-w-5xl mx-auto">
-            <div className="p-4 text-md text-gray-300 flex">
-                <Album album = {{ img : "/currentsAlbum.jpg", size : "200" }} />
-                <p className="w-3/4 ml-10">{review}</p>
+            <div className="flex flex-row">
+                {/* Album Art */}
+                <div className="p-5">
+                    <Album album = {{ img : "/currentsAlbum.jpg", size : "100" }} />
+                </div>
+
+                <div className="flex flex-col p-5">
+                    {/* Album Name and Album Year */}
+                    <div className="flex flex-row">
+                        <h1 className="text-xl font-bold text-gray-200">{albumName}</h1>
+                        <h1 className="text-xl text-gray-400">{albumYear}</h1>
+                    </div>
+
+                    {/* Profile Picture, Rating, and Listen Date */}
+                    <div>
+                         <img src={profilePic} alt="Profile Picture" className="object-cover w-12 h-12 rounded-full dark:bg-gray-500 ring-2 ring-trillBlue" />
+                    </div>
+
+                    {/* Review */}
+                    <p className="">{review}</p>
+                </div>
             </div>
         </div>
-
-
-
-
-
 
         // <div className="container flex flex-col w-full max-w-5xl p-3 mx-auto divide-y rounded-md divide-gray-600 text-gray-100 m-5">
         //     <div className="flex justify-between p-4">

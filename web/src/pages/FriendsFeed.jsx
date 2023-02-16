@@ -4,7 +4,9 @@ let exampleReview = {
     user: "Ligma Johnson",
     profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
     review: "This album altered my brain wavelengths",
-    albumImg: "/currentsAlbum.jpg"
+    albumImg: "/currentsAlbum.jpg",
+    albumName: "Currents",
+    albumYear: "2020"
 }
 
 function FriendsFeed() {
