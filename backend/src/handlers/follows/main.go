@@ -3,108 +3,50 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
-	"encoding/json"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"trill/src/models"
+	"trill/src/views"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-const SECRETS_PATH = "../../.secrets.yml"
-
-type Response events.APIGatewayProxyResponse
-
-type Secrets struct {
-	host     string `yaml:"MYSQLHOST"`
-	port     string `yaml:"MYSQLPORT"`
-	database string `yaml:"MYSQLDATABASE"`
-	user     string `yaml:"MYSQLUSER"`
-	password string `yaml:"MYSQLPASS"`
-	region   string `yaml:"AWS_DEFAULT_REGION"`
-}
-
-var secrets = Secrets{
-	os.Getenv("MYSQLHOST"),
-	os.Getenv("MYSQLPORT"),
-	os.Getenv("MYSQLDATABASE"),
-	os.Getenv("MYSQLUSER"),
-	os.Getenv("MYSQLPASS"),
-	os.Getenv("AWS_DEFAULT_REGION"),
-}
-
-type Follows struct {
-	Followee		string    `gorm:"foreignKey:Username"`
-	Following		string    `gorm:"foreignKey:Username"`
-}
-
-type User struct {
-	Username      	string    	`gorm:"primarykey;unique"`
-	Bio           	string    
-	ProfilePicture 	string    
-	Followers		[]Follows 	`gorm:"foreignkey:Followee"`
-	Following 		[]Follows 	`gorm:"foreignkey:Following"`
-}
-
-// https://github.com/gugazimmermann/fazendadojuca/blob/master/animals/main.go
-
-func connectDB() (*gorm.DB, error) {
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true", secrets.user, secrets.password, secrets.host, secrets.port, secrets.database)
-	if db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{}); err != nil {
-		return nil, fmt.Errorf("Error: Failed to connect to AWS RDS: %w", err)
-	} else {
-		return db, nil
-	}
-}
+type Request events.APIGatewayV2HTTPRequest
+type Response events.APIGatewayV2HTTPResponse
 
 func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	switch req.RequestContext.HTTP.Method {
-		case "POST":
-			return create(ctx, req)
-		case "GET":
-			if req.QueryStringParameters["type"] == "getFollowers" {
-				return getFollowers(req)
-			} else if req.QueryStringParameters["type"] == "getFollowing" {
-				return getFollowing(req)
-			} else {
-				err := fmt.Errorf("Invalid 'type' parameter for GET method")
-				return Response{StatusCode: 400, Body: err.Error()}, err
-			}
-		case "DELETE":
-			return delete(req)
-		default:
-			err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
-			return Response{StatusCode: 405, Body: err.Error()}, err
+	case "POST":
+		return create(ctx, req)
+	case "GET":
+		if req.QueryStringParameters["type"] == "getFollowers" {
+			return getFollowers(ctx, req)
+		} else if req.QueryStringParameters["type"] == "getFollowing" {
+			return getFollowing(ctx, req)
+		} else {
+			err := fmt.Errorf("invalid 'type' parameter for GET method")
+			return Response{StatusCode: 400, Body: err.Error()}, err
+		}
+	case "DELETE":
+		return delete(ctx, req)
+	default:
+		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
+		return Response{StatusCode: 405, Body: err.Error()}, err
 	}
 }
 
-// Create a follow relationship 
+// Create a follow relationship
 // @PARAMS are in the JSON body : "followee" and "following"
 func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
-	db, err := connectDB()
-	if err != nil {
-		return Response{ StatusCode: 500, Body: err.Error() }, err
-	}
-	// db.AutoMigrate(&User{})
-	// db.AutoMigrate(&Follows{})
-
 	// TO DO: Update database to be uuid instead of username, reflect here
 	// Unmarshal JSON request body into a Follows struct
-	friends := new(Follows)
-	err = json.Unmarshal([]byte(req.Body), &friends)
-	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
+
+	follows := models.Follows{}
+	if err := views.UnmarshalFollows(ctx, req.Body, &follows); err != nil {
+		return Response{StatusCode: 400, Body: "invalid request data format", Headers: views.DefaultHeaders}, nil
+	} else if err := models.CreateFollows(ctx, &follows); err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	// Add the follow relationship to the database
-	err = db.Create(&friends).Error
-	if err != nil {
-		return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
-	}
-
-	// Woo Hoo !!!
 	return Response{
 		StatusCode: 201,
 		Body:       "Successfully added to database",
@@ -114,84 +56,68 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 // Get Following
 // @PARAMS are QueryStringParameters : "username"
 // Postman: follows?type=getFollowing&username=avwede
-func getFollowing(req events.APIGatewayV2HTTPRequest) (Response, error) {
-	db, err := connectDB()
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-
-	// Get the username from the JSON request body
+func getFollowing(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	followee, ok := req.QueryStringParameters["username"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
 
-	// Given the username, find 
-	var following []Follows
-	if err := db.Where("followee = ?", followee).Find(&following).Error; err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-
-	followingJSON, err := json.Marshal(following)
+	following, err := models.GetFollowing(ctx, followee)
 	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return Response{StatusCode: 200, Body: string(followingJSON)}, nil
+	body, err := views.MarshalFollows(ctx, following)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	return Response{
+		StatusCode: 200,
+		Body:       body,
+		Headers:    views.DefaultHeaders,
+	}, nil
 }
 
 // Get Followers
 // @PARAMS are QueryStringParameters : "username"
 // Postman: follows?type=getFollowers&username=avwede
 // Currently returns in this format: [{"Followee":"avwede","Following":"csmi"},{"Followee":"avwede","Following":"dmflo"}]
-func getFollowers(req events.APIGatewayV2HTTPRequest) (Response, error) {
-	db, err := connectDB()
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-
-	// Get the username from the JSON request body
-	following, ok := req.QueryStringParameters["username"]
+func getFollowers(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	followee, ok := req.QueryStringParameters["username"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
 
-	// Given the username, find 
-	var followers []Follows
-	if err := db.Where("following = ?", following).Find(&followers).Error; err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-
-	followersJSON, err := json.Marshal(followers)
+	followers, err := models.GetFollowers(ctx, followee)
 	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return Response{StatusCode: 200, Body: string(followersJSON)}, nil
+	body, err := views.MarshalFollows(ctx, followers)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	return Response{
+		StatusCode: 200,
+		Body:       body,
+		Headers:    views.DefaultHeaders,
+	}, nil
 }
 
 // User unfollows someone
 // @PARAMS are in the JSON body : "followee" and "following"
 // Currently returns in this format: [{"Followee":"csmi","Following":"avwede"}]
-func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
-	db, err := connectDB()
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
+// TODO ensure followee == username
+func delete(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	follows := models.Follows{}
+	if err := views.UnmarshalFollows(ctx, req.Body, &follows); err != nil {
+		return Response{StatusCode: 400, Body: "invalid request data format", Headers: views.DefaultHeaders}, nil
+	} else if err := models.DeleteFollows(ctx, follows.Followee, follows.Following); err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	// Get the followee and follower from the JSON request
-	unfriend := new(Follows)
-	err = json.Unmarshal([]byte(req.Body), &unfriend)
-	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
-	}
-
-	// Find these two values in the database, then delete the record. 
-	if err := db.Where("followee = ? AND following = ?", &unfriend.Followee, &unfriend.Following).Delete(&unfriend).Error; err != nil {
-		return Response{StatusCode: 404, Body: "Cannot delete follow relationship."}, nil
-	}
-
-	// Woo Hoo !!!
 	return Response{
 		StatusCode: 201,
 		Body:       "Successfully removed from database",
