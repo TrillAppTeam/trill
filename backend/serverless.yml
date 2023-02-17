@@ -46,6 +46,7 @@ provider:
       customAuthorizer:
         type: request
         functionName: auth
+    cors: true
   environment:
     MYSQLHOST: ${self:custom.secrets.MYSQLHOST}
     MYSQLPORT: ${self:custom.secrets.MYSQLPORT}
@@ -91,7 +92,6 @@ functions:
           method: get
           authorizer: 
             name: customAuthorizer
-          cors: true
   world:
     handler: bin/world
     events:
@@ -100,7 +100,6 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-          cors: true
   usersAPI:
     handler: bin/usersAPI
     events:
@@ -109,13 +108,11 @@ functions:
           method: get
           authorizer: 
             name: customAuthorizer
-          cors: true
       - httpApi:
           path: /users
           method: put
           authorizer: 
             name: customAuthorizer
-          cors: true
   usersCognito:
     handler: bin/usersCognito
     events:
@@ -246,15 +243,3 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
-
-resources:
-  Resources:
-    GatewayResponseDefault4XX:
-      Type: 'AWS::ApiGateway::GatewayResponse'
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: DEFAULT_4XX
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
