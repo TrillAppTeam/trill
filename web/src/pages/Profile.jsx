@@ -7,6 +7,7 @@ import AvgReviews from "../components/AvgReviews"
 import UserStats from "../components/UserStats"
 import Album from "../components/Album"
 import Avatar from "../components/Avatar"
+import Review from "../components/Review";
 
 function Profile() {
     const [user, setUser] = useState({});
@@ -43,6 +44,27 @@ function Profile() {
         followingDummy.push(<Avatar user={ followingAvatars } />);
     }
 
+    let reviewDummy = {
+        user: "Ligma Johnson",
+        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
+        review: "For Kevin Parker, perfectionism is a lonely thing.",
+        rating: 5,
+        albumImg: "https://upload.wikimedia.org/wikipedia/en/9/9b/Tame_Impala_-_Currents.png",
+        albumName: "Currents",
+        albumYear: "2020",
+        artist: "Tame Impala"
+    }
+    let anotherExample = {
+        user: "Jake Gyllenhal",
+        profilePic: null,
+        review: "john mayer does it again with his live rendition",
+        rating: 10,
+        albumImg: "https://m.media-amazon.com/images/I/81lfMW3-N0L._UF1000,1000_QL80_.jpg",
+        albumName: "Where The Light Is",
+        albumYear: "2016",
+        artist: "John Mayer"
+    }
+
     return (
         <div className="max-w-5xl mx-auto">
             {/* Profile Section */}
@@ -73,16 +95,26 @@ function Profile() {
 
             <div className="flex flex-row justify-between flex-wrap pl-10 pr-10">
                 <div className="w-2/3 pt-5">
+
                     <Titles title="Favorite Albums"/>
-                        <div className="text-white flex flex-row justify-center gap-5 pb-[50px]">
+                        <div className="text-white flex flex-row justify-center gap-5 pb-5">
                             <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
                             <Album album = {{ img: "/allThingsMustPassAlbum.jpg", size: "200"}} />
                             <Album album = {{ img: "/currentsAlbum.jpg", size: "200"}} />
                             <Album album = {{ img: "/whereTheLightIsAlbum.jpg", size: "200"}} />
                         </div>
 
+                    {/* Recent Reviews: Last 2 reviews from the user */}
                     <Titles title="Recent Reviews"/>
+                    <Review review={ reviewDummy } />
+                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
+                    <Review review={anotherExample}/>
+
+                    {/* Popular Reviews: Two most popular reviews by likes, by the user */}
                     <Titles title="Popular Reviews"/>
+                    <Review review={ reviewDummy } />
+                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
+                    <Review review={anotherExample}/>
 
                     <Titles title="Following"/>
                     <div class="flex flex-col justify-center items-left max-w-6xl pb-10">
@@ -92,7 +124,7 @@ function Profile() {
                     </div>
 
                     <Titles title="Followers"/>
-                    <div class="flex flex-col justify-center items-left max-w-6xl">
+                    <div class="flex flex-col justify-center items-left max-w-6xl pb-10">
                         <div class="flex gap-2 flex-wrap">
                             {followingDummy}                         
                         </div>

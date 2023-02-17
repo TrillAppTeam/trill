@@ -15,11 +15,11 @@ function Review(props) {
             <div className="flex flex-row">
 
                 {/* Album Art */}
-                <div className="p-5 m-2">
+                <div className="p-3 m-2">
                     <Album album = {{ img : albumImg, size : "100" }} />
                 </div>
 
-                <div className="flex flex-col p-5 gap-4 w-4/5">
+                <div className="flex flex-col p-3 gap-4 w-4/5">
                     {/* Album Name and Album Year */}
                     <div className="flex flex-row gap-4">
                         <h1 className="text-xl text-gray-200">
