@@ -36,8 +36,8 @@ var secrets = Secrets{
 }
 
 type Like struct {
-	Username string
-	ReviewID int
+	Username string `json:"username"`
+	ReviewID int    `json:"review_id"`
 }
 
 func connectDB() (*gorm.DB, error) {

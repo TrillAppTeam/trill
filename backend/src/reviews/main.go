@@ -37,20 +37,20 @@ var secrets = Secrets{
 }
 
 type Review struct {
-	ReviewID   int
-	Username   string
-	AlbumID    string
-	Rating     int
-	ReviewText string
-	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	Likes      int       `gorm:"-"`
+	ReviewID   int       `json:"review_id"`
+	Username   string    `json:"username"`
+	AlbumID    string    `json:"album_id"`
+	Rating     int       `json:"rating"`
+	ReviewText string    `json:"review_text"`
+	CreatedAt  time.Time `json:"created_at" gorm:"default:CURRENT_TIMESTAMP"`
+	UpdatedAt  time.Time `json:"updated_at" gorm:"default:CURRENT_TIMESTAMP"`
+	Likes      []Like    `json:"likes" gorm:"foreignKey:ReviewID;references:ReviewID"`
 }
 
 // temp copy
 type Like struct {
-	Username string
-	ReviewID int
+	Username string `json:"username"`
+	ReviewID int    `json:"review_id"`
 }
 
 func connectDB() (*gorm.DB, error) {
@@ -105,22 +105,24 @@ func getUserReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Res
 
 	// Find the review matching the username and album ID
 	var review Review
-	var result = db.Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(&review)
+	var result = db.Preload("Likes").Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(&review)
 	if err := result.Error; err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
+
+	// conrmad is distracting me
+	// i came here to cause problems
+	// me me mow me mow
+	// can we leave these in here
+	// there was microplastics in my lunch. nohting materrs. yes
+	// my office room has no windows. my office rooms has no windows. my
+	// yeah idk. when you see the "bin/(whatever handler you're editing)" line, that is the compilation command. once the next line appears its done
+	// i believe you.
 
 	// If review does not exist, return 204 (no content)
 	if result.RowsAffected == 0 {
 		return Response{StatusCode: 204}, nil
 	}
-
-	var likeUsers []Like
-	result = db.Where("review_id = ?", review.ReviewID).Find(&likeUsers)
-	if err := result.Error; err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-	review.Likes = int(result.RowsAffected)
 
 	// Serialize review into JSON
 	reviewJSON, err := json.Marshal(review)
@@ -157,14 +159,18 @@ func getReviews(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Respon
 	var result *gorm.DB
 	switch sort {
 	case "newest":
-		result = db.Where("album_id = ?", albumID).Order("created_at desc").Find(&reviews)
+		result = db.Preload("Likes").Where("album_id = ?", albumID).Order("created_at desc").Find(&reviews)
 		break
 	case "oldest":
-		result = db.Where("album_id = ?", albumID).Order("created_at asc").Find(&reviews)
+		result = db.Preload("Likes").Where("album_id = ?", albumID).Order("created_at asc").Find(&reviews)
 		break
 	case "popular":
-		// todo
-		// result = db.Where("album_id = ?", albumID).Order("created_at desc").Find(&reviews)
+		result = db.Preload("Likes").
+			Joins("LEFT JOIN likes ON reviews.review_id = likes.review_id").
+			Where("reviews.album_id = ?", albumID).
+			Group("reviews.review_id").
+			Order("COUNT(likes.review_id) DESC").
+			Find(&reviews)
 		break
 	default:
 		return Response{StatusCode: 500, Body: "Invalid sort parameter"}, err
@@ -191,6 +197,7 @@ func getReviews(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Respon
 func createOrUpdateReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
+		// oopsy woopsy something went fucky wucky!!!
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
