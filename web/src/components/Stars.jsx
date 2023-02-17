@@ -26,7 +26,7 @@ function starSwtich(star) {
 function Stars(props) {
     return(
         <div>
-            {starSwtich(props.stars)}
+            {starSwtich(props.rating)}
         </div>
     );
 }

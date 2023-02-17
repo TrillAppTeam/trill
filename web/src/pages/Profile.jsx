@@ -7,7 +7,8 @@ import AvgReviews from "../components/AvgReviews"
 import UserStats from "../components/UserStats"
 import Album from "../components/Album"
 import Avatar from "../components/Avatar"
-import Review from "../components/Review";
+import Review from "../components/Review"
+import Stars from "../components/Stars"
 
 function Profile() {
     const [user, setUser] = useState({});
@@ -66,7 +67,8 @@ function Profile() {
     }
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
+
             {/* Profile Section */}
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
                 <div className="flex flex-row m-5">
@@ -89,23 +91,25 @@ function Profile() {
                 <div className="pt-5">
                     <UserStats />
                 </div>
-                
             </div>
             
 
-            <div className="flex flex-row justify-between flex-wrap pl-10 pr-10">
-                <div className="w-2/3 pt-5">
-
+            <div className="flex flex-row justify-between flex-wrap mx-auto mb-24">
+                <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
-                        <div className="text-white flex flex-row justify-center gap-5 pb-5">
+                        <div className="text-white flex flex-row justify-center gap-5">
                             <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
                             <Album album = {{ img: "/allThingsMustPassAlbum.jpg", size: "200"}} />
                             <Album album = {{ img: "/currentsAlbum.jpg", size: "200"}} />
                             <Album album = {{ img: "/whereTheLightIsAlbum.jpg", size: "200"}} />
                         </div>
+                </div>
+                
+                <AvgReviews />
+            </div>
 
-                    {/* Recent Reviews: Last 2 reviews from the user */}
-                    <Titles title="Recent Reviews"/>
+            {/* Recent Reviews: Last 2 reviews from the user */}
+            <Titles title="Recent Reviews"/>
                     <Review review={ reviewDummy } />
                     <div className="border-t border-gray-600 max-w-6xl mx-auto" />
                     <Review review={anotherExample}/>
@@ -129,14 +133,6 @@ function Profile() {
                             {followingDummy}                         
                         </div>
                     </div>
-
-                </div>
-
-                <div>
-                    <AvgReviews />
-                </div>
-
-            </div>
         </div>
     );
 }
