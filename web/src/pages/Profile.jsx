@@ -8,7 +8,6 @@ import UserStats from "../components/UserStats"
 import Album from "../components/Album"
 import Avatar from "../components/Avatar"
 import Review from "../components/Review"
-import Stars from "../components/Stars"
 
 function Profile() {
     const [user, setUser] = useState({});
@@ -31,13 +30,13 @@ function Profile() {
     const userAvatar = {
         firstName: user.firstName,
         profilePic: user.profilePic,
-        size: "24"
+        size: 24
     }
 
     const followingAvatars = {
         firstName: user.firstName,
         profilePic: "https://i.kym-cdn.com/photos/images/newsfeed/001/584/795/a28.png",
-        size: "10"
+        size: 8
     }
 
     const followingDummy = [];
@@ -112,25 +111,25 @@ function Profile() {
             <Titles title="Recent Reviews"/>
                     <Review review={ reviewDummy } />
                     <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <Review review={anotherExample}/>
+                    <Review review={ anotherExample }/>
 
                     {/* Popular Reviews: Two most popular reviews by likes, by the user */}
                     <Titles title="Popular Reviews"/>
                     <Review review={ reviewDummy } />
                     <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <Review review={anotherExample}/>
+                    <Review review={ anotherExample }/>
 
                     <Titles title="Following"/>
                     <div class="flex flex-col justify-center items-left max-w-6xl pb-10">
                         <div class="flex gap-2 flex-wrap">
-                            {followingDummy}                         
+                            { followingDummy }                         
                         </div>
                     </div>
 
                     <Titles title="Followers"/>
                     <div class="flex flex-col justify-center items-left max-w-6xl pb-10">
                         <div class="flex gap-2 flex-wrap">
-                            {followingDummy}                         
+                            { followingDummy }                         
                         </div>
                     </div>
         </div>

@@ -79,7 +79,7 @@ function Navbar() {
                       <span className="sr-only">Open user menu</span>
 
                       {/* User Profile Picture */}
-                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: "8" }} />
+                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: 8 }} />
 
                     </Menu.Button>
                   </div>
