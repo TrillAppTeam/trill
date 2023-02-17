@@ -67,7 +67,7 @@ function Profile() {
     }
 
     return (
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
 
             {/* Profile Section */}
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
