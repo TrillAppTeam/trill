@@ -29,7 +29,18 @@ function Profile() {
     const userAvatar = {
         firstName: user.firstName,
         profilePic: user.profilePic,
-        size: "w-24"
+        size: "24"
+    }
+
+    const followingAvatars = {
+        firstName: user.firstName,
+        profilePic: user.profilePic,
+        size: "10"
+    }
+
+    const followingDummy = [];
+    for (let i = 0; i < 35; i++) {
+        followingDummy.push(<Avatar user={ followingAvatars } />);
     }
 
     return (
@@ -72,11 +83,20 @@ function Profile() {
 
                     <Titles title="Recent Reviews"/>
                     <Titles title="Popular Reviews"/>
+
                     <Titles title="Following"/>
+                    <div class="flex flex-col justify-center items-left max-w-6xl">
+                        <div class="flex gap-2 flex-wrap">
+                            {followingDummy}                         
+                        </div>
+                    </div>
+
                 </div>
+
                 <div>
                     <AvgReviews />
                 </div>
+
             </div>
         </div>
     );
