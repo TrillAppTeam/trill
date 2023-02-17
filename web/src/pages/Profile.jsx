@@ -34,7 +34,7 @@ function Profile() {
 
     const followingAvatars = {
         firstName: user.firstName,
-        profilePic: user.profilePic,
+        profilePic: "https://i.kym-cdn.com/photos/images/newsfeed/001/584/795/a28.png",
         size: "10"
     }
 
@@ -85,6 +85,13 @@ function Profile() {
                     <Titles title="Popular Reviews"/>
 
                     <Titles title="Following"/>
+                    <div class="flex flex-col justify-center items-left max-w-6xl pb-10">
+                        <div class="flex gap-2 flex-wrap">
+                            {followingDummy}                         
+                        </div>
+                    </div>
+
+                    <Titles title="Followers"/>
                     <div class="flex flex-col justify-center items-left max-w-6xl">
                         <div class="flex gap-2 flex-wrap">
                             {followingDummy}                         
