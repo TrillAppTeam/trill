@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"strings"
+	"trill/src/utils"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -15,34 +15,13 @@ import (
 	"github.com/lestrrat-go/jwx/jwt"
 )
 
-const SECRETS_PATH = "../../.secrets.yml"
-
+type Request events.APIGatewayV2CustomAuthorizerV2Request
 type Response events.APIGatewayV2CustomAuthorizerIAMPolicyResponse
 
 type CognitoClient struct {
 	Client      *cognitoidentityprovider.Client
 	AppClientId string
 	UserPoolId  string
-}
-
-type Secrets struct {
-	host               string `yaml:"MYSQLHOST"`
-	port               string `yaml:"MYSQLPORT"`
-	database           string `yaml:"MYSQLDATABASE"`
-	user               string `yaml:"MYSQLUSER"`
-	password           string `yaml:"MYSQLPASS"`
-	cognitoAppClientId string `yaml:"COGNITO_APP_CLIENT_ID"`
-	cognitoUserPoolId  string `yaml:"COGNITO_USER_POOL_ID"`
-}
-
-var secrets = Secrets{
-	os.Getenv("MYSQLHOST"),
-	os.Getenv("MYSQLPORT"),
-	os.Getenv("MYSQLDATABASE"),
-	os.Getenv("MYSQLUSER"),
-	os.Getenv("MYSQLPASS"),
-	os.Getenv("COGNITO_APP_CLIENT_ID"),
-	os.Getenv("COGNITO_USER_POOL_ID"),
 }
 
 var (
@@ -59,22 +38,22 @@ func initClient(ctx context.Context) (*CognitoClient, error) {
 		return nil, err
 	}
 
+	secrets := utils.GetSecrets()
 	return &CognitoClient{
 		cognitoidentityprovider.NewFromConfig(cfg),
-		secrets.cognitoAppClientId,
-		secrets.cognitoUserPoolId,
+		secrets.CognitoAppClientId,
+		secrets.CognitoUserPoolId,
 	}, nil
 }
 
-func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2Request) (Response, error) {
+func verifyToken(ctx context.Context, req Request) (Response, error) {
 	cognitoClient, err := initClient(ctx)
-
 	if err != nil {
 		return generatePolicy("", nil, "Deny", req.RouteArn, ErrorAuthorizationHeader), nil
 	}
 
 	authHeader := req.Headers["authorization"]
-	fmt.Printf("authHeader: %s\n", authHeader)
+	// fmt.Printf("authHeader: %s\n", authHeader)
 	splitAuthHeader := strings.Split(authHeader, " ")
 	if len(splitAuthHeader) != 2 {
 		return generatePolicy("", nil, "Deny", req.RouteArn, ErrorAuthorizationHeader), nil
@@ -87,7 +66,7 @@ func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2R
 		return generatePolicy("", nil, "Deny", req.RouteArn, err), nil
 	}
 
-	fmt.Println(splitAuthHeader[1])
+	// fmt.Println(splitAuthHeader[1])
 	token, err := jwt.Parse(
 		[]byte(splitAuthHeader[1]),
 		jwt.WithKeySet(keySet),
@@ -99,7 +78,7 @@ func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2R
 		return generatePolicy("", nil, "Deny", req.RouteArn, err), nil
 	}
 
-	fmt.Printf("Token value: %+v\n", token)
+	// fmt.Printf("Token value: %+v\n", token)
 
 	rawUsername, found := token.Get("username")
 	if !found {
@@ -114,7 +93,6 @@ func verifyToken(ctx context.Context, req events.APIGatewayV2CustomAuthorizerV2R
 		"username": username,
 		"userID":   token.Subject(),
 	}
-
 	return generatePolicy(username, responseContext, "Allow", req.RouteArn, nil), nil
 }
 
@@ -141,7 +119,7 @@ func generatePolicy(principalID string, responseContext map[string]interface{}, 
 		authResponse.Context = responseContext
 	}
 
-	fmt.Printf("%+v\n", authResponse)
+	// fmt.Printf("%+v\n", authResponse)
 	return authResponse
 }
 
