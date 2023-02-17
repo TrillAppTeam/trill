@@ -99,14 +99,16 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
 
-	username, ok := req.QueryStringParameters["username"]
-	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	listen_later := new(ListenLater)
+
+	err = json.Unmarshal([]byte(req.Body), &listen_later)
+	if err != nil {
+		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
 	// Only allow users to add an album if they have less than 100 albums currently in their Listen Later
 	var count int64
-	if err := db.Where("username = ?", username).Count(&count).Error; err != nil {
+	if err := db.Table("listen_later").Where("username = ?", listen_later.Username).Count(&count).Error; err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
@@ -117,11 +119,6 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 
 	// TO DO: Update database to be uuid instead of username, reflect here
 	// Unmarshal JSON request body into a ListenLater struct
-	listen_later := new(ListenLater)
-	err = json.Unmarshal([]byte(req.Body), &listen_later)
-	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
-	}
 
 	// Add the album to the database
 	err = db.Create(&listen_later).Error
