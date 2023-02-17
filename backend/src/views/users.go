@@ -8,8 +8,8 @@ import (
 type User struct {
 	Username       string `json:"username"`
 	Bio            string `json:"bio"`
-	Email          string `json:"email"`
-	Nickname       string `json:"nickname"`
+	Email          string `json:"email,omitempty"`
+	Nickname       string `json:"nickname,omitempty"`
 	ProfilePicture string `json:"profilePicture"`
 }
 

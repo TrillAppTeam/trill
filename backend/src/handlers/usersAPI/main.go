@@ -7,8 +7,6 @@ import (
 	"trill/src/models"
 	"trill/src/views"
 
-	"encoding/json"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
@@ -68,8 +66,8 @@ func update(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	if err = json.Unmarshal([]byte(req.Body), &user); err != nil {
-		return Response{StatusCode: 400, Body: "invalid request body", Headers: views.DefaultHeaders}, nil
+	if err = views.UnmarshalUser(ctx, req.Body, user); err != nil {
+		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
 	} else if err = models.UpdateUser(ctx, user); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

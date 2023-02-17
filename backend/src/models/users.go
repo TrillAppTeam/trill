@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"log"
-	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 )
@@ -16,12 +15,12 @@ type CognitoUser struct {
 
 type User struct {
 	// gorm.Model
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	DeletedAt      time.Time `gorm:"index"`
-	Username       string    `gorm:"varchar(128);primarykey"`
-	Bio            string    `gorm:"varchar(1024)"`
-	ProfilePicture string    `gorm:"varchar(512)"`
+	// CreatedAt      time.Time
+	// UpdatedAt      time.Time
+	// DeletedAt      time.Time `gorm:"index"`
+	Username       string `gorm:"varchar(128);primarykey"`
+	Bio            string `gorm:"varchar(1024)"`
+	ProfilePicture string `gorm:"varchar(512)"`
 }
 
 func GetCognitoUser(ctx context.Context, authToken string) (*CognitoUser, error) {
