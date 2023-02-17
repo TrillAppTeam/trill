@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
@@ -75,4 +76,33 @@ func GetUser(ctx context.Context, username string) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func UpdateUser(ctx context.Context, user *User) error {
+	db, err := ConnectDB()
+	if err != nil {
+		return err
+	}
+
+	updatedUser := db.Save(&user)
+	if updatedUser.Error != nil {
+		return updatedUser.Error
+	}
+
+	return nil
+}
+
+func CreateUser(ctx context.Context, user *User) error {
+	db, err := ConnectDB()
+	if err != nil {
+		return err
+	}
+
+	// https://stackoverflow.com/questions/30361671/how-can-i-check-for-errors-in-crud-operations-using-gorm
+	if res := db.Create(&user); res.Error != nil {
+		log.Println(res.Error.Error())
+		return res.Error
+	} else {
+		return nil
+	}
 }

@@ -19,31 +19,32 @@ type Response = events.APIGatewayV2HTTPResponse
 func handler(ctx context.Context, req Request) (Response, error) {
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
-		return read(ctx, req)
+		return get(ctx, req)
 	case "PUT":
-		return update(req)
+		return update(ctx, req)
 	default:
 		err := fmt.Errorf("HTTP method '%s' not allowed", req.RequestContext.HTTP.Method)
-		return Response{StatusCode: 405, Body: err.Error()}, nil
+		return Response{StatusCode: 405, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 }
 
 // GET: Returns user info
-func read(ctx context.Context, req Request) (Response, error) {
+func get(ctx context.Context, req Request) (Response, error) {
 	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
 		return Response{StatusCode: 500, Body: "failed to parse username"}, nil
 	}
-	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
-
 	user, err := models.GetUser(ctx, username)
 	if err != nil { // TODO: Better error handling
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
+
+	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
 	cognitoUser, err := models.GetCognitoUser(ctx, authToken)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
+
 	body, err := views.MarshalUser(ctx, user, cognitoUser)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
@@ -52,42 +53,28 @@ func read(ctx context.Context, req Request) (Response, error) {
 	return Response{
 		StatusCode: 200,
 		Body:       body,
-		Headers: map[string]string{
-			"Content-Type": "application/json",
-		},
+		Headers:    views.DefaultHeaders,
 	}, nil
 }
 
-func update(req Request) (Response, error) {
-	db, err := connectDB()
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-
+func update(ctx context.Context, req Request) (Response, error) {
 	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
 
-	var user User
-	result := db.Where("username = ?", username).First(&user)
-	if result.Error != nil {
-		return Response{StatusCode: 404, Body: "user not found"}, nil
-	}
-
-	// put changes into new user struct
-	err = json.Unmarshal([]byte(req.Body), &user)
+	user, err := models.GetUser(ctx, username)
 	if err != nil {
-		return Response{StatusCode: 400, Body: "invalid request body"}, nil
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	// update user in the database
-	updatedUser := db.Save(&user)
-	if updatedUser.Error != nil {
-		return Response{StatusCode: 500, Body: updatedUser.Error.Error()}, nil
+	if err = json.Unmarshal([]byte(req.Body), &user); err != nil {
+		return Response{StatusCode: 400, Body: "invalid request body", Headers: views.DefaultHeaders}, nil
+	} else if err = models.UpdateUser(ctx, user); err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return Response{StatusCode: 200, Body: "user updated successfully"}, nil
+	return Response{StatusCode: 200, Body: "user updated successfully", Headers: views.DefaultHeaders}, nil
 }
 
 func main() {

@@ -25,3 +25,7 @@ func MarshalUser(ctx context.Context, userModel *models.User, cognitoUserModel *
 
 	return Marshal(ctx, user)
 }
+
+func UnmarshalUser(ctx context.Context, marshalledUser string, userModel *models.User) error {
+	return Unmarshal(ctx, marshalledUser, userModel)
+}
