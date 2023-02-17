@@ -46,6 +46,7 @@ provider:
       customAuthorizer:
         type: request
         functionName: auth
+    cors: true
   environment:
     MYSQLHOST: ${self:custom.secrets.MYSQLHOST}
     MYSQLPORT: ${self:custom.secrets.MYSQLPORT}

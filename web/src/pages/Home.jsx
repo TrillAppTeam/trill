@@ -23,7 +23,6 @@ function Home() {
                 return res;
             }),
         { refetchOnWindowFocus: false });
-
     return (
         <div className="bg-trillPurple min-h-screen flex flex-col">
             {isLoading ? <Loading/> : <>
