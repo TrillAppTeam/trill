@@ -75,11 +75,11 @@ function Navbar() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <Menu.Button className="flex rounded-full ">
+                    <Menu.Button className="flex rounded-full">
                       <span className="sr-only">Open user menu</span>
 
                       {/* User Profile Picture */}
-                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: 8 }} />
+                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: "8" }} />
 
                     </Menu.Button>
                   </div>

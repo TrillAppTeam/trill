@@ -53,7 +53,7 @@ function Discover() {
         }));
     return (
         <div>
-            {isLoading ? <Loading/> : <>
+            { isLoading ? <Loading/> : <>
             {/* Welcome Message */}
             <section>
                 <h1 className="font-bold text-3xl md:text-5xl text-white text-center pt-[20px]"> Welcome back,
@@ -126,11 +126,7 @@ function Discover() {
                 <p className="max-w-6xl mx-auto pt-2 pb-2">The 2023 Grammy Nominations for Album of the Year.</p>
                 <p className="max-w-6xl mx-auto italic text-gray-500 pb-10">WINNER: Harry's House by Harry Styles. Tyler Johnson, Kid Harpoon & Sammy Witte, producers; Jeremy Hatcher, Oli Jacobs, Nick Lobel, Spike Stent & Sammy Witte, engineers/mixers; Amy Allen, Tobias Jesso, Jr., Tyler Johnson, Kid Harpoon, Mitch Rowland, Harry Styles & Sammy Witte, songwriters; Randy Merrill, mastering engineer.</p>
             </section>
-                {/* Music News */}
-                <section>
-                    <Titles title="News"/>
-                    <NewsCard news={newsInfo}/> 
-                </section>
+
             </>}
         </div>
     );

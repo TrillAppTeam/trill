@@ -30,13 +30,13 @@ function Profile() {
     const userAvatar = {
         firstName: user.firstName,
         profilePic: user.profilePic,
-        size: 24
+        size: "24"
     }
 
     const followingAvatars = {
         firstName: user.firstName,
         profilePic: "https://i.kym-cdn.com/photos/images/newsfeed/001/584/795/a28.png",
-        size: 8
+        size: "8"
     }
 
     const followingDummy = [];
