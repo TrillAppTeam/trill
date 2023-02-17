@@ -31,7 +31,7 @@ function Review(props) {
 
                     {/* Profile Picture, Rating, and Listen Date */}
                     <div className="flex flex-row gap-4">
-                        <Avatar user={{ profilePic: profilePic, firstName: "Ashley", size: "w-6" }} />
+                        <Avatar user={{ profilePic: profilePic, firstName: "Ashley", size: "6" }} />
                         <Stars stars={ rating } />
                         
                         <p className="text-sm text-gray-500 my-auto">Listened to by
@@ -47,7 +47,7 @@ function Review(props) {
                     <div className="flex flex-row gap-2 text-gray-500 text-sm">
                         <img src={Heart} width="15" alt="Heart" />
                         <p>Like review</p>
-                        <p>1000 likes</p>
+                        <p>2000 likes</p>
                     </div>
                     
                 </div>
