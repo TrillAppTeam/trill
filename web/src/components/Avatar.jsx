@@ -3,7 +3,7 @@ function Avatar(props) {
 
     return (
         <div className="avatar placeholder">
-            <div className={`bg-neutral-focus text-white rounded-full ring-2 ring-trillBlue hover:ring-white ${size}`}>
+            <div className={`bg-neutral-focus text-white rounded-full ring-2 ring-trillBlue hover:ring-white w-${size} h-${size}`}>
                 { profilePic ? 
                     <img src={ profilePic } className="aspect-w-1 aspect-h-1" />
                     :

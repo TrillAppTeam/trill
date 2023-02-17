@@ -15,11 +15,11 @@ function Review(props) {
             <div className="flex flex-row">
 
                 {/* Album Art */}
-                <div className="p-5 m-2">
+                <div className="p-3 m-2">
                     <Album album = {{ img : albumImg, size : "100" }} />
                 </div>
 
-                <div className="flex flex-col p-5 gap-4 w-4/5">
+                <div className="flex flex-col p-3 gap-4 w-4/5">
                     {/* Album Name and Album Year */}
                     <div className="flex flex-row gap-4">
                         <h1 className="text-xl text-gray-200">
@@ -31,8 +31,8 @@ function Review(props) {
 
                     {/* Profile Picture, Rating, and Listen Date */}
                     <div className="flex flex-row gap-4">
-                        <Avatar user={{ profilePic: profilePic, firstName: "Ashley", size: "w-6" }} />
-                        <Stars stars={ rating } />
+                        <Avatar user={{ profilePic: profilePic, firstName: "Ashley", size: "6" }} />
+                        <Stars rating={ rating } />
                         
                         <p className="text-sm text-gray-500 my-auto">Listened to by
                             <span className="text-trillBlue"> {user} </span>
@@ -47,7 +47,7 @@ function Review(props) {
                     <div className="flex flex-row gap-2 text-gray-500 text-sm">
                         <img src={Heart} width="15" alt="Heart" />
                         <p>Like review</p>
-                        <p>1000 likes</p>
+                        <p>2000 likes</p>
                     </div>
                     
                 </div>
