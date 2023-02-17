@@ -1,14 +1,15 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"os"
 	"io"
-	"bytes"
+	"os"
 
 	"encoding/json"
 	"net/http"
+	"net/url"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,22 +21,22 @@ import (
 const SECRETS_PATH = "../../.secrets.yml"
 
 type Secrets struct {
-	host     string `yaml:"MYSQLHOST"`
-	port     string `yaml:"MYSQLPORT"`
-	database string `yaml:"MYSQLDATABASE"`
-	user     string `yaml:"MYSQLUSER"`
-	password string `yaml:"MYSQLPASS"`
-	region   string `yaml:"AWS_DEFAULT_REGION"`
-	spotifyID   string `yaml:"SPOTIFY_CLIENT_ID"`
-	spotifySecret   string `yaml:"SPOTIFY_CLIENT_SECRET"`
+	host          string `yaml:"MYSQLHOST"`
+	port          string `yaml:"MYSQLPORT"`
+	database      string `yaml:"MYSQLDATABASE"`
+	user          string `yaml:"MYSQLUSER"`
+	password      string `yaml:"MYSQLPASS"`
+	region        string `yaml:"AWS_DEFAULT_REGION"`
+	spotifyID     string `yaml:"SPOTIFY_CLIENT_ID"`
+	spotifySecret string `yaml:"SPOTIFY_CLIENT_SECRET"`
 }
 
 type SpotifyAlbums struct {
 	Albums struct {
 		Href  string `json:"href"`
 		Items []struct {
-			AlbumType      string `json:"album_type"`
-			ExternalUrls   struct {
+			AlbumType    string `json:"album_type"`
+			ExternalUrls struct {
 				Spotify string `json:"spotify"`
 			} `json:"external_urls"`
 			Href   string `json:"href"`
@@ -45,26 +46,32 @@ type SpotifyAlbums struct {
 				Height int    `json:"height"`
 				Width  int    `json:"width"`
 			} `json:"images"`
-			Name         string   `json:"name"`
-			ReleaseDate  string   `json:"release_date"`
-			Type         string   `json:"type"`
-			URI          string   `json:"uri"`
-			Genres       []string `json:"genres"`
-			Label        string   `json:"label"`
-			Popularity   int      `json:"popularity"`
-			Artists      []struct {
+			Name        string   `json:"name"`
+			ReleaseDate string   `json:"release_date"`
+			Type        string   `json:"type"`
+			URI         string   `json:"uri"`
+			Genres      []string `json:"genres"`
+			Label       string   `json:"label"`
+			Popularity  int      `json:"popularity"`
+			Artists     []struct {
 				ID   string `json:"id"`
 				Name string `json:"name"`
 				Type string `json:"type"`
 				URI  string `json:"uri"`
 			} `json:"artists"`
 		} `json:"items"`
-		Limit    int `json:"limit"`
+		Limit    int    `json:"limit"`
 		Next     string `json:"next"`
-		Offset   int `json:"offset"`
+		Offset   int    `json:"offset"`
 		Previous string `json:"previous"`
-		Total    int `json:"total"`
+		Total    int    `json:"total"`
 	} `json:"albums"`
+}
+
+type SpotifyToken struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int    `json:"expires_in"`
 }
 
 var secrets = Secrets{
@@ -91,8 +98,8 @@ func connectDB() (*gorm.DB, error) {
 	}
 }
 
-func handler(ctx context.Context, req events.APIGatewayProxyRequest) (Response, error) {
-	switch req.HTTPMethod {
+func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	switch req.RequestContext.HTTP.Method {
 	//case "POST":
 	//	return create(ctx, req)
 	case "GET":
@@ -103,25 +110,32 @@ func handler(ctx context.Context, req events.APIGatewayProxyRequest) (Response, 
 	// case "DELETE":
 	// 	return delete(req)
 	default:
-		err := fmt.Errorf("HTTP Method '%s' not allowed", req.HTTPMethod)
+		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
 	}
 }
 
 // GET: Returns album info
-func read(req events.APIGatewayProxyRequest) (Response, error) {
+func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	var resp SpotifyAlbums
 	var buf bytes.Buffer
 
-	query := req.QueryStringParameters["query"]
 	clientSecret := secrets.spotifySecret
 	clientID := secrets.spotifyID
 
+	query, ok := req.QueryStringParameters["query"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse query"}, nil
+	}
+
 	client := &http.Client{}
+	body := url.Values{}
+	body.Set("grant_type", "client_credentials")
+	body.Set("client_id", clientID)
+	body.Set("client_secret", clientSecret)
 
-	reqBody := []byte(fmt.Sprintf("grant_type=client_credentials&client_id=%s&client_secret=%s", clientID, clientSecret))
-
-	request, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", bytes.NewBuffer(reqBody))
+	reqBody := bytes.NewBufferString(body.Encode())
+	request, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", reqBody)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
@@ -139,22 +153,26 @@ func read(req events.APIGatewayProxyRequest) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	var AccessToken string
-	err = json.Unmarshal(buf.Bytes(), &AccessToken)
+	var token SpotifyToken
+	err = json.Unmarshal(buf.Bytes(), &token)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	request, err = http.NewRequest("GET", "https://api.spotify.com/v1/search?q="+query+"&type=album", nil)
+	encodedQuery := url.QueryEscape(query)
+
+	request, err = http.NewRequest("GET", "https://api.spotify.com/v1/search?q="+encodedQuery+"&type=album", nil)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
-	request.Header.Add("Authorization", "Bearer " + AccessToken)
+	request.Header.Add("Authorization", "Bearer "+token.AccessToken)
 	r, err := client.Do(request)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 	defer r.Body.Close()
+
+	buf.Reset()
 
 	_, err = io.Copy(&buf, r.Body)
 	if err != nil {
