@@ -11,7 +11,7 @@ function AvgReviews() {
                     <Stars rating={5} />
                 </div>
 
-                <p className="text-md italic text-gray-400 mx-auto">74 Albums Rated</p>
+                <p className="text-md italic text-gray-400 mx-auto">74 Reviews Total</p>
 
                 <div className="flex flex-col mt-2">
                     <div className="flex items-center space-x-1">
