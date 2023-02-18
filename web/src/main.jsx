@@ -14,6 +14,8 @@ import CreateAccount from './pages/CreateAccount';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import AlbumDetails from './pages/AlbumDetails';
+
 
 import {
   createBrowserRouter,
@@ -76,6 +78,11 @@ const router = createBrowserRouter([
       {
         path: "Settings",
         element: <Settings />,
+        errorElement: <Error />
+      },
+      {
+        path: "AlbumDetails",
+        element: <AlbumDetails />,
         errorElement: <Error />
       }
     ],
