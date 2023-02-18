@@ -45,16 +45,16 @@ let anotherExample = {
 }
 
 function Discover() {
-    // const { isLoading, error, data} = useQuery(['getUser'], () => 
-    //     axios.get('https://api.trytrill.com/main/users', { headers: {
-    //         'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
-    //     }}).then((res) => {
-    //         return res;
-    //     }));
-    
+    const { isLoading, error, data} = useQuery(['getUser'], () => 
+        axios.get('https://api.trytrill.com/main/users', { headers: {
+            'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
+        }}).then((res) => {
+            return res;
+        }));
+
     return (
         <div>
-            {/* { isLoading ? <Loading/> : <> */}
+            { isLoading ? <Loading/> : <>
             {/* Welcome Message */}
             <section>
                 <h1 className="font-bold text-3xl md:text-5xl text-white text-center pt-[20px]"> Welcome back,
@@ -140,7 +140,7 @@ function Discover() {
                 <p className="max-w-6xl mx-auto italic text-gray-500 pb-10">WINNER: Harry's House by Harry Styles. Tyler Johnson, Kid Harpoon & Sammy Witte, producers; Jeremy Hatcher, Oli Jacobs, Nick Lobel, Spike Stent & Sammy Witte, engineers/mixers; Amy Allen, Tobias Jesso, Jr., Tyler Johnson, Kid Harpoon, Mitch Rowland, Harry Styles & Sammy Witte, songwriters; Randy Merrill, mastering engineer.</p>
             </section>
 
-            {/* </>} */}
+            </>}
         </div>
     );
 }
