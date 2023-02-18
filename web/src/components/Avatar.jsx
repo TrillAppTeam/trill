@@ -5,9 +5,11 @@ function Avatar(props) {
         <div className="avatar placeholder">
             <div className={`bg-neutral-focus text-white rounded-full ring-2 ring-trillBlue hover:ring-white w-${size} h-${size}`}>
                 { profilePic ? 
-                    <img src={ profilePic } className={`w-${size} h-${size}`}/>
+                    <img src={ profilePic } />
                     :
-                    <span className="text-xl text-white">{firstName ? firstName[0]: ""}</span> 
+                    <span className="text-md text-white">
+                        { firstName ? firstName[0]: "" }
+                    </span> 
                 }     
             </div>
         </div> 

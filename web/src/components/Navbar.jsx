@@ -79,7 +79,7 @@ function Navbar() {
                       <span className="sr-only">Open user menu</span>
 
                       {/* User Profile Picture */}
-                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: "8" }} />
+                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: "11" }} />
 
                     </Menu.Button>
                   </div>
@@ -102,16 +102,6 @@ function Navbar() {
                           </Link>
                         )}
                       </Menu.Item>
-                      {/* <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                          >
-                            Settings
-                          </a>
-                        )}
-                      </Menu.Item> */}
                       <Menu.Item>
                         {({ active }) => (
                           <Link to='/'
