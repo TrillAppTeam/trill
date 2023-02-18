@@ -35,12 +35,12 @@ function Profile() {
 
     const followingAvatars = {
         firstName: user.firstName,
-        profilePic: "https://i.kym-cdn.com/photos/images/newsfeed/001/584/795/a28.png",
-        size: "8"
+        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
+        size: "11"
     }
 
     const followingDummy = [];
-    for (let i = 0; i < 35; i++) {
+    for (let i = 0; i < 30; i++) {
         followingDummy.push(<Avatar user={ followingAvatars } />);
     }
 
@@ -54,6 +54,7 @@ function Profile() {
         albumYear: "2020",
         artist: "Tame Impala"
     }
+
     let anotherExample = {
         user: "Jake Gyllenhal",
         profilePic: null,
@@ -109,29 +110,32 @@ function Profile() {
 
             {/* Recent Reviews: Last 2 reviews from the user */}
             <Titles title="Recent Reviews"/>
-                    <Review review={ reviewDummy } />
-                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <Review review={ anotherExample }/>
+            <Review review={ reviewDummy } />
+            <div className="border-t border-gray-600 max-w-5xl mx-auto" />
+            <Review review={ anotherExample }/>
 
-                    {/* Popular Reviews: Two most popular reviews by likes, by the user */}
-                    <Titles title="Popular Reviews"/>
-                    <Review review={ reviewDummy } />
-                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <Review review={ anotherExample }/>
+            {/* Popular Reviews: Two most popular reviews by likes, by the user */}
+            <Titles title="Popular Reviews"/>
+            <Review review={ reviewDummy } />
+            <div className="border-t border-gray-600 max-w-5xl mx-auto" />
+            <Review review={ anotherExample }/>
 
-                    <Titles title="Following"/>
-                    <div class="flex flex-col justify-center items-left max-w-6xl pb-10">
-                        <div class="flex gap-2 flex-wrap">
-                            { followingDummy }                         
-                        </div>
-                    </div>
+            {/* Following: Avatars of people the user follows */}
+            <Titles title="Following"/>
+            <div class="flex flex-col justify-center items-left max-w-5xl pb-10">
+                <div class="flex gap-2 flex-wrap">
+                    { followingDummy }                         
+                </div>
+            </div>
 
-                    <Titles title="Followers"/>
-                    <div class="flex flex-col justify-center items-left max-w-6xl pb-10">
-                        <div class="flex gap-2 flex-wrap">
-                            { followingDummy }                         
-                        </div>
-                    </div>
+            {/* Followers: Avatars of people that follow the user */}
+            <Titles title="Followers"/>
+            <div class="flex flex-col justify-center items-left max-w-5xl pb-10">
+                <div class="flex gap-2 flex-wrap">
+                    { followingDummy }                         
+                </div>
+            </div>
+            
         </div>
     );
 }
