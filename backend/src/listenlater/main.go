@@ -36,7 +36,7 @@ var secrets = Secrets{
 	os.Getenv("AWS_DEFAULT_REGION"),
 }
 
-type ListenLater struct {
+type ListenLaterAlbums struct {
 	Username string // ``gorm:"primarykey;unique"``
 	AlbumID  int
 }
@@ -99,7 +99,7 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
 
-	listen_later := new(ListenLater)
+	listen_later := new(ListenLaterAlbums)
 
 	err = json.Unmarshal([]byte(req.Body), &listen_later)
 	if err != nil {
@@ -108,7 +108,7 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 
 	// Only allow users to add an album if they have less than 100 albums currently in their Listen Later
 	var count int64
-	if err := db.Table("listen_later").Where("username = ?", listen_later.Username).Count(&count).Error; err != nil {
+	if err := db.Table("listen_later_albums").Where("username = ?", listen_later.Username).Count(&count).Error; err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
@@ -118,7 +118,7 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 	}
 
 	// TO DO: Update database to be uuid instead of username, reflect here
-	// Unmarshal JSON request body into a ListenLater struct
+	// Unmarshal JSON request body into a ListenLaterAlbums struct
 
 	// Add the album to the database
 	err = db.Create(&listen_later).Error
@@ -148,7 +148,7 @@ func getListenLater(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	}
 
 	// Given the username, find
-	var listen_later []ListenLater
+	var listen_later []ListenLaterAlbums
 	if err := db.Where("username = ?", username).Find(&listen_later).Error; err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
@@ -169,7 +169,7 @@ func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	deleteAlbum := new(ListenLater)
+	deleteAlbum := new(ListenLaterAlbums)
 	err = json.Unmarshal([]byte(req.Body), &deleteAlbum)
 	if err != nil {
 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
