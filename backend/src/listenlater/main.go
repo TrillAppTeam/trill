@@ -99,16 +99,16 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
 
-	listen_later := new(ListenLaterAlbums)
+	listen_later_albums := new(ListenLaterAlbums)
 
-	err = json.Unmarshal([]byte(req.Body), &listen_later)
+	err = json.Unmarshal([]byte(req.Body), &listen_later_albums)
 	if err != nil {
 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
 	// Only allow users to add an album if they have less than 100 albums currently in their Listen Later
 	var count int64
-	if err := db.Table("listen_later_albums").Where("username = ?", listen_later.Username).Count(&count).Error; err != nil {
+	if err := db.Table("listen_later_albums").Where("username = ?", listen_later_albums.Username).Count(&count).Error; err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
@@ -121,7 +121,7 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 	// Unmarshal JSON request body into a ListenLaterAlbums struct
 
 	// Add the album to the database
-	err = db.Create(&listen_later).Error
+	err = db.Create(&listen_later_albums).Error
 	if err != nil {
 		return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
 	}
@@ -148,12 +148,12 @@ func getListenLater(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	}
 
 	// Given the username, find
-	var listen_later []ListenLaterAlbums
-	if err := db.Where("username = ?", username).Find(&listen_later).Error; err != nil {
+	var listen_later_albums []ListenLaterAlbums
+	if err := db.Where("username = ?", username).Find(&listen_later_albums).Error; err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	listenLaterJSON, err := json.Marshal(listen_later)
+	listenLaterJSON, err := json.Marshal(listen_later_albums)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
