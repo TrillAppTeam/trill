@@ -166,21 +166,21 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-  listenlater:
-    handler: bin/listenlater
+  listenlateralbums:
+    handler: bin/listenlateralbums
     events:
       - httpApi:
-          path: /listenlater
+          path: /listenlateralbums
           method: post
           authorizer:
             name: customAuthorizer
       - httpApi:
-          path: /listenlater
+          path: /listenlateralbums
           method: delete
           authorizer:
             name: customAuthorizer
       - httpApi:
-          path: /listenlater
+          path: /listenlateralbums
           method: get
           authorizer:
             name: customAuthorizer
