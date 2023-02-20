@@ -15,8 +15,8 @@ import (
 	"github.com/lestrrat-go/jwx/jwt"
 )
 
-type Request events.APIGatewayV2CustomAuthorizerV2Request
-type Response events.APIGatewayV2CustomAuthorizerIAMPolicyResponse
+type Request = events.APIGatewayV2CustomAuthorizerV2Request
+type Response = events.APIGatewayV2CustomAuthorizerIAMPolicyResponse
 
 type CognitoClient struct {
 	Client      *cognitoidentityprovider.Client
