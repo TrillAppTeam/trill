@@ -15,7 +15,7 @@ function Titles(props) {
                 
             </div>
 
-            <div className="border-t border-gray-400 pt-5 pb-5 max-w-6xl mx-auto" />
+            <div className="border-t border-gray-400 pt-5 max-w-6xl mx-auto" />
         </div>
     );
 }

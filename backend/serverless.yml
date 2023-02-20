@@ -46,6 +46,7 @@ provider:
       customAuthorizer:
         type: request
         functionName: auth
+    cors: true
   environment:
     MYSQLHOST: ${self:custom.secrets.MYSQLHOST}
     MYSQLPORT: ${self:custom.secrets.MYSQLPORT}
@@ -99,17 +100,60 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-  users:
-    handler: bin/users
+  usersAPI:
+    handler: bin/usersAPI
+    events:
+      - httpApi:
+          path: /users
+          method: get
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /users
+          method: put
+          authorizer: 
+            name: customAuthorizer
+  usersCognito:
+    handler: bin/usersCognito
+    events:
+      - cognitoUserPool:
+          pool: trill-users
+          existing: true
+          trigger: PostConfirmation
+  likes:
+    handler: bin/likes
+    events:
+      - httpApi:
+          path: /likes
+          method: get
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /likes
+          method: put
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /likes
+          method: delete
+          authorizer: 
+            name: customAuthorizer
+  reviews:
+    handler: bin/reviews
     events:
       # - httpApi:
-      #     path: /users
+      #     path: /likes
       #     method: get
       #     authorizer: 
       #       name: customAuthorizer
       - httpApi:
-          path: /users
-          method: post
+          path: /reviews
+          method: put
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: delete
           authorizer: 
             name: customAuthorizer
   likes:
@@ -165,22 +209,22 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-  # albums:
-  #   handler: bin/albums
-  #   events:
-  #     - httpApi:
-  #         path: /albums
-  #         method: get
-  #         authorizer:
-  #           name: customAuthorizer
-  # album:
-  #   handler: bin/album
-  #   events:
-  #     - httpApi:
-  #         path: /album
-  #         method: get
-  #         authorizer:
-  #           name: customAuthorizer
+  albums:
+    handler: bin/albums
+    events:
+      - httpApi:
+          path: /albums
+          method: get
+          authorizer:
+            name: customAuthorizer
+  album:
+    handler: bin/album
+    events:
+      - httpApi:
+          path: /album
+          method: get
+          authorizer:
+            name: customAuthorizer
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
