@@ -109,7 +109,7 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 	// Only allow users to add an album if they have less than 100 albums currently in their Listen Later
 	var count int64
 	if err := db.Table("listen_later_albums").Where("username = ?", listen_later_albums.Username).Count(&count).Error; err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
+		return Response{StatusCode: 500, Body: "Failed to check count"}, err
 	}
 
 	if count >= 100 {
