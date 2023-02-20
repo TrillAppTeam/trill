@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="trill-prathikApi">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/.serverless/trill-prathikApi.zip!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

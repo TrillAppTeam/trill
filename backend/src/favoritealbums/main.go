@@ -46,8 +46,8 @@ var secrets = Secrets{
 }
 
 type FavoriteAlbums struct {
-	username string // ``gorm:"primarykey;unique"``
-	album_id string //
+	Username string
+	AlbumID  string
 }
 
 type SpotifyAlbums struct {
@@ -117,7 +117,6 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 }
 
 // User adds an album to their favorite albums. Only allows users to add an album if they have < 4 albums currently in their favorites.
-// @PARAMS - username (string), albumId (string)
 func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
@@ -126,15 +125,16 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 	// db.AutoMigrate(&User{})
 	// db.AutoMigrate(&Follows{})
 
-	username, ok := req.QueryStringParameters["username"]
-	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	insertRecord := new(FavoriteAlbums)
+	err = json.Unmarshal([]byte(req.Body), &insertRecord)
+	if err != nil {
+		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
 
 	// Only allow users to add an album if they have less than 4 albums currently in their favorites
 	var count int64
-	if err := db.Table("favorite_albums").Where("username = ?", username).Count(&count).Error; err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
+	if err := db.Table("favorite_albums").Where("username = ?", insertRecord.Username).Count(&count).Error; err != nil {
+		return Response{StatusCode: 500, Body: "Failed to check count"}, err
 	}
 
 	if count >= 4 {
@@ -142,16 +142,8 @@ func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 		return Response{StatusCode: 400, Body: err.Error()}, err
 	}
 
-	// TO DO: Update database to be uuid instead of username, reflect here
-	// Unmarshal JSON request body into a Follows struct
-	fave_albums := new(FavoriteAlbums)
-	err = json.Unmarshal([]byte(req.Body), &fave_albums)
-	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
-	}
-
 	// Add the follow relationship to the database
-	err = db.Create(&fave_albums).Error
+	err = db.Create(&insertRecord).Error
 	if err != nil {
 		return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
 	}
@@ -171,10 +163,20 @@ func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	// Get the username from the JSON request body
+	// Get the username from the request params
 	username, ok := req.QueryStringParameters["username"]
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	}
+
+	var count int64
+	if err := db.Table("favorite_albums").Where("username = ?", username).Count(&count).Error; err != nil {
+		return Response{StatusCode: 500, Body: "Failed to check count"}, err
+	}
+
+	if count == 0 {
+		str, _ := json.Marshal([]string{})
+		return Response{StatusCode: 200, Body: string(str)}, nil
 	}
 
 	// Given the username, find
@@ -186,7 +188,7 @@ func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	albumInfo := make([]SpotifyAlbums, len(fave_albums))
 
 	for i := range fave_albums {
-		album, err := getAlbumInfo(fave_albums[i].album_id)
+		album, err := getAlbumInfo(fave_albums[i].AlbumID)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error()}, err
 		}
@@ -236,8 +238,6 @@ func getAlbumInfo(albumID string) (SpotifyAlbums, error) {
 		return SpotifyAlbums{}, err
 	}
 
-	fmt.Println(token.AccessToken)
-
 	request, err = http.NewRequest("GET", "https://api.spotify.com/v1/albums/"+albumID, nil)
 	if err != nil {
 		return SpotifyAlbums{}, err
@@ -265,7 +265,6 @@ func getAlbumInfo(albumID string) (SpotifyAlbums, error) {
 }
 
 // Deletes an album from a user's favorite albums
-// @PARAMS - username (string), albumId (string)
 func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
@@ -279,13 +278,13 @@ func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	}
 
 	// Find these two values in the database, then delete the record.
-	if err := db.Where("username = ? AND album_id = ?", &deleteRecord.username, &deleteRecord.album_id).Delete(&deleteRecord).Error; err != nil {
+	if err := db.Where("username = ? AND album_id = ?", &deleteRecord.Username, &deleteRecord.AlbumID).Delete(&deleteRecord).Error; err != nil {
 		return Response{StatusCode: 404, Body: "Cannot delete favorited album."}, nil
 	}
 
 	// Woo Hoo !!!
 	return Response{
-		StatusCode: 201,
+		StatusCode: 200,
 		Body:       "Successfully removed from database",
 	}, nil
 }
