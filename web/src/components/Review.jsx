@@ -16,7 +16,7 @@ function Review(props) {
 
                 {/* Album Art */}
                 <div className="p-3 m-2">
-                    <Album album = {{ img : albumImg, size : "100" }} />
+                    <Album album = {{ img : albumImg, size : "100", name : albumName }} />
                 </div>
 
                 <div className="flex flex-col p-3 gap-4 w-4/5">
