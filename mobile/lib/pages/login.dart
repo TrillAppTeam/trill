@@ -40,6 +40,23 @@ class _LoginState extends State<Login> {
     }
   }
 
+  // don't feel like doing this lol
+  // Future<String> _onRecoverPassword(
+  //     BuildContext context, String username) async {
+  //   try {
+  //     final res = await Amplify.Auth.resetPassword(username: username);
+  //     if (res.nextStep.updateStep == 'CONFIRM_RESET_PASSWORD_WITH_CODE') {
+  //       Navigator.of(context).pushReplacementNamed(
+  //         '/confirm-reset',
+  //         arguments: LoginData(name: username, password: ''),
+  //       );
+  //     }
+  //     return null;
+  //   } on AuthException catch (e) {
+  //     return e.message;
+  //   }
+  // }
+
   Future<String?> _onSignup(BuildContext context, SignupData data) async {
     try {
       await Amplify.Auth.signUp(
@@ -106,7 +123,8 @@ class _LoginState extends State<Login> {
     return FlutterLogin(
       logo: AssetImage('images/logo.png'),
       onLogin: (data) => _onLogin(context, data),
-      onRecoverPassword: (_) => Future.value(''),
+      onRecoverPassword: (_) => Future.value(),
+      // onRecoverPassword: (username) => _onRecoverPassword(context, username),
       onSignup: (data) => _onSignup(context, data),
       theme: LoginTheme(
         primaryColor: Color(0xFF1F1D36),

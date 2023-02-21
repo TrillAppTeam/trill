@@ -13,45 +13,9 @@ class EntryScreen extends StatefulWidget {
 
 class _EntryScreenState extends State<EntryScreen> {
   @override
-  void initState() {
-    super.initState();
-    _configureAmplify();
-  }
-
-  void _configureAmplify() async {
-    try {
-      if (!Amplify.isConfigured) {
-        await Amplify.addPlugin(AmplifyAuthCognito());
-        await Amplify.configure(amplifyconfig);
-      }
-    } catch (e) {
-      safePrint(e);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // todo: figure out what to do if amplify isn't configured=
     return Scaffold(
       body: Login(),
-
-      // i wanted to check if there was a user logged in and skip the splash screen
-      // but it takes too long so everyone's going to the splash screen
-      // body: Amplify.isConfigured
-      //     ? FutureBuilder<AuthUser>(
-      //         future: Amplify.Auth.getCurrentUser(),
-      //         builder: (context, snapshot) {
-      //           if (snapshot.hasData) {
-      //             return Login();
-      //           } else {
-      //             return SplashScreen();
-      //           }
-      //         },
-      //       )
-      //     : Center(
-      //         // todo: make trill loading screen while configuring
-      //         child: CircularProgressIndicator(),
-      //       ),
     );
   }
 }

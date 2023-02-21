@@ -19,8 +19,11 @@ import 'package:trill/pages/lists/listenlater.dart';
 import 'package:trill/pages/splash.dart';
 import 'package:trill/pages/user.dart';
 
-void main() {
+import 'authentication/configure_amplify.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await configureAmplify();
   runApp(ProviderScope(child: MyApp()));
 }
 
