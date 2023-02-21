@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 // Components
 import Album from "../components/Album"
 import Avatar from "../components/Avatar"
@@ -8,6 +10,13 @@ import Heart from '/heart.svg';
 
 function Review(props) {
     const { user, profilePic, rating, review, albumImg, albumName, albumYear, artist} = props.review;
+
+    const [isLiked, setIsLiked] = useState(false);
+
+    const handleLikeClick = () => {
+        setIsLiked(!isLiked);
+    }
+    
 
     return (
         <div className="max-w-6xl mx-auto">
@@ -43,19 +52,26 @@ function Review(props) {
 
                     {/* Review */}
                     <p className="text-md">{review}</p>
+                      <div className="flex flex-row gap-2 text-gray-500 text-sm">
 
-                    <div className="flex flex-row gap-2 text-gray-500 text-sm">
-                        <img src={Heart} width="15" alt="Heart" />
-                        <p>Like review</p>
+                        <div
+                        onClick={handleLikeClick}
+                        className="flex gap-1 items-center transition duration-300 ease-in-out hover:text-gray-400 cursor-pointer"
+                        >
+                            <p className={`${isLiked ? 'text-red-500' : 'text-gray-500'} heart-icon`}>
+                                ❤︎
+                            </p>
+
+                            <p className={`${isLiked ? 'font-bold text-gray-300' : ''}`}>
+                                {isLiked ? 'Liked' : 'Like review'}
+                            </p>
+                        </div>
+
                         <p>2000 likes</p>
                     </div>
                     
                 </div>
             </div>
-
-            {/* Border Line */}
-            {/* <div className="border-t border-gray-600 max-w-6xl mx-auto" /> */}
-
         </div>
     );
 }
