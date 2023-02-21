@@ -1,115 +1,185 @@
-import 'package:flutter/gestures.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:flutter_login/flutter_login.dart';
 
-class LogInScreen extends StatelessWidget {
+class Login extends StatefulWidget {
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  SignupData? _signupData;
+  bool _isSignedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _logOut();
+  }
+
+  void _logOut() async {
+    try {
+      await Amplify.Auth.signOut();
+    } catch (e) {
+      safePrint(e);
+    }
+  }
+
+  Future<String?> _onLogin(BuildContext context, LoginData data) async {
+    try {
+      final res = await Amplify.Auth.signIn(
+        username: data.name,
+        password: data.password,
+      );
+      _isSignedIn = res.isSignedIn;
+      return null;
+    } on AuthException catch (e) {
+      return e.message;
+    }
+  }
+
+  Future<String?> _onSignup(BuildContext context, SignupData data) async {
+    try {
+      await Amplify.Auth.signUp(
+        username: data.name!,
+        password: data.password!,
+        options: CognitoSignUpOptions(
+          userAttributes: {
+            CognitoUserAttributeKey.email: data.additionalSignupData!['Email']!,
+            CognitoUserAttributeKey.nickname:
+                data.additionalSignupData!['Nickname']!,
+          },
+        ),
+      );
+      _signupData = data;
+      return null;
+    } on AuthException catch (e) {
+      return e.message;
+    }
+  }
+
+  static String? usernameValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Username cannot be empty';
+    }
+    return null;
+  }
+
+  static String? passwordValidator(String? value) {
+    // https://stackoverflow.com/a/21456918
+    // special character list from cognito console: ^$*.[]{}()?-"!@#%&/\,><':;|_~`+ =
+    if (value == null || value.isEmpty || value.length < 8) {
+      return 'Password must contain at least 8 characters';
+    } else if (!value.contains(RegExp(r'[a-z]'))) {
+      return 'Password must contain a lowercase letter';
+    } else if (!value.contains(RegExp(r'[A-Z]'))) {
+      return 'Password must contain an uppercase letter';
+    } else if (!value.contains(RegExp(r'[0-9]'))) {
+      return 'Password must contain a number';
+    } else if (!value.contains(
+        RegExp(r'''[\^$*.\[\]{}\(\)?\-"!@#%&\/\\,><\':;|_~`+= ]'''))) {
+      return 'Password must contain a special character';
+    } else if (value.startsWith(' ') || value.endsWith(' ')) {
+      return 'Password must not begin or end with a space';
+    }
+    return null;
+  }
+
+  static String? nicknameValidator(String? value) {
+    if (value == null || value.isEmpty || !Regex.nickname.hasMatch(value)) {
+      return 'Name must only contain letters';
+    }
+    return null;
+  }
+
+  static String? emailValidator(String? value) {
+    if (value == null || value.isEmpty || !Regex.email.hasMatch(value)) {
+      return 'Invalid email';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 64.0,
+    return FlutterLogin(
+      logo: AssetImage('images/logo.png'),
+      onLogin: (data) => _onLogin(context, data),
+      onRecoverPassword: (_) => Future.value(''),
+      onSignup: (data) => _onSignup(context, data),
+      theme: LoginTheme(
+        primaryColor: Color(0xFF1F1D36),
+        accentColor: Color(0xFF3FBCF4),
+        buttonStyle: TextStyle(
+          color: Colors.black,
+        ),
+        cardTheme: CardTheme(
+          color: Color(0xFFEEEEEE),
+          elevation: 5,
+          margin: EdgeInsets.only(top: 15),
+        ),
+        inputTheme: InputDecorationTheme(
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFFAAAAAA), width: 3),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 200),
-              Image.asset(
-                'images/logo.png',
-                width: 200,
-              ),
-              SizedBox(height: 30),
-              Text(
-                "Login",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 5),
-              Text("Please log in to continue."),
-              SizedBox(height: 25),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xff666666),
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    hintText: "Username",
-                    hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 12,
-                    ),
-                    isDense: true,
-                  ),
-                ),
-              ),
-              SizedBox(height: 15),
-              Container(
-                decoration: BoxDecoration(
-                  color: Color(0xff666666),
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: TextField(
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    hintText: "Password",
-                    hintStyle: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 12,
-                    ),
-                    isDense: true,
-                  ),
-                ),
-              ),
-              SizedBox(height: 5),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Forgot password?',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF3FBCF4),
-                  ),
-                ),
-              ),
-              SizedBox(height: 15),
-              ElevatedButton(
-                child: Text('Login'),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/main');
-                },
-              ),
-              SizedBox(height: 15),
-              RichText(
-                text: TextSpan(
-                  text: 'Don\'t have an account? Please ',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF3FBCF4),
-                  ),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: 'Sign Up',
-                      style: TextStyle(
-                        color: Color(0xFFBF40BF),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () => Navigator.pushNamed(context, '/signup'),
-                    ),
-                    TextSpan(text: ' first.'),
-                  ],
-                ),
-              )
-            ],
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color(0xFFAAAAAA), width: 3),
+          ),
+          iconColor: Color(0xFF3FBCF4),
+          focusColor: Color(0xFF3FBCF4),
+        ),
+        buttonTheme: LoginButtonTheme(
+          backgroundColor: Color(0xFF3FBCF4),
+          highlightColor: Color(0xFF1F9CD4),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
           ),
         ),
+        authButtonPadding: EdgeInsets.fromLTRB(25, 20, 25, 10),
       ),
+      onSubmitAnimationCompleted: () {
+        if (!_isSignedIn) {
+          Navigator.of(context).pushReplacementNamed(
+            '/confirm',
+            arguments: _signupData,
+          );
+        } else {
+          Navigator.of(context).pushReplacementNamed('/main');
+        }
+      },
+      userType: LoginUserType.name,
+      userValidator: (value) => usernameValidator(value),
+      passwordValidator: (value) => passwordValidator(value),
+      messages: LoginMessages(
+        additionalSignUpFormDescription:
+            'Please provide your name and email for confirmation',
+        userHint: 'Username',
+        confirmPasswordError: 'Passwords do not match',
+      ),
+      additionalSignupFields: [
+        UserFormField(
+          keyName: 'Nickname',
+          icon: Icon(Icons.face),
+          displayName: 'Name',
+          fieldValidator: (value) => nicknameValidator(value),
+        ),
+        UserFormField(
+          keyName: 'Email',
+          icon: Icon(Icons.mail_outline),
+          fieldValidator: (value) => emailValidator(value),
+        ),
+      ],
     );
   }
 }
+
+class Regex {
+  // https://stackoverflow.com/a/69111624
+  static final nickname = RegExp(r'^[A-Za-z]+$');
+  // https://stackoverflow.com/a/32686261/9449426
+  static final email = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+}
+
+// todo: fix "an activation link has been sent" when sending confirmation page
+// there is already a user signed in issue

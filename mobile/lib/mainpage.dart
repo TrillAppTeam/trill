@@ -1,3 +1,5 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/pages/home.dart';
 import 'package:trill/pages/profile.dart';
@@ -18,9 +20,55 @@ class _MainPageState extends State<MainPage> {
     ProfileScreen(),
   ];
 
+  // todo: pass user data to screens
+  AuthUser? _user;
+  String? _userEmail;
+  String? _userNickname;
+  @override
+  void initState() {
+    super.initState();
+    try {
+      Amplify.Auth.getCurrentUser().then((user) {
+        setState(() {
+          _user = user;
+        });
+      });
+      Amplify.Auth.fetchUserAttributes().then((attributes) {
+        setState(() {
+          // this is so scuffed lol
+          for (final element in attributes) {
+            if (element.userAttributeKey == CognitoUserAttributeKey.email) {
+              _userEmail = element.value;
+            } else if (element.userAttributeKey ==
+                CognitoUserAttributeKey.nickname) {
+              _userNickname = element.value;
+            }
+          }
+        });
+      });
+    } on AuthException catch (e) {
+      print(e.message);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // temp appbar for button to test signing out
+      // todo: implement button actually
+      appBar: AppBar(
+        // title: Text('Hello ${_userNickname!}'),
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              Amplify.Auth.signOut().then((_) {
+                Navigator.pushReplacementNamed(context, '/');
+              });
+            },
+            child: Icon(Icons.logout),
+          ),
+        ],
+      ),
       // IndexedStack keeps the states of each page
       body: IndexedStack(
         index: currentIndex,

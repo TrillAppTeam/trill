@@ -1,13 +1,17 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Trill'),
-      ),
       drawer: Drawer(
         child: Container(
           color: Color(0xFF1A1B29),
@@ -18,9 +22,8 @@ class HomeScreen extends StatelessWidget {
               Container(
                 padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(1000.0),
-                  child: Image.asset("images/gerber.jpg", fit: BoxFit.cover)
-                ),
+                    borderRadius: BorderRadius.circular(1000.0),
+                    child: Image.asset("images/gerber.jpg", fit: BoxFit.cover)),
               ),
               SizedBox(height: 10),
               Column(children: [
@@ -42,22 +45,18 @@ class HomeScreen extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xFFBC6AAB),
-                            width: 1
-                        ),
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(30)
-                        ),
+                        border: Border.all(color: Color(0xFFBC6AAB), width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
                       ),
                       child: Center(
                         child: RichText(
                           text: TextSpan(
-                            text: 'Followers: 100',
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                            recognizer: TapGestureRecognizer()
-                            ..onTap = () => Navigator.pushNamed(context, '/followers')
-                          ),
+                              text: 'Followers: 100',
+                              style: TextStyle(
+                                  fontSize: 11, fontWeight: FontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () =>
+                                    Navigator.pushNamed(context, '/followers')),
                         ),
                       ),
                     ),
@@ -65,22 +64,18 @@ class HomeScreen extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xFFBC6AAB),
-                            width: 1
-                        ),
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(30)
-                        ),
+                        border: Border.all(color: Color(0xFFBC6AAB), width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
                       ),
                       child: Center(
                         child: RichText(
                           text: TextSpan(
                               text: 'Following: 100',
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontSize: 11, fontWeight: FontWeight.bold),
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () => Navigator.pushNamed(context, '/following')
-                          ),
+                                ..onTap = () =>
+                                    Navigator.pushNamed(context, '/following')),
                         ),
                       ),
                     ),
@@ -97,7 +92,8 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.library_music_outlined, color: Colors.white),
+                leading:
+                    Icon(Icons.library_music_outlined, color: Colors.white),
                 title: const Text('Albums'),
                 onTap: () {
                   Navigator.pushNamed(context, '/albums');
@@ -111,14 +107,16 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: Icon(Icons.format_list_bulleted_outlined, color: Colors.white),
+                leading: Icon(Icons.format_list_bulleted_outlined,
+                    color: Colors.white),
                 title: const Text('Listen Later'),
                 onTap: () {
                   Navigator.pushNamed(context, '/listenlater');
                 },
               ),
               ListTile(
-                leading: Icon(Icons.favorite_outline_outlined, color: Colors.white),
+                leading:
+                    Icon(Icons.favorite_outline_outlined, color: Colors.white),
                 title: const Text('Likes'),
                 onTap: () {
                   Navigator.pushNamed(context, '/likes');
