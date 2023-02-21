@@ -21,13 +21,16 @@ function ListenLater() {
         );
     }
     return (
-        <div className="max-w-6xl mx-auto">            
+        <div className="max-w-6xl mx-auto">           
+
             <h1 className="font-bold text-3xl md:text-4xl text-white text-center pt-[20px] pb-10">Don't miss a beat. Save it for later.</h1>
             
             <Titles title="You want to listen to 50 albums" />
+            
             <div className="text-white flex flex-row flex-wrap justify-center gap-4 max-w-6xl mx-auto">
                 {dummyAlbums}  
             </div>
+
         </div>
     );
 }
