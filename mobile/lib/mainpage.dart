@@ -30,24 +30,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     try {
       fetchAuthSession();
-      // Amplify.Auth.getCurrentUser().then((user) {
-      //   setState(() {
-      //     _user = user;
-      //   });
-      // });
-      // Amplify.Auth.fetchUserAttributes().then((attributes) {
-      //   setState(() {
-      //     // this is so scuffed lol
-      //     for (final element in attributes) {
-      //       if (element.userAttributeKey == CognitoUserAttributeKey.email) {
-      //         _userEmail = element.value;
-      //       } else if (element.userAttributeKey ==
-      //           CognitoUserAttributeKey.nickname) {
-      //         _userNickname = element.value;
-      //       }
-      //     }
-      //   });
-      // });
+      getCognitoUser();
     } on AuthException catch (e) {
       print(e.message);
     }
@@ -65,13 +48,39 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
+  Future<void> getCognitoUser() async {
+    try {
+      final user = await Amplify.Auth.getCurrentUser();
+      setState(() {
+        _user = user;
+      });
+
+      final attributes = await Amplify.Auth.fetchUserAttributes();
+      setState(() {
+        // this is so scuffed lol
+        for (final element in attributes) {
+          if (element.userAttributeKey == CognitoUserAttributeKey.email) {
+            _userEmail = element.value;
+          } else if (element.userAttributeKey ==
+              CognitoUserAttributeKey.nickname) {
+            _userNickname = element.value;
+          }
+        }
+      });
+    } on AmplifyAlreadyConfiguredException catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // temp appbar for button to test signing out
       // todo: implement button actually
       appBar: AppBar(
-        // title: Text('Hello ${_userNickname!}'),
+        title: Text(_userNickname != null
+            ? 'Hello ${_userNickname!}'
+            : 'i hate cognito'),
         actions: [
           MaterialButton(
             onPressed: () {
