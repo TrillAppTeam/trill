@@ -56,13 +56,13 @@ function Review(props) {
 
                         <div
                         onClick={handleLikeClick}
-                        className="flex gap-1 items-center transition duration-300 ease-in-out hover:text-gray-400 cursor-pointer"
+                        className="flex gap-1 items-center transition duration-300 ease-in-out hover:text-gray-400 cursor-pointer font-bold"
                         >
-                            <p className={`${isLiked ? 'text-red-500' : 'text-gray-500'} heart-icon`}>
+                            <p className={`${isLiked ? 'text-red-500' : 'text-gray-500'}`}>
                                 ❤︎
                             </p>
 
-                            <p className={`${isLiked ? 'font-bold text-gray-300' : ''}`}>
+                            <p className={`${isLiked ? 'text-gray-300' : ''}`}>
                                 {isLiked ? 'Liked' : 'Like review'}
                             </p>
                         </div>
