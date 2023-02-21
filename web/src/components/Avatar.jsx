@@ -7,7 +7,7 @@ function Avatar(props) {
                 { profilePic ? 
                     <img src={ profilePic } />
                     :
-                    <span className="text-md text-white">
+                    <span className="text-md text-white uppercase">
                         { firstName ? firstName[0]: "" }
                     </span> 
                 }     
