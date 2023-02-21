@@ -24,30 +24,44 @@ class _MainPageState extends State<MainPage> {
   AuthUser? _user;
   String? _userEmail;
   String? _userNickname;
+  CognitoAuthSession? cognitoSession;
   @override
   void initState() {
     super.initState();
     try {
-      Amplify.Auth.getCurrentUser().then((user) {
-        setState(() {
-          _user = user;
-        });
-      });
-      Amplify.Auth.fetchUserAttributes().then((attributes) {
-        setState(() {
-          // this is so scuffed lol
-          for (final element in attributes) {
-            if (element.userAttributeKey == CognitoUserAttributeKey.email) {
-              _userEmail = element.value;
-            } else if (element.userAttributeKey ==
-                CognitoUserAttributeKey.nickname) {
-              _userNickname = element.value;
-            }
-          }
-        });
-      });
+      fetchAuthSession();
+      // Amplify.Auth.getCurrentUser().then((user) {
+      //   setState(() {
+      //     _user = user;
+      //   });
+      // });
+      // Amplify.Auth.fetchUserAttributes().then((attributes) {
+      //   setState(() {
+      //     // this is so scuffed lol
+      //     for (final element in attributes) {
+      //       if (element.userAttributeKey == CognitoUserAttributeKey.email) {
+      //         _userEmail = element.value;
+      //       } else if (element.userAttributeKey ==
+      //           CognitoUserAttributeKey.nickname) {
+      //         _userNickname = element.value;
+      //       }
+      //     }
+      //   });
+      // });
     } on AuthException catch (e) {
       print(e.message);
+    }
+  }
+
+  Future<void> fetchAuthSession() async {
+    try {
+      final result = await Amplify.Auth.fetchAuthSession(
+        options: CognitoSessionOptions(getAWSCredentials: true),
+      );
+      cognitoSession = result as CognitoAuthSession;
+      safePrint('access token: ${cognitoSession!.userPoolTokens!.accessToken}');
+    } on AuthException catch (e) {
+      safePrint(e.message);
     }
   }
 
