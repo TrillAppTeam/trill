@@ -6,6 +6,9 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
 import TrillLogo from "/trillTransparent.png"
 
+// Components
+import Avatar from "./Avatar";
+
 const navigation = [
   { name: 'Discover', link: '', current: true },
   { name: 'Friends Feed', link: 'FriendsFeed', current: false },
@@ -72,13 +75,12 @@ function Navbar() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <Menu.Button className="flex rounded-full bg-gray-800 text-sm ring-trillBlue ring-2 ring-offset-2 ring-offset-gray-800 hover:ring-white">
+                    <Menu.Button className="flex rounded-full">
                       <span className="sr-only">Open user menu</span>
-                      <img
-                        className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        alt=""
-                      />
+
+                      {/* User Profile Picture */}
+                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: "11" }} />
+
                     </Menu.Button>
                   </div>
                   <Transition
@@ -100,16 +102,6 @@ function Navbar() {
                           </Link>
                         )}
                       </Menu.Item>
-                      {/* <Menu.Item>
-                        {({ active }) => (
-                          <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
-                          >
-                            Settings
-                          </a>
-                        )}
-                      </Menu.Item> */}
                       <Menu.Item>
                         {({ active }) => (
                           <Link to='/'

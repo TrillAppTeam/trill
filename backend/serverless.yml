@@ -141,11 +141,11 @@ functions:
   reviews:
     handler: bin/reviews
     events:
-      # - httpApi:
-      #     path: /likes
-      #     method: get
-      #     authorizer: 
-      #       name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: get
+          authorizer: 
+            name: customAuthorizer
       - httpApi:
           path: /reviews
           method: put
@@ -154,7 +154,7 @@ functions:
       - httpApi:
           path: /reviews
           method: delete
-          authorizer: 
+          authorizer:
             name: customAuthorizer
   follows:
     handler: bin/follows
@@ -174,22 +174,22 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-  # albums:
-  #   handler: bin/albums
-  #   events:
-  #     - httpApi:
-  #         path: /albums
-  #         method: get
-  #         authorizer:
-  #           name: customAuthorizer
-  # album:
-  #   handler: bin/album
-  #   events:
-  #     - httpApi:
-  #         path: /album
-  #         method: get
-  #         authorizer:
-  #           name: customAuthorizer
+  albums:
+    handler: bin/albums
+    events:
+      - httpApi:
+          path: /albums
+          method: get
+          authorizer:
+            name: customAuthorizer
+  album:
+    handler: bin/album
+    events:
+      - httpApi:
+          path: /album
+          method: get
+          authorizer:
+            name: customAuthorizer
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
