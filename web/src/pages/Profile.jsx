@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
  
 // Components
 import Titles from "../components/Titles"
@@ -26,6 +27,15 @@ function Profile() {
 
         setUser(userData);
     }, []);
+    // GET user info
+    // GET favoriteAlbums
+    // GET following / follower count --> list of these users and their profile pictures
+    // GET number of reviewed albums
+    // GET recent reviews 
+
+    const {data: userData, error: userError} = useQuery({ queryKey: ['users'] });
+    const {data: following, error: followingError} = useQuery({ queryKey: [`follows?type=getFollowing&username=${userData?.data.username}`] });
+    const {data: followers, error: followerError} = useQuery({ queryKey: [`follows?type=getFollowers&username=${userData?.data.username}`] });
 
     const userAvatar = {
         firstName: user.firstName,
@@ -68,7 +78,7 @@ function Profile() {
 
     return (
         <div className="max-w-5xl mx-auto">
-
+            {console.log(followers?.data)}
             {/* Profile Section */}
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
                 <div className="flex flex-row m-5">
@@ -78,18 +88,18 @@ function Profile() {
                     {/* Name and Bio */}
                     <div className="pl-10">
                         <div className="flex gap-2">
-                            <h1 className="font-bold text-white text-3xl">{user.firstName}</h1>
+                            <h1 className="font-bold text-white text-3xl">{userData?.data.nickname}</h1>
                             <Link to="/User/Settings">
                                 <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
                             </Link>
                         </div>
-                        <h2 className="text-xl pt-2">{user.bio}</h2>
+                        <h2 className="text-xl pt-2">{userData?.data.bio}</h2>
                     </div>
                 </div>
               
                 {/* User Statistics */}
                 <div className="pt-5">
-                    <UserStats />
+                    <UserStats albums={30} followers={followers?.data.length} following={following?.data.length}/>
                 </div>
             </div>
             
@@ -122,17 +132,19 @@ function Profile() {
 
             {/* Following: Avatars of people the user follows */}
             <Titles title="Following"/>
-            <div class="flex flex-col justify-center items-left max-w-5xl pb-10">
-                <div class="flex gap-2 flex-wrap">
-                    { followingDummy }                         
+            <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
+                <div className="flex gap-2 flex-wrap">
+                    {/* { followingDummy } */}
+                    {following?.data.map(foll => {<Avatar user={{profilePic: null, firstName: foll.Following, size: '11'}}/>})}                     
                 </div>
             </div>
 
             {/* Followers: Avatars of people that follow the user */}
             <Titles title="Followers"/>
-            <div class="flex flex-col justify-center items-left max-w-5xl pb-10">
-                <div class="flex gap-2 flex-wrap">
-                    { followingDummy }                         
+            <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
+                <div className="flex gap-2 flex-wrap">
+                    {/* { followingDummy } */}
+                    {followers?.data.map(foll => {<Avatar user={{profilePic: null, firstName: foll.Followee, size: '11'}}/>})}
                 </div>
             </div>
             
