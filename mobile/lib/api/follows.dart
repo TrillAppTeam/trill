@@ -1,39 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-// temp copy
-Future<void> fetchAuthSession() async {
-  try {
-    final result = await Amplify.Auth.fetchAuthSession(
-      options: CognitoSessionOptions(getAWSCredentials: true),
-    );
-
-    final cognitoSession = result as CognitoAuthSession;
-
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', cognitoSession.userPoolTokens!.accessToken);
-    safePrint('access token: ${cognitoSession.userPoolTokens!.accessToken}');
-  } on AuthException catch (e) {
-    safePrint(e.message);
-  }
-}
-
 Future<List<Follow>> getFollowers(String username) async {
-  safePrint('Get Followers - username: $username');
+  const String tag = '[getFollowers]';
+
+  safePrint('$tag username: $username');
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-  // idk what im doing
-  if (prefs.getString('token') == null) {
-    await fetchAuthSession();
-  }
   String token = prefs.getString('token') ?? "";
-  safePrint('api access token: $token');
+  safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
@@ -44,19 +22,46 @@ Future<List<Follow>> getFollowers(String username) async {
   );
 
   if (response.statusCode == 200) {
-    safePrint(response.body);
+    safePrint('$tag ${response.body}');
     return List<Follow>.from(
         json.decode(response.body).map((x) => Follow.fromJson(x)));
   } else {
-    safePrint(response.statusCode);
-    safePrint(response.body);
+    safePrint('$tag ${response.statusCode}');
+    safePrint('$tag ${response.body}');
     throw Exception('Failed to load followers');
   }
 }
 
+Future<List<Follow>> getFollowing(String username) async {
+  const String tag = '[getFollowing]';
+
+  safePrint('$tag username: $username');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? "";
+  safePrint('$tag access token: $token');
+
+  final response = await http.get(
+    Uri.parse(
+        'https://api.trytrill.com/main/follows?type=getFollowing&username=$username'),
+    headers: {
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    safePrint('$tag ${response.body}');
+    return List<Follow>.from(
+        json.decode(response.body).map((x) => Follow.fromJson(x)));
+  } else {
+    safePrint('$tag ${response.statusCode}');
+    safePrint('$tag ${response.body}');
+    throw Exception('Failed to load following');
+  }
+}
+
 class Follow {
-  final int followee;
-  final int following;
+  final String followee;
+  final String following;
 
   const Follow({
     required this.followee,
@@ -64,9 +69,10 @@ class Follow {
   });
 
   factory Follow.fromJson(Map<String, dynamic> json) {
+    // todo: lowercase json keys once backend is changed
     return Follow(
-      followee: json['followee'],
-      following: json['following'],
+      followee: json['Followee'],
+      following: json['Following'],
     );
   }
 }

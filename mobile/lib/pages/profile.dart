@@ -9,12 +9,6 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   @override
-  void initState() {
-    super.initState();
-    getFollowers("cathychian");
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
@@ -57,15 +51,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     BorderRadius.all(Radius.circular(30)),
                               ),
                               child: Center(
-                                child: RichText(
-                                  text: TextSpan(
-                                      text: 'Followers: 100',
-                                      style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () => Navigator.pushNamed(
-                                            context, '/followers')),
+                                child: FutureBuilder<List<Follow>>(
+                                  // todo: get username from store preferences and store in widget
+                                  future: getFollowers("avwede"),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      String followerCount =
+                                          snapshot.data!.length.toString();
+                                      return RichText(
+                                        text: TextSpan(
+                                          text: 'Followers: $followerCount',
+                                          style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => Navigator.pushNamed(
+                                                context, '/followers'),
+                                        ),
+                                      );
+                                    } else {
+                                      return Text('Loading');
+                                    }
+                                  },
                                 ),
                               ),
                             ),
@@ -79,15 +86,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     BorderRadius.all(Radius.circular(30)),
                               ),
                               child: Center(
-                                child: RichText(
-                                  text: TextSpan(
-                                      text: 'Following: 100',
-                                      style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () => Navigator.pushNamed(
-                                            context, '/following')),
+                                child: FutureBuilder<List<Follow>>(
+                                  // todo: get username from store preferences and store in widget
+                                  future: getFollowing("avwede"),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      String followerCount =
+                                          snapshot.data!.length.toString();
+                                      return RichText(
+                                        text: TextSpan(
+                                          text: 'Followers: $followerCount',
+                                          style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.bold),
+                                          recognizer: TapGestureRecognizer()
+                                            ..onTap = () => Navigator.pushNamed(
+                                                context, '/followers'),
+                                        ),
+                                      );
+                                    } else {
+                                      return Text('Loading');
+                                    }
+                                  },
                                 ),
                               ),
                             ),

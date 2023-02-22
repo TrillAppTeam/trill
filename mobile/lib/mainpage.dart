@@ -23,7 +23,7 @@ class _MainPageState extends State<MainPage> {
 
   // todo: need to fix how user info is saved so that we don't call use any info before it's saved
   late SharedPreferences prefs;
-  String? nickname;
+  bool _setAccessToken = false;
 
   @override
   void initState() {
@@ -48,6 +48,10 @@ class _MainPageState extends State<MainPage> {
       await prefs.setString(
           'token', cognitoSession.userPoolTokens!.accessToken);
       safePrint('access token: ${cognitoSession.userPoolTokens!.accessToken}');
+
+      setState(() {
+        _setAccessToken = true;
+      });
     } on AuthException catch (e) {
       safePrint(e.message);
     }
@@ -73,67 +77,69 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // temp appbar for button to test signing out
-      // todo: implement button actually
-      appBar: AppBar(
-        actions: [
-          MaterialButton(
-            onPressed: () {
-              Amplify.Auth.signOut().then((_) {
-                Navigator.pushReplacementNamed(context, '/entry');
-              });
-            },
-            child: Icon(Icons.logout),
-          ),
-        ],
-      ),
-      // IndexedStack keeps the states of each page
-      body: IndexedStack(
-        index: currentIndex,
-        children: screens,
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Color(0xFFBC6AAB).withOpacity(.2),
-              blurRadius: 15,
+    return !_setAccessToken
+        ? Scaffold(body: Center(child: CircularProgressIndicator()))
+        : Scaffold(
+            // temp appbar for button to test signing out
+            // todo: implement button actually
+            appBar: AppBar(
+              actions: [
+                MaterialButton(
+                  onPressed: () {
+                    Amplify.Auth.signOut().then((_) {
+                      Navigator.pushReplacementNamed(context, '/entry');
+                    });
+                  },
+                  child: Icon(Icons.logout),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: Color(0xFF1A1B29),
-          selectedItemColor: Color(0xFFBC6AAB),
-          unselectedItemColor: Color(0xFF888888),
-          showUnselectedLabels: false,
-          iconSize: 30,
-          elevation: 10,
-          currentIndex: currentIndex,
-          onTap: (index) {
-            setState(() {
-              currentIndex = index;
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: '____',
+            // IndexedStack keeps the states of each page
+            body: IndexedStack(
+              index: currentIndex,
+              children: screens,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search_outlined),
-              activeIcon: Icon(Icons.search),
-              label: '____',
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0xFFBC6AAB).withOpacity(.2),
+                    blurRadius: 15,
+                  ),
+                ],
+              ),
+              child: BottomNavigationBar(
+                backgroundColor: Color(0xFF1A1B29),
+                selectedItemColor: Color(0xFFBC6AAB),
+                unselectedItemColor: Color(0xFF888888),
+                showUnselectedLabels: false,
+                iconSize: 30,
+                elevation: 10,
+                currentIndex: currentIndex,
+                onTap: (index) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                },
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    activeIcon: Icon(Icons.home),
+                    label: '____',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.search_outlined),
+                    activeIcon: Icon(Icons.search),
+                    label: '____',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person_outline_outlined),
+                    activeIcon: Icon(Icons.person),
+                    label: '____',
+                  ),
+                ],
+              ),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline_outlined),
-              activeIcon: Icon(Icons.person),
-              label: '____',
-            ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 }
