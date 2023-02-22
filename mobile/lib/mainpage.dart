@@ -1,6 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/pages/home.dart';
 import 'package:trill/pages/profile.dart';
 import 'package:trill/pages/search.dart';
@@ -14,17 +15,16 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
-  final screens = [
+  final List<Widget> screens = [
     HomeScreen(),
     SearchScreen(),
     ProfileScreen(),
   ];
 
-  // todo: pass user data to screens
-  AuthUser? _user;
-  String? _userEmail;
-  String? _userNickname;
-  CognitoAuthSession? cognitoSession;
+  // todo: need to fix how user info is saved so that we don't call use any info before it's saved
+  late SharedPreferences prefs;
+  String? nickname;
+
   @override
   void initState() {
     super.initState();
@@ -41,8 +41,13 @@ class _MainPageState extends State<MainPage> {
       final result = await Amplify.Auth.fetchAuthSession(
         options: CognitoSessionOptions(getAWSCredentials: true),
       );
-      cognitoSession = result as CognitoAuthSession;
-      safePrint('access token: ${cognitoSession!.userPoolTokens!.accessToken}');
+
+      final cognitoSession = result as CognitoAuthSession;
+
+      prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          'token', cognitoSession.userPoolTokens!.accessToken);
+      safePrint('access token: ${cognitoSession.userPoolTokens!.accessToken}');
     } on AuthException catch (e) {
       safePrint(e.message);
     }
@@ -51,22 +56,16 @@ class _MainPageState extends State<MainPage> {
   Future<void> getCognitoUser() async {
     try {
       final user = await Amplify.Auth.getCurrentUser();
-      setState(() {
-        _user = user;
-      });
+      prefs = await SharedPreferences.getInstance();
+      await prefs.setString('username', user.username);
 
       final attributes = await Amplify.Auth.fetchUserAttributes();
-      setState(() {
-        // this is so scuffed lol
-        for (final element in attributes) {
-          if (element.userAttributeKey == CognitoUserAttributeKey.email) {
-            _userEmail = element.value;
-          } else if (element.userAttributeKey ==
-              CognitoUserAttributeKey.nickname) {
-            _userNickname = element.value;
-          }
-        }
-      });
+      for (final element in attributes) {
+        await prefs.setString(
+          element.userAttributeKey.toString(),
+          element.value,
+        );
+      }
     } on AmplifyAlreadyConfiguredException catch (e) {
       print(e);
     }
@@ -78,9 +77,6 @@ class _MainPageState extends State<MainPage> {
       // temp appbar for button to test signing out
       // todo: implement button actually
       appBar: AppBar(
-        title: Text(_userNickname != null
-            ? 'Hello ${_userNickname!}'
-            : 'i hate cognito'),
         actions: [
           MaterialButton(
             onPressed: () {

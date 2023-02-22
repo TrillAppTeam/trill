@@ -2,6 +2,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -9,6 +10,22 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? nickname;
+  late SharedPreferences _prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    getSharedPreferences();
+  }
+
+  void getSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      // nickname = _prefs.getString('nickname')!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -142,7 +159,7 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Hello, username!',
+                nickname != null ? 'hello, $nickname!' : 'hello!',
                 style: TextStyle(
                   color: Colors.blue,
                   fontSize: 20,
