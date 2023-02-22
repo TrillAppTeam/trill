@@ -9,6 +9,7 @@ Future<List<Follow>> getFollowers(String username) async {
   const String tag = '[getFollowers]';
 
   safePrint('$tag username: $username');
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
   safePrint('$tag access token: $token');
@@ -36,6 +37,7 @@ Future<List<Follow>> getFollowing(String username) async {
   const String tag = '[getFollowing]';
 
   safePrint('$tag username: $username');
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
   safePrint('$tag access token: $token');
@@ -64,6 +66,7 @@ Future<bool> createFollow(String followee, String following) async {
 
   safePrint('$tag followee: $followee');
   safePrint('$tag following: $following');
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
   safePrint('$tag access token: $token');
@@ -90,6 +93,7 @@ Future<bool> deleteFollow(String followee, String following) async {
 
   safePrint('$tag followee: $followee');
   safePrint('$tag following: $following');
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
   safePrint('$tag access token: $token');

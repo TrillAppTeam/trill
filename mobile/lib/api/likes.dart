@@ -9,6 +9,7 @@ Future<int> getLikeCount(int reviewID) async {
   const String tag = '[getLikeCount]';
 
   safePrint('$tag reviewID: $reviewID');
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
   safePrint('$tag access token: $token');
@@ -35,6 +36,7 @@ Future<bool> likeReview(String username, int reviewID) async {
 
   safePrint('$tag username: $username');
   safePrint('$tag reviewID: $reviewID');
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
   safePrint('$tag access token: $token');
@@ -61,6 +63,7 @@ Future<bool> unlikeReview(String username, int reviewID) async {
 
   safePrint('$tag username: $username');
   safePrint('$tag reviewID: $reviewID');
+
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
   safePrint('$tag access token: $token');
