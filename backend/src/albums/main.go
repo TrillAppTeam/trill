@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"os"
 
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"net/url"
@@ -117,9 +117,6 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 
 // GET: Returns album info
 func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
-	var resp SpotifyAlbums
-	var buf bytes.Buffer
-
 	clientSecret := secrets.spotifySecret
 	clientID := secrets.spotifyID
 
@@ -131,16 +128,15 @@ func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	client := &http.Client{}
 	body := url.Values{}
 	body.Set("grant_type", "client_credentials")
-	body.Set("client_id", clientID)
-	body.Set("client_secret", clientSecret)
+	authHeader := base64.StdEncoding.EncodeToString([]byte(clientID + ":" + clientSecret))
 
 	reqBody := bytes.NewBufferString(body.Encode())
 	request, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", reqBody)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
-
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Set("Authorization", "Basic "+authHeader)
+	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	tokenResp, err := client.Do(request)
 	if err != nil {
@@ -148,13 +144,8 @@ func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	}
 	defer tokenResp.Body.Close()
 
-	_, err = io.Copy(&buf, tokenResp.Body)
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-
 	var token SpotifyToken
-	err = json.Unmarshal(buf.Bytes(), &token)
+	err = json.NewDecoder(tokenResp.Body).Decode(&token)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
@@ -172,14 +163,8 @@ func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	}
 	defer r.Body.Close()
 
-	buf.Reset()
-
-	_, err = io.Copy(&buf, r.Body)
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, err
-	}
-
-	err = json.Unmarshal(buf.Bytes(), &resp)
+	var resp SpotifyAlbums
+	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}

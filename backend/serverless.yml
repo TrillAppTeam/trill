@@ -55,6 +55,8 @@ provider:
     MYSQLDATABASE: ${self:custom.secrets.MYSQLDATABASE}
     COGNITO_APP_CLIENT_ID: ${self:custom.secrets.COGNITO_APP_CLIENT_ID}
     COGNITO_USER_POOL_ID: ${self:custom.secrets.COGNITO_USER_POOL_ID}
+    SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
+    SPOTIFY_CLIENT_SECRET: ${self:custom.secrets.SPOTIFY_CLIENT_SECRET}
   stage: dev
   region: us-east-1
 
@@ -141,11 +143,11 @@ functions:
   reviews:
     handler: bin/reviews
     events:
-      # - httpApi:
-      #     path: /likes
-      #     method: get
-      #     authorizer: 
-      #       name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: get
+          authorizer: 
+            name: customAuthorizer
       - httpApi:
           path: /reviews
           method: put
@@ -154,7 +156,7 @@ functions:
       - httpApi:
           path: /reviews
           method: delete
-          authorizer: 
+          authorizer:
             name: customAuthorizer
   follows:
     handler: bin/follows
@@ -187,6 +189,24 @@ functions:
     events:
       - httpApi:
           path: /album
+          method: get
+          authorizer:
+            name: customAuthorizer
+  favoritealbums:
+    handler: bin/favoritealbums
+    events:
+      - httpApi:
+          path: /favoritealbums
+          method: post
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /favoritealbums
+          method: delete
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /favoritealbums
           method: get
           authorizer:
             name: customAuthorizer
