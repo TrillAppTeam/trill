@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
+import axios from 'axios';
 
 // Pages
 import FriendsFeed from './pages/FriendsFeed';
@@ -24,7 +25,25 @@ import {
 
 import { QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+// Define a default query function that will receive the query key
+const defaultQueryFn = async ({ queryKey }) => {
+  const data = await axios.get(`https://api.trytrill.com/main/${queryKey}`, { headers: {
+      'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
+    }}).then((res) => {
+      return res;
+  });
+  return data;
+}
+
+// provide the default query function to your app with defaultOptions
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: defaultQueryFn,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 const router = createBrowserRouter([
   {
