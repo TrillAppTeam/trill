@@ -21,13 +21,13 @@ Future<List<Follow>> getFollowers(String username) async {
     },
   );
 
+  safePrint('$tag ${response.statusCode}');
+  safePrint('$tag ${response.body}');
+
   if (response.statusCode == 200) {
-    safePrint('$tag ${response.body}');
     return List<Follow>.from(
         json.decode(response.body).map((x) => Follow.fromJson(x)));
   } else {
-    safePrint('$tag ${response.statusCode}');
-    safePrint('$tag ${response.body}');
     throw Exception('Failed to load followers');
   }
 }
@@ -48,13 +48,13 @@ Future<List<Follow>> getFollowing(String username) async {
     },
   );
 
+  safePrint('$tag ${response.statusCode}');
+  safePrint('$tag ${response.body}');
+
   if (response.statusCode == 200) {
-    safePrint('$tag ${response.body}');
     return List<Follow>.from(
         json.decode(response.body).map((x) => Follow.fromJson(x)));
   } else {
-    safePrint('$tag ${response.statusCode}');
-    safePrint('$tag ${response.body}');
     throw Exception('Failed to load following');
   }
 }
