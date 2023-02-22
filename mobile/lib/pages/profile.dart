@@ -53,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Center(
                                 child: FutureBuilder<List<Follow>>(
                                   // todo: get username from store preferences and store in widget
-                                  future: getFollowers("avwede"),
+                                  future: getFollowers("cathychian"),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       String followerCount =
@@ -88,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Center(
                                 child: FutureBuilder<List<Follow>>(
                                   // todo: get username from store preferences and store in widget
-                                  future: getFollowing("avwede"),
+                                  future: getFollowing("cathychian"),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       String followerCount =

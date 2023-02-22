@@ -59,6 +59,58 @@ Future<List<Follow>> getFollowing(String username) async {
   }
 }
 
+Future<bool> createFollow(String followee, String following) async {
+  const String tag = '[createFollow]';
+
+  safePrint('$tag followee: $followee');
+  safePrint('$tag following: $following');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? "";
+  safePrint('$tag access token: $token');
+
+  final response = await http.post(
+    Uri.parse('https://api.trytrill.com/main/follows'),
+    headers: {
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode(<String, String>{
+      'followee': followee,
+      'following': following,
+    }),
+  );
+
+  safePrint('$tag ${response.statusCode}');
+  safePrint('$tag ${response.body}');
+
+  return response.statusCode == 201;
+}
+
+Future<bool> deleteFollow(String followee, String following) async {
+  const String tag = '[createFollow]';
+
+  safePrint('$tag followee: $followee');
+  safePrint('$tag following: $following');
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? "";
+  safePrint('$tag access token: $token');
+
+  final response = await http.delete(
+    Uri.parse('https://api.trytrill.com/main/follows'),
+    headers: {
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode(<String, String>{
+      'followee': followee,
+      'following': following,
+    }),
+  );
+
+  safePrint('$tag ${response.statusCode}');
+  safePrint('$tag ${response.body}');
+
+  return response.statusCode == 201;
+}
+
 class Follow {
   final String followee;
   final String following;
