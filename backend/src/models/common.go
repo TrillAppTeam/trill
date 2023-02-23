@@ -27,6 +27,14 @@ func ConnectDB() (*gorm.DB, error) {
 	}
 }
 
+func GetDBFromContext(ctx context.Context) (*gorm.DB, error) {
+	if db, ok := ctx.Value("db").(*gorm.DB); !ok {
+		return nil, fmt.Errorf("db could not be fetched from context")
+	} else {
+		return db, nil
+	}
+}
+
 func InitCognitoClient(ctx context.Context) (*CognitoClient, error) {
 	var secrets = utils.GetSecrets()
 	cfg, err := config.LoadDefaultConfig(
