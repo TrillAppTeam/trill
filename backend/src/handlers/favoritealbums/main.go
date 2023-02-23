@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"os"
 
+	"encoding/base64"
 	"encoding/json"
 
 	"net/http"
@@ -46,8 +46,8 @@ var secrets = Secrets{
 }
 
 type FavoriteAlbums struct {
-	Username string
-	AlbumID  string
+	Username string `json:"username"`
+	AlbumID  string `json:"album_id"`
 }
 
 type SpotifyAlbums struct {
@@ -196,22 +196,19 @@ func read(req events.APIGatewayV2HTTPRequest) (Response, error) {
 	}
 
 	albumInfoJSON, err := json.Marshal(albumInfo)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, err
+	}
 
 	return Response{StatusCode: 200, Body: string(albumInfoJSON)}, nil
 }
 
 func getAlbumInfo(albumID string) (SpotifyAlbums, error) {
-	var resp SpotifyAlbums
-	var buf bytes.Buffer
-
-	clientSecret := secrets.spotifySecret
-	clientID := secrets.spotifyID
 
 	client := &http.Client{}
 	body := url.Values{}
 	body.Set("grant_type", "client_credentials")
-	body.Set("client_id", clientID)
-	body.Set("client_secret", clientSecret)
+	authHeader := base64.StdEncoding.EncodeToString([]byte(secrets.spotifyID + ":" + secrets.spotifySecret))
 
 	reqBody := bytes.NewBufferString(body.Encode())
 	request, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", reqBody)
@@ -219,7 +216,8 @@ func getAlbumInfo(albumID string) (SpotifyAlbums, error) {
 		return SpotifyAlbums{}, err
 	}
 
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Set("Authorization", "Basic "+authHeader)
+	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	tokenResp, err := client.Do(request)
 	if err != nil {
@@ -227,17 +225,13 @@ func getAlbumInfo(albumID string) (SpotifyAlbums, error) {
 	}
 	defer tokenResp.Body.Close()
 
-	_, err = io.Copy(&buf, tokenResp.Body)
-	if err != nil {
-		return SpotifyAlbums{}, err
-	}
-
 	var token SpotifyToken
-	err = json.Unmarshal(buf.Bytes(), &token)
+	err = json.NewDecoder(tokenResp.Body).Decode(&token)
 	if err != nil {
 		return SpotifyAlbums{}, err
 	}
 
+	var resp SpotifyAlbums
 	request, err = http.NewRequest("GET", "https://api.spotify.com/v1/albums/"+albumID, nil)
 	if err != nil {
 		return SpotifyAlbums{}, err
@@ -249,14 +243,7 @@ func getAlbumInfo(albumID string) (SpotifyAlbums, error) {
 	}
 	defer r.Body.Close()
 
-	buf.Reset()
-
-	_, err = io.Copy(&buf, r.Body)
-	if err != nil {
-		return SpotifyAlbums{}, err
-	}
-
-	err = json.Unmarshal(buf.Bytes(), &resp)
+	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
 		return SpotifyAlbums{}, err
 	}
