@@ -23,8 +23,6 @@ func ConnectDB() (*gorm.DB, error) {
 	if db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{}); err != nil {
 		return nil, fmt.Errorf("error: failed to connect to AWS RDS: %w", err)
 	} else {
-		closer, _ := db.DB()
-		defer closer.Close()
 		return db, nil
 	}
 }
