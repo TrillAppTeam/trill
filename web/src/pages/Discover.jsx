@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import axios from 'axios';
 
 // Components
 import Titles from "../components/Titles";
@@ -46,12 +45,7 @@ let anotherExample = {
 }
 
 function Discover() {
-    const { isLoading, error, data} = useQuery(['getUser'], () => 
-        axios.get('https://api.trytrill.com/main/users', { headers: {
-            'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
-        }}).then((res) => {
-            return res;
-        }));
+    const { isLoading, error, data} = useQuery({ queryKey: ['users'] });
 
     return (
         <div>
