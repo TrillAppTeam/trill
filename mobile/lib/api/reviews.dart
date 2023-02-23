@@ -14,7 +14,7 @@ Future<Review?> getUserReview(String username, String albumID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
@@ -45,7 +45,7 @@ Future<List<Review>?> getAlbumReviews(String sort, String albumID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
@@ -77,7 +77,7 @@ Future<bool> createOrUpdateReview(String username, String albumID, int rating,
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.put(
     Uri.parse('https://api.trytrill.com/main/reviews'),
@@ -107,7 +107,7 @@ Future<bool> deleteReview(String username, String albumID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.delete(
     Uri.parse('https://api.trytrill.com/main/reviews'),

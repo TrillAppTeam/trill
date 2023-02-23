@@ -23,17 +23,26 @@ class _MainPageState extends State<MainPage> {
 
   // todo: need to fix how user info is saved so that we don't call use any info before it's saved
   late SharedPreferences prefs;
-  bool _setAccessToken = false;
+  bool _userInfoSet = false;
 
   @override
   void initState() {
     super.initState();
     try {
-      fetchAuthSession();
-      getCognitoUser();
+      setUserInfo();
     } on AuthException catch (e) {
       print(e.message);
     }
+  }
+
+  Future<void> setUserInfo() async {
+    await fetchAuthSession();
+    await getCognitoUser();
+
+    setState(() {
+      _userInfoSet = true;
+      safePrint('user info set!');
+    });
   }
 
   Future<void> fetchAuthSession() async {
@@ -47,11 +56,9 @@ class _MainPageState extends State<MainPage> {
       prefs = await SharedPreferences.getInstance();
       await prefs.setString(
           'token', cognitoSession.userPoolTokens!.accessToken);
-      safePrint('access token: ${cognitoSession.userPoolTokens!.accessToken}');
 
-      setState(() {
-        _setAccessToken = true;
-      });
+      safePrint(
+          'stored access token: ${cognitoSession.userPoolTokens!.accessToken}');
     } on AuthException catch (e) {
       safePrint(e.message);
     }
@@ -61,7 +68,9 @@ class _MainPageState extends State<MainPage> {
     try {
       final user = await Amplify.Auth.getCurrentUser();
       prefs = await SharedPreferences.getInstance();
+
       await prefs.setString('username', user.username);
+      safePrint('stored username: ${user.username}');
 
       final attributes = await Amplify.Auth.fetchUserAttributes();
       for (final element in attributes) {
@@ -69,6 +78,9 @@ class _MainPageState extends State<MainPage> {
           element.userAttributeKey.toString(),
           element.value,
         );
+
+        safePrint(
+            'stored ${element.userAttributeKey.toString()}: ${element.value}');
       }
     } on AmplifyAlreadyConfiguredException catch (e) {
       print(e);
@@ -77,7 +89,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return !_setAccessToken
+    return !_userInfoSet
         ? Scaffold(body: Center(child: CircularProgressIndicator()))
         : Scaffold(
             // temp appbar for button to test signing out

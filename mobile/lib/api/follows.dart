@@ -7,14 +7,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // todo: change all functions and Follow class to reflect new api changes
 
-Future<Follow?> getFollowers(String username) async {
+/// If no username is passed, get followers for logged in user
+Future<Follow?> getFollowers([String? username]) async {
   const String tag = '[getFollowers]';
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
 
+  username ??= prefs.getString('username');
   safePrint('$tag username: $username');
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
@@ -34,14 +36,16 @@ Future<Follow?> getFollowers(String username) async {
   }
 }
 
-Future<Follow?> getFollowing(String username) async {
+/// If no username is passed, get following for logged in user
+Future<Follow?> getFollowing([String? username]) async {
   const String tag = '[getFollowing]';
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
 
+  username ??= prefs.getString('username');
   safePrint('$tag username: $username');
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
@@ -62,15 +66,17 @@ Future<Follow?> getFollowing(String username) async {
 }
 
 // Followee follows the following
-Future<bool> follow(String currUser, String userToFollow) async {
+Future<bool> follow(String userToFollow) async {
   const String tag = '[createFollow]';
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final currUser = prefs.getString('username');
 
   safePrint('$tag followee: $currUser');
   safePrint('$tag following: $userToFollow');
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.post(
     Uri.parse('https://api.trytrill.com/main/follows'),
@@ -78,7 +84,7 @@ Future<bool> follow(String currUser, String userToFollow) async {
       'Authorization': 'Bearer $token',
     },
     body: jsonEncode(<String, String>{
-      'followee': currUser,
+      'followee': currUser!,
       'following': userToFollow,
     }),
   );
@@ -89,15 +95,17 @@ Future<bool> follow(String currUser, String userToFollow) async {
   return response.statusCode == 201;
 }
 
-Future<bool> unfollow(String currUser, String userToUnfollow) async {
+Future<bool> unfollow(String userToUnfollow) async {
   const String tag = '[createFollow]';
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final currUser = prefs.getString('username');
 
   safePrint('$tag followee: $currUser');
   safePrint('$tag following: $userToUnfollow');
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.delete(
     Uri.parse('https://api.trytrill.com/main/follows'),
@@ -105,7 +113,7 @@ Future<bool> unfollow(String currUser, String userToUnfollow) async {
       'Authorization': 'Bearer $token',
     },
     body: jsonEncode(<String, String>{
-      'followee': currUser,
+      'followee': currUser!,
       'following': userToUnfollow,
     }),
   );

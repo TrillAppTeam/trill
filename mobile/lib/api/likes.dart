@@ -12,7 +12,7 @@ Future<int?> getLikeCount(int reviewID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse('https://api.trytrill.com/main/likes?review_id=$reviewID'),
@@ -39,7 +39,7 @@ Future<bool> likeReview(String username, int reviewID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.put(
     Uri.parse('https://api.trytrill.com/main/likes'),
@@ -66,7 +66,7 @@ Future<bool> unlikeReview(String username, int reviewID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  safePrint('$tag access token: $token');
+  // safePrint('$tag access token: $token');
 
   final response = await http.delete(
     Uri.parse('https://api.trytrill.com/main/likes'),
