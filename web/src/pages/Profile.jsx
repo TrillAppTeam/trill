@@ -11,40 +11,24 @@ import Avatar from "../components/Avatar"
 import Review from "../components/Review"
 
 function Profile() {
-    const [user, setUser] = useState({});
-    
-    useEffect (() => {
-        // Api call and gets user data
-        let userData = {
-            firstName: "Ashley",
-            bio: "I like creed and taylor swift",
-            followers: 9,
-            following: 10,
-            favs: [{}],
-            reviews: [{}],
-            profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg"
-        };
-
-        setUser(userData);
-    }, []);
     // GET user info
     // GET favoriteAlbums
     // GET following / follower count --> list of these users and their profile pictures
     // GET number of reviewed albums
     // GET recent reviews 
 
-    const {data: userData, error: userError} = useQuery({ queryKey: ['users'] });
-    const {data: following, error: followingError} = useQuery({ queryKey: [`follows?type=getFollowing&username=${userData?.data.username}`] });
-    const {data: followers, error: followerError} = useQuery({ queryKey: [`follows?type=getFollowers&username=${userData?.data.username}`] });
+    const {data: userData, error: userError} = useQuery(['users']);
+    const {data: following, error: followingError} = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
+    const {data: followers, error: followerError} = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
 
     const userAvatar = {
-        firstName: user.firstName,
-        profilePic: user.profilePic,
+        firstName: "Ashley",
+        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
         size: "24"
     }
 
     const followingAvatars = {
-        firstName: user.firstName,
+        firstName: "Ashley",
         profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
         size: "11"
     }
@@ -78,7 +62,6 @@ function Profile() {
 
     return (
         <div className="max-w-5xl mx-auto">
-            {console.log(followers?.data)}
             {/* Profile Section */}
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
                 <div className="flex flex-row m-5">
@@ -99,7 +82,7 @@ function Profile() {
               
                 {/* User Statistics */}
                 <div className="pt-5">
-                    <UserStats albums={30} followers={followers?.data.length} following={following?.data.length}/>
+                    <UserStats albums={30} followers={followers?.data.users.length} following={following?.data.users.length}/>
                 </div>
             </div>
             
@@ -134,8 +117,7 @@ function Profile() {
             <Titles title="Following"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {/* { followingDummy } */}
-                    {following?.data.map(foll => {<Avatar user={{profilePic: null, firstName: foll.Following, size: '11'}}/>})}                     
+                    {following?.data.users.map(user => {return <Avatar user={{profilePic: null, firstName: user, size: '11'}}/>})}
                 </div>
             </div>
 
@@ -143,11 +125,9 @@ function Profile() {
             <Titles title="Followers"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {/* { followingDummy } */}
-                    {followers?.data.map(foll => {<Avatar user={{profilePic: null, firstName: foll.Followee, size: '11'}}/>})}
+                    {followers?.data.users.map(user => {return <Avatar user={{profilePic: null, firstName: user, size: '11'}}/>})}
                 </div>
             </div>
-            
         </div>
     );
 }
