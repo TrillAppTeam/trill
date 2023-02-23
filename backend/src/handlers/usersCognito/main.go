@@ -21,8 +21,8 @@ func create(ctx context.Context, req CognitoEvent) (CognitoEvent, error) {
 		if err != nil {
 			return req, err
 		}
-		ctx = context.WithValue(ctx, "db", db)
 	}
+	ctx = context.WithValue(ctx, "db", db)
 
 	user := models.User{
 		Username:       req.UserName,

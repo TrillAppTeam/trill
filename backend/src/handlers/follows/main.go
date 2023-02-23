@@ -23,8 +23,8 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}
-		ctx = context.WithValue(ctx, "db", db)
 	}
+	ctx = context.WithValue(ctx, "db", db)
 
 	switch req.RequestContext.HTTP.Method {
 	case "POST":

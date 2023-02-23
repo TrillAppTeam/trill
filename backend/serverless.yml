@@ -86,11 +86,11 @@ package:
 functions:
   auth:
     handler: bin/auth
-  sanity_test:
-    handler: bin/sanity_test
+  hello:
+    handler: bin/hello
     events:
       - httpApi:
-          path: /sanity_test
+          path: /hello
           method: get
           authorizer: 
             name: customAuthorizer
