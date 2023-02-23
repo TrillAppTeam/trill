@@ -99,7 +99,7 @@ class _MainPageState extends State<MainPage> {
                 MaterialButton(
                   onPressed: () {
                     Amplify.Auth.signOut().then((_) {
-                      Navigator.pushReplacementNamed(context, '/entry');
+                      Navigator.pushReplacementNamed(context, '/login');
                     });
                   },
                   child: Icon(Icons.logout),

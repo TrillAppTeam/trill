@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trill/entry.dart';
 import 'package:trill/mainpage.dart';
 import 'package:trill/pages/confirm.dart';
 import 'package:trill/pages/login.dart';
@@ -63,7 +62,6 @@ class _MyAppState extends State<MyApp> {
       // saving this link cuz im gonna forget
       routes: {
         '/main': (context) => MainPage(),
-        '/entry': (context) => EntryScreen(),
         '/album': (context) => AlbumScreen(),
         '/albums': (context) => RatedAlbumsScreen(),
         '/likes': (context) => LikedAlbumsScreen(),
