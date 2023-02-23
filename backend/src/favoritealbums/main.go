@@ -46,8 +46,8 @@ var secrets = Secrets{
 }
 
 type FavoriteAlbums struct {
-	Username string
-	AlbumID  string
+	Username string `json:"username"`
+	AlbumID  string `json:"album_id"`
 }
 
 type SpotifyAlbums struct {
