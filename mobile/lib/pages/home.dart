@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void getSharedPreferences() async {
     _prefs = await SharedPreferences.getInstance();
     setState(() {
-      // nickname = _prefs.getString('nickname')!;
+      nickname = _prefs.getString('nickname')!;
     });
   }
 
