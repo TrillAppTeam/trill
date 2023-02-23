@@ -29,9 +29,9 @@ func read(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	albumID, ok := req.QueryStringParameters["ID"]
+	albumID, ok := req.QueryStringParameters["albumID"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse ID", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: "Failed to parse query", Headers: views.DefaultHeaders}, nil
 	}
 	reqURL := fmt.Sprintf("https://api.spotify.com/v1/albums/%s", albumID)
 	buf, err := utils.DoSpotifyRequest(token, reqURL)

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -17,13 +18,11 @@ type SpotifyToken struct {
 
 func GetSpotifyToken() (*SpotifyToken, error) {
 	var secrets = GetSecrets()
-	var buf bytes.Buffer
 
 	client := &http.Client{}
 	body := url.Values{}
 	body.Set("grant_type", "client_credentials")
-	body.Set("client_id", secrets.SpotifyID)
-	body.Set("client_secret", secrets.SpotifySecret)
+	authHeader := base64.StdEncoding.EncodeToString([]byte(secrets.SpotifyID + ":" + secrets.SpotifySecret))
 
 	reqBody := bytes.NewBufferString(body.Encode())
 	request, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", reqBody)
@@ -31,7 +30,8 @@ func GetSpotifyToken() (*SpotifyToken, error) {
 		return nil, err
 	}
 
-	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	request.Header.Set("Authorization", "Basic "+authHeader)
+	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	tokenResp, err := client.Do(request)
 	if err != nil {
@@ -39,13 +39,8 @@ func GetSpotifyToken() (*SpotifyToken, error) {
 	}
 	defer tokenResp.Body.Close()
 
-	_, err = io.Copy(&buf, tokenResp.Body)
-	if err != nil {
-		return nil, err
-	}
-
 	var token SpotifyToken
-	err = json.Unmarshal(buf.Bytes(), &token)
+	err = json.NewDecoder(tokenResp.Body).Decode(&token)
 	if err != nil {
 		return nil, err
 	}
