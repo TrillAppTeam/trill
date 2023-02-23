@@ -51,13 +51,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     BorderRadius.all(Radius.circular(30)),
                               ),
                               child: Center(
-                                child: FutureBuilder<List<Follow>>(
+                                child: FutureBuilder<Follow?>(
                                   // todo: get username from store preferences and store in widget
                                   future: getFollowers("cathychian"),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      String followerCount =
-                                          snapshot.data!.length.toString();
+                                      String followerCount = snapshot
+                                          .data!.users.length
+                                          .toString();
                                       return RichText(
                                         text: TextSpan(
                                           text: 'Followers: $followerCount',
@@ -86,22 +87,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     BorderRadius.all(Radius.circular(30)),
                               ),
                               child: Center(
-                                child: FutureBuilder<List<Follow>>(
+                                child: FutureBuilder<Follow?>(
                                   // todo: get username from store preferences and store in widget
                                   future: getFollowing("cathychian"),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      String followerCount =
-                                          snapshot.data!.length.toString();
+                                      String followingCount = snapshot
+                                          .data!.users.length
+                                          .toString();
                                       return RichText(
                                         text: TextSpan(
-                                          text: 'Followers: $followerCount',
+                                          text: 'Following: $followingCount',
                                           style: TextStyle(
                                               fontSize: 11,
                                               fontWeight: FontWeight.bold),
                                           recognizer: TapGestureRecognizer()
                                             ..onTap = () => Navigator.pushNamed(
-                                                context, '/followers'),
+                                                context, '/following'),
                                         ),
                                       );
                                     } else {

@@ -5,7 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<int> getLikeCount(int reviewID) async {
+Future<int?> getLikeCount(int reviewID) async {
   const String tag = '[getLikeCount]';
 
   safePrint('$tag reviewID: $reviewID');
@@ -27,7 +27,7 @@ Future<int> getLikeCount(int reviewID) async {
   if (response.statusCode == 200) {
     return int.parse(response.body);
   } else {
-    throw Exception('Failed to get like count');
+    return null;
   }
 }
 

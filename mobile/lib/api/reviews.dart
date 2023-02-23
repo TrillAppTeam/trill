@@ -33,11 +33,11 @@ Future<Review?> getUserReview(String username, String albumID) async {
     safePrint('$tag No content; returning null');
     return null;
   } else {
-    throw Exception('Failed to get user review');
+    return null;
   }
 }
 
-Future<List<Review>> getAlbumReviews(String sort, String albumID) async {
+Future<List<Review>?> getAlbumReviews(String sort, String albumID) async {
   const String tag = '[getAlbumReviews]';
 
   safePrint('$tag sort: $sort');
@@ -62,7 +62,7 @@ Future<List<Review>> getAlbumReviews(String sort, String albumID) async {
     return List<Review>.from(
         json.decode(response.body).map((x) => Review.fromJson(x)));
   } else {
-    throw Exception('Failed to get album reviews');
+    return null;
   }
 }
 

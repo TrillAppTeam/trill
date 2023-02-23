@@ -5,7 +5,9 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<List<Follow>> getFollowers(String username) async {
+// todo: change all functions and Follow class to reflect new api changes
+
+Future<Follow?> getFollowers(String username) async {
   const String tag = '[getFollowers]';
 
   safePrint('$tag username: $username');
@@ -26,14 +28,13 @@ Future<List<Follow>> getFollowers(String username) async {
   safePrint('$tag ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<Follow>.from(
-        json.decode(response.body).map((x) => Follow.fromJson(x)));
+    return Follow.fromJson(jsonDecode(response.body));
   } else {
-    throw Exception('Failed to load followers');
+    return null;
   }
 }
 
-Future<List<Follow>> getFollowing(String username) async {
+Future<Follow?> getFollowing(String username) async {
   const String tag = '[getFollowing]';
 
   safePrint('$tag username: $username');
@@ -54,18 +55,18 @@ Future<List<Follow>> getFollowing(String username) async {
   safePrint('$tag ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<Follow>.from(
-        json.decode(response.body).map((x) => Follow.fromJson(x)));
+    return Follow.fromJson(jsonDecode(response.body));
   } else {
-    throw Exception('Failed to load following');
+    return null;
   }
 }
 
-Future<bool> createFollow(String followee, String following) async {
+// Followee follows the following
+Future<bool> follow(String currUser, String userToFollow) async {
   const String tag = '[createFollow]';
 
-  safePrint('$tag followee: $followee');
-  safePrint('$tag following: $following');
+  safePrint('$tag followee: $currUser');
+  safePrint('$tag following: $userToFollow');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
@@ -77,8 +78,8 @@ Future<bool> createFollow(String followee, String following) async {
       'Authorization': 'Bearer $token',
     },
     body: jsonEncode(<String, String>{
-      'followee': followee,
-      'following': following,
+      'followee': currUser,
+      'following': userToFollow,
     }),
   );
 
@@ -88,11 +89,11 @@ Future<bool> createFollow(String followee, String following) async {
   return response.statusCode == 201;
 }
 
-Future<bool> deleteFollow(String followee, String following) async {
+Future<bool> unfollow(String currUser, String userToUnfollow) async {
   const String tag = '[createFollow]';
 
-  safePrint('$tag followee: $followee');
-  safePrint('$tag following: $following');
+  safePrint('$tag followee: $currUser');
+  safePrint('$tag following: $userToUnfollow');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
@@ -104,8 +105,8 @@ Future<bool> deleteFollow(String followee, String following) async {
       'Authorization': 'Bearer $token',
     },
     body: jsonEncode(<String, String>{
-      'followee': followee,
-      'following': following,
+      'followee': currUser,
+      'following': userToUnfollow,
     }),
   );
 
@@ -116,19 +117,15 @@ Future<bool> deleteFollow(String followee, String following) async {
 }
 
 class Follow {
-  final String followee;
-  final String following;
+  final List<String> users;
 
   const Follow({
-    required this.followee,
-    required this.following,
+    required this.users,
   });
 
   factory Follow.fromJson(Map<String, dynamic> json) {
-    // todo: lowercase json keys once backend is changed
     return Follow(
-      followee: json['Followee'],
-      following: json['Following'],
+      users: List<String>.from(json['users']),
     );
   }
 }
