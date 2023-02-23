@@ -6,19 +6,28 @@ import (
 )
 
 type Follows struct {
-	Followee  string   `json:"followee"`
-	Following []string `json:"following"`
+	Users []string `json:"users"`
 }
 
-// Combines the two JSON's to one string
-func MarshalFollows(ctx context.Context, followsModel *[]models.Follows) (string, error) {
+func MarshalFollowing(ctx context.Context, followsModel *[]models.Follows) (string, error) {
 	following := make([]string, len(*followsModel))
 	for i, f := range *followsModel {
 		following[i] = f.Following
 	}
 	follows := Follows{
-		Followee:  (*followsModel)[0].Followee,
-		Following: following,
+		Users: following,
+	}
+
+	return Marshal(ctx, follows)
+}
+
+func MarshalFollowers(ctx context.Context, followsModel *[]models.Follows) (string, error) {
+	followers := make([]string, len(*followsModel))
+	for i, f := range *followsModel {
+		followers[i] = f.Followee
+	}
+	follows := Follows{
+		Users: followers,
 	}
 
 	return Marshal(ctx, follows)
