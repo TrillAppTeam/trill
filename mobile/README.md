@@ -1,16 +1,14 @@
 # trill
 
-A new Flutter project.
+:)
 
-## Getting Started
+## Amplify Configuration Instructions
 
-This project is a starting point for a Flutter application.
+In order to configure Amplify, click on [this link](https://us-east-1.admin.amplifyapp.com/admin/d2mwv2d69p82k6/staging/home) and follow these steps:
 
-A few resources to get you started if this is your first Flutter project:
+- Click `Local setup instructions` in the top right corner
+- Install Amplify CLI if not already installed
+- Run the command under local setup instructions under `/mobile` (e.g. `amplify pull --appId d2mwv2d69p82k6 --envName staging`)
+  - Accept defaults as appropriate
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+In addition to in Cognito, you can view the Cognito User Pool under the `User Management` page.

@@ -4,6 +4,7 @@ import 'package:trill/amplifyconfiguration.dart';
 
 import '../amplifyconfiguration.dart';
 
+// See README to configure amplify
 Future<void> configureAmplify() async {
   try {
     await Amplify.addPlugin(AmplifyAuthCognito());
