@@ -28,10 +28,10 @@ func ConnectDB() (*gorm.DB, error) {
 }
 
 func GetDBFromContext(ctx context.Context) (*gorm.DB, error) {
-	if db, ok := ctx.Value("db").(gorm.DB); !ok {
+	if db, ok := ctx.Value("db").(*gorm.DB); !ok {
 		return nil, fmt.Errorf("db could not be fetched from context")
 	} else {
-		return &db, nil
+		return db, nil
 	}
 }
 
