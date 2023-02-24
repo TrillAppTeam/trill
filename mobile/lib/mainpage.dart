@@ -89,6 +89,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    // todo: set trill loading screen if user info not set
     return !_userInfoSet
         ? Scaffold(body: Center(child: CircularProgressIndicator()))
         : Scaffold(
