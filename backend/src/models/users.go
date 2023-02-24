@@ -67,11 +67,7 @@ func GetUser(ctx context.Context, username string) (*User, error) {
 	var user User
 	result := db.Where("username = ?", username).First(&user)
 	if result.Error != nil {
-<<<<<<< HEAD
-		return nil, result.Error
-=======
 		return nil, errors.New("user not found in RDS")
->>>>>>> main
 	}
 
 	return &user, nil
