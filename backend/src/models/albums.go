@@ -10,7 +10,7 @@ type FavoriteAlbums struct {
 }
 
 func GetFavoriteAlbums(ctx context.Context, username string) (*[]FavoriteAlbums, error) {
-	db, err := ConnectDB()
+	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func GetFavoriteAlbums(ctx context.Context, username string) (*[]FavoriteAlbums,
 }
 
 func CreateFavoriteAlbums(ctx context.Context, follows *Follows) error {
-	if db, err := ConnectDB(); err != nil {
+	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
 	} else if err := db.Create(&follows).Error; err != nil {
 		return err
@@ -34,7 +34,7 @@ func CreateFavoriteAlbums(ctx context.Context, follows *Follows) error {
 }
 
 func DeleteFavoriteAlbums(ctx context.Context, followee string, follower string) error {
-	if db, err := ConnectDB(); err != nil {
+	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
 	} else if err := db.Where("followee = ? AND following = ?", followee, follower).Delete(&Follows{}).Error; err != nil {
 		return err

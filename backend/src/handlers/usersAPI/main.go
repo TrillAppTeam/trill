@@ -9,12 +9,24 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"gorm.io/gorm"
 )
 
 type Request = events.APIGatewayV2HTTPRequest
 type Response = events.APIGatewayV2HTTPResponse
 
+var db *gorm.DB
+
 func handler(ctx context.Context, req Request) (Response, error) {
+	if db == nil {
+		var err error
+		db, err = models.ConnectDB()
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		}
+	}
+	ctx = context.WithValue(ctx, "db", db)
+
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
 		return get(ctx, req)

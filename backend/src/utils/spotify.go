@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 type SpotifyToken struct {
@@ -24,7 +25,7 @@ func GetSpotifyToken() (*SpotifyToken, error) {
 	body.Set("grant_type", "client_credentials")
 	authHeader := base64.StdEncoding.EncodeToString([]byte(secrets.SpotifyID + ":" + secrets.SpotifySecret))
 
-	reqBody := bytes.NewBufferString(body.Encode())
+	reqBody := strings.NewReader(body.Encode())
 	request, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", reqBody)
 	if err != nil {
 		return nil, err
@@ -38,6 +39,11 @@ func GetSpotifyToken() (*SpotifyToken, error) {
 		return nil, err
 	}
 	defer tokenResp.Body.Close()
+
+	if tokenResp.StatusCode != http.StatusOK {
+		res, _ := io.ReadAll(tokenResp.Body)
+		return nil, fmt.Errorf("Status when requesting token: " + tokenResp.Status + "\n" + string(res))
+	}
 
 	var token SpotifyToken
 	err = json.NewDecoder(tokenResp.Body).Decode(&token)

@@ -10,7 +10,7 @@ type Follows struct {
 }
 
 func GetFollowing(ctx context.Context, followee string) (*[]Follows, error) {
-	db, err := ConnectDB()
+	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func GetFollowing(ctx context.Context, followee string) (*[]Follows, error) {
 }
 
 func GetFollowers(ctx context.Context, followee string) (*[]Follows, error) {
-	db, err := ConnectDB()
+	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func GetFollowers(ctx context.Context, followee string) (*[]Follows, error) {
 }
 
 func CreateFollows(ctx context.Context, follows *Follows) error {
-	if db, err := ConnectDB(); err != nil {
+	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
 	} else if err := db.Create(&follows).Error; err != nil {
 		return err
@@ -48,7 +48,7 @@ func CreateFollows(ctx context.Context, follows *Follows) error {
 }
 
 func DeleteFollows(ctx context.Context, followee string, follower string) error {
-	if db, err := ConnectDB(); err != nil {
+	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
 	} else if err := db.Where("followee = ? AND following = ?", followee, follower).Delete(&Follows{}).Error; err != nil {
 		return err

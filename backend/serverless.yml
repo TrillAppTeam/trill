@@ -94,14 +94,6 @@ functions:
           method: get
           authorizer: 
             name: customAuthorizer
-  world:
-    handler: bin/world
-    events:
-      - httpApi:
-          path: /world
-          method: get
-          authorizer:
-            name: customAuthorizer
   usersAPI:
     handler: bin/usersAPI
     events:

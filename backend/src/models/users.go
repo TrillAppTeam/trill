@@ -14,10 +14,6 @@ type CognitoUser struct {
 }
 
 type User struct {
-	// gorm.Model
-	// CreatedAt      time.Time
-	// UpdatedAt      time.Time
-	// DeletedAt      time.Time `gorm:"index"`
 	Username       string `gorm:"varchar(128);primarykey"`
 	Bio            string `gorm:"varchar(1024)"`
 	ProfilePicture string `gorm:"varchar(512)"`
@@ -62,7 +58,7 @@ func GetCognitoUser(ctx context.Context, authToken string) (*CognitoUser, error)
 }
 
 func GetUser(ctx context.Context, username string) (*User, error) {
-	db, err := ConnectDB()
+	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +78,7 @@ func GetUser(ctx context.Context, username string) (*User, error) {
 }
 
 func UpdateUser(ctx context.Context, user *User) error {
-	db, err := ConnectDB()
+	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return err
 	}
@@ -96,7 +92,7 @@ func UpdateUser(ctx context.Context, user *User) error {
 }
 
 func CreateUser(ctx context.Context, user *User) error {
-	db, err := ConnectDB()
+	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return err
 	}
