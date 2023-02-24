@@ -53,8 +53,9 @@ func read(ctx context.Context, req Request) (Response, error) {
 	}
 
 	var spotifyAlbum views.SpotifyAlbum
-	spotifyError := views.UnmarshalSpotifyAlbum(ctx, buf.Bytes(), &spotifyAlbum).Error
-	if spotifyError != nil {
+	spotifyErrorResponse := views.UnmarshalSpotifyAlbum(ctx, buf.Bytes(), &spotifyAlbum)
+	if spotifyErrorResponse != nil {
+		spotifyError := spotifyErrorResponse.Error
 		return Response{
 			StatusCode: spotifyError.Status,
 			Body:       "Spotify request error: " + spotifyError.Message,
@@ -69,7 +70,7 @@ func read(ctx context.Context, req Request) (Response, error) {
 
 	return Response{
 		StatusCode: 200,
-		Body:       body + "\ntoken: " + token.AccessToken + "\nbytes: " + string(buf.Bytes()),
+		Body:       body,
 		Headers:    views.DefaultHeaders,
 	}, nil
 }
