@@ -4,18 +4,18 @@ import (
 	"context"
 )
 
-type FavoriteAlbums struct {
+type FavoriteAlbum struct {
 	Username string
 	AlbumID  string
 }
 
-func GetFavoriteAlbums(ctx context.Context, username string) (*[]FavoriteAlbums, error) {
+func GetFavoriteAlbums(ctx context.Context, username string) (*[]FavoriteAlbum, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	var favoriteAlbums []FavoriteAlbums
+	var favoriteAlbums []FavoriteAlbum
 	if err := db.Table("favorite_albums").Where("username = ?", username).Find(&favoriteAlbums).Error; err != nil {
 		return nil, err
 	}
@@ -23,20 +23,20 @@ func GetFavoriteAlbums(ctx context.Context, username string) (*[]FavoriteAlbums,
 	return &favoriteAlbums, nil
 }
 
-func CreateFavoriteAlbums(ctx context.Context, follows *Follows) error {
+func CreateFavoriteAlbum(ctx context.Context, favoriteAlbum *FavoriteAlbum) error {
 	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
-	} else if err := db.Create(&follows).Error; err != nil {
+	} else if err := db.Create(&favoriteAlbum).Error; err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func DeleteFavoriteAlbums(ctx context.Context, followee string, follower string) error {
+func DeleteFavoriteAlbum(ctx context.Context, favoriteAlbum *FavoriteAlbum) error {
 	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
-	} else if err := db.Where("followee = ? AND following = ?", followee, follower).Delete(&Follows{}).Error; err != nil {
+	} else if err := db.Where("username = ? AND album_id = ?", &favoriteAlbum.Username, &favoriteAlbum.AlbumID).Delete(&favoriteAlbum).Error; err != nil {
 		return err
 	}
 

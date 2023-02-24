@@ -47,10 +47,10 @@ func CreateFollows(ctx context.Context, follows *Follows) error {
 	return nil
 }
 
-func DeleteFollows(ctx context.Context, followee string, follower string) error {
+func DeleteFollows(ctx context.Context, follows *Follows) error {
 	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
-	} else if err := db.Where("followee = ? AND following = ?", followee, follower).Delete(&Follows{}).Error; err != nil {
+	} else if err := db.Where("followee = ? AND following = ?", follows.Followee, follows.Following).Delete(follows).Error; err != nil {
 		return err
 	}
 
