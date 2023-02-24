@@ -94,7 +94,7 @@ class _MainPageState extends State<MainPage> {
         : Scaffold(
             // temp appbar for button to test signing out
             // todo: implement button actually
-            appBar: AppBar(
+            /*appBar: AppBar(
               actions: [
                 MaterialButton(
                   onPressed: () {
@@ -105,7 +105,7 @@ class _MainPageState extends State<MainPage> {
                   child: Icon(Icons.logout),
                 ),
               ],
-            ),
+            ),*/
             // IndexedStack keeps the states of each page
             body: IndexedStack(
               index: currentIndex,

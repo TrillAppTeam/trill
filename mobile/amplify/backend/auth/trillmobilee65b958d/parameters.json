@@ -1,0 +1,23 @@
+{
+  "authSelections": "userPoolOnly",
+  "resourceName": "trillmobilee65b958d",
+  "serviceType": "imported",
+  "region": "us-east-1",
+  "authProvidersUserPool": [],
+  "requiredAttributes": [
+    "nickname",
+    "email"
+  ],
+  "passwordPolicyMinLength": 8,
+  "passwordPolicyCharacters": [
+    "Requires Lowercase",
+    "Requires Uppercase",
+    "Requires Numbers",
+    "Requires Symbols"
+  ],
+  "mfaConfiguration": "OFF",
+  "autoVerifiedAttributes": [
+    "email"
+  ],
+  "mfaTypes": []
+}
