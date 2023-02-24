@@ -44,15 +44,25 @@ type SpotifyAlbums struct {
 	} `json:"albums"`
 }
 
+type SpotifyError struct {
+	Error *struct {
+		Status  int    `json:"status"`
+		Message string `json:"message"`
+	} `json:"error"`
+}
+
 func MarshalSpotifyAlbum(ctx context.Context, unmarshalledSpotifyAlbum *SpotifyAlbum) (string, error) {
 	return Marshal(ctx, unmarshalledSpotifyAlbum)
 }
 
-func UnmarshalSpotifyAlbum(ctx context.Context, marshalledSpotifyAlbum []byte, spotifyAlbumView *SpotifyAlbum) error {
-	err := json.Unmarshal(marshalledSpotifyAlbum, spotifyAlbumView)
-	if err != nil {
-		return err
+func UnmarshalSpotifyAlbum(ctx context.Context, marshalledSpotifyAlbum []byte, spotifyAlbumView *SpotifyAlbum) *SpotifyError {
+	errorResponse := new(SpotifyError)
+	json.Unmarshal(marshalledSpotifyAlbum, &errorResponse)
+	if errorResponse.Error != nil {
+		return errorResponse
 	}
+
+	json.Unmarshal(marshalledSpotifyAlbum, spotifyAlbumView)
 	return nil
 }
 
@@ -60,10 +70,13 @@ func MarshalSpotifyAlbums(ctx context.Context, unmarshalledSpotifyAlbums *[]Spot
 	return Marshal(ctx, unmarshalledSpotifyAlbums)
 }
 
-func UnmarshalSpotifyAlbums(ctx context.Context, marshalledSpotifyAlbums []byte, spotifyAlbumsView *SpotifyAlbums) error {
-	err := json.Unmarshal(marshalledSpotifyAlbums, spotifyAlbumsView)
-	if err != nil {
-		return err
+func UnmarshalSpotifyAlbums(ctx context.Context, marshalledSpotifyAlbums []byte, spotifyAlbumsView *SpotifyAlbums) *SpotifyError {
+	errorResponse := new(SpotifyError)
+	json.Unmarshal(marshalledSpotifyAlbums, &errorResponse)
+	if errorResponse.Error != nil {
+		return errorResponse
 	}
+
+	json.Unmarshal(marshalledSpotifyAlbums, spotifyAlbumsView)
 	return nil
 }

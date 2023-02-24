@@ -53,9 +53,13 @@ func read(ctx context.Context, req Request) (Response, error) {
 	}
 
 	var spotifyAlbum views.SpotifyAlbum
-	err = views.UnmarshalSpotifyAlbum(ctx, buf.Bytes(), &spotifyAlbum)
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	spotifyError := views.UnmarshalSpotifyAlbum(ctx, buf.Bytes(), &spotifyAlbum).Error
+	if spotifyError != nil {
+		return Response{
+			StatusCode: spotifyError.Status,
+			Body:       "Spotify request error: " + spotifyError.Message,
+			Headers:    views.DefaultHeaders,
+		}, nil
 	}
 
 	body, err := views.MarshalSpotifyAlbum(ctx, &spotifyAlbum)
@@ -65,7 +69,7 @@ func read(ctx context.Context, req Request) (Response, error) {
 
 	return Response{
 		StatusCode: 200,
-		Body:       body,
+		Body:       body + "\ntoken: " + token.AccessToken + "\nbytes: " + string(buf.Bytes()),
 		Headers:    views.DefaultHeaders,
 	}, nil
 }
