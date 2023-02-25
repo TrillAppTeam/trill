@@ -64,12 +64,12 @@ func follow(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 		return Response{StatusCode: 500, Body: "User cannot follow themselves", Headers: views.DefaultHeaders}, nil
 	}
 
-	follows := models.Follows{
+	follow := models.Follows{
 		Followee:  username,
 		Following: userToFollow,
 	}
 
-	if err := models.CreateFollow(ctx, &follows); err != nil {
+	if err := models.CreateFollow(ctx, &follow); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
@@ -151,12 +151,12 @@ func unfollow(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response
 		return Response{StatusCode: 500, Body: "User cannot unfollow themselves", Headers: views.DefaultHeaders}, nil
 	}
 
-	follows := models.Follows{
+	follow := models.Follows{
 		Followee:  username,
 		Following: userToUnfollow,
 	}
 
-	if err := models.DeleteFollow(ctx, &follows); err != nil {
+	if err := models.DeleteFollow(ctx, &follow); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
