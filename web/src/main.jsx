@@ -16,6 +16,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import AlbumDetails from './pages/AlbumDetails';
+import SearchResults from './pages/SearchResults';
 
 
 import {
@@ -82,6 +83,11 @@ const router = createBrowserRouter([
       {
         path: "ListenLater",
         element: <ListenLater />,
+        errorElement: <Error />
+      },
+      {
+        path: "Results",
+        element: <SearchResults />,
         errorElement: <Error />
       },
       {

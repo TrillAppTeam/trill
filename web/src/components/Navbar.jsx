@@ -7,7 +7,8 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import TrillLogo from "/trillTransparent.png"
 
 // Components
-import Avatar from "./Avatar";
+import Avatar from "./Avatar"
+import Search from "./Search"
 
 const navigation = [
   { name: 'Discover', link: '', current: true },
@@ -69,15 +70,18 @@ function Navbar() {
                   </div>
                 </div>
               </div>
+
+              
               
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-
+                {/* Search Component */}
+                <Search />
+                
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="flex rounded-full">
                       <span className="sr-only">Open user menu</span>
-
                       {/* User Profile Picture */}
                       <Avatar user={{ profilePic: null, firstName: "Ashley", size: "11" }} />
 
