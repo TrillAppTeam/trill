@@ -21,10 +21,10 @@ function AlbumReview(props) {
                     </div>
 
                     <div className="bg-gray-700 px-2 py-2">
-                        <p className="text-xs text-left flex flex-row">
+                        <div className="text-xs text-left flex flex-row">
                             <Avatar user={{ profilePic: null, firstName: user, size: "4" }} />
                             <p className="text-md pl-2 font-bold">{user}</p>
-                        </p>
+                        </div>
                     </div>
                 </div>
                 
