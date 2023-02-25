@@ -37,7 +37,7 @@ func GetFollowers(ctx context.Context, followee string) (*[]Follows, error) {
 	return &followers, nil
 }
 
-func CreateFollows(ctx context.Context, follows *Follows) error {
+func CreateFollow(ctx context.Context, follows *Follows) error {
 	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
 	} else if err := db.Create(&follows).Error; err != nil {
@@ -47,7 +47,7 @@ func CreateFollows(ctx context.Context, follows *Follows) error {
 	return nil
 }
 
-func DeleteFollows(ctx context.Context, follows *Follows) error {
+func DeleteFollow(ctx context.Context, follows *Follows) error {
 	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
 	} else if err := db.Where("followee = ? AND following = ?", follows.Followee, follows.Following).Delete(follows).Error; err != nil {
