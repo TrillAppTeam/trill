@@ -28,7 +28,7 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 
 	switch req.RequestContext.HTTP.Method {
 	case "POST":
-		return create(ctx, req)
+		return follow(ctx, req)
 	case "GET":
 		if req.QueryStringParameters["type"] == "getFollowers" {
 			return getFollowers(ctx, req)
@@ -39,7 +39,7 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 			return Response{StatusCode: 400, Body: err.Error()}, err
 		}
 	case "DELETE":
-		return delete(ctx, req)
+		return unfollow(ctx, req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
@@ -47,21 +47,36 @@ func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response,
 }
 
 // Create a follow relationship
-// @PARAMS are in the JSON body : "followee" and "following"
-func create(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
-	// TO DO: Update database to be uuid instead of username, reflect here
-	// Unmarshal JSON request body into a Follows struct
+// POST - /follows?username=avwede
+func follow(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to get current user", Headers: views.DefaultHeaders}, nil
+	}
 
-	follows := models.Follows{}
-	if err := views.UnmarshalFollows(ctx, req.Body, &follows); err != nil {
-		return Response{StatusCode: 400, Body: "invalid request data format", Headers: views.DefaultHeaders}, nil
-	} else if err := models.CreateFollows(ctx, &follows); err != nil {
+	// Get the username from the request params
+	userToFollow, ok := req.QueryStringParameters["username"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse username", Headers: views.DefaultHeaders}, nil
+	}
+
+	if username == userToFollow {
+		return Response{StatusCode: 500, Body: "User cannot follow themselves", Headers: views.DefaultHeaders}, nil
+	}
+
+	follows := models.Follows{
+		Followee:  username,
+		Following: userToFollow,
+	}
+
+	if err := models.CreateFollow(ctx, &follows); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
 	return Response{
 		StatusCode: 201,
 		Body:       "Successfully added to database",
+		Headers:    views.DefaultHeaders,
 	}, nil
 }
 
@@ -94,7 +109,6 @@ func getFollowing(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 // Get Followers
 // @PARAMS are QueryStringParameters : "username"
 // Postman: follows?type=getFollowers&username=avwede
-// Currently returns in this format: [{"Followee":"avwede","Following":"csmi"},{"Followee":"avwede","Following":"dmflo"}]
 func getFollowers(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	followee, ok := req.QueryStringParameters["username"]
 	if !ok {
@@ -119,23 +133,30 @@ func getFollowers(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 }
 
 // User unfollows someone
-// @PARAMS are in the JSON body : "followee" and "following"
-// Currently returns in this format: [{"Followee":"csmi","Following":"avwede"}]
-// TODO ensure followee == username
-func delete(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
-	// Get the username from the request params
-	username, ok := req.QueryStringParameters["username"]
+// DELETE - /follows?username=avwede
+// assuming followee follows the following idk my brain hurts i took a 3 hour nap
+func unfollow(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "Failed to get current user", Headers: views.DefaultHeaders}, nil
 	}
 
-	follows := models.Follows{}
-	if err := views.UnmarshalFollows(ctx, req.Body, &follows); err != nil {
-		return Response{StatusCode: 400, Body: "invalid request data format", Headers: views.DefaultHeaders}, nil
+	// Get the username from the request params
+	userToUnfollow, ok := req.QueryStringParameters["username"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
-	follows.Followee = username
 
-	if err := models.DeleteFollows(ctx, &follows); err != nil {
+	if username == userToUnfollow {
+		return Response{StatusCode: 500, Body: "User cannot unfollow themselves", Headers: views.DefaultHeaders}, nil
+	}
+
+	follows := models.Follows{
+		Followee:  username,
+		Following: userToUnfollow,
+	}
+
+	if err := models.DeleteFollow(ctx, &follows); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
