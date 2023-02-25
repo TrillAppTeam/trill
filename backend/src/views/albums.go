@@ -3,6 +3,7 @@ package views
 import (
 	"context"
 	"encoding/json"
+	"trill/src/models"
 )
 
 type SpotifyAlbum struct {
@@ -51,6 +52,9 @@ type SpotifyError struct {
 	} `json:"error"`
 }
 
+type FavoriteAlbum struct {
+}
+
 func MarshalSpotifyAlbum(ctx context.Context, unmarshalledSpotifyAlbum *SpotifyAlbum) (string, error) {
 	return Marshal(ctx, unmarshalledSpotifyAlbum)
 }
@@ -79,4 +83,12 @@ func UnmarshalSpotifyAlbums(ctx context.Context, marshalledSpotifyAlbums []byte,
 
 	json.Unmarshal(marshalledSpotifyAlbums, spotifyAlbumsView)
 	return nil
+}
+
+func MarshalFavoriteAlbum(ctx context.Context, unmarshalledFavoriteAlbums *FavoriteAlbum) (string, error) {
+	return Marshal(ctx, unmarshalledFavoriteAlbums)
+}
+
+func UnmarshalFavoriteAlbum(ctx context.Context, marshalledFavoriteAlbum string, favoriteAlbumModel *models.FavoriteAlbum) error {
+	return Unmarshal(ctx, marshalledFavoriteAlbum, favoriteAlbumModel)
 }

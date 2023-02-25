@@ -123,16 +123,26 @@ func getFollowers(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 // Currently returns in this format: [{"Followee":"csmi","Following":"avwede"}]
 // TODO ensure followee == username
 func delete(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
+	// Get the username from the request params
+	username, ok := req.QueryStringParameters["username"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+	}
+
 	follows := models.Follows{}
 	if err := views.UnmarshalFollows(ctx, req.Body, &follows); err != nil {
 		return Response{StatusCode: 400, Body: "invalid request data format", Headers: views.DefaultHeaders}, nil
-	} else if err := models.DeleteFollows(ctx, follows.Followee, follows.Following); err != nil {
+	}
+	follows.Followee = username
+
+	if err := models.DeleteFollows(ctx, &follows); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
 	return Response{
-		StatusCode: 201,
+		StatusCode: 200,
 		Body:       "Successfully removed from database",
+		Headers:    views.DefaultHeaders,
 	}, nil
 }
 
