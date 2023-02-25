@@ -40,22 +40,35 @@ func handler(ctx context.Context, req Request) (Response, error) {
 
 // GET: Returns user info
 func get(ctx context.Context, req Request) (Response, error) {
-	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
 		return Response{StatusCode: 500, Body: "failed to parse username"}, nil
 	}
-	user, err := models.GetUser(ctx, username)
-	if err != nil { // TODO: Better error handling
-		return Response{StatusCode: 500, Body: err.Error()}, nil
+
+	var body, userToGet string
+	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
+	username, ok := req.QueryStringParameters["username"]
+	privateCognitoUser := &models.PrivateCognitoUser{}
+	if !ok { // get public + private info
+		var err error
+		userToGet = requestor
+		privateCognitoUser, err = models.GetPrivateCognitoUser(ctx, authToken)
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error()}, nil
+		}
+	} else { // get public info
+		userToGet = username
 	}
 
-	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
-	cognitoUser, err := models.GetCognitoUser(ctx, authToken)
+	user, err := models.GetUser(ctx, userToGet)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
-
-	body, err := views.MarshalUser(ctx, user, cognitoUser)
+	publicCognitoUser, err := models.GetPublicCognitoUser(ctx, userToGet)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error()}, nil
+	}
+	body, err = views.MarshalUser(ctx, user, publicCognitoUser, privateCognitoUser)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}

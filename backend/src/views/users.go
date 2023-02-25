@@ -14,12 +14,13 @@ type User struct {
 }
 
 // Combines the two JSON's to one string
-func MarshalUser(ctx context.Context, userModel *models.User, cognitoUserModel *models.CognitoUser) (string, error) {
+func MarshalUser(ctx context.Context, userModel *models.User, publicCognitoUserModel *models.PublicCognitoUser,
+	privateCognitoUserModel *models.PrivateCognitoUser) (string, error) {
 	user := User{
 		Username:       userModel.Username,
 		Bio:            userModel.Bio,
-		Email:          cognitoUserModel.Email,
-		Nickname:       cognitoUserModel.Nickname,
+		Email:          privateCognitoUserModel.Email,
+		Nickname:       publicCognitoUserModel.Nickname,
 		ProfilePicture: userModel.ProfilePicture,
 	}
 
