@@ -11,7 +11,7 @@
 #
 # Happy Coding!
 
-service: trill
+service: trill-main
 # app and org for use with dashboard.serverless.com
 #app: your-app-name
 #org: your-org-name
@@ -20,28 +20,45 @@ service: trill
 # Check out our docs for more details
 frameworkVersion: '3'
 
-custom: ${file(../.secrets.yml)}
+plugins:
+  - serverless-domain-manager
+
+custom: 
+  secrets: ${file(.secrets.yml)}
+  exportGitVariables: false
+  customDomain:
+    apiType: http
+    domainName: 'api.trytrill.com'
+    basePath: main
+    stage: dev
+    endpointType: regional
+    region: ${self:provider.region}
+    certificateName: "*.trytrill.com"
+    createRoute53Record: true
 
 provider:
   name: aws
   runtime: go1.x
-  vpc:
-    securityGroupIds:
-      - ${self:custom.SECURITY_GROUP_ID}
-    subnetIds:
-      - ${self:custom.SUBNET_A}
-      - ${self:custom.SUBNET_B}
-      - ${self:custom.SUBNET_C}
+  httpApi:
+    disableDefaultEndpoint: true
+    shouldStartNameWithService: true
+    authorizers:
+      customAuthorizer:
+        type: request
+        functionName: auth
+    cors: true
   environment:
-    MYSQLHOST: ${self:custom.MYSQLHOST}
-    MYSQLPORT: ${self:custom.MYSQLPORT}
-    MYSQLUSER: ${self:custom.MYSQLUSER}
-    MYSQLPASS: ${self:custom.MYSQLPASS}
-    MYSQLDATABASE: ${self:custom.MYSQLDATABASE}
-
-# you can overwrite defaults here
-#  stage: dev
-#  region: us-east-1
+    MYSQLHOST: ${self:custom.secrets.MYSQLHOST}
+    MYSQLPORT: ${self:custom.secrets.MYSQLPORT}
+    MYSQLUSER: ${self:custom.secrets.MYSQLUSER}
+    MYSQLPASS: ${self:custom.secrets.MYSQLPASS}
+    MYSQLDATABASE: ${self:custom.secrets.MYSQLDATABASE}
+    COGNITO_APP_CLIENT_ID: ${self:custom.secrets.COGNITO_APP_CLIENT_ID}
+    COGNITO_USER_POOL_ID: ${self:custom.secrets.COGNITO_USER_POOL_ID}
+    SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
+    SPOTIFY_CLIENT_SECRET: ${self:custom.secrets.SPOTIFY_CLIENT_SECRET}
+  stage: dev
+  region: us-east-1
 
 # you can add statements to the Lambda function's IAM Role here
 #  iam:
@@ -61,34 +78,130 @@ provider:
 #                - "Ref" : "ServerlessDeploymentBucket"
 #                - "/*"
 
-# you can define service wide environment variables here
-#  environment:
-#    variable1: value1
-
 package:
   patterns:
     - '!./**'
     - ./bin/**
 
 functions:
+  auth:
+    handler: bin/auth
   hello:
     handler: bin/hello
     events:
       - httpApi:
           path: /hello
           method: get
-  world:
-    handler: bin/world
-    events:
-      - httpApi:
-          path: /world
-          method: get
-  users:
-    handler: bin/users
+          authorizer: 
+            name: customAuthorizer
+  usersAPI:
+    handler: bin/usersAPI
     events:
       - httpApi:
           path: /users
           method: get
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /users
+          method: put
+          authorizer: 
+            name: customAuthorizer
+  usersCognito:
+    handler: bin/usersCognito
+    events:
+      - cognitoUserPool:
+          pool: trill-users
+          existing: true
+          trigger: PostConfirmation
+  likes:
+    handler: bin/likes
+    events:
+      - httpApi:
+          path: /likes
+          method: get
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /likes
+          method: put
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /likes
+          method: delete
+          authorizer: 
+            name: customAuthorizer
+  reviews:
+    handler: bin/reviews
+    events:
+      - httpApi:
+          path: /reviews
+          method: get
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: put
+          authorizer: 
+            name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: delete
+          authorizer:
+            name: customAuthorizer
+  follows:
+    handler: bin/follows
+    events:
+      - httpApi:
+          path: /follows
+          method: post
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /follows
+          method: delete
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /follows
+          method: get
+          authorizer:
+            name: customAuthorizer
+  albums:
+    handler: bin/albums
+    events:
+      - httpApi:
+          path: /albums
+          method: get
+          authorizer:
+            name: customAuthorizer
+  album:
+    handler: bin/album
+    events:
+      - httpApi:
+          path: /album
+          method: get
+          authorizer:
+            name: customAuthorizer
+  favoritealbums:
+    handler: bin/favoritealbums
+    events:
+      - httpApi:
+          path: /favoritealbums
+          method: post
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /favoritealbums
+          method: delete
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /favoritealbums
+          method: get
+          authorizer:
+            name: customAuthorizer
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events
