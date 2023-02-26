@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"trill/src/views"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -98,7 +99,7 @@ func getUserReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Res
 	}
 
 	// Get the album ID
-	albumID, ok := req.QueryStringParameters["album_id"]
+	albumID, ok := req.QueryStringParameters["albumID"]
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse album ID"}, nil
 	}
@@ -149,7 +150,7 @@ func getReviews(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Respon
 	}
 
 	// Get the album ID
-	albumID, ok := req.QueryStringParameters["album_id"]
+	albumID, ok := req.QueryStringParameters["albumID"]
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse album ID"}, nil
 	}
@@ -197,16 +198,27 @@ func getReviews(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Respon
 func createOrUpdateReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
 	db, err := connectDB()
 	if err != nil {
-		// oopsy woopsy something went fucky wucky!!!
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	// Create Review from request body
 	review := new(Review)
 	err = json.Unmarshal([]byte(req.Body), &review)
 	if err != nil {
 		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
 	}
+
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to get current user", Headers: views.DefaultHeaders}, nil
+	}
+	review.Username = username
+
+	// Get the username from the request params
+	albumID, ok := req.QueryStringParameters["albumID"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
+	}
+	review.AlbumID = albumID
 
 	// Update database if the review exists, otherwise create a new review
 	updateRes := db.Model(&review).Where("username = ? AND album_id = ?", &review.Username, &review.AlbumID).Updates(&review)
@@ -240,22 +252,31 @@ func deleteReview(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	// Create Review to be deleted
-	reviewToDelete := new(Review)
-	err = json.Unmarshal([]byte(req.Body), &reviewToDelete)
-	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to get current user", Headers: views.DefaultHeaders}, nil
+	}
+
+	// Get the username from the request params
+	albumID, ok := req.QueryStringParameters["albumID"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
+	}
+
+	review := Review{
+		Username: username,
+		AlbumID:  albumID,
 	}
 
 	// Delete the requested Review from the database
-	if err := db.Where("username = ? AND album_id = ?", &reviewToDelete.Username, &reviewToDelete.AlbumID).Delete(&reviewToDelete).Error; err != nil {
+	if err := db.Where("username = ? AND album_id = ?", &review.Username, &review.AlbumID).Delete(&review).Error; err != nil {
 		return Response{StatusCode: 404, Body: err.Error()}, nil
 	}
 
 	return Response{
-		StatusCode: 201,
+		StatusCode: 200,
 		Body: fmt.Sprintf("Successfully removed review to album %s by %s from database.",
-			reviewToDelete.AlbumID, reviewToDelete.Username),
+			review.AlbumID, review.Username),
 	}, nil
 }
 

@@ -4,39 +4,74 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(35.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('images/logo.png'),
-            SizedBox(height: 50),
-            Text(
-              'Welcome to Trill',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Track albums you\'ve listened to. Save those you want to hear.'
-              ' Tell your friends what\'s good.',
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 50),
-            ElevatedButton(
-              child: Text('Get Started'),
-              onPressed: () {
-                Navigator.pushNamed(context, '/login');
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          FractionallySizedBox(
+            heightFactor: 0.6,
+            child: ShaderMask(
+              shaderCallback: (rect) {
+                return LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Colors.black, Colors.transparent],
+                ).createShader(
+                    Rect.fromLTRB(0, rect.height / 2, rect.width, rect.height));
               },
+              blendMode: BlendMode.dstIn,
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('images/beatles.png'),
+                    fit: BoxFit.cover,
+                    opacity: .5,
+                  ),
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+          Column(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Container(),
+              ),
+              Expanded(
+                flex: 5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Image.asset(
+                      'images/logo.png',
+                      width: 250,
+                    ),
+                    SizedBox(
+                      child: Text(
+                        'Track albums you\'ve listened to.\n'
+                        'Save those you want to hear.\n'
+                        'Tell your friends what\'s good.',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          height: 1.5,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/login');
+                      },
+                      child: Text('Get Started'),
+                    ),
+                    SizedBox(height: 30),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
-    ));
+    );
   }
 }

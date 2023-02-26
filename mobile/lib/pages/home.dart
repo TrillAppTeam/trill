@@ -1,33 +1,46 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../widgets/bottomnav.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String? nickname;
+  late SharedPreferences _prefs;
+
+  @override
+  void initState() {
+    super.initState();
+    getSharedPreferences();
+  }
+
+  void getSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      nickname = _prefs.getString('nickname')!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Trill'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              final model = Provider.of<TrillBottomNavigatorModel>(context,
-                  listen: false);
-              model.setSelectedIndex(1);
-              // Open Search Menu
-              Navigator.pushNamed(context, '/search');
-            },
-          )
-        ],
-      ),
       drawer: Drawer(
         child: Container(
-          color: Colors.black,
+          color: Color(0xFF1A1B29),
           child: ListView(
             padding: EdgeInsets.zero,
             children: [
-              SizedBox(height: 70),
+              SizedBox(height: 30),
+              Container(
+                padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(1000.0),
+                    child: Image.asset("images/gerber.jpg", fit: BoxFit.cover)),
+              ),
+              SizedBox(height: 10),
               Column(children: [
                 const Text(
                   'Matthew Gerber',
@@ -39,40 +52,96 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const Text('@GerbersGrumblings'),
               ]),
-              SizedBox(height: 50),
+              SizedBox(height: 20),
+              Container(
+                child: Row(
+                  children: [
+                    Spacer(),
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFFBC6AAB), width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                              text: 'Followers: 100',
+                              style: TextStyle(
+                                  fontSize: 11, fontWeight: FontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () =>
+                                    Navigator.pushNamed(context, '/followers')),
+                        ),
+                      ),
+                    ),
+                    Spacer(flex: 2),
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xFFBC6AAB), width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                      ),
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                              text: 'Following: 100',
+                              style: TextStyle(
+                                  fontSize: 11, fontWeight: FontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () =>
+                                    Navigator.pushNamed(context, '/following')),
+                        ),
+                      ),
+                    ),
+                    Spacer()
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
               ListTile(
+                leading: Icon(Icons.home_outlined, color: Colors.white),
                 title: const Text('Home'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/home');
+                  Navigator.pushNamed(context, '/main');
                 },
               ),
               ListTile(
+                leading:
+                    Icon(Icons.library_music_outlined, color: Colors.white),
+                title: const Text('Albums'),
+                onTap: () {
+                  Navigator.pushNamed(context, '/albums');
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.rate_review_outlined, color: Colors.white),
                 title: const Text('Reviews'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/profile');
+                  Navigator.pushNamed(context, '/reviews');
                 },
               ),
               ListTile(
-                title: const Text('Lists'),
+                leading: Icon(Icons.format_list_bulleted_outlined,
+                    color: Colors.white),
+                title: const Text('Listen Later'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/profile');
+                  Navigator.pushNamed(context, '/listenlater');
                 },
               ),
               ListTile(
+                leading:
+                    Icon(Icons.favorite_outline_outlined, color: Colors.white),
                 title: const Text('Likes'),
                 onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, '/profile');
+                  Navigator.pushNamed(context, '/likes');
                 },
               ),
               SizedBox(height: 30),
               ListTile(
+                leading: Icon(Icons.logout_outlined, color: Colors.white),
                 title: const Text('Log Out'),
                 onTap: () {
-                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/login');
                 },
               ),
@@ -88,7 +157,7 @@ class HomeScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Hello, username!',
+                nickname != null ? 'hello, $nickname!' : 'hello!',
                 style: TextStyle(
                   color: Colors.blue,
                   fontSize: 20,
@@ -193,7 +262,6 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: TrillBottomNavigatorState(),
     );
   }
 }

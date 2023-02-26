@@ -16,7 +16,7 @@ func GetFavoriteAlbums(ctx context.Context, username string) (*[]FavoriteAlbum, 
 	}
 
 	var favoriteAlbums []FavoriteAlbum
-	if err := db.Table("favorite_albums").Where("username = ?", username).Find(&favoriteAlbums).Error; err != nil {
+	if err := db.Where("username = ?", username).Find(&favoriteAlbums).Error; err != nil {
 		return nil, err
 	}
 

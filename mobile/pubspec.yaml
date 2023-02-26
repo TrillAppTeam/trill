@@ -21,6 +21,7 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=2.18.6 <3.0.0'
+  flutter: ">=3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -31,7 +32,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^5.0.0
+  flutter_riverpod: ^2.1.3
+
+  amplify_auth_cognito: <1.0.0
+  amplify_flutter: <1.0.0
+  flutter_login: ^4.1.1
+
+  http: ^0.13.5
+  shared_preferences: ^2.0.17
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -66,6 +74,9 @@ flutter:
 
   assets:
     - images/logo.png
+    - images/beatles.png
+    - images/DierksBentleyTest.jpg
+    - images/gerber.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -92,3 +103,19 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+fonts:
+  - family: Source Sans Pro
+    fonts:
+      - asset: fonts/SourceSansPro-Black.ttf
+      - asset: fonts/SourceSansPro-BlackItalic.ttf
+      - asset: fonts/SourceSansPro-Bold.ttf
+      - asset: fonts/SourceSansPro-BoldItalic.ttf
+      - asset: fonts/SourceSansPro-ExtraLight.ttf
+      - asset: fonts/SourceSansPro-ExtraLightItalic.ttf
+      - asset: fonts/SourceSansPro-Italic.ttf
+      - asset: fonts/SourceSansPro-Light.ttf
+      - asset: fonts/SourceSansPro-LightItalic.ttf
+      - asset: fonts/SourceSansPro-Regular.ttf
+      - asset: fonts/SourceSansPro-SemiBold.ttf
+      - asset: fonts/SourceSansPro-SemiBoldItalic.ttf
