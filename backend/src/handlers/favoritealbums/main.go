@@ -42,15 +42,19 @@ func handler(ctx context.Context, req Request) (Response, error) {
 
 // User adds an album to their favorite albums. Only allows users to add an album if they have < 4 albums currently in their favorites.
 func create(ctx context.Context, req Request) (Response, error) {
-	insertRecord := models.FavoriteAlbum{}
-	err := views.UnmarshalFavoriteAlbum(ctx, req.Body, &insertRecord)
-	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
-	}
-
 	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
 		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
+	}
+
+	albumID, ok := req.QueryStringParameters["albumID"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
+	}
+
+	insertRecord := models.FavoriteAlbum{
+		Username: username,
+		AlbumID:  albumID,
 	}
 
 	// Only allow users to add an album if they have less than 4 albums currently in their favorites
@@ -95,7 +99,7 @@ func read(ctx context.Context, req Request) (Response, error) {
 	}
 
 	if len(*favoriteAlbums) == 0 {
-		return Response{StatusCode: 200, Body: ""}, nil
+		return Response{StatusCode: 204}, nil
 	}
 
 	albumInfos := make([]views.SpotifyAlbum, len(*favoriteAlbums))
@@ -130,19 +134,22 @@ func read(ctx context.Context, req Request) (Response, error) {
 
 // Deletes an album from a user's favorite albums
 func delete(ctx context.Context, req Request) (Response, error) {
-	// Get the username from the request params
-	username, ok := req.QueryStringParameters["username"]
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
 
-	favoriteAlbum := models.FavoriteAlbum{}
-	if err := views.UnmarshalFavoriteAlbum(ctx, req.Body, &favoriteAlbum); err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	albumID, ok := req.QueryStringParameters["albumID"]
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
 	}
-	favoriteAlbum.Username = username
 
-	if err := models.DeleteFavoriteAlbum(ctx, &favoriteAlbum); err != nil {
+	deleteRecord := models.FavoriteAlbum{
+		Username: username,
+		AlbumID:  albumID,
+	}
+
+	if err := models.DeleteFavoriteAlbum(ctx, &deleteRecord); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 

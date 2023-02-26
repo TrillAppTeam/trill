@@ -2,9 +2,10 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"os"
+	"strconv"
+	"trill/src/views"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -73,7 +74,7 @@ func getLikeCount(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 	}
 
 	// Get the review ID
-	reviewID, ok := req.QueryStringParameters["review_id"]
+	reviewID, ok := req.QueryStringParameters["reviewID"]
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse review ID"}, nil
 	}
@@ -102,15 +103,25 @@ func like(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, er
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	// Create new Like
-	newLike := new(Like)
-	err = json.Unmarshal([]byte(req.Body), &newLike)
-	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to get current user", Headers: views.DefaultHeaders}, nil
+	}
+
+	// Get the username from the request params
+	stringReviewID, ok := req.QueryStringParameters["reviewID"]
+	reviewID, err := strconv.Atoi(stringReviewID)
+	if !ok || err != nil {
+		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
+	}
+
+	like := Like{
+		Username: username,
+		ReviewID: reviewID,
 	}
 
 	// Add new like to the database
-	err = db.Create(&newLike).Error
+	err = db.Create(&like).Error
 	if err != nil {
 		return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
 	}
@@ -118,7 +129,7 @@ func like(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, er
 	return Response{
 		StatusCode: 201,
 		Body: fmt.Sprintf("Successfully added new like to review %d from %s to database.",
-			newLike.ReviewID, newLike.Username),
+			like.ReviewID, like.Username),
 	}, nil
 }
 
@@ -130,22 +141,32 @@ func unlike(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, 
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	// Create Like to be deleted
-	likeToDelete := new(Like)
-	err = json.Unmarshal([]byte(req.Body), &likeToDelete)
-	if err != nil {
-		return Response{StatusCode: 400, Body: "Invalid request data format"}, err
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{StatusCode: 500, Body: "Failed to get current user", Headers: views.DefaultHeaders}, nil
+	}
+
+	// Get the username from the request params
+	stringReviewID, ok := req.QueryStringParameters["reviewID"]
+	reviewID, err := strconv.Atoi(stringReviewID)
+	if !ok || err != nil {
+		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
+	}
+
+	like := Like{
+		Username: username,
+		ReviewID: reviewID,
 	}
 
 	// Delete the requested Like from the database
-	if err := db.Where("username = ? AND review_id = ?", &likeToDelete.Username, &likeToDelete.ReviewID).Delete(&likeToDelete).Error; err != nil {
+	if err := db.Where("username = ? AND review_id = ?", &like.Username, &like.ReviewID).Delete(&like).Error; err != nil {
 		return Response{StatusCode: 404, Body: err.Error()}, nil
 	}
 
 	return Response{
-		StatusCode: 201,
+		StatusCode: 200,
 		Body: fmt.Sprintf("Successfully removed like to review %d from %s to database.",
-			likeToDelete.ReviewID, likeToDelete.Username),
+			like.ReviewID, like.Username),
 	}, nil
 }
 
