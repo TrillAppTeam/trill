@@ -53,11 +53,8 @@ type SpotifyError struct {
 }
 
 type FavoriteAlbum struct {
-<<<<<<< HEAD
-=======
 	Username string `json:"username"`
 	AlbumID  string `json:"album_id"`
->>>>>>> main
 }
 
 func MarshalSpotifyAlbum(ctx context.Context, unmarshalledSpotifyAlbum *SpotifyAlbum) (string, error) {
