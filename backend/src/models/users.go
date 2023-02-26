@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 )
 
 type PublicCognitoUser struct {
@@ -112,6 +113,28 @@ func UpdateUser(ctx context.Context, user *User) error {
 	updatedUser := db.Save(&user)
 	if updatedUser.Error != nil {
 		return updatedUser.Error
+	}
+
+	return nil
+}
+
+func UpdatePublicCognitoUser(ctx context.Context, user *PublicCognitoUser, authToken string) error {
+	cognitoClient, err := InitCognitoClient(ctx)
+	if err != nil {
+		return err
+	}
+
+	userAttributes := make([]types.AttributeType, 1)
+	key := "nickname"
+	userAttributes[0] = types.AttributeType{Name: &key, Value: &user.Nickname}
+	cognitoUserInput := cognitoidentityprovider.UpdateUserAttributesInput{
+		AccessToken:    &authToken,
+		UserAttributes: userAttributes,
+	}
+
+	_, err = cognitoClient.Client.UpdateUserAttributes(ctx, &cognitoUserInput)
+	if err != nil {
+		return err
 	}
 
 	return nil

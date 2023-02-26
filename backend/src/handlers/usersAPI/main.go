@@ -85,14 +85,20 @@ func update(ctx context.Context, req Request) (Response, error) {
 	if !ok {
 		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
+	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
 
 	user, err := models.GetUser(ctx, username)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
+	publicCognitoUser := &models.PublicCognitoUser{}
 
 	if err = views.UnmarshalUser(ctx, req.Body, user); err != nil {
 		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
+	} else if err = views.UnmarshalPublicCognitoUser(ctx, req.Body, publicCognitoUser); err != nil {
+		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
+	} else if err = models.UpdatePublicCognitoUser(ctx, publicCognitoUser, authToken); err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	} else if err = models.UpdateUser(ctx, user); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

@@ -50,7 +50,6 @@ paths:
       tags:
       - users
       description: Update user bio or profile picture.
-        Note that current implementation returns 200 status code for invalid requests
       operationId: updateUser
       consumes:
       - application/json
@@ -452,6 +451,7 @@ definitions:
     required:
     - bio
     - profilePicture
+    - nickname
     properties:
       bio:
         type: string
@@ -459,6 +459,9 @@ definitions:
       profilePicture:
         type: string
         example: "idk the format but uh yeah"
+      nickname:
+        type: string
+        example: "paul"
   CreateReview:
     type: object
     required:
