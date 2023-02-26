@@ -8,9 +8,12 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 )
 
-type CognitoUser struct {
-	Email    string
+type PublicCognitoUser struct {
 	Nickname string
+}
+
+type PrivateCognitoUser struct {
+	Email string
 }
 
 type User struct {
@@ -19,7 +22,40 @@ type User struct {
 	ProfilePicture string `gorm:"varchar(512)"`
 }
 
-func GetCognitoUser(ctx context.Context, authToken string) (*CognitoUser, error) {
+func GetPublicCognitoUser(ctx context.Context, username string) (*PublicCognitoUser, error) {
+	cognitoClient, err := InitCognitoClient(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	cognitoUserInput := cognitoidentityprovider.AdminGetUserInput{
+		UserPoolId: &cognitoClient.UserPoolId,
+		Username:   &username,
+	}
+
+	cogInfo, err := cognitoClient.Client.AdminGetUser(ctx, &cognitoUserInput)
+	if err != nil {
+		return nil, err
+	}
+
+	// get email from user attributes
+	nickname := ""
+	for _, v := range cogInfo.UserAttributes {
+		if *v.Name == "nickname" {
+			nickname = *v.Value
+		}
+	}
+
+	if len(nickname) == 0 {
+		return nil, errors.New("could not find user nickname")
+	}
+
+	return &PublicCognitoUser{
+		Nickname: nickname,
+	}, nil
+}
+
+func GetPrivateCognitoUser(ctx context.Context, authToken string) (*PrivateCognitoUser, error) {
 	cognitoClient, err := InitCognitoClient(ctx)
 	if err != nil {
 		return nil, err
@@ -36,24 +72,18 @@ func GetCognitoUser(ctx context.Context, authToken string) (*CognitoUser, error)
 
 	// get email from user attributes
 	email := ""
-	nickname := ""
 	for _, v := range cogInfo.UserAttributes {
 		if *v.Name == "email" {
 			email = *v.Value
-		} else if *v.Name == "nickname" {
-			nickname = *v.Value
 		}
 	}
 
 	if len(email) == 0 {
 		return nil, errors.New("could not find user email")
-	} else if len(nickname) == 0 {
-		return nil, errors.New("could not find user nickname")
 	}
 
-	return &CognitoUser{
-		Email:    email,
-		Nickname: nickname,
+	return &PrivateCognitoUser{
+		Email: email,
 	}, nil
 }
 
