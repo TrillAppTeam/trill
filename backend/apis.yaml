@@ -32,6 +32,11 @@ paths:
       - application/json
       security:
       - AccessToken: []
+      parameters:
+      - name: username
+        in: query
+        description: username to search for (empty if username = user making the request and you are attempting to get email)
+        type: string
       responses:
         200:
           description: user info
@@ -468,6 +473,6 @@ definitions:
         example: "i hated it"
 
 host: api.trytrill.com
-basePath: /main
+basePath: /TSD-149-Restructure
 schemes:
  - https
