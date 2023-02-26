@@ -30,3 +30,7 @@ func MarshalUser(ctx context.Context, userModel *models.User, publicCognitoUserM
 func UnmarshalUser(ctx context.Context, marshalledUser string, userModel *models.User) error {
 	return Unmarshal(ctx, marshalledUser, userModel)
 }
+
+func UnmarshalPublicCognitoUser(ctx context.Context, marshalledPublicCognitoUser string, publicCognitoUserModel *models.PublicCognitoUser) error {
+	return Unmarshal(ctx, marshalledPublicCognitoUser, publicCognitoUserModel)
+}
