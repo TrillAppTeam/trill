@@ -7,16 +7,16 @@ function AlbumsSection() {
         <div>
             <Titles title="Hello, Grammys"></Titles>
             <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                <Album album = {{ img: "https://is2-ssl.mzstatic.com/image/thumb/Music126/v4/2a/19/fb/2a19fb85-2f70-9e44-f2a9-82abe679b88e/886449990061.jpg/1200x1200bf-60.jpg", size: "100"}} />
-                <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/3/38/Lizzo_-_Special.png", size: "100"}} />
-                <Album album = {{ img: "https://media.pitchfork.com/photos/627c1023d3c744a67a846260/1:1/w_600/Kendrick-Lamar-Mr-Morale-And-The-Big-Steppers.jpg", size: "100"}} />
-                <Album album = {{ img: "https://media.pitchfork.com/photos/60f6cf8ec64eabe66d59ccf1/1:1/w_600/Coldplay.jpeg", size: "100"}} />
-                <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/7/7a/Brandi_Carlile_-_In_These_Silent_Days.png", size: "100"}} />
-                <Album album = {{ img: "https://m.media-amazon.com/images/I/51kK5l3-WTL._UXNaN_FMjpg_QL85_.jpg", size: "100"}} />
-                <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/thumb/a/ad/Beyonc%C3%A9_-_Renaissance.png/220px-Beyonc%C3%A9_-_Renaissance.png", size: "100"}} />
-                <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/6/60/Bad_Bunny_-_Un_Verano_Sin_Ti.png", size: "100"}} />
-                <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/7/76/Adele_-_30.png", size: "100"}} />
-                <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100"}} />
+                <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0", size: "100", name: "Harry's House"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273fe3b1b9cb7183a94e1aafd43", size: "100", name: "Special"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e02117d76426a08ac7c174f", size: "100", name: "Mr. Morale & The Big Steppers"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273ec10f247b100da1ce0d80b6d", size: "100", name: "Music Of The Spheres"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27335bd3c588974a8c239e5de87", size: "100", name: "In These Silent Days"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27363b9d8845fe7d34795c16c9d", size: "100", name: "Good Morning Gorgeous (Deluxe)"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2730e58a0f8308c1ad403d105e7", size: "100", name: "RENAISSANCE"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27349d694203245f241a1bcaa72", size: "100", name: "Un Verano Sin Ti"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273c6b577e4c4a6d326354a89f7", size: "100", name: "30"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273225d9c1b06ca69aec9b08381", size: "100", name: "Voyage"}} />
             </div>
             <p className="max-w-6xl mx-auto pt-2 pb-2 text-left">The 2023 Grammy Nominations for Album of the Year.</p>
             <p className="max-w-6xl mx-auto italic text-gray-500 pb-10 text-left">WINNER: Harry's House by Harry Styles. Tyler Johnson, Kid Harpoon & Sammy Witte, producers; Jeremy Hatcher, Oli Jacobs, Nick Lobel, Spike Stent & Sammy Witte, engineers/mixers; Amy Allen, Tobias Jesso, Jr., Tyler Johnson, Kid Harpoon, Mitch Rowland, Harry Styles & Sammy Witte, songwriters; Randy Merrill, mastering engineer.</p>

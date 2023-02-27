@@ -26,11 +26,12 @@ function SearchResults() {
                 </div> 
                 : 
                 <div>
+                    {console.log(albumData?.data)}
                     {albumLoad ? <Loading /> :
                         albumData?.data.map(album => {
                             return <>
                                 <SearchAlbum album={{
-                                    img: album.images[0].url, 
+                                    img: album.images[0]?.url, 
                                     name: album.name, 
                                     year: album.release_date, 
                                     artist: album.artists[0].name, 
