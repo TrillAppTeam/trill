@@ -142,18 +142,18 @@ function Discover() {
 
             <section className="pt-14">
                 <Titles title="Trill Team Favorites"></Titles>
-                    <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                        <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/f/f8/Taylor_Swift_-_Folklore.png", size: "100"}} />
-                        <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Continuum_by_John_Mayer_%282006%29.jpg", size: "100"}} />
-                        <Album album = {{ img: "https://m.media-amazon.com/images/I/51uCkvt4ZjL._UF1000,1000_QL80_.jpg", size: "100"}} />
-                        <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/b/bf/SZA_-_Ctrl_cover.png", size: "100"}} />
-                        <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273d58e537cea05c2156792c53d", size: "100"}} />
-                        <Album album = {{ img: "https://m.media-amazon.com/images/I/71+q4wh2+YL._UF1000,1000_QL80_.jpg", size: "100"}} />
-                        <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/thumb/d/da/Combs_growin_up.jpg/220px-Combs_growin_up.jpg", size: "100"}} />
-                        <Album album = {{ img: "https://m.media-amazon.com/images/I/41kIEeScTiL._UF1000,1000_QL80_.jpg", size: "100"}} />
-                        <Album album = {{ img: "https://media.pitchfork.com/photos/6380d5021628784965dd6626/1:1/w_600/Phoebe-Bridgers-Stranger-in-the-Alps.jpg", size: "100"}} />
-                        <Album album = {{ img: "https://media.pitchfork.com/photos/5929b665b1335d7bf169aa5e/1:1/w_600/916a09f4.jpg", size: "100"}} />
-                    </div>
+                <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273c288028c2592f400dd0b9233", size: "100", name: "folklore (deluxe version)"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2737af5fdc5ef048a68db62b85f", size: "100", name: "Continuum"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2735274788f34fc7656d2856dfd", size: "100", name: "Siamese Dream (Deluxe Edition)"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2734c79d5ec52a6d0302f3add25", size: "100", name: "Ctrl"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273d58e537cea05c2156792c53d", size: "100", name: "good kid, m.A.A.d city (Deluxe)"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273e11a75a2f2ff39cec788a015", size: "100", name: "Speak Now"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27387459a563f92e336d282ca59", size: "100", name: "Growin' Up"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27357b7f789d328c205b4d15893", size: "100", name: "From The Fires"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273a91b75c9ef65ed8d760ff600", size: "100", name: "Punisher"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2738a162cd60b075bef224ffab7", size: "100", name: "All Things Must Pass (2014 Remaster)"}} />
+                </div>
                 <p className="max-w-6xl mx-auto text-gray-400 pt-2 pb-10 text-left italic">Our team's top picks.</p>
             </section>
             </>}
