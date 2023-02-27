@@ -91,10 +91,10 @@ function Profile() {
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-center gap-5">
-                            <Album album = {{ img: "/blondAlbum.jpg", size: "200"}} />
-                            <Album album = {{ img: "/allThingsMustPassAlbum.jpg", size: "200"}} />
-                            <Album album = {{ img: "/currentsAlbum.jpg", size: "200"}} />
-                            <Album album = {{ img: "/whereTheLightIsAlbum.jpg", size: "200"}} />
+                        <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0", size: "200", name: "Harry's House"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273fe3b1b9cb7183a94e1aafd43", size: "200", name: "Special"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e02117d76426a08ac7c174f", size: "200", name: "Mr. Morale & The Big Steppers"}} />
+                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273ec10f247b100da1ce0d80b6d", size: "200", name: "Music Of The Spheres"}} />
                         </div>
                 </div>
                 
