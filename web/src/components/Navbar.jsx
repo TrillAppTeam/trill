@@ -42,7 +42,7 @@ function Navbar() {
               </div>
               
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <Link to="/">
+                <Link to="">
                   <div className="flex flex-shrink-0 items-center">
                     <img
                       className="block h-11 w-auto lg:hidden"
