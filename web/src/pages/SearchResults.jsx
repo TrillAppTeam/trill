@@ -26,17 +26,12 @@ function SearchResults() {
                 </div> 
                 : 
                 <div>
+                    {/* Remove Eventually!! */}
                     {console.log(albumData?.data)}
                     {albumLoad ? <Loading /> :
                         albumData?.data.map(album => {
                             return <>
-                                <SearchAlbum album={{
-                                    img: album.images[0]?.url, 
-                                    name: album.name, 
-                                    year: album.release_date, 
-                                    artist: album.artists[0].name, 
-                                    spotifyLink: album.external_urls.spotify
-                                }}/>
+                                <SearchAlbum album={album}/>
                                 
                                 <div className="border-t border-gray-600 max-w-6xl mx-auto" />
                             </>

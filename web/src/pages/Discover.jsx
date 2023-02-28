@@ -1,13 +1,17 @@
-import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { Link } from "react-router-dom"
+import { useQuery } from "@tanstack/react-query"
 
 // Components
-import Titles from "../components/Titles";
-import NewsCard from "../components/NewsCard";
-import Album from "../components/Album";
-import Review from "../components/Review";
-import Loading from "../components/Loading";
+import Titles from "../components/Titles"
+import NewsCard from "../components/NewsCard"
+import Album from "../components/Album"
+import Review from "../components/Review"
+import Loading from "../components/Loading"
 import AlbumReview from "../components/AlbumReview"
+
+// Partials
+import HelloGrammys from "../partials/HelloGrammys"
+import TrillTeamFavorites from "../partials/TrillTeamFavorites"
 
 const newsInfo = {
     title: "The 200 Greatest Singers of All Time", 
@@ -33,6 +37,7 @@ let exampleReview = {
     albumYear: "2020",
     artist: "Tame Impala"
 }
+
 let anotherExample = {
     user: "Jake Gyllenhal",
     profilePic: null,
@@ -42,6 +47,21 @@ let anotherExample = {
     albumName: "Where The Light Is",
     albumYear: "2016",
     artist: "John Mayer"
+}
+
+let albumDummy = { 
+    "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
+    "name": "Harry's House",
+    "artists": [
+        {
+            "name": "Harry Styles"
+        }
+    ],
+    "external_urls": {
+        "spotify": "https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h"
+    },
+    "release_date": "2021",
+    "size": "100"
 }
 
 function Discover() {
@@ -62,57 +82,41 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <Album album = {{ img: "https://is2-ssl.mzstatic.com/image/thumb/Music126/v4/2a/19/fb/2a19fb85-2f70-9e44-f2a9-82abe679b88e/886449990061.jpg/1200x1200bf-60.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/3/38/Lizzo_-_Special.png", size: "100"}} />
-                    <Album album = {{ img: "https://media.pitchfork.com/photos/627c1023d3c744a67a846260/1:1/w_600/Kendrick-Lamar-Mr-Morale-And-The-Big-Steppers.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://media.pitchfork.com/photos/60f6cf8ec64eabe66d59ccf1/1:1/w_600/Coldplay.jpeg", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/7/7a/Brandi_Carlile_-_In_These_Silent_Days.png", size: "100"}} />
-                    <Album album = {{ img: "https://m.media-amazon.com/images/I/51kK5l3-WTL._UXNaN_FMjpg_QL85_.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/thumb/a/ad/Beyonc%C3%A9_-_Renaissance.png/220px-Beyonc%C3%A9_-_Renaissance.png", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/6/60/Bad_Bunny_-_Un_Verano_Sin_Ti.png", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/7/76/Adele_-_30.png", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100"}} />
-                </div>
-            </section>
-
-            <section className="pt-14"> 
-                <Titles title="Popular Reviews This Week - Globally"/>
-                <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <AlbumReview album={{ img: "https://m.media-amazon.com/images/I/51kK5l3-WTL._UXNaN_FMjpg_QL85_.jpg", size: "100", user: "dmflo", rating: 2}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/6/60/Bad_Bunny_-_Un_Verano_Sin_Ti.png", size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100", user: "csmi", rating: 10}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/7/7a/Brandi_Carlile_-_In_These_Silent_Days.png", size: "100", user: "avwede", rating: 1}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100", user: "chian", rating: 9}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/7/76/Adele_-_30.png", size: "100", user: "avwede", rating: 2}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100", user: "prathik",rating: 10}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100", user: "chris", rating: 5}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/3/38/Lizzo_-_Special.png", size: "100", user: "avwede", rating: 10}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/7/76/Adele_-_30.png", size: "100", user: "john", rating: 8}} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} />
                 </div>
             </section>
 
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/3/38/Lizzo_-_Special.png", size: "100", user: "avwede", rating: 10}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/7/76/Adele_-_30.png", size: "100", user: "jon", rating: 8}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/6/60/Bad_Bunny_-_Un_Verano_Sin_Ti.png", size: "100", user: "doe", rating: 2}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/6/60/Bad_Bunny_-_Un_Verano_Sin_Ti.png", size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100", user: "harry", rating: 10}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/7/7a/Brandi_Carlile_-_In_These_Silent_Days.png", size: "100", user: "avwede", rating: 1}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100", user: "niall", rating: 9}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/7/76/Adele_-_30.png", size: "100", user: "avwede", rating: 2}} />
-                    <AlbumReview album={{ img: "https://upload.wikimedia.org/wikipedia/en/e/e0/ABBA_-_Voyage.png", size: "100", user: "liam",rating: 10}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
                 </div>
             </section>
 
-            <section className="pt-14"> 
+            {/* <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
                 <Review review={exampleReview}/>
                 <div className="border-t border-gray-600 max-w-6xl mx-auto" />
                 <Review review={anotherExample}/>
-            </section>
+            </section> */}
 
             {/* Music News */}
             <section className="pt-14">
@@ -123,39 +127,13 @@ function Discover() {
 
             {/* Grammy Fun! */}
             <section className="pt-14">
-                <Titles title="Hello, Grammys"/>
-                <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0", size: "100", name: "Harry's House"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273fe3b1b9cb7183a94e1aafd43", size: "100", name: "Special"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e02117d76426a08ac7c174f", size: "100", name: "Mr. Morale & The Big Steppers"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273ec10f247b100da1ce0d80b6d", size: "100", name: "Music Of The Spheres"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27335bd3c588974a8c239e5de87", size: "100", name: "In These Silent Days"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27363b9d8845fe7d34795c16c9d", size: "100", name: "Good Morning Gorgeous (Deluxe)"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2730e58a0f8308c1ad403d105e7", size: "100", name: "RENAISSANCE"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27349d694203245f241a1bcaa72", size: "100", name: "Un Verano Sin Ti"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273c6b577e4c4a6d326354a89f7", size: "100", name: "30"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273225d9c1b06ca69aec9b08381", size: "100", name: "Voyage"}} />
-                </div>
-                <p className="max-w-6xl mx-auto pt-2 pb-2">The 2023 Grammy Nominations for Album of the Year.</p>
-                <p className="max-w-6xl mx-auto italic text-gray-500">WINNER: Harry's House by Harry Styles. Tyler Johnson, Kid Harpoon & Sammy Witte, producers; Jeremy Hatcher, Oli Jacobs, Nick Lobel, Spike Stent & Sammy Witte, engineers/mixers; Amy Allen, Tobias Jesso, Jr., Tyler Johnson, Kid Harpoon, Mitch Rowland, Harry Styles & Sammy Witte, songwriters; Randy Merrill, mastering engineer.</p>
+                <HelloGrammys />
             </section>
 
             <section className="pt-14">
-                <Titles title="Trill Team Favorites"></Titles>
-                <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273c288028c2592f400dd0b9233", size: "100", name: "folklore (deluxe version)"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2737af5fdc5ef048a68db62b85f", size: "100", name: "Continuum"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2735274788f34fc7656d2856dfd", size: "100", name: "Siamese Dream (Deluxe Edition)"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2734c79d5ec52a6d0302f3add25", size: "100", name: "Ctrl"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273d58e537cea05c2156792c53d", size: "100", name: "good kid, m.A.A.d city (Deluxe)"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273e11a75a2f2ff39cec788a015", size: "100", name: "Speak Now"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27387459a563f92e336d282ca59", size: "100", name: "Growin' Up"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27357b7f789d328c205b4d15893", size: "100", name: "From The Fires"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273a91b75c9ef65ed8d760ff600", size: "100", name: "Punisher"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2738a162cd60b075bef224ffab7", size: "100", name: "All Things Must Pass (2014 Remaster)"}} />
-                </div>
-                <p className="max-w-6xl mx-auto text-gray-400 pt-2 pb-10 text-left italic">Our team's top picks.</p>
+                <TrillTeamFavorites />
             </section>
+
             </>}
         </div>
     );

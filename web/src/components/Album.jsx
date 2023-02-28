@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom"
 
 function Album(props) {
-    const { img, size, name } = props.album;
+    const {images: img, name, release_date: year, artists, external_urls: spotifyLink, size} = props.album;
     return (
         <div className="relative transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105">
-            <Link to="/User/AlbumDetails">
+            <Link to="/User/AlbumDetails" state={{name: name, year: year, artist: artists, img: img, link: spotifyLink.spotify}}>
 
                 {/* Album Art */}
-                <img className="ring-2 ring-gray-500" src={img} width={size} height={size}/>
+                <img className="ring-2 ring-gray-500" src={img[0].url} width={size} height={size}/>
 
                 {/* Overlay mask with album name */}
                 <div className={`max-w-[${size}px] max-h-[${size}px] absolute inset-0 flex items-center justify-center text-white bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity`}>
