@@ -37,28 +37,30 @@ function Profile() {
     for (let i = 0; i < 30; i++) {
         followingDummy.push(<Avatar user={ followingAvatars } />);
     }
+    // <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+
+    let albumDummy = { 
+        "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
+        "name": "Harry's House",
+        "artists": [
+            {
+                "name": "Harry Styles"
+            }
+        ],
+        "external_urls": {
+            "spotify": "https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h"
+        },
+        "release_date": "2021",
+        "size": "150"
+    };
 
     let reviewDummy = {
+        ...albumDummy,
         user: "Ligma Johnson",
         profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-        review: "For Kevin Parker, perfectionism is a lonely thing.",
+        review: "Harry has done it yet again.",
         rating: 5,
-        albumImg: "https://upload.wikimedia.org/wikipedia/en/9/9b/Tame_Impala_-_Currents.png",
-        albumName: "Currents",
-        albumYear: "2020",
-        artist: "Tame Impala"
-    }
-
-    let anotherExample = {
-        user: "Jake Gyllenhal",
-        profilePic: null,
-        review: "john mayer does it again with his live rendition",
-        rating: 10,
-        albumImg: "https://m.media-amazon.com/images/I/81lfMW3-N0L._UF1000,1000_QL80_.jpg",
-        albumName: "Where The Light Is",
-        albumYear: "2016",
-        artist: "John Mayer"
-    }
+    };
 
     return (
         <div className="max-w-5xl mx-auto">
@@ -91,10 +93,10 @@ function Profile() {
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-center gap-5">
-                        <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0", size: "200", name: "Harry's House"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273fe3b1b9cb7183a94e1aafd43", size: "200", name: "Special"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e02117d76426a08ac7c174f", size: "200", name: "Mr. Morale & The Big Steppers"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273ec10f247b100da1ce0d80b6d", size: "200", name: "Music Of The Spheres"}} />
+                            <Album album = {albumDummy} />
+                            <Album album = {albumDummy} />
+                            <Album album = {albumDummy} />
+                            <Album album = {albumDummy} />
                         </div>
                 </div>
                 
@@ -105,13 +107,13 @@ function Profile() {
             <Titles title="Recent Reviews"/>
             <Review review={ reviewDummy } />
             <div className="border-t border-gray-600 max-w-5xl mx-auto" />
-            <Review review={ anotherExample }/>
+            <Review review={ reviewDummy }/>
 
             {/* Popular Reviews: Two most popular reviews by likes, by the user */}
             <Titles title="Popular Reviews"/>
             <Review review={ reviewDummy } />
             <div className="border-t border-gray-600 max-w-5xl mx-auto" />
-            <Review review={ anotherExample }/>
+            <Review review={ reviewDummy }/>
 
             {/* Following: Avatars of people the user follows */}
             <Titles title="Following"/>
