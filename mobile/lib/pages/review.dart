@@ -175,7 +175,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState != null) {
-                    createOrUpdateReview("prathik2001", "5MfAxS5zz8MlfROjGQVXhy", _rating, _review);
+                    createOrUpdateReview("5MfAxS5zz8MlfROjGQVXhy", _rating, _review);
                   }
                 },
                 child: Text('Publish'),
