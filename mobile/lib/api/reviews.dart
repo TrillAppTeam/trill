@@ -18,7 +18,7 @@ Future<Review?> getUserReview(String username, String albumID) async {
 
   final response = await http.get(
     Uri.parse(
-        'https://api.trytrill.com/main/reviews?username=$username&album_id=$albumID'),
+        'https://api.trytrill.com/main/reviews?username=$username&albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -49,7 +49,7 @@ Future<List<Review>?> getAlbumReviews(String sort, String albumID) async {
 
   final response = await http.get(
     Uri.parse(
-        'https://api.trytrill.com/main/reviews?sort=$sort&album_id=$albumID'),
+        'https://api.trytrill.com/main/reviews?sort=$sort&albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -66,11 +66,10 @@ Future<List<Review>?> getAlbumReviews(String sort, String albumID) async {
   }
 }
 
-Future<bool> createOrUpdateReview(String username, String albumID, int rating,
+Future<bool> createOrUpdateReview(String albumID, int rating,
     [String? reviewText]) async {
   const String tag = '[createOrUpdateReview]';
 
-  safePrint('$tag username: $username');
   safePrint('$tag albumID: $albumID');
   safePrint('$tag rating: $rating');
   safePrint('$tag reviewText: ${reviewText ?? 'null'}');
@@ -80,13 +79,11 @@ Future<bool> createOrUpdateReview(String username, String albumID, int rating,
   // safePrint('$tag access token: $token');
 
   final response = await http.put(
-    Uri.parse('https://api.trytrill.com/main/reviews'),
+    Uri.parse('https://api.trytrill.com/main/reviews?albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
     body: jsonEncode(<String, dynamic>{
-      'username': username,
-      'album_id': albumID,
       'rating': rating,
       if (reviewText != null) 'review_text': reviewText,
     }),
@@ -98,11 +95,9 @@ Future<bool> createOrUpdateReview(String username, String albumID, int rating,
   return response.statusCode == 201;
 }
 
-// prob want to add/change api in backend for deleting by review ID
-Future<bool> deleteReview(String username, String albumID) async {
+Future<bool> deleteReview(String albumID) async {
   const String tag = '[deleteReview]';
 
-  safePrint('$tag username: $username');
   safePrint('$tag albumID: $albumID');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -110,20 +105,16 @@ Future<bool> deleteReview(String username, String albumID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.delete(
-    Uri.parse('https://api.trytrill.com/main/reviews'),
+    Uri.parse('https://api.trytrill.com/main/reviews?albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
-    body: jsonEncode(<String, dynamic>{
-      'username': username,
-      'album_id': albumID,
-    }),
   );
 
   safePrint('$tag ${response.statusCode}');
   safePrint('$tag ${response.body}');
 
-  return response.statusCode == 201;
+  return response.statusCode == 200;
 }
 
 class Review {

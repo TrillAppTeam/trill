@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +14,7 @@ Future<int?> getLikeCount(int reviewID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/likes?review_id=$reviewID'),
+    Uri.parse('https://api.trytrill.com/main/likes?reviewID=$reviewID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -31,10 +30,9 @@ Future<int?> getLikeCount(int reviewID) async {
   }
 }
 
-Future<bool> likeReview(String username, int reviewID) async {
+Future<bool> likeReview(int reviewID) async {
   const String tag = '[likeReview]';
 
-  safePrint('$tag username: $username');
   safePrint('$tag reviewID: $reviewID');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -42,14 +40,10 @@ Future<bool> likeReview(String username, int reviewID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.put(
-    Uri.parse('https://api.trytrill.com/main/likes'),
+    Uri.parse('https://api.trytrill.com/main/likes?reviewID=$reviewID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
-    body: jsonEncode(<String, dynamic>{
-      'username': username,
-      'review_id': reviewID,
-    }),
   );
 
   safePrint('$tag ${response.statusCode}');
@@ -58,10 +52,9 @@ Future<bool> likeReview(String username, int reviewID) async {
   return response.statusCode == 201;
 }
 
-Future<bool> unlikeReview(String username, int reviewID) async {
+Future<bool> unlikeReview(int reviewID) async {
   const String tag = '[unlikeReview]';
 
-  safePrint('$tag username: $username');
   safePrint('$tag reviewID: $reviewID');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -69,20 +62,16 @@ Future<bool> unlikeReview(String username, int reviewID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.delete(
-    Uri.parse('https://api.trytrill.com/main/likes'),
+    Uri.parse('https://api.trytrill.com/main/likes?reviewID=$reviewID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
-    body: jsonEncode(<String, dynamic>{
-      'username': username,
-      'review_id': reviewID,
-    }),
   );
 
   safePrint('$tag ${response.statusCode}');
   safePrint('$tag ${response.body}');
 
-  return response.statusCode == 201;
+  return response.statusCode == 200;
 }
 
 class Like {
