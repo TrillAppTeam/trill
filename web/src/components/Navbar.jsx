@@ -83,7 +83,7 @@ function Navbar() {
                     <Menu.Button className="flex rounded-full">
                       <span className="sr-only">Open user menu</span>
                       {/* User Profile Picture */}
-                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: "11" }} />
+                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: "11", linkDisabled: true }} />
 
                     </Menu.Button>
                   </div>

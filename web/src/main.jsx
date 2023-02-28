@@ -101,6 +101,11 @@ const router = createBrowserRouter([
         errorElement: <Error />
       },
       {
+        path: "Profile/:user",
+        element: <Profile />,
+        errorElement: <Error />
+      },
+      {
         path: "Settings",
         element: <Settings />,
         errorElement: <Error />

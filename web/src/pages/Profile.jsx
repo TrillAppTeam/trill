@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useLayoutEffect } from 'react';
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
  
 // Components
@@ -9,15 +9,24 @@ import UserStats from "../components/UserStats"
 import Album from "../components/Album"
 import Avatar from "../components/Avatar"
 import Review from "../components/Review"
+import Loading from '../components/Loading';
 
 function Profile() {
     // GET user info
     // GET favoriteAlbums
     // GET following / follower count --> list of these users and their profile pictures
     // GET number of reviewed albums
-    // GET recent reviews 
+    // GET recent reviews
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0)
+    });
 
-    const {data: userData, error: userError} = useQuery(['users']);
+    const {user} = useParams();
+    let paramString = '';
+    if (user)
+        paramString = `?username=${user}`;
+
+    const {isLoading, data: userData, error: userError} = useQuery([`users${paramString}`]);
     const {data: following, error: followingError} = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
     const {data: followers, error: followerError} = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
 
@@ -33,10 +42,10 @@ function Profile() {
         size: "11"
     }
 
-    const followingDummy = [];
-    for (let i = 0; i < 30; i++) {
-        followingDummy.push(<Avatar user={ followingAvatars } />);
-    }
+    // const followingDummy = [];
+    // for (let i = 0; i < 30; i++) {
+    //     followingDummy.push(<Avatar user={ followingAvatars } />);
+    // }
     // <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
 
     let albumDummy = { 
@@ -63,20 +72,21 @@ function Profile() {
     };
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <>
+        {isLoading ? <Loading/> : <div className="max-w-5xl mx-auto">
             {/* Profile Section */}
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
                 <div className="flex flex-row m-5">
                     {/* Profile Picture */}
-                    <Avatar user={ userAvatar } />
+                    <Avatar user={{...userAvatar, linkDisabled: true}} />
 
                     {/* Name and Bio */}
                     <div className="pl-10">
                         <div className="flex gap-2">
                             <h1 className="font-bold text-white text-3xl">{userData?.data.nickname}</h1>
-                            <Link to="/User/Settings">
+                            {!user ? <Link to="/User/Settings">
                                 <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
-                            </Link>
+                            </Link> : <></>}
                         </div>
                         <h2 className="text-xl pt-2">{userData?.data.bio}</h2>
                     </div>
@@ -130,7 +140,8 @@ function Profile() {
                     {followers?.data.users.map(user => {return <Avatar user={{profilePic: null, firstName: user, size: '11'}}/>})}
                 </div>
             </div>
-        </div>
+        </div>}
+        </>
     );
 }
 
