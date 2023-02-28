@@ -1,3 +1,4 @@
+// Team Photos
 import Ashley from "/ashley.png"
 import Cathy from "/cathy.png"
 import Chris from "/chris.png"
@@ -5,29 +6,18 @@ import David from "/david.png"
 import Prathik from "/prathik.png"
 import Conrad from "/conrad.png"
 
+// Components
 import Album from "../components/Album"
 import Titles from "../components/Titles"
+
+// Partials
+import TrillTeamFavorites from "./TrillTeamFavorites"
 
 function TeamSection() {
     return (
         <section className="py-6 text-gray-100">
             
-             <div>
-                <Titles title="Trill Team Favorites"></Titles>
-                <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273c288028c2592f400dd0b9233", size: "100", name: "folklore (deluxe version)"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2737af5fdc5ef048a68db62b85f", size: "100", name: "Continuum"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2735274788f34fc7656d2856dfd", size: "100", name: "Siamese Dream (Deluxe Edition)"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2734c79d5ec52a6d0302f3add25", size: "100", name: "Ctrl"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273d58e537cea05c2156792c53d", size: "100", name: "good kid, m.A.A.d city (Deluxe)"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273e11a75a2f2ff39cec788a015", size: "100", name: "Speak Now"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27387459a563f92e336d282ca59", size: "100", name: "Growin' Up"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b27357b7f789d328c205b4d15893", size: "100", name: "From The Fires"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273a91b75c9ef65ed8d760ff600", size: "100", name: "Punisher"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2738a162cd60b075bef224ffab7", size: "100", name: "All Things Must Pass (2014 Remaster)"}} />
-                </div>
-                <p className="max-w-6xl mx-auto text-gray-400 pt-2 pb-10 text-left italic">Our team's top picks.</p>
-            </div>
+            <TrillTeamFavorites />
 
             <div className="container flex flex-col items-center justify-center p-4 mx-auto sm:p-10">
                 <p className="p-2 text-md font-medium tracking-wider text-center uppercase">Development team</p>

@@ -1,6 +1,17 @@
 import AvgReviews from "../components/AvgReviews";
+import { useLocation } from "react-router-dom";
 
 function AlbumDetails() {
+    // IMAGE URL
+    // ALBUM NAME
+    // ALBUM YEAR
+    // ARTIST
+    // SPOTIFY LINK
+    // ARTIST COVER PHOTO ?
+    const {state} = useLocation();
+    // state={{name: name, year: year, artist: artists[0].name, img: img, link: spotifyLink.spotify}}>
+    const {name, year, artist, img, link} = state;
+    
     let exampleAlbum = {
         "total_tracks": 9,
         "id": "2up3OPMp9Tb4dAKM2erWXQ",
@@ -17,6 +28,9 @@ function AlbumDetails() {
             "Pop",
             "Pop rock"
         ],
+        "external_urls": {
+            "spotify": "string"
+        },
         "artists": [
             {
                 "external_urls": {
@@ -60,33 +74,32 @@ function AlbumDetails() {
                         </div>
                         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-trillPurple via-trillPurple to-transparent"></div>
                     </div>
+
+                    
                 </div>
 
                 {/* Album Art Image */}
-                <div className="flex flex-row z-10">
+                <div className="flex flex-row z-10 justify-left items-start">
+
                     <div className="z-10">
-                        <img className="w-40 h-40" src={exampleAlbum.images[0].url} alt="Album Overlay Image" />
+                        <img className="w-40 h-40" src={img[0].url} alt="Album Overlay Image" />
                     </div>
 
-                    <div className="z-10 pl-10 flex flex-row gap-10 justify-between">
-
+                    <div className="z-10 pl-10 flex flex-row gap-10">
                         <div className="flex flex-col">
                             {/* Album Name and Year Released */}
                             <div className="flex flex-row gap-4">
                                 <h1 className="text-3xl text-gray-200">
-                                    <span className="font-bold italic">{exampleAlbum.name}</span> 
+                                    <span className="font-bold italic">{name}</span> 
                                 </h1>
-                                <h1 className="text-3xl text-gray-500">{exampleAlbum.release_date.split('-')[0]}</h1>
+                                <h1 className="text-3xl text-gray-500">{year.split('-')[0]}</h1>
                             </div>
 
                             {/* Artist Name */}
-                            <p className="text-lg">by {exampleAlbum.artists[0].name}</p>
+                            <p className="text-lg">by {artist[0].name}</p>
                         </div>
-
                     </div>
-
                     
-
                 </div>    
             </div>
             
