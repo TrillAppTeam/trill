@@ -79,7 +79,14 @@ function AlbumDetails() {
                 <div className="flex flex-row z-10 justify-left items-start">
 
                     <div className="z-10">
-                        <img className="w-40 h-40" src={img[0].url} alt="Album Overlay Image" />
+                        { img[0] ? 
+                            <img className="w-40 h-40" src={img[0].url} alt="Album Overlay Image" />
+                        : 
+                            // If url image doesn't exist, populate with text
+                            <div className={`w-40 h-40 flex items-center justify-center text-gray-200 bg-gray-700 ring-2 ring-gray-500`}>
+                                <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
+                            </div>
+                        }
                     </div>
 
                     <div className="z-10 pl-10 flex flex-row gap-10">
