@@ -2,12 +2,12 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react"
 import axios from "axios";
 
-import SuccessToast from "../components/SuccessToast";
+// Components
+import Toast from "../components/Toast";
 
 function Settings() {
     const {isLoading, data: userData, error: userError} = useQuery(['users']);
-    const [isSuccess, setIsSuccess] = useState(false);
-
+  
     const update = useMutation(upUser => {
       return axios.put('https://api.trytrill.com/main/users', upUser, { headers: {
         'Content-Type': 'application/json',
@@ -16,6 +16,18 @@ function Settings() {
           setIsSuccess(true);
           console.log(res);
         })
+        .catch((err) => {
+          setIsSuccess(false);
+          console.log(err);
+        })
+        .finally(() => {
+          setIsSuccess(true);
+          setTimeout(() => {
+            setDismissed(true);
+          }, 7000);
+        });
+      
+        
     });
 
     const updateUser = (event) => {
@@ -27,10 +39,12 @@ function Settings() {
       setDismissed(false);
     };
 
-    // Success Toast 
+    // Toast 
+    const [isSuccess, setIsSuccess] = useState(false);
     const [dismissed, setDismissed] = useState(false);
     const handleDismiss = () => {
-        setDismissed(true);
+      setDismissed(true);
+      setIsSuccess(false);
     };
 
     return (
@@ -44,7 +58,11 @@ function Settings() {
                 </p>
               </div>
               {!dismissed && (
-                <SuccessToast message="Saved user profile" onDismiss={handleDismiss} />
+                <Toast toast={{
+                  message: isSuccess ? "Saved user profile" : "Could not save user profile", 
+                  type: isSuccess ? "success" : "error", 
+                  onDismiss: handleDismiss}} 
+                />
               )}
             </div>
 
