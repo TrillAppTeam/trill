@@ -1,14 +1,21 @@
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { useState } from "react"
 import axios from "axios";
+
+import SuccessToast from "../components/SuccessToast";
 
 function Settings() {
     const {isLoading, data: userData, error: userError} = useQuery(['users']);
-
+    const [isSuccess, setIsSuccess] = useState(false);
 
     const update = useMutation(upUser => {
       return axios.put('https://api.trytrill.com/main/users', upUser, { headers: {
         'Content-Type': 'application/json',
         'Authorization' : `Bearer ${localStorage.getItem('access_token')}`}}).then((res) => {console.log(res)})
+        .then((res) => {
+          setIsSuccess(true);
+          console.log(res);
+        })
     });
 
     const updateUser = (event) => {
@@ -17,19 +24,29 @@ function Settings() {
       const formData = new FormData(event.target);
 
       update.mutate({...user, nickname: formData.get('name'), bio: formData.get('bio')});
+      setDismissed(false);
+    };
+
+    // Success Toast 
+    const [dismissed, setDismissed] = useState(false);
+    const handleDismiss = () => {
+        setDismissed(true);
     };
 
     return (
         <div>
-        <div className="md:grid md:grid-cols-3 md:gap-6 m-24 max-w-5xl mx-auto">
-          <div className="md:col-span-1">
-            <div className="px-4 sm:px-0">
-              <h3 className="text-3xl font-bold leading-6 text-white">Trill Profile🎵</h3>
-              <p className="mt-5 text-lg text-gray-200">
-                Showcase your personality by customizing your profile page.
-              </p>
+          <div className="md:grid md:grid-cols-3 md:gap-6 m-24 max-w-5xl mx-auto">
+            <div className="md:col-span-1">
+              <div className="px-4 sm:px-0">
+                <h3 className="text-3xl font-bold leading-6 text-white">Trill Profile🎵</h3>
+                <p className="mt-5 text-lg text-gray-200 pb-10">
+                  Showcase your personality by customizing your profile page.
+                </p>
+              </div>
+              {!dismissed && (
+                <SuccessToast message="Saved user profile" onDismiss={handleDismiss} />
+              )}
             </div>
-          </div>
 
           <div className="mt-5 md:col-span-2 md:mt-0">
               <form onSubmit={updateUser}>
@@ -103,8 +120,12 @@ function Settings() {
 
                 </div>
               </form>
+              
           </div>
+
+          
         </div>
+        
       </div>
     );
 }
