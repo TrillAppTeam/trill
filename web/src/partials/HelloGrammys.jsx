@@ -68,18 +68,6 @@ function HelloGrammys() {
                 />
 
                 <Album album = {{  "images": [{"url": "https://i.scdn.co/image/ab67616d0000b27363b9d8845fe7d34795c16c9d"}], 
-                    "name": "In These Silent Days",
-                    "artists": [
-                        { "name": "Brandi Carlile" }
-                    ],
-                    "external_urls": {
-                        "spotify": "https://open.spotify.com/album/5mIT7iw9w64DMP2vxP9L1f"
-                    },
-                    "release_date": "2021",
-                    "size": "100" }} 
-                />
-
-                <Album album = {{  "images": [{"url": "https://i.scdn.co/image/ab67616d0000b27363b9d8845fe7d34795c16c9d"}], 
                     "name": "Good Morning Gorgeous (Deluxe)",
                     "artists": [
                         { "name": "Mary J. Blige" }
