@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -18,6 +19,10 @@ type Review struct {
 	Likes      []Like    `gorm:"foreignKey:ReviewID;references:ReviewID"`
 }
 
+var (
+	ErrorReviewNotFound error = errors.New("review does not exist")
+)
+
 func GetReview(ctx context.Context, username string, albumID string) (*Review, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
@@ -25,8 +30,10 @@ func GetReview(ctx context.Context, username string, albumID string) (*Review, e
 	}
 
 	var review *Review
-	if err := db.Preload("Likes").Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(review).Error; err != nil {
+	if result := db.Preload("Likes").Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(&review); result.Error != nil {
 		return nil, err
+	} else if result.RowsAffected == 0 {
+		return nil, ErrorReviewNotFound
 	} else {
 		return review, nil
 	}

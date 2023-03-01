@@ -15,11 +15,11 @@ func GetLikes(ctx context.Context, reviewID string) (*[]Like, error) {
 		return nil, err
 	}
 
-	var likes *[]Like
-	if err := db.Where("review_id = ?", reviewID).Find(likes).Error; err != nil {
+	var likes []Like
+	if err := db.Where("review_id = ?", reviewID).Find(&likes).Error; err != nil {
 		return nil, err
 	} else {
-		return likes, nil
+		return &likes, nil
 	}
 }
 

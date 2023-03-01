@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"trill/src/models"
 	"trill/src/views"
@@ -14,6 +15,14 @@ import (
 
 type Request = events.APIGatewayV2HTTPRequest
 type Response = events.APIGatewayV2HTTPResponse
+
+var (
+	ErrorAlbumID     error = errors.New("failed to parse album ID")
+	ErrorUsername    error = errors.New("failed to parse username")
+	ErrorRequestor   error = errors.New("failed to get requestor from token")
+	ErrorSort        error = errors.New("failed to parse sort")
+	ErrorSortInvalid error = errors.New("invalid sort parameter")
+)
 
 var db *gorm.DB
 
@@ -52,15 +61,17 @@ func handler(ctx context.Context, req Request) (Response, error) {
 func getUserReview(ctx context.Context, req Request) (Response, error) {
 	username, ok := req.QueryStringParameters["username"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: ErrorUsername.Error(), Headers: views.DefaultHeaders}, nil
 	}
 	albumID, ok := req.QueryStringParameters["albumID"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
 	review, err := models.GetReview(ctx, username, albumID)
-	if err != nil {
+	if err == models.ErrorReviewNotFound {
+		return Response{StatusCode: 404, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	} else if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 	if review == nil {
@@ -90,15 +101,15 @@ func getUserReview(ctx context.Context, req Request) (Response, error) {
 func getReviews(ctx context.Context, req Request) (Response, error) {
 	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: ErrorRequestor.Error(), Headers: views.DefaultHeaders}, nil
 	}
 	albumID, ok := req.QueryStringParameters["albumID"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse album ID"}, nil
+		return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
 	}
 	sort, ok := req.QueryStringParameters["sort"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse sort"}, nil
+		return Response{StatusCode: 500, Body: ErrorSort.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
 	var reviews *[]models.Review
@@ -114,7 +125,7 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}
 	default:
-		return Response{StatusCode: 500, Body: "Invalid sort parameter", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 400, Body: ErrorSortInvalid.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
 	reviewsInfos := make([]string, len(*reviews))
@@ -125,12 +136,12 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		}
 	}
 
-	reviewsJSON, err := views.Marshal(ctx, reviewsInfos)
+	body, err := views.Marshal(ctx, reviewsInfos)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return Response{StatusCode: 200, Body: reviewsJSON, Headers: views.DefaultHeaders}, nil
+	return Response{StatusCode: 200, Body: body, Headers: views.DefaultHeaders}, nil
 }
 
 // Given the username and album ID in request body, if the review exists, update it
@@ -138,23 +149,23 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 // Note: Currently, updating a review in the database will update its review date to the current timestamp
 // Postman: PUT - /reviews
 func createOrUpdateReview(ctx context.Context, req Request) (Response, error) {
-	var review *models.Review
-	if err := views.UnmarshalReview(ctx, req.Body, review); err != nil {
+	var review models.Review
+	if err := views.UnmarshalReview(ctx, req.Body, &review); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to get current user", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: ErrorRequestor.Error(), Headers: views.DefaultHeaders}, nil
 	}
 	albumID, ok := req.QueryStringParameters["albumID"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	review.Username = username
+	review.Username = requestor
 	review.AlbumID = albumID
 
-	if err := models.CreateReview(ctx, review); err != nil {
+	if err := models.CreateReview(ctx, &review); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 	return Response{
@@ -168,17 +179,17 @@ func createOrUpdateReview(ctx context.Context, req Request) (Response, error) {
 // User deletes a review for a specific albumID
 // Postman: DELETE - /reviews
 func deleteReview(ctx context.Context, req Request) (Response, error) {
-	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to get current user", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: ErrorRequestor.Error(), Headers: views.DefaultHeaders}, nil
 	}
 	albumID, ok := req.QueryStringParameters["albumID"]
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse album ID", Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
 	review := models.Review{
-		Username: username,
+		Username: requestor,
 		AlbumID:  albumID,
 	}
 
