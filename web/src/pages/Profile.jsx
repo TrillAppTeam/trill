@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useLayoutEffect } from 'react';
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
  
 // Components
@@ -9,15 +9,24 @@ import UserStats from "../components/UserStats"
 import Album from "../components/Album"
 import Avatar from "../components/Avatar"
 import Review from "../components/Review"
+import Loading from '../components/Loading';
 
 function Profile() {
     // GET user info
     // GET favoriteAlbums
     // GET following / follower count --> list of these users and their profile pictures
     // GET number of reviewed albums
-    // GET recent reviews 
+    // GET recent reviews
+    useLayoutEffect(() => {
+        window.scrollTo(0, 0)
+    });
 
-    const {data: userData, error: userError} = useQuery(['users']);
+    const {user} = useParams();
+    let paramString = '';
+    if (user)
+        paramString = `?username=${user}`;
+
+    const {isLoading, data: userData, error: userError} = useQuery([`users${paramString}`]);
     const {data: following, error: followingError} = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
     const {data: followers, error: followerError} = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
 
@@ -33,48 +42,51 @@ function Profile() {
         size: "11"
     }
 
-    const followingDummy = [];
-    for (let i = 0; i < 30; i++) {
-        followingDummy.push(<Avatar user={ followingAvatars } />);
-    }
+    // const followingDummy = [];
+    // for (let i = 0; i < 30; i++) {
+    //     followingDummy.push(<Avatar user={ followingAvatars } />);
+    // }
+    // <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+
+    let albumDummy = { 
+        "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
+        "name": "Harry's House",
+        "artists": [
+            {
+                "name": "Harry Styles"
+            }
+        ],
+        "external_urls": {
+            "spotify": "https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h"
+        },
+        "release_date": "2021",
+        "size": "150"
+    };
 
     let reviewDummy = {
+        ...albumDummy,
         user: "Ligma Johnson",
         profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-        review: "For Kevin Parker, perfectionism is a lonely thing.",
+        review: "Harry has done it yet again.",
         rating: 5,
-        albumImg: "https://upload.wikimedia.org/wikipedia/en/9/9b/Tame_Impala_-_Currents.png",
-        albumName: "Currents",
-        albumYear: "2020",
-        artist: "Tame Impala"
-    }
-
-    let anotherExample = {
-        user: "Jake Gyllenhal",
-        profilePic: null,
-        review: "john mayer does it again with his live rendition",
-        rating: 10,
-        albumImg: "https://m.media-amazon.com/images/I/81lfMW3-N0L._UF1000,1000_QL80_.jpg",
-        albumName: "Where The Light Is",
-        albumYear: "2016",
-        artist: "John Mayer"
-    }
+    };
 
     return (
-        <div className="max-w-5xl mx-auto">
+        <>
+        {isLoading ? <Loading/> : <div className="max-w-5xl mx-auto">
             {/* Profile Section */}
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
                 <div className="flex flex-row m-5">
                     {/* Profile Picture */}
-                    <Avatar user={ userAvatar } />
+                    <Avatar user={{...userAvatar, linkDisabled: true}} />
 
                     {/* Name and Bio */}
                     <div className="pl-10">
                         <div className="flex gap-2">
                             <h1 className="font-bold text-white text-3xl">{userData?.data.nickname}</h1>
-                            <Link to="/User/Settings">
+                            {!user ? <Link to="/User/Settings">
                                 <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
-                            </Link>
+                            </Link> : <></>}
                         </div>
                         <h2 className="text-xl pt-2">{userData?.data.bio}</h2>
                     </div>
@@ -91,10 +103,10 @@ function Profile() {
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-center gap-5">
-                        <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0", size: "200", name: "Harry's House"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273fe3b1b9cb7183a94e1aafd43", size: "200", name: "Special"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b2732e02117d76426a08ac7c174f", size: "200", name: "Mr. Morale & The Big Steppers"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273ec10f247b100da1ce0d80b6d", size: "200", name: "Music Of The Spheres"}} />
+                            <Album album = {albumDummy} />
+                            <Album album = {albumDummy} />
+                            <Album album = {albumDummy} />
+                            <Album album = {albumDummy} />
                         </div>
                 </div>
                 
@@ -105,13 +117,13 @@ function Profile() {
             <Titles title="Recent Reviews"/>
             <Review review={ reviewDummy } />
             <div className="border-t border-gray-600 max-w-5xl mx-auto" />
-            <Review review={ anotherExample }/>
+            <Review review={ reviewDummy }/>
 
             {/* Popular Reviews: Two most popular reviews by likes, by the user */}
             <Titles title="Popular Reviews"/>
             <Review review={ reviewDummy } />
             <div className="border-t border-gray-600 max-w-5xl mx-auto" />
-            <Review review={ anotherExample }/>
+            <Review review={ reviewDummy }/>
 
             {/* Following: Avatars of people the user follows */}
             <Titles title="Following"/>
@@ -128,7 +140,8 @@ function Profile() {
                     {followers?.data.users.map(user => {return <Avatar user={{profilePic: null, firstName: user, size: '11'}}/>})}
                 </div>
             </div>
-        </div>
+        </div>}
+        </>
     );
 }
 

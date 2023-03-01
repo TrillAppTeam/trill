@@ -9,7 +9,6 @@ function AlbumDetails() {
     // SPOTIFY LINK
     // ARTIST COVER PHOTO ?
     const {state} = useLocation();
-    // state={{name: name, year: year, artist: artists[0].name, img: img, link: spotifyLink.spotify}}>
     const {name, year, artist, img, link} = state;
     
     let exampleAlbum = {
@@ -74,8 +73,6 @@ function AlbumDetails() {
                         </div>
                         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-trillPurple via-trillPurple to-transparent"></div>
                     </div>
-
-                    
                 </div>
 
                 {/* Album Art Image */}
