@@ -59,7 +59,7 @@ function Discover() {
             {/* Welcome Message */}
             <section>
                 <h1 className="font-bold text-3xl md:text-5xl text-white text-center pt-[20px]"> Welcome back,
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"> {data.data.nickname}. </span><br/>
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"> {data?.data.nickname}. </span><br/>
                     <p className="italic text-white text-2xl md:text-4xl py-[15px]">Here's what the world has been listening to.</p>
                 </h1>
             </section>
