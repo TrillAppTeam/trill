@@ -31,7 +31,7 @@ function Navbar() {
               
               {/* Mobile menu button*/}
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-200 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-trillBlue">
+                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-200 hover:bg-gray-700 hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-trillBlue">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
@@ -42,7 +42,7 @@ function Navbar() {
               </div>
               
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <Link to="/">
+                <Link to="">
                   <div className="flex flex-shrink-0 items-center">
                     <img
                       className="block h-11 w-auto lg:hidden"
@@ -100,7 +100,7 @@ function Navbar() {
                       <Menu.Item>
                         {({ active }) => (
                           <Link to='Profile'
-                            className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-white font-bold')}
+                            className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
                           >
                             Profile
                           </Link>
@@ -109,7 +109,7 @@ function Navbar() {
                       <Menu.Item>
                         {({ active }) => (
                           <Link to='/'
-                            className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-white font-bold')}
+                            className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
                           >
                             Sign out
                           </Link>
@@ -129,7 +129,7 @@ function Navbar() {
                   key={item.name}
                   as="a"
                   href={item.href}
-                  className= "text-gray-300 hover:bg-gray-500 hover:text-white block px-3 py-2 rounded-md font-bold"
+                  className= "text-gray-300 hover:bg-gray-500 hover:text-gray-200 block px-3 py-2 rounded-md font-bold"
                   aria-current={item.current ? 'page' : undefined}
                 >
                   {item.name}

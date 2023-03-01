@@ -29,7 +29,7 @@ function Search() {
                     <input
                     type="text"
                     placeholder="Search"
-                    className="w-64 px-4 py-2.5 text-sm text-gray-200 bg-gray-700 rounded-l-lg border-l-2 border-gray-400 focus:ring-trillBlue focus:border-trillBlue"
+                    className="w-54 px-4 py-2.5 text-sm text-gray-200 bg-gray-700 rounded-l-lg border-l-2 border-gray-400 focus:ring-trillBlue focus:border-trillBlue"
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
                     />
