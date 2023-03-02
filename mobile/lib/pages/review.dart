@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:trill/api/favorite_albums.dart';
 
 import '../api/reviews.dart';
 
@@ -14,6 +15,7 @@ class WriteReviewScreen extends StatefulWidget {
 class _WriteReviewScreenState extends State<WriteReviewScreen> {
   int _rating = 0;
   String _review = "";
+  bool _favorite = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -84,7 +86,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                           ),
                           SizedBox(height: 50),
                           Text(
-                            'Your rating',
+                            'Your Rating',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.normal,
@@ -104,6 +106,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                                   Icons.star,
                                   color: Colors.amber,
                                 ),
+                                unratedColor: Colors.grey[850],
                                 onRatingUpdate: (rating) {
                                   setState(() {
                                     _rating = ((rating * 2).ceil().toInt());
@@ -111,9 +114,15 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                                 },
                               ),
                               IconButton(
-                                  icon: Icon(Icons.favorite_border),
-                                  onPressed: () {},
-                                ),
+                                  icon: Icon(_favorite ? Icons.favorite : Icons.favorite_outline,
+                                    color: Colors.red,
+                                  ),
+                                onPressed: () {
+                                  setState(() {
+                                    _favorite = !_favorite;
+                                  });
+                                },
+                              ),
                             ]
                           )
                         ],
@@ -154,9 +163,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
               SizedBox(height: 20),
               TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Write down your review...',
+                  labelText: 'Your Review',
                   border: OutlineInputBorder(),
                 ),
+                autofocus: true,
                 maxLines: null,
                 keyboardType: TextInputType.multiline,
                 validator: (value) {
@@ -176,6 +186,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 onPressed: () {
                   if (_formKey.currentState != null) {
                     createOrUpdateReview("5MfAxS5zz8MlfROjGQVXhy", _rating, _review);
+                    _favorite ? addFavoriteAlbum("5MfAxS5zz8MlfROjGQVXhy") : deleteFavoriteAlbum("5MfAxS5zz8MlfROjGQVXhy");
                   }
                 },
                 child: Text('Publish'),

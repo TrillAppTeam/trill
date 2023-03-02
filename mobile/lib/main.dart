@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/mainpage.dart';
 import 'package:trill/pages/confirm.dart';
+import 'package:trill/pages/editprofile.dart';
 import 'package:trill/pages/login.dart';
 import 'package:trill/pages/review.dart';
 import 'package:trill/pages/lists/album.dart';
@@ -74,6 +75,7 @@ class _MyAppState extends State<MyApp> {
         '/followers': (context) => FollowersScreen(),
         '/following': (context) => FollowingScreen(),
         '/user': (context) => UserScreen(),
+        '/editprofile': (context) => EditProfileScreen()
       },
       // used instead of routes to pass arguments to widget
       onGenerateRoute: (settings) {
