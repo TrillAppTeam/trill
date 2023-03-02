@@ -29,7 +29,11 @@ func handler(ctx context.Context, req Request) (Response, error) {
 
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
-		return get(ctx, req)
+		if _, ok := req.QueryStringParameters["search"]; ok {
+			return search(ctx, req)
+		} else {
+			return get(ctx, req)
+		}
 	case "PUT":
 		return update(ctx, req)
 	default:
@@ -38,11 +42,25 @@ func handler(ctx context.Context, req Request) (Response, error) {
 	}
 }
 
-// GET: Returns user info
+func search(ctx context.Context, req Request) (Response, error) {
+	search, _ := req.QueryStringParameters["search"]
+	users, err := models.SearchUser(ctx, search)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	body, err := views.MarshalUsers(ctx, users)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	return Response{StatusCode: 200, Body: body, Headers: views.DefaultHeaders}, nil
+}
+
 func get(ctx context.Context, req Request) (Response, error) {
 	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
 
 	var body, userToGet string
@@ -68,7 +86,7 @@ func get(ctx context.Context, req Request) (Response, error) {
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
-	body, err = views.MarshalUser(ctx, user, publicCognitoUser, privateCognitoUser)
+	body, err = views.MarshalFullUser(ctx, user, publicCognitoUser, privateCognitoUser)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
