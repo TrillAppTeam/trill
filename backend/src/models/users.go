@@ -104,6 +104,21 @@ func GetUser(ctx context.Context, username string) (*User, error) {
 	return &user, nil
 }
 
+func SearchUser(ctx context.Context, username string) (*[]User, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []User
+	// if err := db.Where("SOUNDEX(username) = SOUNDEX(?)", username).Limit(50).Find(&users).Error; err != nil {
+	// if err := db.Where("MATCH(username) AGAINST(? IN BOOLEAN MODE)", searchTerm).Limit(50).Find(&users).Error; err != nil {
+	if err := db.Where("username LIKE ?", "%"+username+"%").Find(&users).Error; err != nil {
+		return nil, err
+	}
+	return &users, nil
+}
+
 func UpdateUser(ctx context.Context, user *User) error {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {

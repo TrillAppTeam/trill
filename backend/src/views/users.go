@@ -14,7 +14,7 @@ type User struct {
 }
 
 // Combines the two JSON's to one string
-func MarshalUser(ctx context.Context, userModel *models.User, publicCognitoUserModel *models.PublicCognitoUser,
+func MarshalFullUser(ctx context.Context, userModel *models.User, publicCognitoUserModel *models.PublicCognitoUser,
 	privateCognitoUserModel *models.PrivateCognitoUser) (string, error) {
 	user := User{
 		Username:       userModel.Username,
@@ -25,6 +25,10 @@ func MarshalUser(ctx context.Context, userModel *models.User, publicCognitoUserM
 	}
 
 	return Marshal(ctx, user)
+}
+
+func MarshalUsers(ctx context.Context, userModels *[]models.User) (string, error) {
+	return Marshal(ctx, userModels)
 }
 
 func UnmarshalUser(ctx context.Context, marshalledUser string, userModel *models.User) error {
