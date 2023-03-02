@@ -11,7 +11,7 @@ function Settings() {
     const update = useMutation(upUser => {
       return axios.put('https://api.trytrill.com/main/users', upUser, { headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer ${localStorage.getItem('access_token')}`}}).then((res) => {console.log(res)})
+        'Authorization' : `Bearer ${localStorage.getItem('access_token')}`}})
         .then((res) => {
           setIsSuccess(true);
           console.log(res);
@@ -21,13 +21,10 @@ function Settings() {
           console.log(err);
         })
         .finally(() => {
-          setIsSuccess(true);
           setTimeout(() => {
             setDismissed(true);
           }, 7000);
-        });
-      
-        
+        }); 
     });
 
     const updateUser = (event) => {
@@ -41,10 +38,9 @@ function Settings() {
 
     // Toast 
     const [isSuccess, setIsSuccess] = useState(false);
-    const [dismissed, setDismissed] = useState(false);
+    const [dismissed, setDismissed] = useState(true);
     const handleDismiss = () => {
       setDismissed(true);
-      setIsSuccess(false);
     };
 
     return (
@@ -130,7 +126,7 @@ function Settings() {
                   <div className="bg-gray-600 px-4 py-3 text-right sm:px-6">
                     <button
                       type="submit"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-trillBlue py-2 px-4 text-sm font-bold text-gray-700 shadow-sm hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-trillBlue py-2 px-4 text-sm font-bold text-gray-700 shadow-sm hover:text-white"
                     >
                       Save
                     </button>

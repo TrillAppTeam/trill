@@ -18,13 +18,14 @@ function Toast(props) {
         <motion.div
             className="box"
             initial={{ opacity: 0, scale: 0.5 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{
-        duration: 0.8,
-        delay: 0.5,
-        ease: [0, 0.71, 0.2, 1.01]
-      }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+                duration: 0.8,
+                delay: 0.5,
+                ease: [0, 0.71, 0.2, 1.01]
+            }}
         >
+
             <div className={`flex shadow-md gap-6 rounded-lg overflow-hidden divide-x max-w-2xl bg-gray-800 text-gray-100 divide-gray-700 ${dismissed ? 'hidden' : ''}`}>
                 <div className={`flex flex-1 flex-col p-4 border-l-8 ${type == "success" ? 'border-green-500' : 'border-red-500'}`}>
                     <span className={`text-2xl ${type == "success" ? 'text-green-500' : 'text-red-500'}`}>
@@ -42,7 +43,6 @@ function Toast(props) {
             </div>
 
         </motion.div>
-        
         </>
       );
 }
