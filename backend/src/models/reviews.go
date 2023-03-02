@@ -16,7 +16,7 @@ type Review struct {
 	ReviewText string
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
-	Likes      []Like    `gorm:"foreignKey:ReviewID;references:ReviewID"`
+	Likes      []Like    `gorm:"foreignKey:ReviewID;references:ReviewID;constraint:OnDelete:CASCADE;"`
 }
 
 var (
@@ -85,7 +85,7 @@ func CreateReview(ctx context.Context, review *Review) error {
 func DeleteReview(ctx context.Context, review *Review) error {
 	if db, err := GetDBFromContext(ctx); err != nil {
 		return err
-	} else if err := db.Where("username = ? AND album_id = ?", &review.Username, &review.AlbumID).Delete(&review).Error; err != nil {
+	} else if err := db.Model(&review).Where("username = ? AND album_id = ?", &review.Username, &review.AlbumID).Delete(&review).Error; err != nil {
 		return err
 	}
 
