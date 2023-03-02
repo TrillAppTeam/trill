@@ -35,7 +35,11 @@ paths:
       parameters:
       - name: username
         in: query
-        description: username to search for (empty if username = user making the request and you are attempting to get email)
+        description: username to get (empty if username = user making the request and you are attempting to get email)
+        type: string
+      - name: search
+        in: query
+        description: username to search for (optional, not to be used with the username query parameter)
         type: string
       responses:
         200:
@@ -476,6 +480,6 @@ definitions:
         example: "i hated it"
 
 host: api.trytrill.com
-basePath: /TSD-149-Restructure
+basePath: /main
 schemes:
  - https
