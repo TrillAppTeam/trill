@@ -39,11 +39,11 @@ func handler(ctx context.Context, req Request) (Response, error) {
 
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
-		_, ok := req.QueryStringParameters["username"]
+		_, ok := req.QueryStringParameters["sort"]
 		if ok {
-			return getUserReview(ctx, req)
-		} else {
 			return getReviews(ctx, req)
+		} else {
+			return getUserReview(ctx, req)
 		}
 	case "PUT":
 		return createOrUpdateReview(ctx, req)
@@ -104,6 +104,7 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 	if !ok {
 		return Response{StatusCode: 500, Body: ErrorRequestor.Error(), Headers: views.DefaultHeaders}, nil
 	}
+	username := req.QueryStringParameters["username"]
 	albumID := req.QueryStringParameters["albumID"]
 	// if !ok {
 	// 	return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
@@ -117,14 +118,17 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 
 	var followingModels *[]models.Follows = nil
 	reviewQuery := models.Review{
-		Username: requestor,
+		Username: username,
 		AlbumID:  albumID,
 	}
-	if following {
-		var err error
-		followingModels, err = models.GetFollowing(ctx, requestor)
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	if len(username) == 0 {
+		reviewQuery.Username = requestor
+		if following {
+			var err error
+			followingModels, err = models.GetFollowing(ctx, requestor)
+			if err != nil {
+				return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+			}
 		}
 	}
 
@@ -144,15 +148,7 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 400, Body: ErrorSortInvalid.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	reviewsInfos := make([]string, len(*reviews))
-	for i, r := range *reviews {
-		reviewsInfos[i], err = views.MarshalReview(ctx, &r, requestor)
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
-	}
-
-	body, err := views.Marshal(ctx, reviewsInfos)
+	body, err := views.MarshalReviews(ctx, reviews, requestor)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
