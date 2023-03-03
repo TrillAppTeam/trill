@@ -118,6 +118,7 @@ Future<bool> deleteReview(String albumID) async {
 }
 
 class Review {
+  // prob need to make some fields not final to modify them?
   final int reviewID;
   final String username;
   final String albumID;
@@ -125,9 +126,10 @@ class Review {
   final String reviewText;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final List<Like> likes;
+  int likes;
+  bool isLiked;
 
-  const Review({
+  Review({
     required this.reviewID,
     required this.username,
     required this.albumID,
@@ -136,6 +138,7 @@ class Review {
     required this.createdAt,
     required this.updatedAt,
     required this.likes,
+    required this.isLiked,
   });
 
   factory Review.fromJson(Map<String, dynamic> json) {
@@ -147,7 +150,8 @@ class Review {
       reviewText: json['review_text'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      likes: List<Like>.from(json['likes'].map((x) => Like.fromJson(x))),
+      likes: json['likes'],
+      isLiked: json['requestor_liked'],
     );
   }
 }
