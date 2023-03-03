@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"trill/src/models"
 	"trill/src/views"
 
@@ -103,13 +104,28 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 	if !ok {
 		return Response{StatusCode: 500, Body: ErrorRequestor.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	albumID, ok := req.QueryStringParameters["albumID"]
-	if !ok {
-		return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
-	}
+	albumID := req.QueryStringParameters["albumID"]
+	// if !ok {
+	// 	return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
+	// }
+	followingRaw := req.QueryStringParameters["following"]
+	following, _ := strconv.ParseBool(followingRaw)
 	sort, ok := req.QueryStringParameters["sort"]
 	if !ok {
 		return Response{StatusCode: 500, Body: ErrorSort.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	var followingModels *[]models.Follows = nil
+	reviewQuery := models.Review{
+		Username: requestor,
+		AlbumID:  albumID,
+	}
+	if following {
+		var err error
+		followingModels, err = models.GetFollowing(ctx, requestor)
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		}
 	}
 
 	var reviews *[]models.Review
@@ -120,7 +136,7 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 	case "oldest":
 		fallthrough
 	case "popular":
-		reviews, err = models.GetReviews(ctx, albumID, sort)
+		reviews, err = models.GetReviews(ctx, &reviewQuery, followingModels, sort)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}

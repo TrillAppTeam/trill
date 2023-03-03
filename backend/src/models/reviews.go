@@ -3,6 +3,7 @@ package models
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -20,7 +21,8 @@ type Review struct {
 }
 
 var (
-	ErrorReviewNotFound error = errors.New("review does not exist")
+	ErrorReviewNotFound   error = errors.New("review does not exist")
+	ErrorInvalidArguments error = errors.New("invalid arguments provided to GetReviews")
 )
 
 func GetReview(ctx context.Context, username string, albumID string) (*Review, error) {
@@ -39,23 +41,44 @@ func GetReview(ctx context.Context, username string, albumID string) (*Review, e
 	}
 }
 
-func GetReviews(ctx context.Context, albumID string, sort string) (*[]Review, error) {
+func GetReviews(ctx context.Context, review *Review, following *[]Follows, sort string) (*[]Review, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
+	}
+
+	var query string
+	var queryArgs interface{}
+	if len(review.AlbumID) != 0 {
+		query = "album_id = ?"
+		queryArgs = review.AlbumID
+	} else if len(review.Username) != 0 {
+		if following != nil {
+			query = "username IN (?)"
+			followingUsernames := make([]string, len(*following))
+			for i, f := range *following {
+				followingUsernames[i] = f.Following
+			}
+			queryArgs = followingUsernames
+		} else {
+			query = "username = ?"
+			queryArgs = review.Username
+		}
+	} else {
+		return nil, ErrorInvalidArguments
 	}
 
 	var reviews *[]Review
 	var result *gorm.DB
 	switch sort {
 	case "newest":
-		result = db.Preload("Likes").Where("album_id = ?", albumID).Order("created_at desc").Find(&reviews)
+		result = db.Preload("Likes").Where(query, queryArgs).Order("created_at desc").Find(&reviews)
 	case "oldest":
-		result = db.Preload("Likes").Where("album_id = ?", albumID).Order("created_at asc").Find(&reviews)
+		result = db.Preload("Likes").Where(query, queryArgs).Order("created_at asc").Find(&reviews)
 	case "popular":
 		result = db.Preload("Likes").
 			Joins("LEFT JOIN likes ON reviews.review_id = likes.review_id").
-			Where("reviews.album_id = ?", albumID).
+			Where(fmt.Sprintf("reviews.%s", query), queryArgs).
 			Group("reviews.review_id").
 			Order("COUNT(likes.review_id) DESC").
 			Find(&reviews)
