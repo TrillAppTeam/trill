@@ -18,8 +18,7 @@ type Review struct {
 	RequestorLiked bool      `json:"requestor_liked"`
 }
 
-// Combines the two JSON's to one string
-func MarshalReview(ctx context.Context, reviewModel *models.Review, requestor string) (string, error) {
+func marshalReview(ctx context.Context, reviewModel *models.Review, requestor string) Review {
 	requestorLiked := false
 	for _, user := range reviewModel.Likes {
 		if user.Username == requestor {
@@ -40,7 +39,20 @@ func MarshalReview(ctx context.Context, reviewModel *models.Review, requestor st
 		RequestorLiked: requestorLiked,
 	}
 
-	return Marshal(ctx, review)
+	return review
+}
+
+func MarshalReview(ctx context.Context, reviewModel *models.Review, requestor string) (string, error) {
+	return Marshal(ctx, marshalReview(ctx, reviewModel, requestor))
+}
+
+func MarshalReviews(ctx context.Context, reviewModels *[]models.Review, requestor string) (string, error) {
+	reviewsInfos := make([]Review, len(*reviewModels))
+	for i, r := range *reviewModels {
+		reviewsInfos[i] = marshalReview(ctx, &r, requestor)
+	}
+
+	return Marshal(ctx, reviewsInfos)
 }
 
 func UnmarshalReview(ctx context.Context, marshalledReview string, reviewModel *models.Review) error {
