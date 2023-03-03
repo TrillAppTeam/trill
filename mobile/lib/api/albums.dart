@@ -63,15 +63,15 @@ class SpotifyAlbum {
   final SpotifyExternalURLs externalURLs;
   final String href;
   final String id;
-  final List<SpotifyImages> images;
+  final List<SpotifyImage> images;
   final String name;
-  final String releaseDate;
+  final DateTime releaseDate;
   final String type;
   final String uri;
   final List<String> genres;
   final String label;
   final int popularity;
-  final List<SpotifyArtists> artists;
+  final List<SpotifyArtist> artists;
 
   const SpotifyAlbum({
     required this.albumType,
@@ -95,17 +95,17 @@ class SpotifyAlbum {
       externalURLs: SpotifyExternalURLs.fromJson(json['external_urls']),
       href: json['href'],
       id: json['id'],
-      images: List<SpotifyImages>.from(
-          json['images'].map((x) => SpotifyImages.fromJson(x))),
+      images: List<SpotifyImage>.from(
+          json['images'].map((x) => SpotifyImage.fromJson(x))),
       name: json['name'],
-      releaseDate: json['release_date'],
+      releaseDate: DateTime.parse(json['release_date']),
       type: json['type'],
       uri: json['uri'],
       genres: List<String>.from(json['genres'] ?? []),
       label: json['label'],
       popularity: json['popularity'],
-      artists: List<SpotifyArtists>.from(
-          json['artists'].map((x) => SpotifyArtists.fromJson(x))),
+      artists: List<SpotifyArtist>.from(
+          json['artists'].map((x) => SpotifyArtist.fromJson(x))),
     );
   }
 }
@@ -124,19 +124,19 @@ class SpotifyExternalURLs {
   }
 }
 
-class SpotifyImages {
+class SpotifyImage {
   final String url;
   final int height;
   final int width;
 
-  const SpotifyImages({
+  const SpotifyImage({
     required this.url,
     required this.height,
     required this.width,
   });
 
-  factory SpotifyImages.fromJson(Map<String, dynamic> json) {
-    return SpotifyImages(
+  factory SpotifyImage.fromJson(Map<String, dynamic> json) {
+    return SpotifyImage(
       url: json['url'],
       height: json['height'],
       width: json['width'],
@@ -144,21 +144,21 @@ class SpotifyImages {
   }
 }
 
-class SpotifyArtists {
+class SpotifyArtist {
   final String id;
   final String name;
   final String type;
   final String uri;
 
-  const SpotifyArtists({
+  const SpotifyArtist({
     required this.id,
     required this.name,
     required this.type,
     required this.uri,
   });
 
-  factory SpotifyArtists.fromJson(Map<String, dynamic> json) {
-    return SpotifyArtists(
+  factory SpotifyArtist.fromJson(Map<String, dynamic> json) {
+    return SpotifyArtist(
       id: json['id'],
       name: json['name'],
       type: json['type'],
