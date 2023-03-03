@@ -1,5 +1,9 @@
-import AvgReviews from "../components/AvgReviews";
 import { useLocation } from "react-router-dom";
+
+// Components
+import AvgReviews from "../components/AvgReviews";
+import Titles from "../components/Titles"
+import AlbumDetailsReview from "../components/AlbumDetailsReview"
 
 function AlbumDetails() {
     // IMAGE URL
@@ -60,38 +64,61 @@ function AlbumDetails() {
         ],
     }
 
+    let albumDummy = { 
+        "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
+        "name": "Harry's House",
+        "artists": [
+            {
+                "name": "Harry Styles"
+            }
+        ],
+        "external_urls": {
+            "spotify": "https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h"
+        },
+        "release_date": "2021",
+        "size": "150"
+    };
+
+    let reviewDummy = {
+        ...albumDummy,
+        user: "Ligma Johnson",
+        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
+        review: "Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.",
+        rating: 5,
+    };
+
     return (
         <div className="max-w-6xl mx-auto">
-            <div className="relative">
-                {/* Background Artist Image */}
-                <div className="flex justify-center">
-                    <div className="w-full h-96 overflow-hidden">
-                        <div className="relative h-full">
-                            <img className="object-cover w-full h-full opacity-50 rounded-b-xl z-0" 
-                                src={exampleAlbum.artists[0].images[0].url} alt="Album Cover" 
-                            />
-                        </div>
-                        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-t from-trillPurple via-trillPurple to-transparent"></div>
+
+            {/* Background Artist Image Section*/}
+            <div className="flex justify-center">
+                <div className="w-full h-96 overflow-hidden">
+                    <div className="h-full">
+                        <img className="object-cover w-full h-full opacity-25 rounded-b-xl z-0" 
+                            src={exampleAlbum.artists[0].images[0].url} alt="Album Cover" 
+                        />
                     </div>
                 </div>
+            </div>
 
-                {/* Album Art Image */}
-                <div className="flex flex-row z-10 justify-left items-start">
+            <div className="flex flex-row mx-auto justify-between pt-10">
+                {/* Album Art Image and Details Section */}
+                <div className="flex flex-row z-10">
 
-                    <div className="z-10">
-                        { img[0] ? 
-                            <img className="w-40 h-40" src={img[0].url} alt="Album Overlay Image" />
-                        : 
-                            // If url image doesn't exist, populate with text
-                            <div className={`w-40 h-40 flex items-center justify-center text-gray-200 bg-gray-700 ring-2 ring-gray-500`}>
-                                <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
-                            </div>
-                        }
+                    <div className="flex flex-col">
+                            { img[0] ? 
+                                <img className="w-64 h-64" src={img[0].url} alt="Album Image" />
+                            : 
+                                <div className={`w-64 h-64 flex items-center justify-center text-gray-200 bg-gray-700 ring-2 ring-gray-500`}>
+                                    <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
+                                </div>
+                            }
+                            <button className="btn btn-xs bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2">Add Review</button>
+                            <button className="btn btn-xs bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2">Add to Listen Later</button>
                     </div>
-
+                    
                     <div className="z-10 pl-10 flex flex-row gap-10">
                         <div className="flex flex-col">
-                            {/* Album Name and Year Released */}
                             <div className="flex flex-row gap-4">
                                 <h1 className="text-3xl text-gray-200">
                                     <span className="font-bold italic">{name}</span> 
@@ -99,12 +126,45 @@ function AlbumDetails() {
                                 <h1 className="text-3xl text-gray-500">{year.split('-')[0]}</h1>
                             </div>
 
-                            {/* Artist Name */}
-                            <p className="text-lg">by {artist[0].name}</p>
+                            <p className="text-xl pt-1">by {artist[0].name}</p>
+
                         </div>
                     </div>
-                    
                 </div>    
+
+                {/* Average Reviews Section */}
+                <div className="z-10">
+                    <AvgReviews />
+                </div>
+            </div>
+
+            {/* Review Section */}
+            <div className="pt-10">
+                <div className="pt-10">
+                    <Titles title="Reviews From Friends" />
+                    <AlbumDetailsReview review={ reviewDummy } />
+                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
+                    <AlbumDetailsReview review={ reviewDummy }/>
+                </div>
+
+                <div className="pt-10">
+                    <Titles title="Popular Reviews" />
+                    <AlbumDetailsReview review={ reviewDummy } />
+                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
+                    <AlbumDetailsReview review={ reviewDummy }/>
+                </div>
+
+                <div className="pt-10">
+                    <Titles title="Recent Reviews" />
+                    <AlbumDetailsReview review={ reviewDummy } />
+                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
+                    <AlbumDetailsReview review={ reviewDummy }/>
+                </div>
+
+                <div className="pt-10">
+                    <Titles title="Your Review" />
+                    <AlbumDetailsReview review={ reviewDummy } />
+                </div>
             </div>
             
         </div>

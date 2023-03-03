@@ -16,6 +16,7 @@ const AvatarComp = (props) =>{
         </div>
     );
 }
+
 function Avatar(props) {
     const {firstName, linkDisabled} = props.user;
     return (
