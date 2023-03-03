@@ -107,7 +107,7 @@ function AlbumDetails() {
 
                     <div className="flex flex-col">
                             { img[0] ? 
-                                <img className="w-64 h-64" src={img[0].url} alt="Album Image" />
+                                <img src={img[0].url} alt="Album Image" width="280" height="280" />
                             : 
                                 <div className={`w-64 h-64 flex items-center justify-center text-gray-200 bg-gray-700 ring-2 ring-gray-500`}>
                                     <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
@@ -120,7 +120,7 @@ function AlbumDetails() {
                     <div className="z-10 pl-10 flex flex-row gap-10">
                         <div className="flex flex-col">
                             <div className="flex flex-row gap-4">
-                                <h1 className="text-3xl text-gray-200">
+                                <h1 className="text-3xl text-gray-200 w-4/5">
                                     <span className="font-bold italic">{name}</span> 
                                 </h1>
                                 <h1 className="text-3xl text-gray-500">{year.split('-')[0]}</h1>
