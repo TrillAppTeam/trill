@@ -13,16 +13,20 @@ import 'package:trill/widgets/like_button.dart';
 
 class AlbumDetailsScreen extends StatefulWidget {
   // todo: refresh album and reviews with gesture
-  final SpotifyAlbum album;
-  final List<Review> reviews;
+  final String albumID;
 
-  AlbumDetailsScreen({required this.album, required this.reviews});
+  AlbumDetailsScreen({required this.albumID});
 
   @override
   _AlbumDetailsScreenState createState() => _AlbumDetailsScreenState();
 }
 
 class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
+  late SpotifyAlbum _album;
+  late List<Review> _reviews;
+
+  bool _isLoading = true;
+
   late Future<PaletteGenerator> _paletteGenerator;
   Color _appBarColor = Color(0xFF1F1D36);
 
@@ -32,7 +36,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _paletteGenerator = _generatePalette();
+    _getDetails();
+    // _paletteGenerator = _generatePalette();
   }
 
   @override
@@ -41,31 +46,44 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
     super.dispose();
   }
 
+  Future<void> _getDetails() async {
+    final album = await getSpotifyAlbum(widget.albumID);
+    final reviews = await getAlbumReviews("popular", widget.albumID);
+    setState(() {
+      _album = album!;
+      _reviews = reviews ?? [];
+      _isLoading = false;
+    });
+  }
+
   Future<PaletteGenerator> _generatePalette() async {
     return await PaletteGenerator.fromImageProvider(
       NetworkImage(
           'https://i.scdn.co/image/ab67616d0000b273e11a75a2f2ff39cec788a015'),
       size: Size(
-        widget.album.images[0].width.toDouble(),
-        widget.album.images[0].height.toDouble(),
+        _album.images[0].width.toDouble(),
+        _album.images[0].height.toDouble(),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          _buildBackdrop(context),
-          _buildAlbumDetails(),
-          _buildReviewDetails(),
-          // todo: add dropdown to sort reviews
-          _buildReviewList(),
-        ],
-      ),
-    );
+    // todo: proper loading screen
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Scaffold(
+            body: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                _buildBackdrop(context),
+                _buildAlbumDetails(),
+                _buildReviewDetails(),
+                // todo: add dropdown to sort reviews
+                _buildReviewList(),
+              ],
+            ),
+          );
   }
 
   Widget _buildBackdrop(BuildContext context) {
@@ -75,7 +93,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       delegate: AlbumDetailsHeader(
         minHeight: 50.0,
         maxHeight: 200.0,
-        album: widget.album,
+        album: _album,
       ),
     );
   }
@@ -88,7 +106,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              widget.album.artists[0].name,
+              _album.artists[0].name,
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w500,
@@ -96,7 +114,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
             ),
             SizedBox(height: 8.0),
             Text(
-              'Released: ${widget.album.releaseDate}',
+              'Released: ${_album.releaseDate}',
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w500,
@@ -104,7 +122,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
             ),
             SizedBox(height: 8.0),
             Text(
-              widget.album.label,
+              _album.label,
               style: TextStyle(fontSize: 14.0),
             ),
           ],
@@ -137,7 +155,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          final review = widget.reviews[index];
+          final review = _reviews[index];
           return Column(
             children: [
               ListTile(
@@ -149,14 +167,14 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                       return CircleAvatar(
                         // todo: change image to user's pfp, snapshot.data
                         backgroundImage: NetworkImage(
-                          widget.album.images[0].url,
+                          _album.images[0].url,
                         ),
                       );
                     } else {
                       // todo: change to actual placeholder
                       return CircleAvatar(
                         backgroundImage: NetworkImage(
-                          widget.album.images[0].url,
+                          _album.images[0].url,
                         ),
                       );
                     }
@@ -230,7 +248,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
             ],
           );
         },
-        childCount: widget.reviews.length,
+        childCount: _reviews.length,
       ),
     );
   }
