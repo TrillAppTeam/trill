@@ -36,7 +36,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    _getDetails();
+    _fetchAlbumDetails();
     // _paletteGenerator = _generatePalette();
   }
 
@@ -46,12 +46,10 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
     super.dispose();
   }
 
-  Future<void> _getDetails() async {
+  Future<void> _fetchAlbumDetails() async {
     final album = await getSpotifyAlbum(widget.albumID);
-    final reviews = await getAlbumReviews("popular", widget.albumID);
     setState(() {
       _album = album!;
-      _reviews = reviews ?? [];
       _isLoading = false;
     });
   }
@@ -80,7 +78,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                 _buildAlbumDetails(),
                 _buildReviewDetails(),
                 // todo: add dropdown to sort reviews
-                _buildReviewList(),
+                _buildReviews(),
               ],
             ),
           );
@@ -250,6 +248,39 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
         },
         childCount: _reviews.length,
       ),
+    );
+  }
+
+  Widget _buildReviewListWithLoading() {
+    return SliverToBoxAdapter(
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _buildNoReviewsMessage() {
+    return SliverToBoxAdapter(
+      child: Center(
+        child: Text('No reviews yet'),
+      ),
+    );
+  }
+
+  Widget _buildReviews() {
+    return FutureBuilder<List<Review>>(
+      // change albumID
+      future: getAlbumReviews("popular", widget.albumID),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return _buildReviewListWithLoading();
+        }
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          _reviews = snapshot.data!;
+          return _buildReviewList();
+        }
+        return _buildNoReviewsMessage();
+      },
     );
   }
 }
