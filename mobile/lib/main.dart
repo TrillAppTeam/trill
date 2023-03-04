@@ -71,7 +71,6 @@ class _MyAppState extends State<MyApp> {
         '/album': (context) => AlbumScreen(),
         '/albums': (context) => RatedAlbumsScreen(),
         '/likes': (context) => LikedAlbumsScreen(),
-        '/review': (context) => WriteReviewScreen(),
         '/reviews': (context) => UserReviewsScreen(),
         '/list': (context) => ListScreen(),
         '/lists': (context) => UserListsScreen(),

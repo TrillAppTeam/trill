@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,7 @@ import 'package:trill/api/albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:trill/pages/loading_screen.dart';
+import 'package:trill/pages/review.dart';
 import 'package:trill/widgets/album_details_header.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
@@ -57,6 +59,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       _isLoading = true;
       _reviews = null;
     });
+    safePrint("Fetching album details for ${widget.albumID}");
     final album = await getSpotifyAlbum(widget.albumID);
     setState(() {
       _album = album!;
@@ -81,38 +84,72 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
         ? LoadingScreen()
         : RefreshIndicator(
             onRefresh: _fetchAlbumDetails,
-            child: Scaffold(
-              body: Stack(
-                children: [
-                  CustomScrollView(
-                    controller: _scrollController,
-                    slivers: [
-                      _buildBackdrop(context),
-                      _buildAlbumDetails(),
-                      _buildReviewDetails(),
-                      _buildReviews(),
+            backgroundColor: Color(0xFF1A1B29),
+            color: Color(0xFF3FBCF4),
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: SafeArea(
+                  child: Stack(
+                    children: [
+                      CustomScrollView(
+                        physics: NeverScrollableScrollPhysics(),
+                        controller: _scrollController,
+                        slivers: [
+                          _buildBackdrop(context),
+                          _buildAlbumDetails(),
+                          _buildReviewDetails(),
+                          _buildReviews(),
+                        ],
+                      ),
+                      Positioned(
+                        top: 30.0,
+                        left: 12.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black.withOpacity(0.3),
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 100.0,
+                        right: 12.0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white.withOpacity(.5),
+                          ),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.add,
+                              color: Color(0xFF3FBCF4),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => WriteReviewScreen(
+                                      albumID: widget.albumID),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  Positioned(
-                    top: 30.0,
-                    left: 12.0,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black.withOpacity(0.3),
-                      ),
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           );
