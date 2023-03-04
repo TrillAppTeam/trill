@@ -134,7 +134,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget _buildReviewDetails() {
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -170,7 +170,10 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                       _buildReviews();
                     });
                   },
-                  icon: Icon(Icons.arrow_drop_down),
+                  icon: Icon(
+                    Icons.arrow_drop_down,
+                    color: Color(0xFF3FBCF4),
+                  ),
                   iconSize: 24,
                   elevation: 16,
                   style: TextStyle(
@@ -256,6 +259,16 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                             DateTime.now().subtract(
                               DateTime.now().difference(review.createdAt),
                             ),
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          review.updatedAt != review.createdAt
+                              ? '(edited ${timeago.format(DateTime.now().subtract(DateTime.now().difference(review.updatedAt)))})'
+                              : "",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontStyle: FontStyle.italic,
                           ),
                         ),
                       ],
