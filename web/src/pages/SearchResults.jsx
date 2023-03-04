@@ -10,7 +10,7 @@ function SearchResults() {
     const { state } = useLocation();
     const { query, type } = state;
     const { isLoading: albumLoad, data: albumData, error: albumError } = useQuery([`albums?query=${query}`], {enabled: type === "Albums"});
-    const { isLoading: userLoad, data: userData, error: userError } = useQuery([`users?username=${query}`], {enabled: type === "Users"});
+    const { isLoading: userLoad, data: userData, error: userError } = useQuery([`users?search=${query}`], {enabled: type === "Users"});
     
     return(
         <div className="max-w-4xl mx-auto pt-8">
@@ -18,11 +18,17 @@ function SearchResults() {
                 <div>
                     <Titles title={`Search Results for "${query}" in ${type}`} />
                     {userLoad ? <Loading /> :
-                        <SearchUser user={{
-                        username: userData?.data.username,
-                        profilePic: userData?.data.profilePic,
-                        size: "11"
-                    }}/>
+                        userData?.data.map(user => {
+                            return <>
+                                <SearchUser user={{
+                                    username: user.username,
+                                    profilePic: user.profilePic,
+                                    size: "11"
+                                }}/>
+                    
+                                <div className="m-5 border-t border-gray-600 max-w-6xl mx-auto" />
+                            </>
+                        })   
                     }
                 </div> 
                 :
