@@ -14,7 +14,7 @@ type Review struct {
 	Username   string
 	AlbumID    string
 	Rating     int
-	ReviewText string
+	ReviewText string    `json:"review_text"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	Likes      []Like    `gorm:"foreignKey:ReviewID;references:ReviewID;constraint:OnDelete:CASCADE;"`
