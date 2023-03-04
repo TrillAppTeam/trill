@@ -1,11 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"os"
 
 	"encoding/json"
+
+	"net/http"
+	"net/url"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -19,12 +24,14 @@ const SECRETS_PATH = "../../.secrets.yml"
 type Response events.APIGatewayProxyResponse
 
 type Secrets struct {
-	host     string `yaml:"MYSQLHOST"`
-	port     string `yaml:"MYSQLPORT"`
-	database string `yaml:"MYSQLDATABASE"`
-	user     string `yaml:"MYSQLUSER"`
-	password string `yaml:"MYSQLPASS"`
-	region   string `yaml:"AWS_DEFAULT_REGION"`
+	host          string `yaml:"MYSQLHOST"`
+	port          string `yaml:"MYSQLPORT"`
+	database      string `yaml:"MYSQLDATABASE"`
+	user          string `yaml:"MYSQLUSER"`
+	password      string `yaml:"MYSQLPASS"`
+	region        string `yaml:"AWS_DEFAULT_REGION"`
+	spotifyID     string `yaml:"SPOTIFY_CLIENT_ID"`
+	spotifySecret string `yaml:"SPOTIFY_CLIENT_SECRET"`
 }
 
 var secrets = Secrets{
@@ -34,11 +41,13 @@ var secrets = Secrets{
 	os.Getenv("MYSQLUSER"),
 	os.Getenv("MYSQLPASS"),
 	os.Getenv("AWS_DEFAULT_REGION"),
+	os.Getenv("SPOTIFY_CLIENT_ID"),
+	os.Getenv("SPOTIFY_CLIENT_SECRET"),
 }
 
 type ListenLaterAlbums struct {
 	Username string // ``gorm:"primarykey;unique"``
-	AlbumID  int
+	AlbumID  string
 }
 
 type SpotifyAlbums struct {
@@ -66,6 +75,12 @@ type SpotifyAlbums struct {
 		Type string `json:"type"`
 		URI  string `json:"uri"`
 	} `json:"artists"`
+}
+
+type SpotifyToken struct {
+	AccessToken string `json:"access_token"`
+	TokenType   string `json:"token_type"`
+	ExpiresIn   int    `json:"expires_in"`
 }
 
 // https://github.com/gugazimmermann/fazendadojuca/blob/master/animals/main.go
@@ -147,19 +162,103 @@ func getListenLater(req events.APIGatewayV2HTTPRequest) (Response, error) {
 		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
 	}
 
+	var count int64
+	if err := db.Table("listen_later_albums").Where("username = ?", username).Count(&count).Error; err != nil {
+		return Response{StatusCode: 500, Body: "Failed to check count"}, err
+	}
+
+	if count == 0 {
+		str, _ := json.Marshal([]string{})
+		return Response{StatusCode: 200, Body: string(str)}, nil
+	}
+
 	// Given the username, find
 	var listen_later_albums []ListenLaterAlbums
 	if err := db.Where("username = ?", username).Find(&listen_later_albums).Error; err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
-	listenLaterJSON, err := json.Marshal(listen_later_albums)
+	albumInfo := make([]SpotifyAlbums, len(listen_later_albums))
+
+	for i := range listen_later_albums {
+		album, err := getAlbumInfo(listen_later_albums[i].AlbumID)
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error()}, err
+		}
+		albumInfo[i] = album
+	}
+
+	albumInfoJSON, err := json.Marshal(albumInfo)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, err
 	}
 
 	// Return the JSON response
-	return Response{StatusCode: 200, Body: string(listenLaterJSON)}, nil
+	return Response{StatusCode: 200, Body: string(albumInfoJSON)}, nil
+}
+
+func getAlbumInfo(albumID string) (SpotifyAlbums, error) {
+	var resp SpotifyAlbums
+	var buf bytes.Buffer
+
+	clientSecret := secrets.spotifySecret
+	clientID := secrets.spotifyID
+
+	client := &http.Client{}
+	body := url.Values{}
+	body.Set("grant_type", "client_credentials")
+	body.Set("client_id", clientID)
+	body.Set("client_secret", clientSecret)
+
+	reqBody := bytes.NewBufferString(body.Encode())
+	request, err := http.NewRequest("POST", "https://accounts.spotify.com/api/token", reqBody)
+	if err != nil {
+		return SpotifyAlbums{}, err
+	}
+
+	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	tokenResp, err := client.Do(request)
+	if err != nil {
+		return SpotifyAlbums{}, err
+	}
+	defer tokenResp.Body.Close()
+
+	_, err = io.Copy(&buf, tokenResp.Body)
+	if err != nil {
+		return SpotifyAlbums{}, err
+	}
+
+	var token SpotifyToken
+	err = json.Unmarshal(buf.Bytes(), &token)
+	if err != nil {
+		return SpotifyAlbums{}, err
+	}
+
+	request, err = http.NewRequest("GET", "https://api.spotify.com/v1/albums/"+albumID, nil)
+	if err != nil {
+		return SpotifyAlbums{}, err
+	}
+	request.Header.Add("Authorization", "Bearer "+token.AccessToken)
+	r, err := client.Do(request)
+	if err != nil {
+		return SpotifyAlbums{}, err
+	}
+	defer r.Body.Close()
+
+	buf.Reset()
+
+	_, err = io.Copy(&buf, r.Body)
+	if err != nil {
+		return SpotifyAlbums{}, err
+	}
+
+	err = json.Unmarshal(buf.Bytes(), &resp)
+	if err != nil {
+		return SpotifyAlbums{}, err
+	}
+
+	return resp, nil
 }
 
 func delete(req events.APIGatewayV2HTTPRequest) (Response, error) {
