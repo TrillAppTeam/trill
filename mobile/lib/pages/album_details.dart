@@ -344,8 +344,9 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                         ),
                         SizedBox(width: 5),
                         Text(
+                          // ${timeago.format(DateTime.now().subtract(DateTime.now().difference(review.updatedAt)))}
                           review.updatedAt != review.createdAt
-                              ? '(edited ${timeago.format(DateTime.now().subtract(DateTime.now().difference(review.updatedAt)))})'
+                              ? '(edited)'
                               : "",
                           style: TextStyle(
                             color: Colors.grey,
