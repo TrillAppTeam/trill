@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:trill/pages/album_details.dart';
 import '../api/albums.dart';
 import '../models/album.dart';
 
@@ -29,7 +31,6 @@ class _SearchScreenState extends State<SearchScreen> {
             controller: _searchController,
             decoration: InputDecoration(
                 hintText: 'Enter search query', border: OutlineInputBorder()),
-            autofocus: true,
             onSubmitted: (query) async {
               // Make API call and get results
               List<SpotifyAlbum>? response = await searchSpotifyAlbums(query);
@@ -45,7 +46,13 @@ class _SearchScreenState extends State<SearchScreen> {
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {
-                    // Navigate to album page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AlbumDetailsScreen(
+                            albumID: searchResults![index].id),
+                      ),
+                    );
                   },
                   child: Container(
                     padding: EdgeInsets.all(16.0),
@@ -62,7 +69,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   style: TextStyle(fontSize: 16)),
                               SizedBox(height: 4),
                               Text(
-                                  "${searchResults![index].artists.map((artist) => artist.name).join(", ")} - ${searchResults![index].releaseDate}",
+                                  "${searchResults![index].artists.map((artist) => artist.name).join(", ")} - ${DateFormat('M/dd/yyyy').format(searchResults![index].releaseDate)}",
                                   style: TextStyle(color: Colors.grey)),
                             ],
                           ),

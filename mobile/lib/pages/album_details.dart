@@ -325,13 +325,16 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
 
   Widget _buildNoReviewsMessage() {
     return SliverToBoxAdapter(
-      child: Center(
-        child: Text(
-          'No reviews yet',
-          style: TextStyle(
-            color: Color(0xFF3FBCF4),
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 16),
+        child: Center(
+          child: Text(
+            'No reviews yet',
+            style: TextStyle(
+              color: Color(0xFF3FBCF4),
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -341,7 +344,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget _buildReviews() {
     return FutureBuilder<List<Review>?>(
       // change albumID
-      future: getAlbumReviews(_selectedSort, "testingupdate"),
+      future: getAlbumReviews(_selectedSort, widget.albumID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             (_reviews == null || _reviews!.isEmpty)) {
