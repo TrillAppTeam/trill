@@ -142,7 +142,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Reviews:',
+                  'Reviews',
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
@@ -199,6 +199,9 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           final review = _reviews![index];
           return Column(
             children: [
+              Divider(
+                color: Colors.grey,
+              ),
               ListTile(
                 leading: FutureBuilder(
                   // todo: get user's pfp
@@ -282,9 +285,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                   ],
                 ),
               ),
-              Divider(
-                color: Colors.grey,
-              ),
             ],
           );
         },
@@ -304,7 +304,14 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget _buildNoReviewsMessage() {
     return SliverToBoxAdapter(
       child: Center(
-        child: Text('No reviews yet'),
+        child: Text(
+          'No reviews yet',
+          style: TextStyle(
+            color: Color(0xFF3FBCF4),
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
