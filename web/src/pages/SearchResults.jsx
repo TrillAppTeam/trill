@@ -9,8 +9,8 @@ import SearchUser from "../components/SearchUser";
 function SearchResults() {
     const { state } = useLocation();
     const { query, type } = state;
-    const { isLoading: albumLoad, data: albumData, error: albumError } = useQuery([`albums?query=${query}`]);
-    // const { isLoading: userLoad, data: userData, error: userError } = useQuery([`albums?query=${query}`]);
+    const { isLoading: albumLoad, data: albumData, error: albumError } = useQuery([`albums?query=${query}`], {enabled: type === "Albums"});
+    const { isLoading: userLoad, data: userData, error: userError } = useQuery([`users?username=${query}`], {enabled: type === "Users"});
     
     return(
         <div className="max-w-4xl mx-auto pt-8">
@@ -18,13 +18,15 @@ function SearchResults() {
 
             {type == "Users" ? 
                 <div>
-                    <SearchUser user={{
-                    username: "avwede",
-                    profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-                    size: "11"
+                    {userLoad ? <Loading /> :
+                        <SearchUser user={{
+                        username: userData?.data.username,
+                        profilePic: userData?.data.profilePic,
+                        size: "11"
                     }}/>
+                    }
                 </div> 
-                : 
+                :
                 <div>
                     {/* Remove Eventually!! */}
                     {console.log(albumData?.data)}

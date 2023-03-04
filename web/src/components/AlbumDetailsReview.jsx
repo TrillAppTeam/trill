@@ -21,7 +21,7 @@ function AlbumDetailsReview(props) {
         <div className="max-w-6xl mx-auto">
 
             <div className="flex flex-row p-5">
-                <Avatar user={{ profilePic: profilePic, firstName: "Ashley", size: "12" }} />
+                <Avatar user={{ profilePic: profilePic, username: "avwede", size: "12" }} />
 
                 <div className="flex flex-col pl-5 gap-4">
                     {/* Profile Picture, Rating, and Listen Date */}

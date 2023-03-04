@@ -13,10 +13,11 @@ function SearchUser(props) {
 
     return(
         <div className="flex flex-row flex-wrap py-10 justify-between mx-5">
+            {console.log(username)}
             <div className="flex flex-row">
 
                 <div className="pt-1">
-                    <Avatar user={{profilePic: profilePic, name: username, size: size}}/>
+                    <Avatar user={{profilePic: profilePic, username: username, size: size}}/>
                 </div>
 
                 <div className="flex flex-col pl-10">
