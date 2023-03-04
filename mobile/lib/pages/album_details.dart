@@ -170,6 +170,19 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                       _buildReviews();
                     });
                   },
+                  icon: Icon(Icons.arrow_drop_down),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: TextStyle(
+                    color: Color(0xFF3FBCF4),
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  underline: Container(
+                    height: 2,
+                    color: Color(0xFF3FBCF4),
+                  ),
+                  dropdownColor: Color(0xFF1A1B29),
                 ),
               ],
             ),
