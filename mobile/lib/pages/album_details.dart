@@ -225,7 +225,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                           SizedBox(height: 8),
                         ],
                       ),
-                    // todo: update when api is changed
                     LikeButton(
                       reviewID: review.reviewID,
                       isLiked: review.isLiked,
@@ -272,7 +271,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       // change albumID
       future: getAlbumReviews("popular", widget.albumID),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            _reviews.isEmpty) {
           return _buildReviewListWithLoading();
         }
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
