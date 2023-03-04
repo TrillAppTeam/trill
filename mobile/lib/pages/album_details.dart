@@ -24,7 +24,8 @@ class AlbumDetailsScreen extends StatefulWidget {
 
 class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   late SpotifyAlbum _album;
-  late List<Review> _reviews;
+  List<Review>? _reviews;
+  String _selectedSort = 'popular';
 
   bool _isLoading = true;
 
@@ -137,12 +138,40 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Reviews:',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Reviews:',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: _selectedSort,
+                  items: [
+                    DropdownMenuItem(
+                      value: 'popular',
+                      child: Text('Most liked'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'newest',
+                      child: Text('Newest'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'oldest',
+                      child: Text('Oldest'),
+                    ),
+                  ],
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedSort = value!;
+                      _buildReviews();
+                    });
+                  },
+                ),
+              ],
             ),
           ],
         ),
@@ -154,7 +183,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          final review = _reviews[index];
+          final review = _reviews![index];
           return Column(
             children: [
               ListTile(
@@ -246,7 +275,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
             ],
           );
         },
-        childCount: _reviews.length,
+        childCount: _reviews!.length,
       ),
     );
   }
@@ -270,10 +299,10 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget _buildReviews() {
     return FutureBuilder<List<Review>>(
       // change albumID
-      future: getAlbumReviews("popular", "testingupdate"),
+      future: getAlbumReviews(_selectedSort, "testingupdate"),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
-            _reviews.isEmpty) {
+            _reviews == null) {
           return _buildReviewListWithLoading();
         }
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
