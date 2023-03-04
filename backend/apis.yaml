@@ -46,6 +46,8 @@ paths:
           description: user info
         403:
           description: forbidden
+        404:
+          description: user not found
         405:
           description: invalid http method
         500:
