@@ -12,6 +12,10 @@ import 'package:trill/widgets/album_details_header.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
 
+// todo: add review button
+// todo: refresh upon review added
+// todo: format album details
+// todo: fix album details header
 class AlbumDetailsScreen extends StatefulWidget {
   final String albumID;
 
@@ -50,6 +54,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Future<void> _fetchAlbumDetails() async {
     setState(() {
       _isLoading = true;
+      _reviews = null;
     });
     final album = await getSpotifyAlbum(widget.albumID);
     setState(() {
@@ -333,12 +338,12 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   }
 
   Widget _buildReviews() {
-    return FutureBuilder<List<Review>>(
+    return FutureBuilder<List<Review>?>(
       // change albumID
       future: getAlbumReviews(_selectedSort, "testingupdate"),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
-            _reviews == null) {
+            (_reviews == null || _reviews!.isEmpty)) {
           return _buildReviewListWithLoading();
         }
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
