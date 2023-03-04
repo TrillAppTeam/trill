@@ -13,7 +13,6 @@ import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
 
 class AlbumDetailsScreen extends StatefulWidget {
-  // todo: refresh album and reviews with gesture
   final String albumID;
 
   AlbumDetailsScreen({required this.albumID});
@@ -49,6 +48,9 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   }
 
   Future<void> _fetchAlbumDetails() async {
+    setState(() {
+      _isLoading = true;
+    });
     final album = await getSpotifyAlbum(widget.albumID);
     setState(() {
       _album = album!;
@@ -69,19 +71,20 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // todo: proper loading screen
     return _isLoading
         ? LoadingScreen()
-        : Scaffold(
-            body: CustomScrollView(
-              controller: _scrollController,
-              slivers: [
-                _buildBackdrop(context),
-                _buildAlbumDetails(),
-                _buildReviewDetails(),
-                // todo: add dropdown to sort reviews
-                _buildReviews(),
-              ],
+        : RefreshIndicator(
+            onRefresh: _fetchAlbumDetails,
+            child: Scaffold(
+              body: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  _buildBackdrop(context),
+                  _buildAlbumDetails(),
+                  _buildReviewDetails(),
+                  _buildReviews(),
+                ],
+              ),
             ),
           );
   }
