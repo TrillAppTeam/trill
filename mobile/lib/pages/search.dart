@@ -69,7 +69,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   style: TextStyle(fontSize: 16)),
                               SizedBox(height: 4),
                               Text(
-                                  "${searchResults![index].artists.map((artist) => artist.name).join(", ")} - ${DateFormat('M/dd/yyyy').format(searchResults![index].releaseDate)}",
+                                  "${searchResults![index].artists.map((artist) => artist.name).join(", ")} - ${DateFormat('MMMM yyyy').format(searchResults![index].releaseDate)}",
                                   style: TextStyle(color: Colors.grey)),
                             ],
                           ),
