@@ -3,48 +3,51 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:trill/api/albums.dart';
 import 'package:trill/api/favorite_albums.dart';
 
 import '../api/reviews.dart';
 
+// todo: allow for updating - prefill fields if passed review
 class WriteReviewScreen extends StatefulWidget {
-  final String albumID;
+  final SpotifyAlbum album;
+  final Function onReviewAdded;
 
-  WriteReviewScreen({required this.albumID});
+  WriteReviewScreen({required this.album, required this.onReviewAdded});
 
   @override
   _WriteReviewScreenState createState() => _WriteReviewScreenState();
 }
 
 class _WriteReviewScreenState extends State<WriteReviewScreen> {
-  int _rating = 0;
-  String _review = "";
-  bool _favorite = false;
+  int _rating = 5;
+  final _reviewTextController = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+  }
 
-  /*Future<void> _submitReview() async {
+  void _publishReview() async {
+    final reviewText = _reviewTextController.text;
+    final success = await createOrUpdateReview(
+      widget.album.id,
+      _rating,
+      reviewText,
+    );
 
-    if (response.statusCode == 200) {
-      // Review submitted successfully
+    if (success) {
+      if (!mounted) return;
       Navigator.pop(context);
+      widget.onReviewAdded();
     } else {
-      // Review submission failed
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Failed to submit review'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add review')),
       );
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,150 +56,101 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
           title: Text('Write Your Review'),
           backgroundColor: Colors.transparent),
       body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Speak Now',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.album.name,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        widget.album.artists[0].name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          'Taylor Swift',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                          ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        DateFormat('MMMM yyyy')
+                            .format(widget.album.releaseDate),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
                         ),
-                        SizedBox(height: 8),
-                        Text(
-                          '2010',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
-                          ),
+                      ),
+                      SizedBox(height: 50),
+                      Text(
+                        'Your Rating',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
                         ),
-                        SizedBox(height: 50),
-                        Text(
-                          'Your Rating',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.normal,
+                      ),
+                      Row(children: [
+                        RatingBar.builder(
+                          initialRating: 5,
+                          minRating: 0.5,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemSize: 20,
+                          itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
                           ),
+                          unratedColor: Colors.grey[850],
+                          onRatingUpdate: (rating) {
+                            setState(() {
+                              _rating = ((rating * 2).ceil().toInt());
+                            });
+                          },
                         ),
-                        Row(children: [
-                          RatingBar.builder(
-                            initialRating: 0,
-                            minRating: 0.5,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            itemCount: 5,
-                            itemSize: 20,
-                            itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
-                            itemBuilder: (context, _) => Icon(
-                              Icons.star,
-                              color: Colors.amber,
-                            ),
-                            unratedColor: Colors.grey[850],
-                            onRatingUpdate: (rating) {
-                              setState(() {
-                                _rating = ((rating * 2).ceil().toInt());
-                              });
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              _favorite
-                                  ? Icons.favorite
-                                  : Icons.favorite_outline,
-                              color: Colors.red,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _favorite = !_favorite;
-                              });
-                            },
-                          ),
-                        ])
-                      ],
+                      ])
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                    child: Image.network(
+                      widget.album.images[0].url,
                     ),
                   ),
-                  Expanded(
-                      child: Padding(
-                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                    child: Image.asset(
-                      'images/DierksBentleyTest.jpg',
-                    ),
-                  )),
-                ],
-              ),
-              /*Text(
-                'Rate this album',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              SizedBox(height: 10),
-              RatingBar.builder(
-                initialRating: 0,
-                minRating: 0.5,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                itemBuilder: (context, _) => Icon(
-                  Icons.star,
-                  color: Colors.amber,
                 ),
-                onRatingUpdate: (rating) {
-                  setState(() {
-                    _rating = ((rating * 2).ceil().toInt());
-                  });
-                },
-              ),*/
-              SizedBox(height: 20),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Your Review',
-                  border: OutlineInputBorder(),
-                ),
-                autofocus: true,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                validator: (value) {
-                  if (value != null && value.isEmpty) {
-                    return 'Please enter a review';
-                  }
-                  return null;
-                },
-                onChanged: (value) {
-                  setState(() {
-                    _review = value;
-                  });
-                },
+              ],
+            ),
+            SizedBox(height: 20),
+            TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Your Review',
+                border: OutlineInputBorder(),
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState != null) {
-                    createOrUpdateReview(
-                        "5MfAxS5zz8MlfROjGQVXhy", _rating, _review);
-                    _favorite
-                        ? addFavoriteAlbum("5MfAxS5zz8MlfROjGQVXhy")
-                        : deleteFavoriteAlbum("5MfAxS5zz8MlfROjGQVXhy");
-                  }
-                },
-                child: Text('Publish'),
-              ),
-            ],
-          ),
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              validator: (value) {
+                if (value != null && value.isEmpty) {
+                  return 'Please enter a review';
+                }
+                return null;
+              },
+              controller: _reviewTextController,
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _publishReview,
+              child: Text('Publish'),
+            ),
+          ],
         ),
       ),
     );

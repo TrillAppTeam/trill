@@ -14,11 +14,16 @@ import 'package:trill/widgets/album_details_header.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
 
-// todo: floating back button
 // todo: add review button
 // todo: refresh upon review added
+
+// todo: add to listenlater, add to favorite albums
+
 // todo: format album details
 // todo: fix album details header
+
+// todo: put own review at top and allow editing
+// todo: create review only if user doesn't have review
 class AlbumDetailsScreen extends StatefulWidget {
   final String albumID;
 
@@ -86,68 +91,75 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
             onRefresh: _fetchAlbumDetails,
             backgroundColor: Color(0xFF1A1B29),
             color: Color(0xFF3FBCF4),
-            child: SingleChildScrollView(
-              physics: AlwaysScrollableScrollPhysics(),
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: SafeArea(
-                  child: Stack(
-                    children: [
-                      CustomScrollView(
-                        physics: NeverScrollableScrollPhysics(),
-                        controller: _scrollController,
-                        slivers: [
-                          _buildBackdrop(context),
-                          _buildAlbumDetails(),
-                          _buildReviewDetails(),
-                          _buildReviews(),
-                        ],
-                      ),
-                      Positioned(
-                        top: 30.0,
-                        left: 12.0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.black.withOpacity(0.3),
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.arrow_back,
-                              color: Colors.white,
+            child: Scaffold(
+              body: SingleChildScrollView(
+                physics: AlwaysScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: SafeArea(
+                    child: Stack(
+                      children: [
+                        CustomScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          controller: _scrollController,
+                          slivers: [
+                            _buildBackdrop(context),
+                            _buildAlbumDetails(),
+                            _buildReviewDetails(),
+                            _buildReviews(),
+                          ],
+                        ),
+                        Positioned(
+                          top: 30.0,
+                          left: 12.0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black.withOpacity(0.7),
                             ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 100.0,
-                        right: 12.0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withOpacity(.5),
-                          ),
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.add,
-                              color: Color(0xFF3FBCF4),
+                        // temp button
+                        Positioned(
+                          bottom: 80.0,
+                          right: 12.0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(.2),
                             ),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => WriteReviewScreen(
-                                      albumID: widget.albumID),
-                                ),
-                              );
-                            },
+                            child: IconButton(
+                              icon: Icon(
+                                Icons.add,
+                                color: Color(0xFF3FBCF4),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WriteReviewScreen(
+                                      album: _album,
+                                      onReviewAdded: () {
+                                        _fetchAlbumDetails();
+                                      },
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -403,7 +415,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
 
   Widget _buildReviews() {
     return FutureBuilder<List<Review>?>(
-      // change albumID
       future: getAlbumReviews(_selectedSort, widget.albumID),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&

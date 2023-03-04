@@ -85,7 +85,8 @@ Future<bool> createOrUpdateReview(String albumID, int rating,
     },
     body: jsonEncode(<String, dynamic>{
       'rating': rating,
-      if (reviewText != null) 'review_text': reviewText,
+      if (reviewText != null && reviewText.isNotEmpty)
+        'review_text': reviewText,
     }),
   );
 
