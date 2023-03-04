@@ -1,6 +1,8 @@
-import React, { useLayoutEffect, useState, useEffect } from 'react';
+import React, { useLayoutEffect, useState, useEffect, useMutation } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import axios from 'axios';
+
  
 // Components
 import Titles from "../components/Titles"
@@ -18,8 +20,9 @@ function Profile() {
 
     const {user} = useParams();
     let paramString = '';
-    if (user)
+    if (user) {
         paramString = `?username=${user}`;
+    }
 
     const {isLoading, data: userData, error: userError} = useQuery([`users${paramString}`]);
     const {data: following, error: followingError} = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
@@ -48,27 +51,55 @@ function Profile() {
         rating: 5,
     };
 
-    
     let currentUserDummy = "avwede"
-    let followersDummy = {
-        "users": [
-            "avwede",
-            "cathychian"
-        ]
-    }
-
     const [isFollowing, setIsFollowing] = useState(false);
 
     // Hook checks if the current user is in the followers object when the component mounts or when the followers.users value changes.
     // If the current user is found, the initial state of isFollowing is set to true.
     useEffect(() => {
-        if (followersDummy.users.includes(currentUserDummy)) {
+        if (following?.data.users.includes(currentUserDummy)) {
           setIsFollowing(true);
+          console.log("FOLLOWING DATA OBJECT" + following?.data.users);
         }
-      }, [currentUserDummy, followersDummy.users]);
+      }, [following?.data.users]);
 
     const handleFollow = () => {
-        setIsFollowing(!isFollowing);
+        axios({
+            method: 'post',
+            url: `https://api.trytrill.com/main/follows?username=${userData?.data.username}`,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+          })
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+
+        setIsFollowing(true);
+    }
+
+    const handleUnfollow = () => {
+        // DELETE api request
+        axios({
+            method: 'delete',
+            url: `https://api.trytrill.com/main/follows?username=${userData?.data.username}`,
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+            }
+          })
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+          
+        setIsFollowing(false);
     }
 
     return (
@@ -102,7 +133,7 @@ function Profile() {
                                     {isFollowing && (
                                         <button
                                         className="btn btn-xs bg-trillBlue hover:bg-gray-700 text-trillPurple mt-2 hover:text-gray-100"
-                                        onClick={handleFollow}
+                                        onClick={handleUnfollow}
                                         >
                                         Following
                                         </button>
