@@ -12,6 +12,7 @@ import 'package:trill/widgets/album_details_header.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
 
+// todo: floating back button
 // todo: add review button
 // todo: refresh upon review added
 // todo: format album details

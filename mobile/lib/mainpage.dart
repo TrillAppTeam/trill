@@ -22,8 +22,7 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
   final List<Widget> screens = [
-    AlbumDetailsScreen(albumID: '4aawyAB9vmqN3uQ7FjRGTy'),
-    // HomeScreen(),
+    HomeScreen(),
     SearchScreen(),
     ProfileScreen(),
   ];
