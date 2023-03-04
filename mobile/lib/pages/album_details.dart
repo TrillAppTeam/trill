@@ -7,6 +7,7 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/album_details_header.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
@@ -69,7 +70,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget build(BuildContext context) {
     // todo: proper loading screen
     return _isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? LoadingScreen()
         : Scaffold(
             body: CustomScrollView(
               controller: _scrollController,
@@ -269,7 +270,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget _buildReviews() {
     return FutureBuilder<List<Review>>(
       // change albumID
-      future: getAlbumReviews("popular", widget.albumID),
+      future: getAlbumReviews("popular", "testingupdate"),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             _reviews.isEmpty) {

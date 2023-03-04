@@ -8,6 +8,7 @@ import 'package:trill/api/albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/album_details.dart';
 import 'package:trill/pages/home.dart';
+import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/pages/profile.dart';
 import 'package:trill/pages/search.dart';
 
@@ -97,7 +98,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     // todo: set trill loading screen if user info not set
     return !_userInfoSet
-        ? Scaffold(body: Center(child: CircularProgressIndicator()))
+        ? Scaffold(body: LoadingScreen())
         : Scaffold(
             // temp appbar for button to test signing out
             // todo: implement button actually
