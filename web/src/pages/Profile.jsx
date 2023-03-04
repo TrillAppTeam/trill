@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
 import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
  
@@ -12,11 +12,6 @@ import Review from "../components/Review"
 import Loading from '../components/Loading';
 
 function Profile() {
-    // GET user info
-    // GET favoriteAlbums
-    // GET following / follower count --> list of these users and their profile pictures
-    // GET number of reviewed albums
-    // GET recent reviews
     useLayoutEffect(() => {
         window.scrollTo(0, 0)
     });
@@ -53,6 +48,29 @@ function Profile() {
         rating: 5,
     };
 
+    
+    let currentUserDummy = "avwede"
+    let followersDummy = {
+        "users": [
+            "avwede",
+            "cathychian"
+        ]
+    }
+
+    const [isFollowing, setIsFollowing] = useState(false);
+
+    // Hook checks if the current user is in the followers object when the component mounts or when the followers.users value changes.
+    // If the current user is found, the initial state of isFollowing is set to true.
+    useEffect(() => {
+        if (followersDummy.users.includes(currentUserDummy)) {
+          setIsFollowing(true);
+        }
+      }, [currentUserDummy, followersDummy.users]);
+
+    const handleFollow = () => {
+        setIsFollowing(!isFollowing);
+    }
+
     return (
         <>
         {isLoading ? <Loading/> : <div className="max-w-5xl mx-auto">
@@ -67,9 +85,30 @@ function Profile() {
                         <div className="flex gap-2">
                             <h1 className="font-bold text-white text-3xl">{userData?.data.nickname}</h1>
                             
-                            {!user ? <Link to="/User/Settings">
-                                <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
-                            </Link> : <></>}
+                            {!user ? 
+                                <Link to="/User/Settings">
+                                    <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
+                                </Link> 
+                            : 
+                                <>
+                                    {!isFollowing && (
+                                        <button
+                                        className="btn btn-xs bg-gray-700 hover:bg-trillBlue text-gray-100 hover:text-trillPurple mt-2"
+                                        onClick={handleFollow}
+                                        >
+                                        Follow
+                                        </button>
+                                    )}
+                                    {isFollowing && (
+                                        <button
+                                        className="btn btn-xs bg-trillBlue hover:bg-gray-700 text-trillPurple mt-2 hover:text-gray-100"
+                                        onClick={handleFollow}
+                                        >
+                                        Following
+                                        </button>
+                                    )}
+                                </>
+                            }
                         </div>
                         <h1 className="text-xl text-gray-400 italic">@{userData?.data.username}</h1>
                         <h2 className="text-xl pt-2 text-gray-500">{userData?.data.bio}</h2>
