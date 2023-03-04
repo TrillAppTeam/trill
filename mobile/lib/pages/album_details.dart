@@ -82,13 +82,36 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
         : RefreshIndicator(
             onRefresh: _fetchAlbumDetails,
             child: Scaffold(
-              body: CustomScrollView(
-                controller: _scrollController,
-                slivers: [
-                  _buildBackdrop(context),
-                  _buildAlbumDetails(),
-                  _buildReviewDetails(),
-                  _buildReviews(),
+              body: Stack(
+                children: [
+                  CustomScrollView(
+                    controller: _scrollController,
+                    slivers: [
+                      _buildBackdrop(context),
+                      _buildAlbumDetails(),
+                      _buildReviewDetails(),
+                      _buildReviews(),
+                    ],
+                  ),
+                  Positioned(
+                    top: 30.0,
+                    left: 12.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black.withOpacity(0.3),
+                      ),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
