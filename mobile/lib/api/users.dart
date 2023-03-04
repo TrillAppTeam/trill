@@ -30,11 +30,12 @@ Future<User?> getCurrUser() async {
   }
 }
 
-Future<bool> updateCurrUser({String? bio, String? profilePic}) async {
+Future<bool> updateCurrUser({String? bio, String? profilePic, String? nickname}) async {
   const String tag = '[updateCurrUser]';
 
   safePrint('$tag bio: ${bio ?? 'null'}');
   safePrint('$tag profilePic: ${profilePic ?? 'null'}');
+  safePrint('$tag nickname: ${nickname ?? 'null'}');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
@@ -48,6 +49,7 @@ Future<bool> updateCurrUser({String? bio, String? profilePic}) async {
     body: jsonEncode(<String, dynamic>{
       if (bio != null) 'bio': bio,
       if (profilePic != null) 'profilePicture': profilePic,
+      if (nickname != null) 'nickname': nickname,
     }),
   );
 

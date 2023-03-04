@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../api/albums.dart';
 import '../models/album.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -9,13 +10,17 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Album> searchResults = [];
+  List<SpotifyAlbum>? searchResults = [];
 
   final _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          title: Text('Search'),
+          backgroundColor: Colors.transparent
+      ),
       body: Container (
             padding: EdgeInsets.all(8.0),
             child: Column (
@@ -24,11 +29,10 @@ class _SearchScreenState extends State<SearchScreen> {
                   controller: _searchController,
                   decoration: InputDecoration(hintText: 'Enter search query',
                                               border: OutlineInputBorder()),
-                  onSubmitted: (query) {
+                  autofocus: true,
+                  onSubmitted: (query) async {
                   // Make API call and get results
-                  List<Album> response = [Album(name: "Dierks Bentley", artistName: "Dierks Bentley", year: 2003),
-                      Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),
-                    Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),];
+                  List<SpotifyAlbum>? response = await searchSpotifyAlbums(query);
                   // Set results in state
                     setState(() {
                       searchResults = response;
@@ -36,10 +40,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   );
                 },
               ),
-              SizedBox(height: 30),
               Expanded(
                 child: ListView.builder(
-                  itemCount: searchResults.length,
+                  itemCount: searchResults?.length,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                       onTap: () {
@@ -49,16 +52,18 @@ class _SearchScreenState extends State<SearchScreen> {
                         padding: EdgeInsets.all(16.0),
                         child: Row(
                           children: [
-                            Image.asset("images/DierksBentleyTest.jpg", width: 80, height: 80),
+                            Image.network(searchResults![index].images[1].url, width: 80, height: 80),
                             SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(searchResults[index].name, style: TextStyle(fontSize: 18)),
-                                SizedBox(height: 4),
-                                Text("${searchResults[index].artistName} - ${searchResults[index].year}",
-                                     style: TextStyle(color: Colors.grey)),
-                              ],
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(searchResults![index].name, style: TextStyle(fontSize: 16)),
+                                  SizedBox(height: 4),
+                                  Text("${searchResults![index].artists.map((artist) => artist.name).join(", ")} - ${searchResults![index].releaseDate}",
+                                      style: TextStyle(color: Colors.grey)),
+                                ],
+                              ),
                             ),
                           ],
                         ),

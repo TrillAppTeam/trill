@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       drawer: Drawer(
         child: Container(
           color: Color(0xFF1A1B29),
@@ -118,7 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 leading: Icon(Icons.rate_review_outlined, color: Colors.white),
                 title: const Text('Reviews'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/reviews');
+                  // TODO: Change back to /reviews
+                  Navigator.pushNamed(context, '/review');
                 },
               ),
               ListTile(
@@ -142,8 +145,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 leading: Icon(Icons.logout_outlined, color: Colors.white),
                 title: const Text('Log Out'),
                 onTap: () {
-                  Navigator.pushNamed(context, '/login');
-                },
+                  Amplify.Auth.signOut().then((_) {
+                    Navigator.pushReplacementNamed(context, '/login');
+                  });
+                }
               ),
             ],
           ),
