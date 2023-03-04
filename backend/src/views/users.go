@@ -10,7 +10,7 @@ type User struct {
 	Bio            string `json:"bio"`
 	Email          string `json:"email,omitempty"`
 	Nickname       string `json:"nickname,omitempty"`
-	ProfilePicture string `json:"profilePicture"`
+	ProfilePicture string `json:"profile_picture"`
 }
 
 // Combines the two JSON's to one string

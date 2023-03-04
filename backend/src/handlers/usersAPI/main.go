@@ -80,6 +80,9 @@ func get(ctx context.Context, req Request) (Response, error) {
 
 	user, err := models.GetUser(ctx, userToGet)
 	if err != nil {
+		if httpErr, ok := err.(*models.HTTPError); ok {
+			return Response{StatusCode: httpErr.Code, Body: httpErr.Error()}, nil
+		}
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
 	publicCognitoUser, err := models.GetPublicCognitoUser(ctx, userToGet)
