@@ -14,10 +14,9 @@ function SearchResults() {
     
     return(
         <div className="max-w-4xl mx-auto pt-8">
-            <Titles title={`${albumData?.data.length == undefined ? "" : albumData?.data.length} Search Results for "${query}" in ${type}`} />
-
             {type == "Users" ? 
                 <div>
+                    <Titles title={`Search Results for "${query}" in ${type}`} />
                     {userLoad ? <Loading /> :
                         <SearchUser user={{
                         username: userData?.data.username,
@@ -30,6 +29,7 @@ function SearchResults() {
                 <div>
                     {/* Remove Eventually!! */}
                     {console.log(albumData?.data)}
+                    <Titles title={`${albumData?.data.length == undefined ? "" : albumData?.data.length} Search Results for "${query}" in ${type}`} />
                     {albumLoad ? <Loading /> :
                         albumData?.data.map(album => {
                             return <>
