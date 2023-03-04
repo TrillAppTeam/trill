@@ -12,7 +12,7 @@ function SearchUser(props) {
     const { profilePic, username, size } = props.user;
 
     return(
-        <div className="flex flex-row flex-wrap py-10 justify-between mx-5">
+        <div className="flex flex-row flex-wrap py-2 justify-between mx-5">
             {console.log(username)}
             <div className="flex flex-row">
 
