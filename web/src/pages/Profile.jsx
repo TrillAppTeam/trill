@@ -30,24 +30,6 @@ function Profile() {
     const {data: following, error: followingError} = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
     const {data: followers, error: followerError} = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
 
-    const userAvatar = {
-        firstName: "Ashley",
-        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-        size: "24"
-    }
-
-    const followingAvatars = {
-        firstName: "Ashley",
-        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-        size: "11"
-    }
-
-    // const followingDummy = [];
-    // for (let i = 0; i < 30; i++) {
-    //     followingDummy.push(<Avatar user={ followingAvatars } />);
-    // }
-    // <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-
     let albumDummy = { 
         "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
         "name": "Harry's House",
@@ -78,17 +60,19 @@ function Profile() {
             <div className="flex flex-row flex-wrap py-10 justify-between mx-10">
                 <div className="flex flex-row m-5">
                     {/* Profile Picture */}
-                    <Avatar user={{...userAvatar, linkDisabled: true}} />
+                    <Avatar user={{...userData?.data, size: "24", linkDisabled: true}} />
 
                     {/* Name and Bio */}
                     <div className="pl-10">
                         <div className="flex gap-2">
                             <h1 className="font-bold text-white text-3xl">{userData?.data.nickname}</h1>
+                            
                             {!user ? <Link to="/User/Settings">
                                 <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
                             </Link> : <></>}
                         </div>
-                        <h2 className="text-xl pt-2">{userData?.data.bio}</h2>
+                        <h1 className="text-xl text-gray-400 italic">@{userData?.data.username}</h1>
+                        <h2 className="text-xl pt-2 text-gray-500">{userData?.data.bio}</h2>
                     </div>
                 </div>
               
@@ -97,7 +81,6 @@ function Profile() {
                     <UserStats albums={30} followers={followers?.data.users.length} following={following?.data.users.length}/>
                 </div>
             </div>
-            
 
             <div className="flex flex-row justify-between flex-wrap mx-auto mb-24">
                 <div className="w-2/3 pr-12">
@@ -129,7 +112,7 @@ function Profile() {
             <Titles title="Following"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {following?.data.users.map(user => {return <Avatar user={{profilePic: null, firstName: user, size: '11'}}/>})}
+                    {following?.data.users.map(user => {return <Avatar user={{profilePic: null, username: user, size: '11'}}/>})}
                 </div>
             </div>
 
@@ -137,7 +120,7 @@ function Profile() {
             <Titles title="Followers"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {followers?.data.users.map(user => {return <Avatar user={{profilePic: null, firstName: user, size: '11'}}/>})}
+                    {followers?.data.users.map(user => {return <Avatar user={{profilePic: null, username: user, size: '11'}}/>})}
                 </div>
             </div>
         </div>}

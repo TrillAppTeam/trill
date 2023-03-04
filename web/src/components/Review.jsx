@@ -39,7 +39,7 @@ function Review(props) {
 
                     {/* Profile Picture, Rating, and Listen Date */}
                     <div className="flex flex-row gap-4">
-                        <Avatar user={{ profilePic: profilePic, firstName: "Ashley", size: "6" }} />
+                        <Avatar user={{ profilePic: profilePic, username: "avwede", size: "6" }} />
                         <Stars rating={ rating } />
                         
                         <p className="text-sm text-gray-500 my-auto">Listened to by
