@@ -30,7 +30,8 @@ Future<User?> getCurrUser() async {
   }
 }
 
-Future<bool> updateCurrUser({String? bio, String? profilePic, String? nickname}) async {
+Future<bool> updateCurrUser(
+    {String? bio, String? profilePic, String? nickname}) async {
   const String tag = '[updateCurrUser]';
 
   safePrint('$tag bio: ${bio ?? 'null'}');
@@ -82,7 +83,7 @@ class User {
       bio: json['bio'],
       email: json['email'],
       nickname: json['nickname'],
-      profilePic: json['profilePicture'], // note camel case
+      profilePic: json['profile_picture'], // note camel case
     );
   }
 }

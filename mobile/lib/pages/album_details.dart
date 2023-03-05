@@ -24,6 +24,13 @@ import 'package:trill/widgets/like_button.dart';
 
 // todo: put own review at top and allow editing
 // todo: create review only if user doesn't have review
+
+// todo: get user profile pic
+// todo: click on username/pfp to get user profile
+
+// todo: all, friends, self compound dropdown
+
+// todo: review summary (total reviews, average review)
 class AlbumDetailsScreen extends StatefulWidget {
   final String albumID;
 
@@ -128,7 +135,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                             ),
                           ),
                         ),
-                        // temp button
+                        // temp button, does not scroll
                         Positioned(
                           bottom: 80.0,
                           right: 12.0,

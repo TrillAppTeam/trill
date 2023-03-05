@@ -40,7 +40,7 @@ class _LikeButtonState extends State<LikeButton> {
           constraints: BoxConstraints(),
           padding: EdgeInsets.zero,
           icon: Icon(
-            _isLiked ? Icons.thumb_up_alt : Icons.thumb_up_off_alt,
+            _isLiked ? Icons.favorite : Icons.favorite_outline,
             color: _isLiked ? Color(0xFF3FBCF4) : Color(0xFFDDDDDD),
             size: 18,
           ),
