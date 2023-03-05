@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/constants.dart';
 
 /// If no username is passed, get followers for logged in user
 Future<Follow?> getFollowers([String? username]) async {
@@ -18,7 +19,7 @@ Future<Follow?> getFollowers([String? username]) async {
 
   final response = await http.get(
     Uri.parse(
-        'https://api.trytrill.com/main/follows?type=getFollowers&username=$username'),
+        '${Constants.baseURI}/follows?type=getFollowers&username=$username'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -47,7 +48,7 @@ Future<Follow?> getFollowing([String? username]) async {
 
   final response = await http.get(
     Uri.parse(
-        'https://api.trytrill.com/main/follows?type=getFollowing&username=$username'),
+        '${Constants.baseURI}/follows?type=getFollowing&username=$username'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -73,7 +74,7 @@ Future<bool> follow(String userToFollow) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.post(
-    Uri.parse('https://api.trytrill.com/main/follows?username=$userToFollow'),
+    Uri.parse('${Constants.baseURI}/follows?username=$userToFollow'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -95,7 +96,7 @@ Future<bool> unfollow(String userToUnfollow) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.post(
-    Uri.parse('https://api.trytrill.com/main/follows?username=$userToUnfollow'),
+    Uri.parse('${Constants.baseURI}/follows?username=$userToUnfollow'),
     headers: {
       'Authorization': 'Bearer $token',
     },

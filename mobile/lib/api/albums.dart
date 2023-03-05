@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/constants.dart';
 
 Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
   const String tag = '[getSpotifyAlbum]';
@@ -15,7 +16,7 @@ Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/album?albumID=$albumID'),
+    Uri.parse('${Constants.baseURI}/album?albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -41,7 +42,7 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/albums?query=$query'),
+    Uri.parse('${Constants.baseURI}/albums?query=$query'),
     headers: {
       'Authorization': 'Bearer $token',
     },

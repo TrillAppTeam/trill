@@ -5,6 +5,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
+import 'package:trill/constants.dart';
 
 /// If no username is passed, get followers for logged in user
 Future<List<SpotifyAlbum>?> getFavoriteAlbums([String? username]) async {
@@ -18,8 +19,7 @@ Future<List<SpotifyAlbum>?> getFavoriteAlbums([String? username]) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse(
-        'https://api.trytrill.com/main/favoritealbums?username=$username'),
+    Uri.parse('${Constants.baseURI}/favoritealbums?username=$username'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -46,7 +46,7 @@ Future<bool> addFavoriteAlbum(String albumID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.post(
-    Uri.parse('https://api.trytrill.com/main/favoritealbums?albumID=$albumID'),
+    Uri.parse('${Constants.baseURI}/favoritealbums?albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -68,7 +68,7 @@ Future<bool> deleteFavoriteAlbum(String albumID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.delete(
-    Uri.parse('https://api.trytrill.com/main/favoritealbums?albumID=$albumID'),
+    Uri.parse('${Constants.baseURI}/favoritealbums?albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },

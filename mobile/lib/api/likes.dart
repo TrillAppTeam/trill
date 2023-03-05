@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/constants.dart';
 
 Future<int?> getLikeCount(int reviewID) async {
   const String tag = '[getLikeCount]';
@@ -14,7 +15,7 @@ Future<int?> getLikeCount(int reviewID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/likes?reviewID=$reviewID'),
+    Uri.parse('${Constants.baseURI}/likes?reviewID=$reviewID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -40,7 +41,7 @@ Future<bool> likeReview(int reviewID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.put(
-    Uri.parse('https://api.trytrill.com/main/likes?reviewID=$reviewID'),
+    Uri.parse('${Constants.baseURI}/likes?reviewID=$reviewID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -62,7 +63,7 @@ Future<bool> unlikeReview(int reviewID) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.delete(
-    Uri.parse('https://api.trytrill.com/main/likes?reviewID=$reviewID'),
+    Uri.parse('${Constants.baseURI}/likes?reviewID=$reviewID'),
     headers: {
       'Authorization': 'Bearer $token',
     },

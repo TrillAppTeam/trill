@@ -423,7 +423,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
 
   Widget _buildReviews() {
     return FutureBuilder<List<Review>?>(
-      future: getAlbumReviews(_selectedSort, widget.albumID),
+      future: getAlbumReviews(_selectedSort, widget.albumID, false),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             (_reviews == null || _reviews!.isEmpty)) {

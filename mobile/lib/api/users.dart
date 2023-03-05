@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/constants.dart';
 
 Future<List<User>?> searchUsers(String query) async {
   const String tag = '[searchUsers]';
@@ -15,7 +16,7 @@ Future<List<User>?> searchUsers(String query) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/users?search=$query'),
+    Uri.parse('${Constants.baseURI}/users?search=$query'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -42,7 +43,7 @@ Future<PublicUser?> getPublicUser(String username) async {
   // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/users?username=$username'),
+    Uri.parse('${Constants.baseURI}/users?username=$username'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -66,7 +67,7 @@ Future<PrivateUser?> getPrivateUser() async {
   // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/users'),
+    Uri.parse('${Constants.baseURI}/users'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -95,7 +96,7 @@ Future<bool> updateCurrUser(
   // safePrint('$tag access token: $token');
 
   final response = await http.put(
-    Uri.parse('https://api.trytrill.com/main/users'),
+    Uri.parse('${Constants.baseURI}/users'),
     headers: {
       'Authorization': 'Bearer $token',
     },
