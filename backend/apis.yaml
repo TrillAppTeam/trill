@@ -46,6 +46,8 @@ paths:
           description: user info
         403:
           description: forbidden
+        404:
+          description: user not found
         405:
           description: invalid http method
         500:
@@ -211,24 +213,27 @@ paths:
       tags:
       - reviews
       operationId: getReview
-      description: Specify sort to get all reviews for album. Specify username to get user's review for album.
+      description: Sort is the only required parameter.<br> - If albumID is specified, reviews for that album will be provided.<br> - Else, if username is specified, reviews from that user will be provided.<br> - Else, if following is specified, reviews from every user the requestor is following will be provided.<br> - Else, reviews from the requestor will be provided.
       produces:
       - application/json
       security:
       - AccessToken: []
       parameters:
-      - name: albumID
-        in: query
-        description: Spotify album ID
-        required: true
-        default: 4aawyAB9vmqN3uQ7FjRGTy
-        type: string
       - name: sort
         description: popular, newest, or oldest
         in: query
         type: string
         default: popular
+        required: true
+      - name: albumID
+        in: query
+        description: Spotify album ID
+        type: string
       - name: username
+        in: query
+        type: string
+      - name: following
+        description: true or false
         in: query
         type: string
       responses:

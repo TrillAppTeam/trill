@@ -4,9 +4,11 @@ import (
 	"context"
 	"errors"
 	"log"
+	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
+	"gorm.io/gorm"
 )
 
 type PublicCognitoUser struct {
@@ -18,9 +20,9 @@ type PrivateCognitoUser struct {
 }
 
 type User struct {
-	Username       string `gorm:"varchar(128);primarykey"`
-	Bio            string `gorm:"varchar(1024)"`
-	ProfilePicture string `gorm:"varchar(512)"`
+	Username       string `json:"username" gorm:"varchar(128);primarykey"`
+	Bio            string `json:"bio" gorm:"varchar(1024)"`
+	ProfilePicture string `json:"profile_picture" gorm:"varchar(512)"`
 }
 
 func GetPublicCognitoUser(ctx context.Context, username string) (*PublicCognitoUser, error) {
@@ -98,7 +100,11 @@ func GetUser(ctx context.Context, username string) (*User, error) {
 	var user User
 	result := db.Where("username = ?", username).First(&user)
 	if result.Error != nil {
-		return nil, errors.New("user not found in RDS")
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, &HTTPError{Code: http.StatusNotFound, Err: errors.New("User not found in RDS")}
+		} else {
+			return nil, result.Error
+		}
 	}
 
 	return &user, nil
