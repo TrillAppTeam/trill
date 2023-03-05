@@ -2,6 +2,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/api/reviews.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -142,14 +143,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 30),
               ListTile(
-                leading: Icon(Icons.logout_outlined, color: Colors.white),
-                title: const Text('Log Out'),
-                onTap: () {
-                  Amplify.Auth.signOut().then((_) {
-                    Navigator.pushReplacementNamed(context, '/login');
-                  });
-                }
-              ),
+                  leading: Icon(Icons.logout_outlined, color: Colors.white),
+                  title: const Text('Log Out'),
+                  onTap: () {
+                    Amplify.Auth.signOut().then((_) {
+                      Navigator.pushReplacementNamed(context, '/login');
+                    });
+                  }),
             ],
           ),
         ),

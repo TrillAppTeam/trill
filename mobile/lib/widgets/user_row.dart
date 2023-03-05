@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trill/api/albums.dart';
+import 'package:trill/api/users.dart';
 
-class AlbumRow extends StatelessWidget {
-  const AlbumRow({
+class UserRow extends StatelessWidget {
+  const UserRow({
     Key? key,
-    required SpotifyAlbum album,
-  })  : _album = album,
+    required User user,
+  })  : _user = user,
         super(key: key);
 
-  final SpotifyAlbum _album;
+  final User _user;
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +18,16 @@ class AlbumRow extends StatelessWidget {
       padding: EdgeInsets.all(16.0),
       child: Row(
         children: [
-          Image.network(_album.images[0].url, width: 80, height: 80),
+          Placeholder(fallbackHeight: 80, fallbackWidth: 80),
+          // should be circle profile pic
+          // Image.network(_user.profilePic, width: 80, height: 80),
           SizedBox(width: 16),
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _album.name,
+                  _user.username,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -32,8 +35,10 @@ class AlbumRow extends StatelessWidget {
                 ),
                 SizedBox(height: 4),
                 Text(
-                  "${_album.artists.map((artist) => artist.name).join(", ")} - ${DateFormat('MMMM yyyy').format(_album.releaseDate)}",
+                  _user.bio,
                   style: TextStyle(color: Colors.grey),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

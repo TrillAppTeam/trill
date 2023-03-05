@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/pages/album_details.dart';
 import 'package:trill/widgets/album_row.dart';
+import 'package:trill/widgets/user_row.dart';
 import '../api/albums.dart';
 import '../models/album.dart';
 
@@ -66,6 +67,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     onChanged: (String? value) {
                       setState(() {
                         _searchType = value!;
+                        _albumResults = null;
+                        _userResults = null;
+                        _searchController.clear();
                       });
                     },
                     items: [
@@ -130,10 +134,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           //   ),
                           // );
                         },
-                        child: Container(
-                            // User list item widget
-                            // ...
-                            ),
+                        child: UserRow(user: _userResults![index]),
                       );
                     } else {
                       // Return empty container if search type is not recognized
