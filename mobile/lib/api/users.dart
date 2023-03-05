@@ -5,9 +5,61 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-// todo update to new api
-Future<User?> getCurrUser() async {
-  const String tag = '[getCurrUser]';
+Future<List<User>?> searchUsers(String query) async {
+  const String tag = '[searchUsers]';
+
+  safePrint('$tag query: $query');
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? "";
+  // safePrint('$tag access token: $token');
+
+  final response = await http.get(
+    Uri.parse('https://api.trytrill.com/main/users?search=$query'),
+    headers: {
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  safePrint('$tag ${response.statusCode}');
+  safePrint('$tag ${response.body}');
+
+  if (response.statusCode == 200) {
+    return List<User>.from(
+        json.decode(response.body).map((x) => User.fromJson(x)));
+  } else {
+    return null;
+  }
+}
+
+Future<PublicUser?> getPublicUser(String username) async {
+  const String tag = '[getPublicUser]';
+
+  safePrint('$tag username: $username');
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? "";
+  // safePrint('$tag access token: $token');
+
+  final response = await http.get(
+    Uri.parse('https://api.trytrill.com/main/users?username=$username'),
+    headers: {
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  safePrint('$tag ${response.statusCode}');
+  safePrint('$tag ${response.body}');
+
+  if (response.statusCode == 200) {
+    return PublicUser.fromJson(jsonDecode(response.body));
+  } else {
+    return null;
+  }
+}
+
+Future<PrivateUser?> getPrivateUser() async {
+  const String tag = '[getPrivateUser]';
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
@@ -24,7 +76,7 @@ Future<User?> getCurrUser() async {
   safePrint('$tag ${response.body}');
 
   if (response.statusCode == 200) {
-    return User.fromJson(jsonDecode(response.body));
+    return PrivateUser.fromJson(jsonDecode(response.body));
   } else {
     return null;
   }
@@ -49,7 +101,7 @@ Future<bool> updateCurrUser(
     },
     body: jsonEncode(<String, dynamic>{
       if (bio != null) 'bio': bio,
-      if (profilePic != null) 'profilePicture': profilePic,
+      if (profilePic != null) 'profile_picture': profilePic,
       if (nickname != null) 'nickname': nickname,
     }),
   );
@@ -60,20 +112,15 @@ Future<bool> updateCurrUser(
   return response.statusCode == 200;
 }
 
-// this prob needs to change as the api is modified
-// username, email, and nickname are useless rn since they're stored in shared preferences
+// Used for search results
 class User {
   final String username;
   final String bio;
-  final String email;
-  final String nickname;
   final String profilePic;
 
   const User({
     required this.username,
     required this.bio,
-    required this.email,
-    required this.nickname,
     required this.profilePic,
   });
 
@@ -81,9 +128,60 @@ class User {
     return User(
       username: json['username'],
       bio: json['bio'],
+      profilePic: json['profile_picture'],
+    );
+  }
+}
+
+// Used for profile pages
+class PublicUser extends User {
+  final String nickname;
+
+  const PublicUser({
+    required String username,
+    required String bio,
+    required String profilePic,
+    required this.nickname,
+  }) : super(
+          username: username,
+          bio: bio,
+          profilePic: profilePic,
+        );
+
+  factory PublicUser.fromJson(Map<String, dynamic> json) {
+    return PublicUser(
+      username: json['username'],
+      bio: json['bio'],
+      nickname: json['nickname'],
+      profilePic: json['profile_picture'],
+    );
+  }
+}
+
+// username, email, and nickname are stored in shared preferences
+class PrivateUser extends PublicUser {
+  final String email;
+
+  const PrivateUser({
+    required String username,
+    required String bio,
+    required String nickname,
+    required String profilePic,
+    required this.email,
+  }) : super(
+          username: username,
+          bio: bio,
+          nickname: nickname,
+          profilePic: profilePic,
+        );
+
+  factory PrivateUser.fromJson(Map<String, dynamic> json) {
+    return PrivateUser(
+      username: json['username'],
+      bio: json['bio'],
       email: json['email'],
       nickname: json['nickname'],
-      profilePic: json['profile_picture'], // note camel case
+      profilePic: json['profile_picture'],
     );
   }
 }
