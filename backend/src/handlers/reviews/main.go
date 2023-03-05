@@ -41,9 +41,9 @@ func handler(ctx context.Context, req Request) (Response, error) {
 	case "GET":
 		_, ok := req.QueryStringParameters["sort"]
 		if ok {
-			return getMultipleReviews(ctx, req)
+			return getReviews(ctx, req)
 		} else {
-			return getOneReview(ctx, req)
+			return getReview(ctx, req)
 		}
 	case "PUT":
 		return createOrUpdateReview(ctx, req)
@@ -55,7 +55,7 @@ func handler(ctx context.Context, req Request) (Response, error) {
 	}
 }
 
-func getOneReview(ctx context.Context, req Request) (Response, error) {
+func getReview(ctx context.Context, req Request) (Response, error) {
 	username, ok := req.QueryStringParameters["username"]
 	if !ok {
 		username, ok = req.RequestContext.Authorizer.Lambda["username"].(string)
@@ -91,7 +91,7 @@ func getOneReview(ctx context.Context, req Request) (Response, error) {
 	return Response{StatusCode: 200, Body: body, Headers: views.DefaultHeaders}, nil
 }
 
-func getMultipleReviews(ctx context.Context, req Request) (Response, error) {
+func getReviews(ctx context.Context, req Request) (Response, error) {
 	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
 		return Response{StatusCode: 500, Body: ErrorRequestor.Error(), Headers: views.DefaultHeaders}, nil
