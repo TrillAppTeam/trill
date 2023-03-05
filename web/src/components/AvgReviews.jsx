@@ -4,14 +4,14 @@ function AvgReviews() {
     return (
         <div className="flex flex-col max-w-xl p-4 shadow-sm rounded-xl bg-[#383b59] text-gray-100">
             <div className="flex flex-col w-full">
-                <h2 className="px-20 text-xl text-center pb-1 text-gray-200">Average Rating</h2>
-                <p className="text-3xl mx-auto font-bold">9.8</p>  
+                <h2 className="px-20 text-xl text-center text-gray-200 pb-4">Average Rating</h2>
+                <p className="text-4xl mx-auto font-bold">9.8</p>  
 
-                <div className="flex text-xl mx-auto">
+                <div className="flex text-2xl mx-auto pb-1">
                     <Stars rating={10} />
                 </div>
                 
-                <p className="text-sm italic text-gray-300 mx-auto pb-3">74 global ratings</p>
+                <p className="text-sm italic text-gray-300 mx-auto pb-8">74 global ratings</p>
 
                 <div className="flex flex-col">
                     <div className="flex items-center space-x-1">
