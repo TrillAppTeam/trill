@@ -43,7 +43,7 @@ func handler(ctx context.Context, req Request) (Response, error) {
 		if ok {
 			return getReviews(ctx, req)
 		} else {
-			return getUserReview(ctx, req)
+			return getReview(ctx, req)
 		}
 	case "PUT":
 		return createOrUpdateReview(ctx, req)
@@ -55,15 +55,19 @@ func handler(ctx context.Context, req Request) (Response, error) {
 	}
 }
 
-// Given a username and album ID, get the review
-// If review does not exist, return 204 status code
-// @PARAMS are QueryStringParameters: "username" & "album_id"
-// Postman: GET - /reviews?username={username}&album_id={album_id}
-func getUserReview(ctx context.Context, req Request) (Response, error) {
+func getReview(ctx context.Context, req Request) (Response, error) {
 	username, ok := req.QueryStringParameters["username"]
 	if !ok {
-		return Response{StatusCode: 500, Body: ErrorUsername.Error(), Headers: views.DefaultHeaders}, nil
+		username, ok = req.RequestContext.Authorizer.Lambda["username"].(string)
+		if !ok {
+			return Response{
+				StatusCode: 500,
+				Body:       fmt.Sprintf("%s or %s", ErrorRequestor.Error(), ErrorUsername.Error()),
+				Headers:    views.DefaultHeaders,
+			}, nil
+		}
 	}
+
 	albumID, ok := req.QueryStringParameters["albumID"]
 	if !ok {
 		return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
@@ -85,32 +89,20 @@ func getUserReview(ctx context.Context, req Request) (Response, error) {
 	}
 
 	return Response{StatusCode: 200, Body: body, Headers: views.DefaultHeaders}, nil
-
-	// conrmad is distracting me
-	// i came here to cause problems
-	// me me mow me mow
-	// can we leave these in here
-	// there was microplastics in my lunch. nohting materrs. yes
-	// my office room has no windows. my office rooms has no windows. my
-	// yeah idk. when you see the "bin/(whatever handler you're editing)" line, that is the compilation command. once the next line appears its done
-	// i believe you.
 }
 
-// Given an albumID, return a list of reviews associated with the albumID
-// @PARAMS are QueryStringParameters: "sort" & "album_id"
-// Postman: GET - /reviews?sort={popular|newest|oldest}&album_id={album_id}
 func getReviews(ctx context.Context, req Request) (Response, error) {
 	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
 		return Response{StatusCode: 500, Body: ErrorRequestor.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	username := req.QueryStringParameters["username"]
+
+	username, hasUserParam := req.QueryStringParameters["username"]
 	albumID := req.QueryStringParameters["albumID"]
-	// if !ok {
-	// 	return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
-	// }
+
 	followingRaw := req.QueryStringParameters["following"]
 	following, _ := strconv.ParseBool(followingRaw)
+
 	sort, ok := req.QueryStringParameters["sort"]
 	if !ok {
 		return Response{StatusCode: 500, Body: ErrorSort.Error(), Headers: views.DefaultHeaders}, nil
@@ -118,17 +110,20 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 
 	var followingModels *[]models.Follows = nil
 	reviewQuery := models.Review{
-		Username: username,
-		AlbumID:  albumID,
-	}
-	if len(username) == 0 {
-		reviewQuery.Username = requestor
-		if following {
-			var err error
-			followingModels, err = models.GetFollowing(ctx, requestor)
-			if err != nil {
-				return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		Username: func() string {
+			if hasUserParam {
+				return username
 			}
+			return requestor
+		}(),
+		AlbumID: albumID,
+	}
+
+	if following {
+		var err error
+		followingModels, err = models.GetFollowing(ctx, requestor)
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}
 	}
 
