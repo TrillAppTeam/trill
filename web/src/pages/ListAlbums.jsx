@@ -1,7 +1,7 @@
 function ListAlbums() {
     return (
-        <div>
-            Albums List
+        <div className="max-w-5xl mx-auto">
+            <p>List ALbums</p>
         </div>
     );
 }

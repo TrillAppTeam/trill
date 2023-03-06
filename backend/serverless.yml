@@ -46,6 +46,13 @@ provider:
       customAuthorizer:
         type: request
         functionName: auth
+    cors: true
+  iam:
+    role:
+      statements:
+      - Effect: Allow
+        Action: "cognito-idp:AdminGetUser"
+        Resource: "*"
   environment:
     MYSQLHOST: ${self:custom.secrets.MYSQLHOST}
     MYSQLPORT: ${self:custom.secrets.MYSQLPORT}
@@ -54,6 +61,8 @@ provider:
     MYSQLDATABASE: ${self:custom.secrets.MYSQLDATABASE}
     COGNITO_APP_CLIENT_ID: ${self:custom.secrets.COGNITO_APP_CLIENT_ID}
     COGNITO_USER_POOL_ID: ${self:custom.secrets.COGNITO_USER_POOL_ID}
+    SPOTIFY_CLIENT_ID: ${self:custom.secrets.SPOTIFY_CLIENT_ID}
+    SPOTIFY_CLIENT_SECRET: ${self:custom.secrets.SPOTIFY_CLIENT_SECRET}
   stage: dev
   region: us-east-1
 
@@ -91,27 +100,26 @@ functions:
           method: get
           authorizer: 
             name: customAuthorizer
-  world:
-    handler: bin/world
+  usersAPI:
+    handler: bin/usersAPI
     events:
-      - httpApi:
-          path: /world
-          method: get
-          authorizer:
-            name: customAuthorizer
-  users:
-    handler: bin/users
-    events:
-      # - httpApi:
-      #     path: /users
-      #     method: get
-      #     authorizer: 
-      #       name: customAuthorizer
       - httpApi:
           path: /users
-          method: post
+          method: get
           authorizer: 
             name: customAuthorizer
+      - httpApi:
+          path: /users
+          method: put
+          authorizer: 
+            name: customAuthorizer
+  usersCognito:
+    handler: bin/usersCognito
+    events:
+      - cognitoUserPool:
+          pool: trill-users
+          existing: true
+          trigger: PostConfirmation
   likes:
     handler: bin/likes
     events:
@@ -133,11 +141,11 @@ functions:
   reviews:
     handler: bin/reviews
     events:
-      # - httpApi:
-      #     path: /likes
-      #     method: get
-      #     authorizer: 
-      #       name: customAuthorizer
+      - httpApi:
+          path: /reviews
+          method: get
+          authorizer: 
+            name: customAuthorizer
       - httpApi:
           path: /reviews
           method: put
@@ -146,7 +154,7 @@ functions:
       - httpApi:
           path: /reviews
           method: delete
-          authorizer: 
+          authorizer:
             name: customAuthorizer
   follows:
     handler: bin/follows
@@ -184,22 +192,40 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-  # albums:
-  #   handler: bin/albums
-  #   events:
-  #     - httpApi:
-  #         path: /albums
-  #         method: get
-  #         authorizer:
-  #           name: customAuthorizer
-  # album:
-  #   handler: bin/album
-  #   events:
-  #     - httpApi:
-  #         path: /album
-  #         method: get
-  #         authorizer:
-  #           name: customAuthorizer
+  albums:
+    handler: bin/albums
+    events:
+      - httpApi:
+          path: /albums
+          method: get
+          authorizer:
+            name: customAuthorizer
+  album:
+    handler: bin/album
+    events:
+      - httpApi:
+          path: /album
+          method: get
+          authorizer:
+            name: customAuthorizer
+  favoritealbums:
+    handler: bin/favoritealbums
+    events:
+      - httpApi:
+          path: /favoritealbums
+          method: post
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /favoritealbums
+          method: delete
+          authorizer:
+            name: customAuthorizer
+      - httpApi:
+          path: /favoritealbums
+          method: get
+          authorizer:
+            name: customAuthorizer
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

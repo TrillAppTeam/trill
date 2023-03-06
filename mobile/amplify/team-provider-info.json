@@ -1,0 +1,25 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-trillmobile-staging-231329-authRole",
+      "UnauthRoleArn": "arn:aws:iam::928923391422:role/amplify-trillmobile-staging-231329-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::928923391422:role/amplify-trillmobile-staging-231329-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-trillmobile-staging-231329-deployment",
+      "UnauthRoleName": "amplify-trillmobile-staging-231329-unauthRole",
+      "StackName": "amplify-trillmobile-staging-231329",
+      "StackId": "arn:aws:cloudformation:us-east-1:928923391422:stack/amplify-trillmobile-staging-231329/0a6baea0-a286-11ed-a5c9-122d622f4417",
+      "AmplifyAppId": "d2mwv2d69p82k6"
+    },
+    "categories": {
+      "auth": {
+        "trillmobilee65b958d": {
+          "userPoolId": "us-east-1_J9YV4Hl9X",
+          "userPoolName": "trill-users",
+          "webClientId": "126gi8rqrvn4rbv1kt7ef714oa",
+          "nativeClientId": "126gi8rqrvn4rbv1kt7ef714oa"
+        }
+      }
+    }
+  }
+}

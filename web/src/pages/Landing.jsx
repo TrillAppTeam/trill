@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 import HeroSection from "../partials/HeroSection"
 import FeaturesSection from "../partials/FeaturesSection"
 import TeamSection from "../partials/TeamSection"
-import AlbumsSection from "../partials/AlbumsSection"
+import HelloGrammys from "../partials/HelloGrammys"
 
 function Landing() {
     
@@ -18,7 +18,7 @@ function Landing() {
                 transition={{ duration: 1.5 }}
             >
                 <HeroSection />
-                <AlbumsSection />
+                <HelloGrammys />
                 <FeaturesSection />
                 <TeamSection />
                 <FooterLanding />

@@ -1,3 +1,4 @@
+// Team Photos
 import Ashley from "/ashley.png"
 import Cathy from "/cathy.png"
 import Chris from "/chris.png"
@@ -5,9 +6,19 @@ import David from "/david.png"
 import Prathik from "/prathik.png"
 import Conrad from "/conrad.png"
 
+// Components
+import Album from "../components/Album"
+import Titles from "../components/Titles"
+
+// Partials
+import TrillTeamFavorites from "./TrillTeamFavorites"
+
 function TeamSection() {
     return (
         <section className="py-6 text-gray-100">
+            
+            <TrillTeamFavorites />
+
             <div className="container flex flex-col items-center justify-center p-4 mx-auto sm:p-10">
                 <p className="p-2 text-md font-medium tracking-wider text-center uppercase">Development team</p>
                 <h1 className="text-4xl font-bold leading-none text-center sm:text-5xl">The talented people behind the scenes</h1>

@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
+import axios from 'axios';
 
 // Pages
 import FriendsFeed from './pages/FriendsFeed';
@@ -14,6 +15,9 @@ import CreateAccount from './pages/CreateAccount';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import AlbumDetails from './pages/AlbumDetails';
+import SearchResults from './pages/SearchResults';
+
 
 import {
   createBrowserRouter,
@@ -22,7 +26,25 @@ import {
 
 import { QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
-const queryClient = new QueryClient();
+// Define a default query function that will receive the query key
+const defaultQueryFn = async ({ queryKey }) => {
+  const data = await axios.get(`https://api.trytrill.com/main/${queryKey}`, { headers: {
+      'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
+    }}).then((res) => {
+      return res;
+  });
+  return data;
+}
+
+// provide the default query function to your app with defaultOptions
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: defaultQueryFn,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 const router = createBrowserRouter([
   {
@@ -64,6 +86,11 @@ const router = createBrowserRouter([
         errorElement: <Error />
       },
       {
+        path: "Results",
+        element: <SearchResults />,
+        errorElement: <Error />
+      },
+      {
         path: "More",
         element: <ListAlbums />,
         errorElement: <Error />
@@ -74,8 +101,18 @@ const router = createBrowserRouter([
         errorElement: <Error />
       },
       {
+        path: "Profile/:user",
+        element: <Profile />,
+        errorElement: <Error />
+      },
+      {
         path: "Settings",
         element: <Settings />,
+        errorElement: <Error />
+      },
+      {
+        path: "AlbumDetails",
+        element: <AlbumDetails />,
         errorElement: <Error />
       }
     ],

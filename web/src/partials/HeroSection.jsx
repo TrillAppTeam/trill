@@ -13,7 +13,7 @@ function HeroSection() {
                         LOGIN
                     </a>
                     {/* commenty comment */}
-                    <a href="https://auth.trytrill.com/login?client_id=126gi8rqrvn4rbv1kt7ef714oa&response_type=code&scope=email+openid+phone+aws.cognito.signin.user.admin&redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome"
+                    <a href="https://auth.trytrill.com/signup?client_id=126gi8rqrvn4rbv1kt7ef714oa&response_type=code&scope=email+openid+phone+aws.cognito.signin.user.admin&redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome"
                         className="font-bold text-lg md:text-2xl text-slate-100 p-5 hover:text-trillBlue">
                         CREATE ACCOUNT
                     </a>
@@ -29,7 +29,14 @@ function HeroSection() {
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"> music lovers.</span>
                 </h1>
                 <p className="italic text-2xl text-white py-5 md:text-3xl">Track albums you've listened to. Save those you want to hear. Tell your friends what's good.</p>
-                <button className="font-bold text-lg bg-trillBlue rounded-lg text-trillPurple py-2 px-4 md:text-2xl hover:bg-cyan-300 ">Get Started - It's Free!</button>
+                
+                <a href="https://auth.trytrill.com/signup?client_id=126gi8rqrvn4rbv1kt7ef714oa&response_type=code&scope=email+openid+phone+aws.cognito.signin.user.admin&redirect_uri=https%3A%2F%2Fwww.trytrill.com%2Fhome">
+                    <button className="font-bold text-lg bg-trillBlue rounded-lg text-trillPurple py-2 px-4 md:text-2xl hover:bg-cyan-300 ">
+                        Get Started - It's Free!
+                    </button>
+                </a>
+                
+
             </div>
         </div>
     );
