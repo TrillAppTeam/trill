@@ -29,6 +29,12 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _reviewTextController.dispose();
+    super.dispose();
+  }
+
   void _publishReview() async {
     final reviewText = _reviewTextController.text;
     final success = await createOrUpdateReview(

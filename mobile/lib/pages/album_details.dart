@@ -9,7 +9,7 @@ import 'package:trill/api/albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:trill/pages/loading_screen.dart';
-import 'package:trill/pages/review.dart';
+import 'package:trill/pages/write_review.dart';
 import 'package:trill/widgets/album_details_header.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';

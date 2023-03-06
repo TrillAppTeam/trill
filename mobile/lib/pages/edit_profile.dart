@@ -5,9 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:trill/api/users.dart';
 
-import '../api/reviews.dart';
-
 class EditProfileScreen extends StatefulWidget {
+  final String initialNickname;
+  final String initialBio;
+  final String initialProfilePic;
+
+  EditProfileScreen(
+      {required this.initialNickname,
+      required this.initialBio,
+      required this.initialProfilePic});
+
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
@@ -18,36 +25,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
-  /*Future<void> _submitReview() async {
-
-    if (response.statusCode == 200) {
-      // Review submitted successfully
-      Navigator.pop(context);
-    } else {
-      // Review submission failed
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Error'),
-          content: Text('Failed to submit review'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      );
-    }
-  }*/
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Edit Profile'),
-          backgroundColor: Colors.transparent
-      ),
+          title: Text('Edit Profile'), backgroundColor: Colors.transparent),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -55,11 +37,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: [
               SizedBox(height: 20),
               TextFormField(
+                initialValue: widget.initialNickname,
                 decoration: InputDecoration(
                   labelText: 'Nickname',
                   labelStyle: TextStyle(color: Colors.white),
                   fillColor: Colors.grey[900],
-                  filled: true
+                  filled: true,
                 ),
                 keyboardType: TextInputType.multiline,
                 onChanged: (value) {
@@ -70,11 +53,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SizedBox(height: 20),
               TextFormField(
+                initialValue: widget.initialBio,
                 decoration: InputDecoration(
                   labelText: 'Biography',
                   labelStyle: TextStyle(color: Colors.white),
                   fillColor: Colors.grey[900],
-                  filled: true
+                  filled: true,
                 ),
                 keyboardType: TextInputType.multiline,
                 onChanged: (value) {
@@ -87,7 +71,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState != null) {
-                    updateCurrUser(bio: _bio, profilePic: "", nickname: _nickname);
+                    updateCurrUser(
+                      bio: _bio,
+                      profilePic: "",
+                      nickname: _nickname,
+                    );
                     Navigator.pop(context);
                   }
                 },

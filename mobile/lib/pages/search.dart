@@ -27,6 +27,12 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _isLoading = false;
   Timer? _searchTimer;
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   Future<void> _fetchResults() async {
     setState(() {
       _isLoading = true;

@@ -12,7 +12,7 @@ import 'package:trill/pages/album_details.dart';
 import 'package:trill/pages/confirm.dart';
 import 'package:trill/pages/edit_profile.dart';
 import 'package:trill/pages/login.dart';
-import 'package:trill/pages/review.dart';
+import 'package:trill/pages/write_review.dart';
 import 'package:trill/pages/lists/album.dart';
 import 'package:trill/pages/lists/followers.dart';
 import 'package:trill/pages/lists/following.dart';
@@ -79,7 +79,6 @@ class _MyAppState extends State<MyApp> {
         '/followers': (context) => FollowersScreen(),
         '/following': (context) => FollowingScreen(),
         '/user': (context) => UserScreen(),
-        '/editprofile': (context) => EditProfileScreen()
       },
       // used instead of routes to pass arguments to widget
       onGenerateRoute: (settings) {
