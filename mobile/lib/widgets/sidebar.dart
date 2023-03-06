@@ -14,7 +14,7 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  late PublicUser _user;
+  PublicUser? _user;
 
   @override
   void initState() {
@@ -22,6 +22,7 @@ class _SidebarState extends State<Sidebar> {
     _fetchUserDetails();
   }
 
+  // need to change how user details are gotten
   Future<void> _fetchUserDetails() async {
     final user = await getPublicUser();
     setState(() {
@@ -51,27 +52,29 @@ class _SidebarState extends State<Sidebar> {
               children: [
                 Column(
                   children: [
-                    const Text(
-                      'Matthew Gerber',
+                    Text(
+                      _user != null ? _user!.nickname : 'Loading...',
                       style: TextStyle(
                         color: Colors.blue,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text('@GerbersGrumblings'),
+                    Text('@${_user != null ? _user!.username : 'Loading...'}'),
                   ],
                 ),
-                // temp location
+                // temp location, can't click when still loading
                 IconButton(
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditProfileScreen(
-                          initialBio: "",
-                          initialNickname: "",
-                          initialProfilePic: "",
+                          initialBio: _user != null ? _user!.bio : '',
+                          initialNickname: _user != null ? _user!.nickname : '',
+                          initialProfilePic:
+                              _user != null ? _user!.profilePic : '',
+                          onUserChanged: _fetchUserDetails,
                         ),
                       ),
                     );

@@ -154,9 +154,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => WriteReviewScreen(
                                       album: _album,
-                                      onReviewAdded: () {
-                                        _fetchAlbumDetails();
-                                      },
+                                      onReviewAdded: _fetchAlbumDetails,
                                     ),
                                   ),
                                 );

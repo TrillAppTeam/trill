@@ -9,11 +9,14 @@ class EditProfileScreen extends StatefulWidget {
   final String initialNickname;
   final String initialBio;
   final String initialProfilePic;
+  final Function onUserChanged;
 
-  EditProfileScreen(
-      {required this.initialNickname,
-      required this.initialBio,
-      required this.initialProfilePic});
+  EditProfileScreen({
+    required this.initialNickname,
+    required this.initialBio,
+    required this.initialProfilePic,
+    required this.onUserChanged,
+  });
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
@@ -24,6 +27,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String _nickname = "";
 
   final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _bio = widget.initialBio;
+    _nickname = widget.initialNickname;
+  }
+
+  void _updateUser() async {
+    if (_formKey.currentState!.validate()) {
+      final success = await updateCurrUser(
+        bio: _bio,
+        profilePic: "",
+        nickname: _nickname,
+      );
+
+      if (success) {
+        if (!mounted) return;
+        Navigator.pop(context);
+        widget.onUserChanged();
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update user')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +81,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     _nickname = value;
                   });
                 },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a nickname';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
               TextFormField(
@@ -69,16 +106,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState != null) {
-                    updateCurrUser(
-                      bio: _bio,
-                      profilePic: "",
-                      nickname: _nickname,
-                    );
-                    Navigator.pop(context);
-                  }
-                },
+                onPressed: _updateUser,
                 child: Text('Save Profile'),
               ),
             ],

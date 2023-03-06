@@ -7,6 +7,10 @@ import 'package:trill/pages/edit_profile.dart';
 import 'loading_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
+  final String? username;
+
+  ProfileScreen({this.username});
+
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
@@ -25,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _isLoading = true;
     });
-    final user = await getPublicUser();
+    final user = await getPublicUser(widget.username);
     setState(() {
       _user = user!;
       _isLoading = false;

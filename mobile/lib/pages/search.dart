@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/pages/album_details.dart';
 import 'package:trill/pages/loading_screen.dart';
+import 'package:trill/pages/profile.dart';
 import 'package:trill/widgets/album_row.dart';
 import 'package:trill/widgets/user_row.dart';
 import '../api/albums.dart';
@@ -153,15 +154,14 @@ class _SearchScreenState extends State<SearchScreen> {
                             } else if (_searchType == "users") {
                               return InkWell(
                                 onTap: () {
-                                  // todo: navigate to profile screen
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) => ProfileScreen(
-                                  //       userID: _userResults![index].id,
-                                  //     ),
-                                  //   ),
-                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProfileScreen(
+                                        username: _userResults![index].username,
+                                      ),
+                                    ),
+                                  );
                                 },
                                 child: UserRow(user: _userResults![index]),
                               );
