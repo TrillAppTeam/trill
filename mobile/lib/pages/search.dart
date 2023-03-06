@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/pages/album_details.dart';
 import 'package:trill/widgets/album_row.dart';
 import 'package:trill/widgets/user_row.dart';
 import '../api/albums.dart';
-import '../models/album.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -31,13 +29,11 @@ class _SearchScreenState extends State<SearchScreen> {
     if (_searchType == "albums") {
       List<SpotifyAlbum>? response =
           await searchSpotifyAlbums(_searchController.text);
-      await Future.delayed(Duration(milliseconds: 300));
       setState(() {
         _albumResults = response;
       });
     } else if (_searchType == "users") {
       List<User>? response = await searchUsers(_searchController.text);
-      await Future.delayed(Duration(milliseconds: 300));
       setState(() {
         _userResults = response;
       });
@@ -71,7 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       onChanged: (query) {
                         _searchTimer?.cancel();
                         _searchTimer =
-                            Timer(Duration(seconds: 1), _fetchResults);
+                            Timer(Duration(milliseconds: 500), _fetchResults);
                       },
                     ),
                   ),
