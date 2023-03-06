@@ -37,11 +37,11 @@ class _LikeButtonState extends State<LikeButton> {
       children: [
         // todo: implement like functionality
         IconButton(
-          constraints: BoxConstraints(),
+          constraints: const BoxConstraints(),
           padding: EdgeInsets.zero,
           icon: Icon(
             _isLiked ? Icons.favorite : Icons.favorite_outline,
-            color: _isLiked ? Color(0xFF3FBCF4) : Color(0xFFDDDDDD),
+            color: _isLiked ? const Color(0xFF3FBCF4) : const Color(0xFFDDDDDD),
             size: 18,
           ),
           onPressed: () async {
@@ -70,10 +70,10 @@ class _LikeButtonState extends State<LikeButton> {
             }
           },
         ),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Text(
           _numLikes.toString(),
-          style: TextStyle(
+          style: const TextStyle(
             fontWeight: FontWeight.w900,
           ),
         ),

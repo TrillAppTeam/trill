@@ -9,11 +9,13 @@ class UserListsScreen extends StatelessWidget {
     UserList(name: 'winter whispers', albums: []),
   ];
 
+  UserListsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Your Lists'),
+        title: const Text('Your Lists'),
       ),
       body: ListView.builder(
         itemCount: DisplayList.length,
@@ -25,10 +27,10 @@ class UserListsScreen extends StatelessWidget {
               },
               title: Text(
                 DisplayList[index].name,
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-              trailing: Icon(Icons.arrow_forward_outlined, color: Colors.white.withOpacity(0.2))
-          );
+              trailing: Icon(Icons.arrow_forward_outlined,
+                  color: Colors.white.withOpacity(0.2)));
         },
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/pages/home.dart';
@@ -19,9 +18,9 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int currentIndex = 0;
   final List<Widget> screens = [
-    HomeScreen(),
-    SearchScreen(),
-    ProfileScreen(),
+    const HomeScreen(),
+    const SearchScreen(),
+    const ProfileScreen(),
   ];
 
   // todo: need to fix how user info is saved so that we don't call use any info before it's saved
@@ -34,7 +33,7 @@ class _MainPageState extends State<MainPage> {
     try {
       setUserInfo();
     } on AuthException catch (e) {
-      print(e.message);
+      safePrint(e.message);
     }
   }
 
@@ -86,7 +85,7 @@ class _MainPageState extends State<MainPage> {
             'stored ${element.userAttributeKey.toString()}: ${element.value}');
       }
     } on AmplifyAlreadyConfiguredException catch (e) {
-      print(e);
+      safePrint(e);
     }
   }
 
@@ -94,10 +93,10 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     // todo: set trill loading screen if user info not set
     return !_userInfoSet
-        ? Scaffold(body: LoadingScreen())
+        ? const Scaffold(body: LoadingScreen())
         : Scaffold(
             appBar: AppBar(),
-            drawer: Sidebar(),
+            drawer: const Sidebar(),
             // IndexedStack keeps the states of each page
             body: IndexedStack(
               index: currentIndex,
@@ -107,15 +106,15 @@ class _MainPageState extends State<MainPage> {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0xFFBC6AAB).withOpacity(.2),
+                    color: const Color(0xFFBC6AAB).withOpacity(.2),
                     blurRadius: 15,
                   ),
                 ],
               ),
               child: BottomNavigationBar(
-                backgroundColor: Color(0xFF1A1B29),
-                selectedItemColor: Color(0xFFBC6AAB),
-                unselectedItemColor: Color(0xFF888888),
+                backgroundColor: const Color(0xFF1A1B29),
+                selectedItemColor: const Color(0xFFBC6AAB),
+                unselectedItemColor: const Color(0xFF888888),
                 showUnselectedLabels: false,
                 iconSize: 30,
                 elevation: 10,
@@ -125,7 +124,7 @@ class _MainPageState extends State<MainPage> {
                     currentIndex = index;
                   });
                 },
-                items: [
+                items: const [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined),
                     activeIcon: Icon(Icons.home),

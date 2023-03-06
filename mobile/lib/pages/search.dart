@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/pages/album_details.dart';
-import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/pages/profile.dart';
 import 'package:trill/widgets/album_row.dart';
 import 'package:trill/widgets/user_row.dart';
@@ -60,10 +59,10 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+          padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
           child: Column(
             children: [
-              Text(
+              const Text(
                 'Search',
                 style: TextStyle(
                   fontSize: 20.0,
@@ -75,14 +74,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   Expanded(
                     child: TextField(
                       controller: _searchController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         hintText: 'Enter search query',
                         border: OutlineInputBorder(),
                       ),
                       onChanged: (query) {
                         _searchTimer?.cancel();
                         _searchTimer =
-                            Timer(Duration(milliseconds: 500), _fetchResults);
+                            Timer(const Duration(milliseconds: 500), _fetchResults);
                       },
                       onEditingComplete: _fetchResults,
                     ),
@@ -97,7 +96,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         _searchController.clear();
                       });
                     },
-                    items: [
+                    items: const [
                       DropdownMenuItem(
                         value: 'albums',
                         child: Text('Albums'),
@@ -107,28 +106,28 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Text('Users'),
                       ),
                     ],
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.arrow_drop_down,
                       color: Color(0xFF3FBCF4),
                     ),
                     iconSize: 24,
                     elevation: 16,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Color(0xFF3FBCF4),
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                     underline: Container(
                       height: 2,
-                      color: Color(0xFF3FBCF4),
+                      color: const Color(0xFF3FBCF4),
                     ),
-                    dropdownColor: Color(0xFF1A1B29),
+                    dropdownColor: const Color(0xFF1A1B29),
                   ),
                 ],
               ),
               Expanded(
                 child: _isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator())
                     : RefreshIndicator(
                         key: _refreshIndicatorKey,
                         onRefresh: _fetchResults,

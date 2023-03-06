@@ -39,7 +39,7 @@ class AlbumDetailsHeader extends SliverPersistentHeaderDelegate {
             right: 10.0,
             child: Text(
               album.name,
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20.0,
                 fontWeight: FontWeight.bold,

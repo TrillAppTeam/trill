@@ -20,10 +20,12 @@ import 'authentication/configure_amplify.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureAmplify();
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -35,37 +37,37 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Trill',
       theme: ThemeData(
-        primaryColor: Color(0xFFBC6AAB),
-        scaffoldBackgroundColor: Color(0x321A1B29),
+        primaryColor: const Color(0xFFBC6AAB),
+        scaffoldBackgroundColor: const Color(0x321A1B29),
         fontFamily: 'Source Sans Pro',
         textTheme: Typography.whiteMountainView,
-        inputDecorationTheme: InputDecorationTheme(
+        inputDecorationTheme: const InputDecorationTheme(
           hintStyle: TextStyle(color: Colors.white),
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF3FBCF4),
+            backgroundColor: const Color(0xFF3FBCF4),
             foregroundColor: Colors.black,
-            padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
+            padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30),
             ),
           ),
         ),
       ),
-      home: SplashScreen(),
+      home: const SplashScreen(),
       // https://medium.com/@JediPixels/flutter-navigator-pageroutebuilder-transitions-b05991f53069
       // saving this link cuz im gonna forget
       routes: {
-        '/main': (context) => MainPage(),
-        '/album': (context) => AlbumScreen(),
-        '/albums': (context) => RatedAlbumsScreen(),
-        '/likes': (context) => LikedAlbumsScreen(),
-        '/reviews': (context) => UserReviewsScreen(),
-        '/list': (context) => ListScreen(),
+        '/main': (context) => const MainPage(),
+        '/album': (context) => const AlbumScreen(),
+        '/albums': (context) => const RatedAlbumsScreen(),
+        '/likes': (context) => const LikedAlbumsScreen(),
+        '/reviews': (context) => const UserReviewsScreen(),
+        '/list': (context) => const ListScreen(),
         '/lists': (context) => UserListsScreen(),
-        '/listenlater': (context) => ListenLaterScreen(),
-        '/login': (context) => Login(),
+        '/listenlater': (context) => const ListenLaterScreen(),
+        '/login': (context) => const Login(),
         '/followers': (context) => FollowersScreen(),
         '/following': (context) => FollowingScreen(),
       },
@@ -78,6 +80,7 @@ class _MyAppState extends State<MyApp> {
             transitionsBuilder: (_, __, ___, child) => child,
           );
         }
+        return null;
       },
     );
   }

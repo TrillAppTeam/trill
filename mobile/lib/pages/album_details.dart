@@ -1,9 +1,5 @@
-import 'dart:ui';
-
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:intl/intl.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/api/reviews.dart';
@@ -34,7 +30,7 @@ import 'package:trill/widgets/like_button.dart';
 class AlbumDetailsScreen extends StatefulWidget {
   final String albumID;
 
-  AlbumDetailsScreen({required this.albumID});
+  const AlbumDetailsScreen({super.key, required this.albumID});
 
   @override
   _AlbumDetailsScreenState createState() => _AlbumDetailsScreenState();
@@ -48,10 +44,10 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   bool _isLoading = true;
 
   late Future<PaletteGenerator> _paletteGenerator;
-  Color _appBarColor = Color(0xFF1F1D36);
+  final Color _appBarColor = const Color(0xFF1F1D36);
 
   final _scrollController = ScrollController();
-  bool _isCollapsed = false;
+  final bool _isCollapsed = false;
 
   @override
   void initState() {
@@ -80,7 +76,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
 
   Future<PaletteGenerator> _generatePalette() async {
     return await PaletteGenerator.fromImageProvider(
-      NetworkImage(
+      const NetworkImage(
           'https://i.scdn.co/image/ab67616d0000b273e11a75a2f2ff39cec788a015'),
       size: Size(
         _album.images[0].width.toDouble(),
@@ -92,21 +88,21 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? LoadingScreen()
+        ? const LoadingScreen()
         : RefreshIndicator(
             onRefresh: _fetchAlbumDetails,
-            backgroundColor: Color(0xFF1A1B29),
-            color: Color(0xFF3FBCF4),
+            backgroundColor: const Color(0xFF1A1B29),
+            color: const Color(0xFF3FBCF4),
             child: Scaffold(
               body: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
+                physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height,
                   child: SafeArea(
                     child: Stack(
                       children: [
                         CustomScrollView(
-                          physics: NeverScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           controller: _scrollController,
                           slivers: [
                             _buildBackdrop(context),
@@ -124,7 +120,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                               color: Colors.black.withOpacity(0.7),
                             ),
                             child: IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.arrow_back,
                                 color: Colors.white,
                               ),
@@ -144,7 +140,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                               color: Colors.white.withOpacity(.2),
                             ),
                             child: IconButton(
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.add,
                                 color: Color(0xFF3FBCF4),
                               ),
@@ -186,29 +182,29 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget _buildAlbumDetails() {
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               _album.artists[0].name,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
               'Released: ${_album.releaseDate}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Text(
               _album.label,
-              style: TextStyle(fontSize: 14.0),
+              style: const TextStyle(fontSize: 14.0),
             ),
           ],
         ),
@@ -219,14 +215,14 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   Widget _buildReviewDetails() {
     return SliverToBoxAdapter(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Reviews',
                   style: TextStyle(
                     fontSize: 20.0,
@@ -235,7 +231,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                 ),
                 DropdownButton<String>(
                   value: _selectedSort,
-                  items: [
+                  items: const [
                     DropdownMenuItem(
                       value: 'popular',
                       child: Text('Most liked'),
@@ -255,22 +251,22 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                       _buildReviews();
                     });
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_drop_down,
                     color: Color(0xFF3FBCF4),
                   ),
                   iconSize: 24,
                   elevation: 16,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Color(0xFF3FBCF4),
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                   underline: Container(
                     height: 2,
-                    color: Color(0xFF3FBCF4),
+                    color: const Color(0xFF3FBCF4),
                   ),
-                  dropdownColor: Color(0xFF1A1B29),
+                  dropdownColor: const Color(0xFF1A1B29),
                 ),
               ],
             ),
@@ -287,7 +283,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           final review = _reviews![index];
           return Column(
             children: [
-              Divider(
+              const Divider(
                 color: Colors.grey,
               ),
               ListTile(
@@ -317,28 +313,26 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                   minRating: 1,
                   allowHalfRating: true,
                   itemSize: 20,
-                  itemBuilder: (context, _) => Icon(
+                  itemBuilder: (context, _) => const Icon(
                     Icons.star,
                     color: Color(0xFFEEEEEE),
                   ),
-                  onRatingUpdate: (rating) {
-                    print(rating);
-                  },
+                  onRatingUpdate: (rating) {},
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 5),
+                    const SizedBox(height: 5),
                     Row(
                       children: [
                         Text(
                           review.username,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFF3FBCF4),
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Text(
                           timeago.format(
                             DateTime.now().subtract(
@@ -346,20 +340,20 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 5),
+                        const SizedBox(width: 5),
                         Text(
                           // ${timeago.format(DateTime.now().subtract(DateTime.now().difference(review.updatedAt)))}
                           review.updatedAt != review.createdAt
                               ? '(edited)'
                               : "",
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.grey,
                             fontStyle: FontStyle.italic,
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     if (review.reviewText.isNotEmpty)
                       Column(
                         children: [
@@ -367,7 +361,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                             text: review.reviewText,
                             maxLines: 5,
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                         ],
                       ),
                     LikeButton(
@@ -380,7 +374,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                         });
                       },
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                   ],
                 ),
               ),
@@ -393,7 +387,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   }
 
   Widget _buildReviewListWithLoading() {
-    return SliverToBoxAdapter(
+    return const SliverToBoxAdapter(
       child: Center(
         child: CircularProgressIndicator(),
       ),
@@ -401,7 +395,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   }
 
   Widget _buildNoReviewsMessage() {
-    return SliverToBoxAdapter(
+    return const SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 16),
         child: Center(

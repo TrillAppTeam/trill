@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:trill/api/albums.dart';
-import 'package:trill/api/favorite_albums.dart';
 
 import '../api/reviews.dart';
 
@@ -14,7 +11,8 @@ class WriteReviewScreen extends StatefulWidget {
   final SpotifyAlbum album;
   final Function onReviewAdded;
 
-  WriteReviewScreen({required this.album, required this.onReviewAdded});
+  const WriteReviewScreen(
+      {super.key, required this.album, required this.onReviewAdded});
 
   @override
   _WriteReviewScreenState createState() => _WriteReviewScreenState();
@@ -50,7 +48,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     } else {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to add review')),
+        const SnackBar(content: Text('Failed to add review')),
       );
     }
   }
@@ -59,12 +57,12 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Write Your Review'),
+          title: const Text('Write Your Review'),
           backgroundColor: Colors.transparent),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
@@ -73,28 +71,28 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                     children: [
                       Text(
                         widget.album.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         widget.album.artists[0].name,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         DateFormat('MMMM yyyy')
                             .format(widget.album.releaseDate),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                      SizedBox(height: 50),
-                      Text(
+                      const SizedBox(height: 50),
+                      const Text(
                         'Your Rating',
                         style: TextStyle(
                           fontSize: 16,
@@ -109,8 +107,9 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                           allowHalfRating: true,
                           itemCount: 5,
                           itemSize: 20,
-                          itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
-                          itemBuilder: (context, _) => Icon(
+                          itemPadding:
+                              const EdgeInsets.symmetric(horizontal: 2.0),
+                          itemBuilder: (context, _) => const Icon(
                             Icons.star,
                             color: Colors.amber,
                           ),
@@ -127,7 +126,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                    padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
                     child: Image.network(
                       widget.album.images[0].url,
                     ),
@@ -135,9 +134,9 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Your Review',
                 border: OutlineInputBorder(),
               ),
@@ -151,10 +150,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
               },
               controller: _reviewTextController,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _publishReview,
-              child: Text('Publish'),
+              child: const Text('Publish'),
             ),
           ],
         ),

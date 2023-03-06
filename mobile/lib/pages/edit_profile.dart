@@ -1,8 +1,4 @@
-import 'dart:convert';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:trill/api/users.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -11,7 +7,8 @@ class EditProfileScreen extends StatefulWidget {
   final String initialProfilePic;
   final Function onUserChanged;
 
-  EditProfileScreen({
+  const EditProfileScreen({
+    super.key,
     required this.initialNickname,
     required this.initialBio,
     required this.initialProfilePic,
@@ -50,7 +47,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       } else {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update user')),
+          const SnackBar(content: Text('Failed to update user')),
         );
       }
     }
@@ -60,18 +57,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text('Edit Profile'), backgroundColor: Colors.transparent),
+          title: const Text('Edit Profile'),
+          backgroundColor: Colors.transparent),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 initialValue: widget.initialNickname,
                 decoration: InputDecoration(
                   labelText: 'Nickname',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: const TextStyle(color: Colors.white),
                   fillColor: Colors.grey[900],
                   filled: true,
                 ),
@@ -88,12 +86,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TextFormField(
                 initialValue: widget.initialBio,
                 decoration: InputDecoration(
                   labelText: 'Biography',
-                  labelStyle: TextStyle(color: Colors.white),
+                  labelStyle: const TextStyle(color: Colors.white),
                   fillColor: Colors.grey[900],
                   filled: true,
                 ),
@@ -104,10 +102,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   });
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _updateUser,
-                child: Text('Save Profile'),
+                child: const Text('Save Profile'),
               ),
             ],
           ),

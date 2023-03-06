@@ -2,14 +2,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
 import 'package:trill/api/users.dart';
-import 'package:trill/pages/edit_profile.dart';
 
 import 'loading_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String? username;
 
-  ProfileScreen({this.username});
+  const ProfileScreen({super.key, this.username});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -39,11 +38,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? LoadingScreen()
+        ? const LoadingScreen()
         : RefreshIndicator(
             onRefresh: _fetchUserDetails,
-            backgroundColor: Color(0xFF1A1B29),
-            color: Color(0xFF3FBCF4),
+            backgroundColor: const Color(0xFF1A1B29),
+            color: const Color(0xFF3FBCF4),
             child: Scaffold(
               body: SingleChildScrollView(
                 child: Padding(
@@ -54,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         backgroundImage: AssetImage("images/gerber.jpg"),
                         radius: 40.0,
                       ),
@@ -62,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           Text(
                             _user.nickname,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.blue,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -71,23 +70,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Text('@${_user.username}'),
                         ],
                       ),
-                      SizedBox(height: 5),
+                      const SizedBox(height: 5),
                       Text(
                         _user.bio,
-                        style: TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 12),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
-                          Spacer(),
+                          const Spacer(),
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: Color(0xFFBC6AAB),
+                                color: const Color(0xFFBC6AAB),
                                 width: 1,
                               ),
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(30),
                               ),
                             ),
@@ -101,7 +100,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     return RichText(
                                       text: TextSpan(
                                         text: 'Followers: $followerCount',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold),
                                         recognizer: TapGestureRecognizer()
@@ -112,19 +111,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     );
                                   } else {
-                                    return Text('Loading');
+                                    return const Text('Loading');
                                   }
                                 },
                               ),
                             ),
                           ),
-                          Spacer(flex: 2),
+                          const Spacer(flex: 2),
                           Container(
-                            padding: EdgeInsets.all(5),
+                            padding: const EdgeInsets.all(5),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Color(0xFFBC6AAB), width: 1),
-                              borderRadius: BorderRadius.all(
+                                  color: const Color(0xFFBC6AAB), width: 1),
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(30),
                               ),
                             ),
@@ -138,7 +137,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     return RichText(
                                       text: TextSpan(
                                         text: 'Following: $followingCount',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold),
                                         recognizer: TapGestureRecognizer()
@@ -147,21 +146,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     );
                                   } else {
-                                    return Text('Loading');
+                                    return const Text('Loading');
                                   }
                                 },
                               ),
                             ),
                           ),
-                          Spacer()
+                          const Spacer()
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Text(
                                 "455",
                                 style: TextStyle(
@@ -175,10 +174,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               )
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Text(
                                 "3",
                                 style: TextStyle(
@@ -190,10 +189,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   style: TextStyle(fontSize: 11))
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Text(
                                 "30",
                                 style: TextStyle(
@@ -207,10 +206,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               )
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               Text(
                                 "5",
                                 style: TextStyle(
@@ -227,46 +226,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
-                      Center(
+                      const SizedBox(height: 15),
+                      const Center(
                         child: Text(
                           "Matthew's Favorite Albums",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
                           Image.asset(
                             'images/DierksBentleyTest.jpg',
                             width: 65,
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Image.asset(
                             'images/DierksBentleyTest.jpg',
                             width: 65,
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Image.asset(
                             'images/DierksBentleyTest.jpg',
                             width: 65,
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Image.asset(
                             'images/DierksBentleyTest.jpg',
                             width: 65,
                           )
                         ],
                       ),
-                      SizedBox(height: 15),
-                      Divider(
+                      const SizedBox(height: 15),
+                      const Divider(
                         color: Colors.grey,
                         height: 2,
                         thickness: 2,
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
-                        children: [
+                        children: const [
                           Text(
                             "Matthew's Recent Ratings",
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -278,16 +277,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
                           Column(
                             children: [
                               Image.asset('images/DierksBentleyTest.jpg',
                                   width: 65),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Row(
-                                children: [
+                                children: const [
                                   Icon(
                                     Icons.star,
                                     color: Colors.white,
@@ -317,14 +316,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Column(
                             children: [
                               Image.asset('images/DierksBentleyTest.jpg',
                                   width: 65),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Row(
-                                children: [
+                                children: const [
                                   Icon(
                                     Icons.star,
                                     color: Colors.white,
@@ -354,14 +353,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Column(
                             children: [
                               Image.asset('images/DierksBentleyTest.jpg',
                                   width: 65),
-                              SizedBox(height: 10),
+                              const SizedBox(height: 10),
                               Row(
-                                children: [
+                                children: const [
                                   Icon(
                                     Icons.star,
                                     color: Colors.white,
@@ -391,13 +390,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Column(children: [
                             Image.asset('images/DierksBentleyTest.jpg',
                                 width: 65),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Row(
-                              children: [
+                              children: const [
                                 Icon(
                                   Icons.star,
                                   color: Colors.white,
@@ -428,9 +427,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ]),
                         ],
                       ),
-                      SizedBox(height: 25),
+                      const SizedBox(height: 25),
                       Row(
-                        children: [
+                        children: const [
                           Text(
                             "Matthew's Recent Reviews",
                             style: TextStyle(fontWeight: FontWeight.bold),
@@ -442,10 +441,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        color: Color(0xFF392B3A),
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        color: const Color(0xFF392B3A),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -453,24 +452,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     "This Works For Like 80% Of Titles",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
                                     ),
                                   ),
-                                  SizedBox(height: 4),
-                                  Text(
+                                  const SizedBox(height: 4),
+                                  const Text(
                                     "Dierks Bentley - 2003",
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 11,
                                     ),
                                   ),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   Row(
-                                    children: [
+                                    children: const [
                                       Text(
                                         "Reviewed by ",
                                         style: TextStyle(fontSize: 10),
@@ -499,8 +498,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 5),
-                                  Text(
+                                  const SizedBox(height: 5),
+                                  const Text(
                                     "What was I thinkin'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resource"
                                     "with or without the use of tools to ulock a resource that has been secured with a password."
                                     " Password cracking tools may seem like powerful decryptors, but in reality are little more than"
@@ -509,9 +508,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     maxLines: 5,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   Row(
-                                    children: [
+                                    children: const [
                                       Icon(
                                         Icons.favorite_outline_outlined,
                                         size: 20,
@@ -527,7 +526,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                               child: Image.asset(
                                 "images/DierksBentleyTest.jpg",
                                 width: 120,
@@ -537,9 +536,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 25),
+                      const SizedBox(height: 25),
                       Row(
-                        children: [
+                        children: const [
                           Text(
                             "Matthew's Most Popular Reviews",
                             style: TextStyle(
@@ -555,10 +554,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        color: Color(0xFF392B3A),
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                        color: const Color(0xFF392B3A),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -566,24 +565,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
                                     ),
                                   ),
-                                  SizedBox(height: 4),
-                                  Text(
+                                  const SizedBox(height: 4),
+                                  const Text(
                                     "Dierks Bentley - 2003",
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 11,
                                     ),
                                   ),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   Row(
-                                    children: [
+                                    children: const [
                                       Text(
                                         "Reviewed by ",
                                         style: TextStyle(
@@ -614,8 +613,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 5),
-                                  Text(
+                                  const SizedBox(height: 5),
+                                  const Text(
                                     "What was I thinkin'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resource"
                                     "with or without the use of tools to ulock a resource that has been secured with a password."
                                     " Password cracking tools may seem like powerful decryptors, but in reality are little more than"
@@ -624,9 +623,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     maxLines: 5,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  SizedBox(height: 5),
+                                  const SizedBox(height: 5),
                                   Row(
-                                    children: [
+                                    children: const [
                                       Icon(
                                         Icons.favorite_outline_outlined,
                                         size: 20,
@@ -644,7 +643,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ),
                             Container(
-                              padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
                               child: Image.asset(
                                 "images/DierksBentleyTest.jpg",
                                 width: 120,

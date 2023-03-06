@@ -1,5 +1,3 @@
-import 'package:trill/models/album.dart';
-import 'package:trill/models/user.dart';
 
 // will need more fields, this is just for testing
 class Review {

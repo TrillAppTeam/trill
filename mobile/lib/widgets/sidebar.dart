@@ -34,19 +34,19 @@ class _SidebarState extends State<Sidebar> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Color(0xFF1A1B29),
+        color: const Color(0xFF1A1B29),
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             Container(
-              padding: EdgeInsets.fromLTRB(100, 0, 100, 0),
+              padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(1000.0),
                 child: Image.asset("images/gerber.jpg", fit: BoxFit.cover),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -54,7 +54,7 @@ class _SidebarState extends State<Sidebar> {
                   children: [
                     Text(
                       _user != null ? _user!.nickname : 'Loading...',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.blue,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -79,7 +79,7 @@ class _SidebarState extends State<Sidebar> {
                       ),
                     );
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.edit,
                     color: Color(0xFFDDDDDD),
                     size: 18,
@@ -87,18 +87,18 @@ class _SidebarState extends State<Sidebar> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               children: [
-                Spacer(),
+                const Spacer(),
                 Container(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: Color(0xFFBC6AAB),
+                      color: const Color(0xFFBC6AAB),
                       width: 1,
                     ),
-                    borderRadius: BorderRadius.all(
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(30),
                     ),
                   ),
@@ -106,7 +106,7 @@ class _SidebarState extends State<Sidebar> {
                     child: RichText(
                       text: TextSpan(
                         text: 'Followers: 100',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                         ),
@@ -117,12 +117,12 @@ class _SidebarState extends State<Sidebar> {
                     ),
                   ),
                 ),
-                Spacer(flex: 2),
+                const Spacer(flex: 2),
                 Container(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Color(0xFFBC6AAB), width: 1),
-                    borderRadius: BorderRadius.all(
+                    border: Border.all(color: const Color(0xFFBC6AAB), width: 1),
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(30),
                     ),
                   ),
@@ -130,7 +130,7 @@ class _SidebarState extends State<Sidebar> {
                     child: RichText(
                       text: TextSpan(
                         text: 'Following: 100',
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 11, fontWeight: FontWeight.bold),
                         recognizer: TapGestureRecognizer()
                           ..onTap =
@@ -139,26 +139,26 @@ class _SidebarState extends State<Sidebar> {
                     ),
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ListTile(
-              leading: Icon(Icons.home_outlined, color: Colors.white),
+              leading: const Icon(Icons.home_outlined, color: Colors.white),
               title: const Text('Home'),
               onTap: () {
                 Navigator.pushNamed(context, '/main');
               },
             ),
             ListTile(
-              leading: Icon(Icons.library_music_outlined, color: Colors.white),
+              leading: const Icon(Icons.library_music_outlined, color: Colors.white),
               title: const Text('Albums'),
               onTap: () {
                 Navigator.pushNamed(context, '/albums');
               },
             ),
             ListTile(
-              leading: Icon(Icons.rate_review_outlined, color: Colors.white),
+              leading: const Icon(Icons.rate_review_outlined, color: Colors.white),
               title: const Text('Reviews'),
               onTap: () {
                 // TODO: Change back to /reviews
@@ -166,7 +166,7 @@ class _SidebarState extends State<Sidebar> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.format_list_bulleted_outlined,
+              leading: const Icon(Icons.format_list_bulleted_outlined,
                   color: Colors.white),
               title: const Text('Listen Later'),
               onTap: () {
@@ -175,15 +175,15 @@ class _SidebarState extends State<Sidebar> {
             ),
             ListTile(
               leading:
-                  Icon(Icons.favorite_outline_outlined, color: Colors.white),
+                  const Icon(Icons.favorite_outline_outlined, color: Colors.white),
               title: const Text('Likes'),
               onTap: () {
                 Navigator.pushNamed(context, '/likes');
               },
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             ListTile(
-              leading: Icon(Icons.logout_outlined, color: Colors.white),
+              leading: const Icon(Icons.logout_outlined, color: Colors.white),
               title: const Text('Log Out'),
               onTap: () {
                 Amplify.Auth.signOut().then(

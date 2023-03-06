@@ -1,9 +1,9 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -34,14 +34,14 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Text(
             nickname != null ? 'hello, $nickname!' : 'hello!',
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.blue,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Popular Albums This Month',
             textDirection: TextDirection.ltr,
             style: TextStyle(
@@ -50,10 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           // Image links will go here
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Popular Albums Among Friends',
             textDirection: TextDirection.ltr,
             style: TextStyle(
@@ -62,10 +62,10 @@ class _HomeScreenState extends State<HomeScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           // Image links will go here
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Recent Friends Reviews',
             textDirection: TextDirection.ltr,
             style: TextStyle(
@@ -74,17 +74,17 @@ class _HomeScreenState extends State<HomeScreen> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.black38,
               ),
-              color: Color(0x1f989696),
+              color: const Color(0x1f989696),
             ),
             padding: const EdgeInsets.all(16),
             child: Column(
-              children: [
+              children: const [
                 Text(
                   '"I wasn\'t a fan at first, but now I can\'t stop listening!"',
                   style: TextStyle(
@@ -94,17 +94,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.black38,
               ),
-              color: Color(0x1f989696),
+              color: const Color(0x1f989696),
             ),
             padding: const EdgeInsets.all(16),
             child: Column(
-              children: [
+              children: const [
                 Text(
                   '"This album is definitely worth checking out!"',
                   style: TextStyle(
@@ -114,17 +114,17 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Container(
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.black38,
               ),
-              color: Color(0x1f989696),
+              color: const Color(0x1f989696),
             ),
             padding: const EdgeInsets.all(16),
             child: Column(
-              children: [
+              children: const [
                 Text(
                   '"My name is Wesley Wales Anderson and if I were a music album, this would be me!"',
                   style: TextStyle(

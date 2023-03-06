@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,7 +13,7 @@ class SplashScreen extends StatelessWidget {
             heightFactor: 0.6,
             child: ShaderMask(
               shaderCallback: (rect) {
-                return LinearGradient(
+                return const LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [Colors.black, Colors.transparent],
@@ -20,7 +22,7 @@ class SplashScreen extends StatelessWidget {
               },
               blendMode: BlendMode.dstIn,
               child: Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('images/beatles.png'),
                     fit: BoxFit.cover,
@@ -45,7 +47,7 @@ class SplashScreen extends StatelessWidget {
                       'images/logo.png',
                       width: 250,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       child: Text(
                         'Track albums you\'ve listened to.\n'
                         'Save those you want to hear.\n'
@@ -62,9 +64,9 @@ class SplashScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.pushNamed(context, '/login');
                       },
-                      child: Text('Get Started'),
+                      child: const Text('Get Started'),
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                   ],
                 ),
               ),
