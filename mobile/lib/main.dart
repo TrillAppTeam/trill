@@ -10,7 +10,7 @@ import 'package:trill/api/reviews.dart';
 import 'package:trill/mainpage.dart';
 import 'package:trill/pages/album_details.dart';
 import 'package:trill/pages/confirm.dart';
-import 'package:trill/pages/editprofile.dart';
+import 'package:trill/pages/edit_profile.dart';
 import 'package:trill/pages/login.dart';
 import 'package:trill/pages/review.dart';
 import 'package:trill/pages/lists/album.dart';
