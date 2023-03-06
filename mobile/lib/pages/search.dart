@@ -69,6 +69,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         _searchTimer =
                             Timer(Duration(milliseconds: 500), _fetchResults);
                       },
+                      onEditingComplete: _fetchResults,
                     ),
                   ),
                   DropdownButton<String>(
