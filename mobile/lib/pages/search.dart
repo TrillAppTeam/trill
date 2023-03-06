@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:trill/api/users.dart';
@@ -20,6 +22,27 @@ class _SearchScreenState extends State<SearchScreen> {
   List<User>? _userResults = [];
 
   final _searchController = TextEditingController();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
+  Timer? _searchTimer;
+
+  Future<void> _fetchResults() async {
+    if (_searchType == "albums") {
+      List<SpotifyAlbum>? response =
+          await searchSpotifyAlbums(_searchController.text);
+      await Future.delayed(Duration(milliseconds: 300));
+      setState(() {
+        _albumResults = response;
+      });
+    } else if (_searchType == "users") {
+      List<User>? response = await searchUsers(_searchController.text);
+      await Future.delayed(Duration(milliseconds: 300));
+      setState(() {
+        _userResults = response;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,20 +68,10 @@ class _SearchScreenState extends State<SearchScreen> {
                         hintText: 'Enter search query',
                         border: OutlineInputBorder(),
                       ),
-                      onSubmitted: (query) async {
-                        // Make API call and get results based on selected search type
-                        if (_searchType == "albums") {
-                          List<SpotifyAlbum>? response =
-                              await searchSpotifyAlbums(query);
-                          setState(() {
-                            _albumResults = response;
-                          });
-                        } else if (_searchType == "users") {
-                          List<User>? response = await searchUsers(query);
-                          setState(() {
-                            _userResults = response;
-                          });
-                        }
+                      onChanged: (query) {
+                        _searchTimer?.cancel();
+                        _searchTimer =
+                            Timer(Duration(seconds: 1), _fetchResults);
                       },
                     ),
                   ),
@@ -102,45 +115,49 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount: _searchType == "albums"
-                      ? _albumResults?.length ?? 0
-                      : _userResults?.length ?? 0,
-                  itemBuilder: (BuildContext context, int index) {
-                    if (_searchType == "albums") {
-                      return InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => AlbumDetailsScreen(
-                                albumID: _albumResults![index].id,
+                child: RefreshIndicator(
+                  key: _refreshIndicatorKey,
+                  onRefresh: _fetchResults,
+                  child: ListView.builder(
+                    itemCount: _searchType == "albums"
+                        ? _albumResults?.length ?? 0
+                        : _userResults?.length ?? 0,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (_searchType == "albums") {
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AlbumDetailsScreen(
+                                  albumID: _albumResults![index].id,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        child: AlbumRow(album: _albumResults![index]),
-                      );
-                    } else if (_searchType == "users") {
-                      return InkWell(
-                        onTap: () {
-                          // todo: navigate to profile screen
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => ProfileScreen(
-                          //       userID: _userResults![index].id,
-                          //     ),
-                          //   ),
-                          // );
-                        },
-                        child: UserRow(user: _userResults![index]),
-                      );
-                    } else {
-                      // Return empty container if search type is not recognized
-                      return Container();
-                    }
-                  },
+                            );
+                          },
+                          child: AlbumRow(album: _albumResults![index]),
+                        );
+                      } else if (_searchType == "users") {
+                        return InkWell(
+                          onTap: () {
+                            // todo: navigate to profile screen
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => ProfileScreen(
+                            //       userID: _userResults![index].id,
+                            //     ),
+                            //   ),
+                            // );
+                          },
+                          child: UserRow(user: _userResults![index]),
+                        );
+                      } else {
+                        // Return empty container if search type is not recognized
+                        return Container();
+                      }
+                    },
+                  ),
                 ),
               ),
             ],

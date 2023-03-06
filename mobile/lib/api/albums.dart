@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/constants.dart';
 
@@ -59,6 +60,17 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
   }
 }
 
+DateTime parseReleaseDate(String releaseDate) {
+  try {
+    return DateTime.parse(releaseDate);
+  } catch (e) {
+    // Spotify can return albums with different release date precisions
+    // If it doesn't the date precision, we're pretending it was released today just so the app doesn't crash
+    // The Spotify API does return a release date precision field but that's too much work
+    return DateTime.now();
+  }
+}
+
 class SpotifyAlbum {
   final String albumType;
   final SpotifyExternalURLs externalURLs;
@@ -99,7 +111,7 @@ class SpotifyAlbum {
       images: List<SpotifyImage>.from(
           json['images'].map((x) => SpotifyImage.fromJson(x))),
       name: json['name'],
-      releaseDate: DateTime.parse(json['release_date']),
+      releaseDate: parseReleaseDate(json['release_date']),
       type: json['type'],
       uri: json['uri'],
       genres: List<String>.from(json['genres'] ?? []),

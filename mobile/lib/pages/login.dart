@@ -124,6 +124,7 @@ class _LoginState extends State<Login> {
       logo: AssetImage('images/logo.png'),
       onLogin: (data) => _onLogin(context, data),
       onRecoverPassword: (_) => Future.value(),
+      // if u forget ur password too bad
       // onRecoverPassword: (username) => _onRecoverPassword(context, username),
       onSignup: (data) => _onSignup(context, data),
       theme: LoginTheme(
@@ -198,6 +199,3 @@ class Regex {
   // https://stackoverflow.com/a/32686261/9449426
   static final email = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
 }
-
-// todo: fix "an activation link has been sent" when sending confirmation page
-// there is already a user signed in issue
