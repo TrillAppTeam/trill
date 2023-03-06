@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/pages/edit_profile.dart';
 
+import '../api/follows.dart';
+
 class Sidebar extends StatefulWidget {
   const Sidebar({
     Key? key,
@@ -50,6 +52,7 @@ class _SidebarState extends State<Sidebar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(width: 40),
                 Column(
                   children: [
                     Text(
@@ -103,17 +106,29 @@ class _SidebarState extends State<Sidebar> {
                     ),
                   ),
                   child: Center(
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'Followers: 100',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap =
-                              () => Navigator.pushNamed(context, '/followers'),
-                      ),
+                    child: FutureBuilder<Follow?>(
+                      future: getFollowers(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          String followerCount =
+                          snapshot.data!.users.length.toString();
+                          return RichText(
+                            text: TextSpan(
+                              text: 'Followers: $followerCount',
+                              style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => Navigator.pushNamed(
+                                  context,
+                                  '/followers',
+                                ),
+                            ),
+                          );
+                        } else {
+                          return const Text('Loading');
+                        }
+                      },
                     ),
                   ),
                 ),
@@ -127,15 +142,27 @@ class _SidebarState extends State<Sidebar> {
                     ),
                   ),
                   child: Center(
-                    child: RichText(
-                      text: TextSpan(
-                        text: 'Following: 100',
-                        style: const TextStyle(
-                            fontSize: 11, fontWeight: FontWeight.bold),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap =
-                              () => Navigator.pushNamed(context, '/following'),
-                      ),
+                    child: FutureBuilder<Follow?>(
+                      future: getFollowing(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          String followingCount =
+                          snapshot.data!.users.length.toString();
+                          return RichText(
+                            text: TextSpan(
+                              text: 'Following: $followingCount',
+                              style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () => Navigator.pushNamed(
+                                    context, '/following'),
+                            ),
+                          );
+                        } else {
+                          return const Text('Loading');
+                        }
+                      },
                     ),
                   ),
                 ),
