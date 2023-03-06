@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/pages/album_details.dart';
+import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/album_row.dart';
 import 'package:trill/widgets/user_row.dart';
 import '../api/albums.dart';
@@ -23,19 +24,26 @@ class _SearchScreenState extends State<SearchScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
+  bool _isLoading = false;
   Timer? _searchTimer;
 
   Future<void> _fetchResults() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     if (_searchType == "albums") {
       List<SpotifyAlbum>? response =
           await searchSpotifyAlbums(_searchController.text);
       setState(() {
         _albumResults = response;
+        _isLoading = false;
       });
     } else if (_searchType == "users") {
       List<User>? response = await searchUsers(_searchController.text);
       setState(() {
         _userResults = response;
+        _isLoading = false;
       });
     }
   }
@@ -112,50 +120,52 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
               Expanded(
-                child: RefreshIndicator(
-                  key: _refreshIndicatorKey,
-                  onRefresh: _fetchResults,
-                  child: ListView.builder(
-                    itemCount: _searchType == "albums"
-                        ? _albumResults?.length ?? 0
-                        : _userResults?.length ?? 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      if (_searchType == "albums") {
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AlbumDetailsScreen(
-                                  albumID: _albumResults![index].id,
-                                ),
-                              ),
-                            );
+                child: _isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : RefreshIndicator(
+                        key: _refreshIndicatorKey,
+                        onRefresh: _fetchResults,
+                        child: ListView.builder(
+                          itemCount: _searchType == "albums"
+                              ? _albumResults?.length ?? 0
+                              : _userResults?.length ?? 0,
+                          itemBuilder: (BuildContext context, int index) {
+                            if (_searchType == "albums") {
+                              return InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => AlbumDetailsScreen(
+                                        albumID: _albumResults![index].id,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: AlbumRow(album: _albumResults![index]),
+                              );
+                            } else if (_searchType == "users") {
+                              return InkWell(
+                                onTap: () {
+                                  // todo: navigate to profile screen
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) => ProfileScreen(
+                                  //       userID: _userResults![index].id,
+                                  //     ),
+                                  //   ),
+                                  // );
+                                },
+                                child: UserRow(user: _userResults![index]),
+                              );
+                            } else {
+                              // Return empty container if search type is not recognized
+                              return Container();
+                            }
                           },
-                          child: AlbumRow(album: _albumResults![index]),
-                        );
-                      } else if (_searchType == "users") {
-                        return InkWell(
-                          onTap: () {
-                            // todo: navigate to profile screen
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => ProfileScreen(
-                            //       userID: _userResults![index].id,
-                            //     ),
-                            //   ),
-                            // );
-                          },
-                          child: UserRow(user: _userResults![index]),
-                        );
-                      } else {
-                        // Return empty container if search type is not recognized
-                        return Container();
-                      }
-                    },
-                  ),
-                ),
+                        ),
+                      ),
               ),
             ],
           ),
