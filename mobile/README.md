@@ -64,6 +64,7 @@ APIs we need:
 - Profile pictures
 - Popular albums globally
   - Set time limit (e.g. this week, this month)
+- Average rating for album
 - User data for follows
 - Add follow counts when getting a public user
 - User data for reviews
