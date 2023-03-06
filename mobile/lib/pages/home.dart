@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            nickname != null ? 'hello, $nickname!' : 'hello!',
+            nickname != null ? 'Hello, $nickname!' : 'hello!',
             style: const TextStyle(
               color: Colors.blue,
               fontSize: 20,

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import 'package:flutter/material.dart';
@@ -25,6 +26,10 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   @override
   void initState() {
     super.initState();
+    Future.delayed(
+      Duration(),
+          () => SystemChannels.textInput.invokeMethod('TextInput.hide'),
+    );
   }
 
   @override
@@ -99,6 +104,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                           fontWeight: FontWeight.normal,
                         ),
                       ),
+                      const SizedBox(height: 4),
                       Row(children: [
                         RatingBar.builder(
                           initialRating: 5,
@@ -140,6 +146,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 labelText: 'Your Review',
                 border: OutlineInputBorder(),
               ),
+              autofocus: true,
               maxLines: null,
               keyboardType: TextInputType.multiline,
               validator: (value) {
