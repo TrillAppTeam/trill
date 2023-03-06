@@ -9,6 +9,7 @@ import TrillLogo from "/trillTransparent.png"
 // Components
 import Avatar from "./Avatar"
 import Search from "./Search"
+import { useQuery } from "@tanstack/react-query";
 
 const navigation = [
   { name: 'Discover', link: '', current: true },
@@ -21,6 +22,10 @@ function classNames(...classes) {
 }
 
 function Navbar() {
+  const {error, data} = useQuery({ queryKey: ['users'] });
+  if (data)
+    localStorage.setItem("username", data.data.username);
+  
   return (
 
       <Disclosure as="nav" className="bg-gray-700">
@@ -83,7 +88,7 @@ function Navbar() {
                     <Menu.Button className="flex rounded-full">
                       <span className="sr-only">Open user menu</span>
                       {/* User Profile Picture */}
-                      <Avatar user={{ profilePic: null, username: "avwede", size: "11", linkDisabled: true }} />
+                      <Avatar user={{ profilePic: null, username: data?.data.username, size: "11", linkDisabled: true }} />
 
                     </Menu.Button>
                   </div>
@@ -101,6 +106,7 @@ function Navbar() {
                         {({ active }) => (
                           <Link to='Profile'
                             className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
+                            state={{username: data?.data.username}}
                           >
                             Profile
                           </Link>
