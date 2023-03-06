@@ -71,7 +71,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       _isLoading = true;
       _reviews = null;
     });
-    safePrint("Fetching album details for ${widget.albumID}");
     final album = await getSpotifyAlbum(widget.albumID);
     setState(() {
       _album = album!;

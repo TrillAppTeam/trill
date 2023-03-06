@@ -33,14 +33,15 @@ Future<List<User>?> searchUsers(String query) async {
   }
 }
 
-Future<PublicUser?> getPublicUser(String username) async {
+Future<PublicUser?> getPublicUser([String? username]) async {
   const String tag = '[getPublicUser]';
-
-  safePrint('$tag username: $username');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
   // safePrint('$tag access token: $token');
+
+  username ??= prefs.getString('username');
+  safePrint('$tag username: $username');
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/users?username=$username'),

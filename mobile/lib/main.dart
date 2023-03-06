@@ -1,18 +1,9 @@
-import 'dart:convert';
-
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:trill/api/albums.dart';
-import 'package:trill/api/reviews.dart';
 import 'package:trill/mainpage.dart';
-import 'package:trill/pages/album_details.dart';
 import 'package:trill/pages/confirm.dart';
-import 'package:trill/pages/edit_profile.dart';
 import 'package:trill/pages/login.dart';
-import 'package:trill/pages/write_review.dart';
 import 'package:trill/pages/lists/album.dart';
 import 'package:trill/pages/lists/followers.dart';
 import 'package:trill/pages/lists/following.dart';
@@ -23,7 +14,6 @@ import 'package:trill/pages/lists/list.dart';
 import 'package:trill/pages/lists/likedalbums.dart';
 import 'package:trill/pages/lists/listenlater.dart';
 import 'package:trill/pages/splash.dart';
-import 'package:trill/pages/user.dart';
 
 import 'authentication/configure_amplify.dart';
 
@@ -78,7 +68,6 @@ class _MyAppState extends State<MyApp> {
         '/login': (context) => Login(),
         '/followers': (context) => FollowersScreen(),
         '/following': (context) => FollowingScreen(),
-        '/user': (context) => UserScreen(),
       },
       // used instead of routes to pass arguments to widget
       onGenerateRoute: (settings) {
