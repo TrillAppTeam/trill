@@ -56,8 +56,6 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       home: const SplashScreen(),
-      // https://medium.com/@JediPixels/flutter-navigator-pageroutebuilder-transitions-b05991f53069
-      // saving this link cuz im gonna forget
       routes: {
         '/main': (context) => const MainPage(),
         '/album': (context) => const AlbumScreen(),

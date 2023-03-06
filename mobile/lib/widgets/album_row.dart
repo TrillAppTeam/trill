@@ -17,7 +17,10 @@ class AlbumRow extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          Image.network(_album.images[0].url, width: 80, height: 80),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(3),
+            child: Image.network(_album.images[0].url, width: 80, height: 80),
+          ),
           const SizedBox(width: 16),
           Flexible(
             child: Column(
