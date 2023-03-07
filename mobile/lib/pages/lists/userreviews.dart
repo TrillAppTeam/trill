@@ -12,3 +12,6 @@ class UserReviewsScreen extends StatelessWidget {
     );
   }
 }
+
+// USE THE REVIEW FORMAT FROM PROFILE PAGE FOR NOW
+// FILL IN HARDCODED ADDL DATA

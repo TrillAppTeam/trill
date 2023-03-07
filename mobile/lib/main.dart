@@ -10,7 +10,7 @@ import 'package:trill/pages/lists/userlists.dart';
 import 'package:trill/pages/lists/userreviews.dart';
 import 'package:trill/pages/lists/ratedalbums.dart';
 import 'package:trill/pages/lists/list.dart';
-import 'package:trill/pages/lists/likedalbums.dart';
+import 'package:trill/pages/lists/likedreviews.dart';
 import 'package:trill/pages/lists/listenlater.dart';
 import 'package:trill/pages/splash.dart';
 

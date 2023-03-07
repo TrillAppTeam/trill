@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
 import 'package:trill/api/users.dart';
 
+import 'package:trill/widgets/review.dart';
 import 'loading_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -440,99 +441,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                       const SizedBox(height: 15),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        color: const Color(0xFF392B3A),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "This Works For Like 80% Of Titles",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  const Text(
-                                    "Dierks Bentley - 2003",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Row(
-                                    children: const [
-                                      Text(
-                                        "Reviewed by ",
-                                        style: TextStyle(fontSize: 10),
-                                      ),
-                                      Text(
-                                        "Matthew ",
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.white,
-                                        size: 10,
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.white,
-                                        size: 10,
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.white,
-                                        size: 10,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  const Text(
-                                    "What was I thinkin'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resource"
-                                    "with or without the use of tools to ulock a resource that has been secured with a password."
-                                    " Password cracking tools may seem like powerful decryptors, but in reality are little more than"
-                                    "    fast, sophisticated guessing machines.",
-                                    style: TextStyle(fontSize: 12),
-                                    maxLines: 5,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Row(
-                                    children: const [
-                                      Icon(
-                                        Icons.favorite_outline_outlined,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        "33 likes",
-                                        style: TextStyle(fontSize: 12),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                              child: Image.asset(
-                                "images/DierksBentleyTest.jpg",
-                                width: 120,
-                                height: 120,
-                              ),
-                            ),
-                          ],
-                        ),
+                      Review(
+                        title: 'Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer',
+                        artist: 'Dierks Bentley',
+                        releaseYear: '2003',
+                        reviewerName: 'Matthew',
+                        starRating: 5,
+                        reviewId: 69,
+                        reviewText: 'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
+                        likeCount: 33,
+                        imageUrl: 'images/DierksBentleyTest.jpg',
                       ),
                       const SizedBox(height: 25),
                       Row(
@@ -553,103 +471,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                       const SizedBox(height: 15),
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        color: const Color(0xFF392B3A),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text(
-                                    "Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  const Text(
-                                    "Dierks Bentley - 2003",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Row(
-                                    children: const [
-                                      Text(
-                                        "Reviewed by ",
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Matthew ",
-                                        style: TextStyle(
-                                          color: Colors.blue,
-                                          fontSize: 10,
-                                        ),
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.white,
-                                        size: 10,
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.white,
-                                        size: 10,
-                                      ),
-                                      Icon(
-                                        Icons.star,
-                                        color: Colors.white,
-                                        size: 10,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 5),
-                                  const Text(
-                                    "What was I thinkin'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resource"
-                                    "with or without the use of tools to ulock a resource that has been secured with a password."
-                                    " Password cracking tools may seem like powerful decryptors, but in reality are little more than"
-                                    "    fast, sophisticated guessing machines.",
-                                    style: TextStyle(fontSize: 12),
-                                    maxLines: 5,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Row(
-                                    children: const [
-                                      Icon(
-                                        Icons.favorite_outline_outlined,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 10),
-                                      Text(
-                                        "33 likes",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                              child: Image.asset(
-                                "images/DierksBentleyTest.jpg",
-                                width: 120,
-                                height: 120,
-                              ),
-                            ),
-                          ],
-                        ),
+                      Review(
+                        title: 'Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer',
+                        artist: 'Dierks Bentley',
+                        releaseYear: '2003',
+                        reviewerName: 'Matthew',
+                        starRating: 9,
+                        reviewId: 69,
+                        reviewText: 'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
+                        likeCount: 33,
+                        imageUrl: 'images/DierksBentleyTest.jpg',
                       ),
                     ],
                   ),

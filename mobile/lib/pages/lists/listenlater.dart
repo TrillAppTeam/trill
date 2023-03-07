@@ -38,33 +38,24 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('ListenLater'),
+          title: const Text('Listen Later'),
         ),
         body: _isLoading ? const Center(child: CircularProgressIndicator()) :
         ListView.builder(
             itemCount: _userResults?.users.length,
             itemBuilder: (BuildContext context, int index) {
-              return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProfileScreen(
-                          username: _userResults?.users![index],
-                        ),
-                      ),
-                    );
-                  },
-                  child: ListTile(
+              return ListTile(
                       title: Text(
                         (_userResults?.users![index])!,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       trailing: Icon(Icons.arrow_forward_outlined,
-                          color: Colors.white.withOpacity(0.2)))
-              );
-            }
-        )
+                          color: Colors.white.withOpacity(0.2)),
+                  );
+                },
+              )
     );
   }
 }
+
+// use SEARCH album format

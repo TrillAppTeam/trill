@@ -91,3 +91,18 @@ class Like {
     );
   }
 }
+
+class TestLike {
+  final String username;
+  final int reviewID;
+  String albumName;
+  String artistName;
+  int year;
+  String reviewBody;
+  int starRating;
+  int likeCount;
+
+  TestLike(this.username, this.reviewID, this.albumName, this.artistName,
+      this.year, this.reviewBody, this.starRating, this.likeCount);
+}
+
