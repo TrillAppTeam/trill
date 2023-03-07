@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:trill/mainpage.dart';
 import 'package:trill/pages/confirm.dart';
 import 'package:trill/pages/login.dart';
-import 'package:trill/pages/lists/followers.dart';
-import 'package:trill/pages/lists/following.dart';
+import 'package:trill/pages/lists/follows.dart';
 import 'package:trill/pages/lists/userlists.dart';
 import 'package:trill/pages/lists/userreviews.dart';
 import 'package:trill/pages/lists/ratedalbums.dart';
@@ -17,6 +17,7 @@ import 'package:trill/pages/splash.dart';
 import 'authentication/configure_amplify.dart';
 
 Future<void> main() async {
+  // debugPaintSizeEnabled = true;
   WidgetsFlutterBinding.ensureInitialized();
   await configureAmplify();
   runApp(const ProviderScope(child: MyApp()));
@@ -64,8 +65,6 @@ class _MyAppState extends State<MyApp> {
         '/lists': (context) => UserListsScreen(),
         '/listenlater': (context) => const ListenLaterScreen(),
         '/login': (context) => const Login(),
-        '/followers': (context) => FollowersScreen(),
-        '/following': (context) => FollowingScreen(),
       },
       // used instead of routes to pass arguments to widget
       onGenerateRoute: (settings) {

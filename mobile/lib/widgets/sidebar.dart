@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/pages/edit_profile.dart';
+import 'package:trill/pages/lists/follows.dart';
 
 import '../api/follows.dart';
 
@@ -84,22 +85,26 @@ class _SidebarState extends State<Sidebar> {
                   ),
                   child: Center(
                     child: FutureBuilder<Follow?>(
-                      future: getFollowers(),
+                      future: getFollowing(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          String followerCount =
-                          snapshot.data!.users.length.toString();
+                          String followingCount =
+                              snapshot.data!.users.length.toString();
                           return RichText(
                             text: TextSpan(
-                              text: 'Followers: $followerCount',
+                              text: 'Following: $followingCount',
                               style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 11, fontWeight: FontWeight.bold),
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () => Navigator.pushNamed(
-                                  context,
-                                  '/followers',
-                                ),
+                                ..onTap = () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FollowsScreen(
+                                          username: _user!.username,
+                                          followType: FollowType.following,
+                                        ),
+                                      ),
+                                    ),
                             ),
                           );
                         } else {
@@ -113,27 +118,34 @@ class _SidebarState extends State<Sidebar> {
                 Container(
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFFBC6AAB), width: 1),
+                    border:
+                        Border.all(color: const Color(0xFFBC6AAB), width: 1),
                     borderRadius: const BorderRadius.all(
                       Radius.circular(30),
                     ),
                   ),
                   child: Center(
                     child: FutureBuilder<Follow?>(
-                      future: getFollowing(),
+                      future: getFollowers(),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          String followingCount =
-                          snapshot.data!.users.length.toString();
+                          String followerCount =
+                              snapshot.data!.users.length.toString();
                           return RichText(
                             text: TextSpan(
-                              text: 'Following: $followingCount',
+                              text: 'Followers: $followerCount',
                               style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 11, fontWeight: FontWeight.bold),
                               recognizer: TapGestureRecognizer()
-                                ..onTap = () => Navigator.pushNamed(
-                                    context, '/following'),
+                                ..onTap = () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => FollowsScreen(
+                                          username: _user!.username,
+                                          followType: FollowType.follower,
+                                        ),
+                                      ),
+                                    ),
                             ),
                           );
                         } else {
@@ -155,7 +167,8 @@ class _SidebarState extends State<Sidebar> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.rate_review_outlined, color: Colors.white),
+              leading:
+                  const Icon(Icons.rate_review_outlined, color: Colors.white),
               title: const Text('Reviews'),
               onTap: () {
                 Navigator.pushNamed(context, '/reviews');
@@ -170,8 +183,8 @@ class _SidebarState extends State<Sidebar> {
               },
             ),
             ListTile(
-              leading:
-                  const Icon(Icons.favorite_outline_outlined, color: Colors.white),
+              leading: const Icon(Icons.favorite_outline_outlined,
+                  color: Colors.white),
               title: const Text('Likes'),
               onTap: () {
                 Navigator.pushNamed(context, '/likes');
@@ -179,8 +192,7 @@ class _SidebarState extends State<Sidebar> {
             ),
             const SizedBox(height: 30),
             ListTile(
-              leading:
-              const Icon(Icons.edit_outlined, color: Colors.white),
+              leading: const Icon(Icons.edit_outlined, color: Colors.white),
               title: const Text('Edit Profile'),
               onTap: () {
                 Navigator.push(
@@ -189,8 +201,7 @@ class _SidebarState extends State<Sidebar> {
                     builder: (context) => EditProfileScreen(
                       initialBio: _user != null ? _user!.bio : '',
                       initialNickname: _user != null ? _user!.nickname : '',
-                      initialProfilePic:
-                          _user != null ? _user!.profilePic : '',
+                      initialProfilePic: _user != null ? _user!.profilePic : '',
                       onUserChanged: _fetchUserDetails,
                     ),
                   ),

@@ -80,10 +80,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       onChanged: (query) {
                         _searchTimer?.cancel();
-                        _searchTimer =
-                            Timer(const Duration(milliseconds: 500), _fetchResults);
+                        _searchTimer = Timer(
+                            const Duration(milliseconds: 500), _fetchResults);
                       },
-                      onEditingComplete: _fetchResults,
+                      onEditingComplete: () {
+                        FocusScope.of(context).unfocus();
+                        _fetchResults();
+                      },
                     ),
                   ),
                   DropdownButton<String>(

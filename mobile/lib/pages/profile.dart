@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
 import 'package:trill/api/users.dart';
+import 'package:trill/pages/lists/follows.dart';
 
 import 'package:trill/widgets/review.dart';
 import 'loading_screen.dart';
@@ -93,21 +94,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: Center(
                               child: FutureBuilder<Follow?>(
-                                future: getFollowers(),
+                                future: getFollowing(_user.username),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
-                                    String followerCount =
+                                    String followingCount =
                                         snapshot.data!.users.length.toString();
                                     return RichText(
                                       text: TextSpan(
-                                        text: 'Followers: $followerCount',
+                                        text: 'Following: $followingCount',
                                         style: const TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () => Navigator.pushNamed(
+                                          ..onTap = () => Navigator.push(
                                                 context,
-                                                '/followers',
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FollowsScreen(
+                                                    username: _user.username,
+                                                    followType:
+                                                        FollowType.following,
+                                                  ),
+                                                ),
                                               ),
                                       ),
                                     );
@@ -130,20 +138,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: Center(
                               child: FutureBuilder<Follow?>(
-                                future: getFollowing(),
+                                future: getFollowers(_user.username),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasData) {
-                                    String followingCount =
+                                    String followerCount =
                                         snapshot.data!.users.length.toString();
                                     return RichText(
                                       text: TextSpan(
-                                        text: 'Following: $followingCount',
+                                        text: 'Followers: $followerCount',
                                         style: const TextStyle(
                                             fontSize: 11,
                                             fontWeight: FontWeight.bold),
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () => Navigator.pushNamed(
-                                              context, '/following'),
+                                          ..onTap = () => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      FollowsScreen(
+                                                    username: _user.username,
+                                                    followType:
+                                                        FollowType.follower,
+                                                  ),
+                                                ),
+                                              ),
                                       ),
                                     );
                                   } else {
@@ -229,9 +246,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 15),
                       const Text(
-                          "Matthew's Favorite Albums",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        "Matthew's Favorite Albums",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                       const SizedBox(height: 15),
                       Row(
                         children: [
@@ -442,13 +459,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 15),
                       Review(
-                        title: 'Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer',
+                        title:
+                            'Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer',
                         artist: 'Dierks Bentley',
                         releaseYear: '2003',
                         reviewerName: 'Matthew',
                         starRating: 5,
                         reviewId: 69,
-                        reviewText: 'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
+                        reviewText:
+                            'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
                         likeCount: 33,
                         imageUrl: 'images/DierksBentleyTest.jpg',
                       ),
@@ -472,13 +491,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 15),
                       Review(
-                        title: 'Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer',
+                        title:
+                            'Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer',
                         artist: 'Dierks Bentley',
                         releaseYear: '2003',
                         reviewerName: 'Matthew',
                         starRating: 9,
                         reviewId: 69,
-                        reviewText: 'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
+                        reviewText:
+                            'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
                         likeCount: 33,
                         imageUrl: 'images/DierksBentleyTest.jpg',
                       ),
