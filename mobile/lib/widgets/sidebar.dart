@@ -183,20 +183,18 @@ class _SidebarState extends State<Sidebar> {
               const Icon(Icons.edit_outlined, color: Colors.white),
               title: const Text('Edit Profile'),
               onTap: () {
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditProfileScreen(
-                        initialBio: _user != null ? _user!.bio : '',
-                        initialNickname: _user != null ? _user!.nickname : '',
-                        initialProfilePic:
-                            _user != null ? _user!.profilePic : '',
-                        onUserChanged: _fetchUserDetails,
-                      ),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditProfileScreen(
+                      initialBio: _user != null ? _user!.bio : '',
+                      initialNickname: _user != null ? _user!.nickname : '',
+                      initialProfilePic:
+                          _user != null ? _user!.profilePic : '',
+                      onUserChanged: _fetchUserDetails,
                     ),
-                  );
-                };
+                  ),
+                );
               },
             ),
             ListTile(
