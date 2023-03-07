@@ -2,6 +2,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/api/users.dart';
 import 'package:trill/pages/home.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/pages/profile.dart';
@@ -16,16 +17,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int currentIndex = 0;
-  final List<Widget> screens = [
-    const HomeScreen(),
-    const SearchScreen(),
-    const ProfileScreen(),
-  ];
+  int _currentIndex = 0;
+  late List<Widget> _screens;
 
-  // todo: need to fix how user info is saved so that we don't call use any info before it's saved
-  late SharedPreferences prefs;
+  late SharedPreferences _prefs;
   bool _userInfoSet = false;
+
+  late PrivateUser _user;
 
   @override
   void initState() {
@@ -41,6 +39,15 @@ class _MainPageState extends State<MainPage> {
     await fetchAuthSession();
     await getCognitoUser();
 
+    _user = (await getPrivateUser())!;
+    _screens = [
+      const HomeScreen(),
+      const SearchScreen(),
+      ProfileScreen(
+        username: _user.username,
+      ),
+    ];
+
     setState(() {
       _userInfoSet = true;
       safePrint('user info set!');
@@ -55,8 +62,8 @@ class _MainPageState extends State<MainPage> {
 
       final cognitoSession = result as CognitoAuthSession;
 
-      prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
+      _prefs = await SharedPreferences.getInstance();
+      await _prefs.setString(
           'token', cognitoSession.userPoolTokens!.accessToken);
 
       safePrint(
@@ -69,14 +76,14 @@ class _MainPageState extends State<MainPage> {
   Future<void> getCognitoUser() async {
     try {
       final user = await Amplify.Auth.getCurrentUser();
-      prefs = await SharedPreferences.getInstance();
+      _prefs = await SharedPreferences.getInstance();
 
-      await prefs.setString('username', user.username);
+      await _prefs.setString('username', user.username);
       safePrint('stored username: ${user.username}');
 
       final attributes = await Amplify.Auth.fetchUserAttributes();
       for (final element in attributes) {
-        await prefs.setString(
+        await _prefs.setString(
           element.userAttributeKey.toString(),
           element.value,
         );
@@ -96,11 +103,21 @@ class _MainPageState extends State<MainPage> {
         ? const Scaffold(body: LoadingScreen())
         : Scaffold(
             appBar: AppBar(),
-            drawer: const Sidebar(),
+            drawer: Sidebar(
+                user: _user,
+                onUserUpdated: (PublicUser user) {
+                  _user = PrivateUser(
+                    username: user.username,
+                    bio: user.bio,
+                    nickname: user.nickname,
+                    profilePic: user.profilePic,
+                    email: _user.email,
+                  );
+                }),
             // IndexedStack keeps the states of each page
             body: IndexedStack(
-              index: currentIndex,
-              children: screens,
+              index: _currentIndex,
+              children: _screens,
             ),
             bottomNavigationBar: Container(
               decoration: BoxDecoration(
@@ -118,10 +135,10 @@ class _MainPageState extends State<MainPage> {
                 showUnselectedLabels: false,
                 iconSize: 30,
                 elevation: 10,
-                currentIndex: currentIndex,
+                currentIndex: _currentIndex,
                 onTap: (index) {
                   setState(() {
-                    currentIndex = index;
+                    _currentIndex = index;
                   });
                 },
                 items: const [

@@ -9,6 +9,7 @@ import 'package:trill/pages/write_review.dart';
 import 'package:trill/widgets/album_details_header.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
+import 'package:trill/widgets/static_rating_bar.dart';
 
 // todo: add review button
 // todo: refresh upon review added
@@ -20,6 +21,8 @@ import 'package:trill/widgets/like_button.dart';
 
 // todo: put own review at top and allow editing
 // todo: create review only if user doesn't have review
+
+// todo: update and delete own review
 
 // todo: get user profile pic
 // todo: click on username/pfp to get user profile
@@ -94,6 +97,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
             backgroundColor: const Color(0xFF1A1B29),
             color: const Color(0xFF3FBCF4),
             child: Scaffold(
+              appBar: AppBar(),
               body: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
@@ -110,25 +114,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                             _buildReviewDetails(),
                             _buildReviews(),
                           ],
-                        ),
-                        Positioned(
-                          top: 30.0,
-                          left: 12.0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black.withOpacity(0.7),
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                Icons.arrow_back,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ),
                         ),
                         // temp button, does not scroll
                         Positioned(
@@ -308,17 +293,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                     }
                   },
                 ),
-                title: RatingBar.builder(
-                  initialRating: review.rating / 2,
-                  minRating: 1,
-                  allowHalfRating: true,
-                  itemSize: 20,
-                  itemBuilder: (context, _) => const Icon(
-                    Icons.star,
-                    color: Color(0xFFEEEEEE),
-                  ),
-                  onRatingUpdate: (rating) {},
-                ),
+                title: StaticRatingBar(rating: review.rating, size: 20),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

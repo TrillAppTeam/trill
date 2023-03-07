@@ -4,28 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/pages/edit_profile.dart';
 import 'package:trill/pages/lists/follows.dart';
+import 'package:trill/widgets/follow_button.dart';
 
 import '../api/follows.dart';
 
 class Sidebar extends StatefulWidget {
+  final PrivateUser user;
+  final Function onUserUpdated;
+
   const Sidebar({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+    required this.user,
+    required this.onUserUpdated,
+  });
 
   @override
   State<Sidebar> createState() => _SidebarState();
 }
 
 class _SidebarState extends State<Sidebar> {
-  PublicUser? _user;
+  late PublicUser _user;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserDetails();
+    _user = widget.user;
   }
 
-  // need to change how user details are gotten
   Future<void> _fetchUserDetails() async {
     final user = await getPublicUser();
     setState(() {
@@ -56,14 +61,14 @@ class _SidebarState extends State<Sidebar> {
                 Column(
                   children: [
                     Text(
-                      _user != null ? _user!.nickname : 'Loading...',
+                      _user.nickname,
                       style: const TextStyle(
                         color: Colors.blue,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text('@${_user != null ? _user!.username : 'Loading...'}'),
+                    Text('@${_user.username}'),
                   ],
                 ),
               ],
@@ -72,88 +77,14 @@ class _SidebarState extends State<Sidebar> {
             Row(
               children: [
                 const Spacer(),
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: const Color(0xFFBC6AAB),
-                      width: 1,
-                    ),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(30),
-                    ),
-                  ),
-                  child: Center(
-                    child: FutureBuilder<Follow?>(
-                      future: getFollowing(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          String followingCount =
-                              snapshot.data!.users.length.toString();
-                          return RichText(
-                            text: TextSpan(
-                              text: 'Following: $followingCount',
-                              style: const TextStyle(
-                                  fontSize: 11, fontWeight: FontWeight.bold),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FollowsScreen(
-                                          username: _user!.username,
-                                          followType: FollowType.following,
-                                        ),
-                                      ),
-                                    ),
-                            ),
-                          );
-                        } else {
-                          return const Text('Loading');
-                        }
-                      },
-                    ),
-                  ),
+                FollowButton(
+                  username: _user.username,
+                  followType: FollowType.following,
                 ),
                 const Spacer(flex: 2),
-                Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    border:
-                        Border.all(color: const Color(0xFFBC6AAB), width: 1),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(30),
-                    ),
-                  ),
-                  child: Center(
-                    child: FutureBuilder<Follow?>(
-                      future: getFollowers(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          String followerCount =
-                              snapshot.data!.users.length.toString();
-                          return RichText(
-                            text: TextSpan(
-                              text: 'Followers: $followerCount',
-                              style: const TextStyle(
-                                  fontSize: 11, fontWeight: FontWeight.bold),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FollowsScreen(
-                                          username: _user!.username,
-                                          followType: FollowType.follower,
-                                        ),
-                                      ),
-                                    ),
-                            ),
-                          );
-                        } else {
-                          return const Text('Loading');
-                        }
-                      },
-                    ),
-                  ),
+                FollowButton(
+                  username: _user.username,
+                  followType: FollowType.follower,
                 ),
                 const Spacer(),
               ],
@@ -199,10 +130,13 @@ class _SidebarState extends State<Sidebar> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => EditProfileScreen(
-                      initialBio: _user != null ? _user!.bio : '',
-                      initialNickname: _user != null ? _user!.nickname : '',
-                      initialProfilePic: _user != null ? _user!.profilePic : '',
-                      onUserChanged: _fetchUserDetails,
+                      initialBio: _user.bio,
+                      initialNickname: _user.nickname,
+                      initialProfilePic: _user.profilePic,
+                      onUserChanged: () async {
+                        await _fetchUserDetails();
+                        widget.onUserUpdated(_user);
+                      },
                     ),
                   ),
                 );

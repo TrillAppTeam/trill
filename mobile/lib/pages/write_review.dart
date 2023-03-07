@@ -28,7 +28,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
     super.initState();
     Future.delayed(
       Duration(),
-          () => SystemChannels.textInput.invokeMethod('TextInput.hide'),
+      () => SystemChannels.textInput.invokeMethod('TextInput.hide'),
     );
   }
 
@@ -146,7 +146,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
                 labelText: 'Your Review',
                 border: OutlineInputBorder(),
               ),
-              autofocus: true,
+              autofocus: false,
               maxLines: null,
               keyboardType: TextInputType.multiline,
               validator: (value) {

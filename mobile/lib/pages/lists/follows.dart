@@ -24,7 +24,7 @@ class FollowsScreen extends StatefulWidget {
 class _FollowsScreenState extends State<FollowsScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  Follow? _userResults;
+  late Follow _userResults;
   bool _isLoading = false;
 
   @override
@@ -78,7 +78,7 @@ class _FollowsScreenState extends State<FollowsScreen>
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-              itemCount: _userResults?.users.length,
+              itemCount: _userResults.users.length,
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {
@@ -86,14 +86,14 @@ class _FollowsScreenState extends State<FollowsScreen>
                       context,
                       MaterialPageRoute(
                         builder: (context) => ProfileScreen(
-                          username: _userResults?.users[index],
+                          username: _userResults.users[index],
                         ),
                       ),
                     );
                   },
                   child: ListTile(
                     title: Text(
-                      (_userResults?.users[index])!,
+                      (_userResults.users[index]),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     trailing: Icon(

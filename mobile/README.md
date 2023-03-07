@@ -30,8 +30,9 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
   - Favorite albums - Prathik
     - Connect to favorite albums UI
     - Hold to delete favorite album
-  - Follow other users
+  - Follow/unfollow other users - Prathik
     - Separate logged in user vs other users
+    - Unfollow from follow list too
 
 - Friends Feed - Cathy
   - UI
@@ -57,6 +58,12 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
 
 - UI!!
   - Implement profile pics everywhere
+  - Loading page
+- Remember to clean database before demo
+
+- Minor bugs:
+  - Keyboard opens when click on text field in search bar, another bottom nav page, then sidebar
+  - Spotify album release date errors
 
 ---
 

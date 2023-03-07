@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/api/albums.dart';
+import 'package:trill/constants.dart';
+import 'package:trill/widgets/albums_row.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,29 +46,23 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            'Popular Albums This Month',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+          AlbumsRow(
+            title: 'Popular Albums This Month',
+            albums: List<SpotifyAlbum>.from(
+              json
+                  .decode(Constants.speakNowAlbums)
+                  .map((x) => SpotifyAlbum.fromJson(x)),
             ),
           ),
-          const SizedBox(height: 10),
-          // Image links will go here
           const SizedBox(height: 20),
-          const Text(
-            'Popular Albums Among Friends',
-            textDirection: TextDirection.ltr,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+          AlbumsRow(
+            title: 'Popular Albums Among Friends',
+            albums: List<SpotifyAlbum>.from(
+              json
+                  .decode(Constants.speakNowAlbums)
+                  .map((x) => SpotifyAlbum.fromJson(x)),
             ),
           ),
-          const SizedBox(height: 10),
-          // Image links will go here
           const SizedBox(height: 20),
           const Text(
             'Recent Friends Reviews',
