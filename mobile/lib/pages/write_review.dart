@@ -20,7 +20,7 @@ class WriteReviewScreen extends StatefulWidget {
 }
 
 class _WriteReviewScreenState extends State<WriteReviewScreen> {
-  int _rating = 5;
+  int _rating = 10;
   final _reviewTextController = TextEditingController();
 
   @override
