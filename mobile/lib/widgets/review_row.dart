@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:trill/widgets/static_rating_bar.dart';
 
 class ReviewRow extends StatefulWidget {
   final String title;
@@ -86,22 +87,7 @@ class _ReviewRowState extends State<ReviewRow> {
                       ),
                     ),
                     const SizedBox(width: 5),
-                    Row(
-                      children: List.generate(
-                        widget.starRating ~/ 2,
-                        (index) => Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                          size: 16,
-                        ),
-                      ).toList(),
-                    ),
-                    if (widget.starRating % 2 != 0)
-                      Icon(
-                        Icons.star_half,
-                        color: Colors.yellow,
-                        size: 16,
-                      ),
+                    StaticRatingBar(rating: widget.starRating, size: 12),
                   ],
                 ),
                 const SizedBox(height: 5),

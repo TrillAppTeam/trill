@@ -109,8 +109,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       builder: (context, snapshot) {
                         return RatingsRow(
                           title: _isLoggedIn
-                              ? 'Your Recent Reviews'
-                              : '${_user.nickname}\'s Recent Reviews',
+                              ? 'Your Recent Ratings'
+                              : '${_user.nickname}\'s Recent Ratings',
                           reviews: snapshot.hasData ? snapshot.data! : [],
                           emptyText: _isLoggedIn
                               ? 'No reviews yet. Add your first review to display it on your profile!'
@@ -120,13 +120,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 25),
                     Row(
-                      children: const [
+                      children: [
                         Text(
-                          "Matthew's Recent Reviews",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                            _isLoggedIn
+                                ? 'Your Recent Reviews'
+                                : '${_user.nickname}\'s Recent Reviews',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        Spacer(),
-                        Text(
+                        const Spacer(),
+                        const Text(
                           "See All",
                           style: TextStyle(fontSize: 11),
                         ),
