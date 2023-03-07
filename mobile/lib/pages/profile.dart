@@ -10,6 +10,7 @@ import 'package:trill/constants.dart';
 import 'package:trill/pages/lists/follows.dart';
 import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/follow_button.dart';
+import 'package:trill/widgets/follow_user_button.dart';
 import 'package:trill/widgets/ratings_row.dart';
 
 import 'package:trill/widgets/review_row.dart';
@@ -220,11 +221,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           username: widget.username,
           followType: FollowType.following,
         ),
-        const SizedBox(width: 30),
+        SizedBox(width: (_isLoggedIn ? 30 : 20)),
         FollowButton(
           username: widget.username,
           followType: FollowType.follower,
         ),
+        SizedBox(width: (_isLoggedIn ? 0 : 20)),
+        if (!_isLoggedIn) const FollowUserButton(isFollowing: true)
       ],
     );
   }

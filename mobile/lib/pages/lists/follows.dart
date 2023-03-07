@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
 import 'package:trill/constants.dart';
+import '../../widgets/follow_user_button.dart';
 import '../profile.dart';
 
 class FollowsScreen extends StatefulWidget {
@@ -92,10 +93,10 @@ class _FollowsScreenState extends State<FollowsScreen>
                       (_userResults.users[index]),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_forward_outlined,
-                      color: Colors.white.withOpacity(0.2),
-                    ),
+                    trailing: _tabController!.index == 0
+                            ? FollowUserButton(isFollowing: true,)
+                            : Icon(Icons.arrow_forward_outlined, color: Colors.white.withOpacity(0.2),
+                    )  ,
                   ),
                 );
               },
