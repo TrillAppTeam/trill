@@ -23,23 +23,25 @@ class DetailedReviewTile extends StatelessWidget {
         width: 60,
         height: 60,
       ),
-      title: Row(
-        children: const [
-          Text(
-            'Harry\'s House',
-            style: TextStyle(
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(' - Harry Styles'),
-        ],
-      ),
+      title: StaticRatingBar(rating: review.rating, size: 20),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(height: 5),
-          StaticRatingBar(rating: review.rating, size: 20),
+          Row(
+            children: const [
+              Text(
+                'Harry\'s House',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  color: Color(0xFFEEEEEE),
+                ),
+              ),
+              Text(' - Harry Styles'),
+            ],
+          ),
           const SizedBox(height: 5),
           Row(
             children: [

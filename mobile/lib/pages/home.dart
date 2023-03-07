@@ -60,72 +60,23 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
           const Text(
-            'Recent Friends Reviews',
-            textDirection: TextDirection.ltr,
+            'Recent News',
             style: TextStyle(
-              color: Colors.white,
-              fontSize: 12,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 10),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black38,
-              ),
-              color: const Color(0x1f989696),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: const [
-                Text(
-                  '"I wasn\'t a fan at first, but now I can\'t stop listening!"',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+          const SizedBox(height: 20),
+          const Text(
+            'Hello, Grammys',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 10),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black38,
-              ),
-              color: const Color(0x1f989696),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: const [
-                Text(
-                  '"This album is definitely worth checking out!"',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black38,
-              ),
-              color: const Color(0x1f989696),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: const [
-                Text(
-                  '"My name is Wesley Wales Anderson and if I were a music album, this would be me!"',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+          const SizedBox(height: 20),
+          const Text(
+            'Trill Team Favorites',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
             ),
           ),
         ],
