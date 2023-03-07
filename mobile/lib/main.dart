@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:trill/mainpage.dart';
 import 'package:trill/pages/confirm.dart';
 import 'package:trill/pages/login.dart';
-import 'package:trill/pages/lists/album.dart';
 import 'package:trill/pages/lists/followers.dart';
 import 'package:trill/pages/lists/following.dart';
 import 'package:trill/pages/lists/userlists.dart';
@@ -58,7 +57,6 @@ class _MyAppState extends State<MyApp> {
       home: const SplashScreen(),
       routes: {
         '/main': (context) => const MainPage(),
-        '/album': (context) => const AlbumScreen(),
         '/albums': (context) => const RatedAlbumsScreen(),
         '/likes': (context) => const LikedAlbumsScreen(),
         '/reviews': (context) => const UserReviewsScreen(),

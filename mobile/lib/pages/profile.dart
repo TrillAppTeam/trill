@@ -185,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     color: Color(0xFFBC6AAB),
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text("Albums This Year",
+                              Text("Albums This Month",
                                   style: TextStyle(fontSize: 11))
                             ],
                           ),
@@ -227,12 +227,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                       const SizedBox(height: 15),
-                      const Center(
-                        child: Text(
+                      const Text(
                           "Matthew's Favorite Albums",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                      ),
                       const SizedBox(height: 15),
                       Row(
                         children: [
@@ -504,7 +502,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     "with or without the use of tools to ulock a resource that has been secured with a password."
                                     " Password cracking tools may seem like powerful decryptors, but in reality are little more than"
                                     "    fast, sophisticated guessing machines.",
-                                    style: TextStyle(fontSize: 11),
+                                    style: TextStyle(fontSize: 12),
                                     maxLines: 5,
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -569,7 +567,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     "Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 12,
+                                      fontSize: 14,
                                     ),
                                   ),
                                   const SizedBox(height: 4),
@@ -619,7 +617,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     "with or without the use of tools to ulock a resource that has been secured with a password."
                                     " Password cracking tools may seem like powerful decryptors, but in reality are little more than"
                                     "    fast, sophisticated guessing machines.",
-                                    style: TextStyle(fontSize: 11),
+                                    style: TextStyle(fontSize: 12),
                                     maxLines: 5,
                                     overflow: TextOverflow.ellipsis,
                                   ),

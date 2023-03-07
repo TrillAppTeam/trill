@@ -52,7 +52,6 @@ class _SidebarState extends State<Sidebar> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(width: 40),
                 Column(
                   children: [
                     Text(
@@ -65,28 +64,6 @@ class _SidebarState extends State<Sidebar> {
                     ),
                     Text('@${_user != null ? _user!.username : 'Loading...'}'),
                   ],
-                ),
-                // temp location, can't click when still loading
-                IconButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProfileScreen(
-                          initialBio: _user != null ? _user!.bio : '',
-                          initialNickname: _user != null ? _user!.nickname : '',
-                          initialProfilePic:
-                              _user != null ? _user!.profilePic : '',
-                          onUserChanged: _fetchUserDetails,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.edit,
-                    color: Color(0xFFDDDDDD),
-                    size: 18,
-                  ),
                 ),
               ],
             ),
@@ -178,18 +155,10 @@ class _SidebarState extends State<Sidebar> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.library_music_outlined, color: Colors.white),
-              title: const Text('Albums'),
-              onTap: () {
-                Navigator.pushNamed(context, '/albums');
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.rate_review_outlined, color: Colors.white),
               title: const Text('Reviews'),
               onTap: () {
-                // TODO: Change back to /reviews
-                Navigator.pushNamed(context, '/review');
+                Navigator.pushNamed(context, '/reviews');
               },
             ),
             ListTile(
@@ -209,6 +178,27 @@ class _SidebarState extends State<Sidebar> {
               },
             ),
             const SizedBox(height: 30),
+            ListTile(
+              leading:
+              const Icon(Icons.edit_outlined, color: Colors.white),
+              title: const Text('Edit Profile'),
+              onTap: () {
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfileScreen(
+                        initialBio: _user != null ? _user!.bio : '',
+                        initialNickname: _user != null ? _user!.nickname : '',
+                        initialProfilePic:
+                            _user != null ? _user!.profilePic : '',
+                        onUserChanged: _fetchUserDetails,
+                      ),
+                    ),
+                  );
+                };
+              },
+            ),
             ListTile(
               leading: const Icon(Icons.logout_outlined, color: Colors.white),
               title: const Text('Log Out'),
