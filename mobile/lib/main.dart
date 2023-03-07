@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:trill/mainpage.dart';
 import 'package:trill/pages/confirm.dart';
 import 'package:trill/pages/login.dart';
-import 'package:trill/pages/lists/follows.dart';
-import 'package:trill/pages/lists/userlists.dart';
-import 'package:trill/pages/lists/userreviews.dart';
-import 'package:trill/pages/lists/ratedalbums.dart';
-import 'package:trill/pages/lists/list.dart';
-import 'package:trill/pages/lists/likedreviews.dart';
-import 'package:trill/pages/lists/listenlater.dart';
+import 'package:trill/pages/lists/rated_albums.dart';
+import 'package:trill/pages/lists/liked_reviews.dart';
+import 'package:trill/pages/lists/listen_later.dart';
 import 'package:trill/pages/splash.dart';
 
 import 'authentication/configure_amplify.dart';
@@ -56,16 +51,8 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       home: const SplashScreen(),
-      routes: {
-        '/main': (context) => const MainPage(),
-        '/albums': (context) => const RatedAlbumsScreen(),
-        '/likes': (context) => const LikedAlbumsScreen(),
-        '/reviews': (context) => const UserReviewsScreen(),
-        '/list': (context) => const ListScreen(),
-        '/lists': (context) => UserListsScreen(),
-        '/listenlater': (context) => const ListenLaterScreen(),
-        '/login': (context) => const Login(),
-      },
+      // avoiding named routes since it's harder to see errors in navigation
+      // and i think named routes are mainly for if you want paths for a website
       // used instead of routes to pass arguments to widget
       onGenerateRoute: (settings) {
         if (settings.name == '/confirm') {

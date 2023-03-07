@@ -16,11 +16,12 @@ class UserRow extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          // should be circle profile pic
-          Image.network(
+          const CircleAvatar(
+            radius: 32,
+            backgroundImage: NetworkImage(
               'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
-              width: 80,
-              height: 80),
+            ),
+          ),
           const SizedBox(width: 16),
           Flexible(
             child: Column(

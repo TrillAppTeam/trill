@@ -1,3 +1,8 @@
+enum FollowType {
+  following,
+  follower,
+}
+
 class Constants {
   static const String baseURI = 'https://api.trytrill.com/main';
   static const String speakNowAlbums =

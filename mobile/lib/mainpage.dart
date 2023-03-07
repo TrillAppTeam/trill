@@ -3,6 +3,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/users.dart';
+import 'package:trill/pages/friends_feed.dart';
 import 'package:trill/pages/home.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/pages/profile.dart';
@@ -41,8 +42,11 @@ class _MainPageState extends State<MainPage> {
 
     _user = (await getPrivateUser())!;
     _screens = [
-      const HomeScreen(),
+      HomeScreen(
+        nickname: _user.nickname,
+      ),
       const SearchScreen(),
+      const FriendsFeedScreen(),
       ProfileScreen(
         username: _user.username,
       ),
@@ -129,6 +133,7 @@ class _MainPageState extends State<MainPage> {
                 ],
               ),
               child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
                 backgroundColor: const Color(0xFF1A1B29),
                 selectedItemColor: const Color(0xFFBC6AAB),
                 unselectedItemColor: const Color(0xFF888888),
@@ -150,6 +155,11 @@ class _MainPageState extends State<MainPage> {
                   BottomNavigationBarItem(
                     icon: Icon(Icons.search_outlined),
                     activeIcon: Icon(Icons.search),
+                    label: '____',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.people_alt_outlined),
+                    activeIcon: Icon(Icons.people_alt),
                     label: '____',
                   ),
                   BottomNavigationBarItem(

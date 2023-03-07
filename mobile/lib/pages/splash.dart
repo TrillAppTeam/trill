@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trill/pages/login.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -62,7 +63,12 @@ class SplashScreen extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/login');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Login(),
+                          ),
+                        );
                       },
                       child: const Text('Get Started'),
                     ),

@@ -9,6 +9,7 @@ import 'package:trill/pages/write_review.dart';
 import 'package:trill/widgets/album_details_header.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
+import 'package:trill/widgets/review_tile.dart';
 import 'package:trill/widgets/static_rating_bar.dart';
 
 // todo: add review button
@@ -268,90 +269,18 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
           final review = _reviews![index];
           return Column(
             children: [
-              const Divider(
-                color: Colors.grey,
-              ),
-              ListTile(
-                leading: FutureBuilder(
-                  // todo: get user's pfp
-                  // future: getImageUrl(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return CircleAvatar(
-                        // todo: change image to user's pfp, snapshot.data
-                        backgroundImage: NetworkImage(
-                          _album.images[0].url,
-                        ),
-                      );
-                    } else {
-                      // todo: change to actual placeholder
-                      return CircleAvatar(
-                        backgroundImage: NetworkImage(
-                          _album.images[0].url,
-                        ),
-                      );
-                    }
-                  },
-                ),
-                title: StaticRatingBar(rating: review.rating, size: 20),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 5),
-                    Row(
-                      children: [
-                        Text(
-                          review.username,
-                          style: const TextStyle(
-                            color: Color(0xFF3FBCF4),
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          timeago.format(
-                            DateTime.now().subtract(
-                              DateTime.now().difference(review.createdAt),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        Text(
-                          // ${timeago.format(DateTime.now().subtract(DateTime.now().difference(review.updatedAt)))}
-                          review.updatedAt != review.createdAt
-                              ? '(edited)'
-                              : "",
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ],
+              index == 0
+                  ? Container()
+                  : const Divider(
+                      color: Colors.grey,
                     ),
-                    const SizedBox(height: 8),
-                    if (review.reviewText.isNotEmpty)
-                      Column(
-                        children: [
-                          ExpandableText(
-                            text: review.reviewText,
-                            maxLines: 5,
-                          ),
-                          const SizedBox(height: 8),
-                        ],
-                      ),
-                    LikeButton(
-                      reviewID: review.reviewID,
-                      isLiked: review.isLiked,
-                      numLikes: review.likes,
-                      onLiked: (isLiked) {
-                        setState(() {
-                          review.isLiked = isLiked;
-                        });
-                      },
-                    ),
-                    const SizedBox(height: 8),
-                  ],
-                ),
+              ReviewTile(
+                review: review,
+                onLiked: (isLiked) {
+                  setState(() {
+                    review.isLiked = isLiked;
+                  });
+                },
               ),
             ],
           );

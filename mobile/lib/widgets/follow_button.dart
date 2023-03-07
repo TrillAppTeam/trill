@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
+import 'package:trill/constants.dart';
 import 'package:trill/pages/lists/follows.dart';
 
 class FollowButton extends StatefulWidget {

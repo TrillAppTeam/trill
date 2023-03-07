@@ -4,30 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/constants.dart';
+import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/albums_row.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final String nickname;
+
+  const HomeScreen({super.key, required this.nickname});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? nickname;
-  late SharedPreferences _prefs;
+  late String _nickname;
 
   @override
   void initState() {
     super.initState();
-    getSharedPreferences();
-  }
-
-  void getSharedPreferences() async {
-    _prefs = await SharedPreferences.getInstance();
-    setState(() {
-      nickname = _prefs.getString('nickname')!;
-    });
+    _nickname = widget.nickname;
   }
 
   @override
@@ -38,10 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            nickname != null ? 'Hello, $nickname!' : 'hello!',
+            'Hello, $_nickname!',
             style: const TextStyle(
               color: Colors.blue,
-              fontSize: 20,
+              fontSize: 36,
               fontWeight: FontWeight.bold,
             ),
           ),

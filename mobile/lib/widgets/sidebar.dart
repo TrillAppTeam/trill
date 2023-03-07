@@ -2,8 +2,12 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
+import 'package:trill/constants.dart';
 import 'package:trill/pages/edit_profile.dart';
 import 'package:trill/pages/lists/follows.dart';
+import 'package:trill/pages/lists/liked_reviews.dart';
+import 'package:trill/pages/lists/listen_later.dart';
+import 'package:trill/pages/login.dart';
 import 'package:trill/widgets/follow_button.dart';
 
 import '../api/follows.dart';
@@ -91,18 +95,16 @@ class _SidebarState extends State<Sidebar> {
             ),
             const SizedBox(height: 20),
             ListTile(
-              leading: const Icon(Icons.home_outlined, color: Colors.white),
-              title: const Text('Home'),
-              onTap: () {
-                Navigator.pushNamed(context, '/main');
-              },
-            ),
-            ListTile(
               leading:
                   const Icon(Icons.rate_review_outlined, color: Colors.white),
-              title: const Text('Reviews'),
+              title: const Text('Liked Reviews'),
               onTap: () {
-                Navigator.pushNamed(context, '/reviews');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LikedReviewsScreen(),
+                  ),
+                );
               },
             ),
             ListTile(
@@ -110,15 +112,12 @@ class _SidebarState extends State<Sidebar> {
                   color: Colors.white),
               title: const Text('Listen Later'),
               onTap: () {
-                Navigator.pushNamed(context, '/listenlater');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.favorite_outline_outlined,
-                  color: Colors.white),
-              title: const Text('Likes'),
-              onTap: () {
-                Navigator.pushNamed(context, '/likes');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ListenLaterScreen(),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 30),
@@ -148,7 +147,12 @@ class _SidebarState extends State<Sidebar> {
               onTap: () {
                 Amplify.Auth.signOut().then(
                   (_) {
-                    Navigator.pushReplacementNamed(context, '/login');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const Login(),
+                      ),
+                    );
                   },
                 );
               },

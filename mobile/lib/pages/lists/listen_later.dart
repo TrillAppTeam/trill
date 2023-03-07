@@ -40,21 +40,21 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
         appBar: AppBar(
           title: const Text('Listen Later'),
         ),
-        body: _isLoading ? const Center(child: CircularProgressIndicator()) :
-        ListView.builder(
-            itemCount: _userResults?.users.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                      title: Text(
-                        (_userResults?.users![index])!,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      trailing: Icon(Icons.arrow_forward_outlined,
-                          color: Colors.white.withOpacity(0.2)),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: _userResults?.users.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Text(
+                      (_userResults?.users[index])!,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    trailing: Icon(Icons.arrow_forward_outlined,
+                        color: Colors.white.withOpacity(0.2)),
                   );
                 },
-              )
-    );
+              ));
   }
 }
 
