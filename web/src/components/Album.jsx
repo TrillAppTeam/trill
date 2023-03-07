@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom"
 
 function Album(props) {
-    const {images: img, name, release_date: year, artists, external_urls: spotifyLink, size} = props.album;
+    const {images: img, name, release_date: year, artists, external_urls: spotifyLink, size, id} = props.album;
     return (
         <div className="relative transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105">
-            <Link to="/User/AlbumDetails" state={{name: name, year: year, artist: artists, img: img, link: spotifyLink.spotify}}>
+            <Link to="/User/AlbumDetails" state={{name: name, year: year, artist: artists, img: img, link: spotifyLink.spotify, id: id}}>
                 { img[0] ? 
                     <div>
                         {/* Album Art */}
@@ -17,7 +17,7 @@ function Album(props) {
                     </div>
                     
                     : 
-                    // If url image doesn't exist, populate with text
+
                     <div className={`w-[100px] h-[100px] flex items-center justify-center text-gray-200 bg-gray-700 ring-2 ring-gray-500`}>
                         <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
                     </div>

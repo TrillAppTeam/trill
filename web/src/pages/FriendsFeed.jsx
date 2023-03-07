@@ -1,4 +1,5 @@
 import Review from "../components/Review"
+import Titles from "../components/Titles"
 
 let albumDummy = { 
     "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
@@ -25,11 +26,13 @@ let reviewDummy = {
 
 function FriendsFeed() {
     return (
-        <div className="max-w-5xl mx-auto">            
+        <div className="max-w-6xl mx-auto">            
             <h1 className="font-bold text-3xl md:text-4xl text-white text-center pt-10 pb-10">Discover new songs together.</h1>
-            <Review review={reviewDummy}/>
+            <Titles title="Friends Feed" />
+            
+            {/* <Review review={reviewDummy}/>
             <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-            <Review review={reviewDummy}/>
+            <Review review={reviewDummy}/> */}
         </div>
     );
 }

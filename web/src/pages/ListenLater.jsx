@@ -33,9 +33,9 @@ function ListenLater() {
             
             <Titles title="You want to listen to 50 albums" />
             
-            <div className="text-white flex flex-row flex-wrap justify-center gap-4 max-w-6xl mx-auto">
+            {/* <div className="text-white flex flex-row flex-wrap justify-center gap-4 max-w-6xl mx-auto">
                 {dummyAlbums}  
-            </div>
+            </div> */}
 
         </div>
     );

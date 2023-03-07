@@ -68,6 +68,7 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
+                    {/* <Album album = {albumDummy} />
                     <Album album = {albumDummy} />
                     <Album album = {albumDummy} />
                     <Album album = {albumDummy} />
@@ -76,14 +77,14 @@ function Discover() {
                     <Album album = {albumDummy} />
                     <Album album = {albumDummy} />
                     <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
+                    <Album album = {albumDummy} /> */}
                 </div>
             </section>
 
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
+                    {/* <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
                     <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
                     <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
                     <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
@@ -92,16 +93,15 @@ function Discover() {
                     <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
                     <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
                     <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} /> */}
                 </div>
             </section>
 
             <section className="pt-14"> 
-                <Titles title="Reviews from Friends"/>
+                {/* <Titles title="Reviews from Friends"/>
                 <Review review={reviewDummy}/>
                 <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                <Review review={reviewDummy}/>
+                <Review review={reviewDummy}/> */}
             </section>
 
             {/* Music News */}
