@@ -31,7 +31,7 @@ function FriendsFeed() {
             <Titles title="Friends Feed" />
             
             <Review review={reviewDummy}/>
-            <div className="border-t border-gray-600 max-w-6xl mx-auto" />
+            <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />
             <Review review={reviewDummy}/>
         </div>
     );

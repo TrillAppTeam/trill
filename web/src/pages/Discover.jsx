@@ -100,7 +100,7 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
                 <Review review={reviewDummy}/>
-                <div className="border-t border-gray-600 max-w-6xl mx-auto" />
+                <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />
                 <Review review={reviewDummy}/>
             </section>
 
