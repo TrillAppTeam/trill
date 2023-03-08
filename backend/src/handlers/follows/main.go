@@ -94,7 +94,7 @@ func getFollowing(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	body, err := views.MarshalFollowing(ctx, following)
+	body, err := views.MarshalUsers(ctx, following)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
@@ -120,7 +120,7 @@ func getFollowers(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Resp
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	body, err := views.MarshalFollowers(ctx, followers)
+	body, err := views.MarshalUsers(ctx, followers)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
