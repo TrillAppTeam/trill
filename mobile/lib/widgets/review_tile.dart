@@ -1,26 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:trill/api/reviews.dart';
+import 'package:trill/pages/profile.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
 import 'package:trill/widgets/static_rating_bar.dart';
 
 class ReviewTile extends StatelessWidget {
-  const ReviewTile({
+  ReviewTile({
     Key? key,
     required this.review,
     required this.onLiked,
+    this.clickableUsername = true,
   }) : super(key: key);
 
   final Review review;
   final void Function(bool) onLiked;
+  bool clickableUsername;
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const CircleAvatar(
-        backgroundImage: NetworkImage(
-          'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
+      leading: InkWell(
+        onTap: () {
+          if (clickableUsername) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProfileScreen(
+                  username: review.username,
+                ),
+              ),
+            );
+          }
+        },
+        child: const CircleAvatar(
+          backgroundImage: NetworkImage(
+            'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
+          ),
         ),
       ),
       title: StaticRatingBar(rating: review.rating, size: 20),
@@ -30,11 +47,25 @@ class ReviewTile extends StatelessWidget {
           const SizedBox(height: 5),
           Row(
             children: [
-              Text(
-                review.username,
-                style: const TextStyle(
-                  color: Color(0xFF3FBCF4),
-                  fontWeight: FontWeight.w900,
+              InkWell(
+                onTap: () {
+                  if (clickableUsername) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProfileScreen(
+                          username: review.username,
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  review.username,
+                  style: const TextStyle(
+                    color: Color(0xFF3FBCF4),
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
               const SizedBox(width: 5),

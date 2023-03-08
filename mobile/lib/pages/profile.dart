@@ -105,27 +105,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       thickness: 2,
                     ),
                     const SizedBox(height: 15),
-                    FutureBuilder<List<Review>?>(
-                      future: getReviews('newest', _user.username),
-                      builder: (context, snapshot) {
-                        return RatingsRow(
-                          title: _isLoggedIn
-                              ? 'Your Recent Ratings'
-                              : '${_user.nickname}\'s Recent Ratings',
-                          reviews: snapshot.hasData ? snapshot.data! : [],
-                          emptyText: _isLoggedIn
-                              ? 'No reviews yet. Add your first review to display it on your profile!'
-                              : 'No reviews yet',
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 15),
-                    const Divider(
-                      color: Colors.grey,
-                      height: 2,
-                      thickness: 2,
-                    ),
-                    const SizedBox(height: 15),
                     _buildReviewDetails(),
                     _buildReviews(),
                   ],
@@ -340,6 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   review.isLiked = isLiked;
                 });
               },
+              clickableUsername: !_isLoggedIn,
             ),
           ],
         );

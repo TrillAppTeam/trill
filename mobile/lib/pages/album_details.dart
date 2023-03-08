@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -43,9 +44,11 @@ class AlbumDetailsScreen extends StatefulWidget {
 class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   late SpotifyAlbum _album;
   List<Review>? _reviews;
-  String _selectedSort = 'popular';
 
+  String _selectedSort = 'popular';
   bool _isLoading = true;
+
+  late String _loggedInUser = "";
 
   late Future<PaletteGenerator> _paletteGenerator;
   final Color _appBarColor = const Color(0xFF1F1D36);
@@ -57,6 +60,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
   void initState() {
     super.initState();
     _fetchAlbumDetails();
+    _getLoggedInUser();
     // _paletteGenerator = _generatePalette();
   }
 
@@ -76,6 +80,11 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       _album = album!;
       _isLoading = false;
     });
+  }
+
+  void _getLoggedInUser() async {
+    final prefs = await SharedPreferences.getInstance();
+    _loggedInUser = prefs.getString('username') ?? "";
   }
 
   Future<PaletteGenerator> _generatePalette() async {
@@ -281,6 +290,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                     review.isLiked = isLiked;
                   });
                 },
+                clickableUsername: _loggedInUser != review.username,
               ),
             ],
           );
