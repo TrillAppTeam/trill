@@ -56,6 +56,7 @@ class _FollowsScreenState extends State<FollowsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF1A1B29),
       appBar: AppBar(
         title: const Text('Follows'),
         bottom: TabBar(
@@ -74,32 +75,42 @@ class _FollowsScreenState extends State<FollowsScreen>
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _userResults.users.length,
-              itemBuilder: (BuildContext context, int index) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProfileScreen(
-                          username: _userResults.users[index],
+          : RefreshIndicator(
+              onRefresh: _fetchUserDetails,
+              backgroundColor: const Color(0xFF1A1B29),
+              color: const Color(0xFF3FBCF4),
+              child: ListView.builder(
+                itemCount: _userResults.users.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileScreen(
+                            username: _userResults.users[index],
+                          ),
                         ),
+                      );
+                    },
+                    child: ListTile(
+                      title: Text(
+                        (_userResults.users[index]),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                    );
-                  },
-                  child: ListTile(
-                    title: Text(
-                      (_userResults.users[index]),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      trailing: _tabController!.index == 0
+                          ? FollowUserButton(
+                              username: _userResults.users[index],
+                              isFollowing: true,
+                            )
+                          : Icon(
+                              Icons.arrow_forward_outlined,
+                              color: Colors.white.withOpacity(0.2),
+                            ),
                     ),
-                    trailing: _tabController!.index == 0
-                            ? FollowUserButton(isFollowing: true,)
-                            : Icon(Icons.arrow_forward_outlined, color: Colors.white.withOpacity(0.2),
-                    )  ,
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
     );
   }

@@ -56,8 +56,11 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
     - Edit profile
     - Logout
 
+- API
+  - Implement profile pics APIs
+  - Change all placeholder widgets
+
 - UI!!
-  - Implement profile pics everywhere
   - Loading page
 - Remember to clean database before demo
 

@@ -95,7 +95,7 @@ Future<bool> unfollow(String userToUnfollow) async {
   String token = prefs.getString('token') ?? "";
   // safePrint('$tag access token: $token');
 
-  final response = await http.post(
+  final response = await http.delete(
     Uri.parse('${Constants.baseURI}/follows?username=$userToUnfollow'),
     headers: {
       'Authorization': 'Bearer $token',

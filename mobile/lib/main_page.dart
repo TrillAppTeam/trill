@@ -106,6 +106,7 @@ class _MainPageState extends State<MainPage> {
     return !_userInfoSet
         ? const Scaffold(body: LoadingScreen())
         : Scaffold(
+            backgroundColor: const Color(0xFF1A1B29),
             appBar: AppBar(),
             drawer: Sidebar(
                 user: _user,

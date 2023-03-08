@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
@@ -7,14 +5,12 @@ import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
-import 'package:trill/pages/lists/follows.dart';
 import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/follow_button.dart';
 import 'package:trill/widgets/follow_user_button.dart';
 import 'package:trill/widgets/ratings_row.dart';
 
 import 'package:trill/widgets/review_row.dart';
-import 'package:trill/widgets/static_rating_bar.dart';
 import 'loading_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -69,6 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor: const Color(0xFF1A1B29),
             color: const Color(0xFF3FBCF4),
             child: Scaffold(
+              backgroundColor: const Color(0xFF1A1B29),
               appBar: _isLoggedIn ? null : AppBar(),
               body: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(
@@ -123,9 +120,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Row(
                       children: [
                         Text(
-                            _isLoggedIn
-                                ? 'Your Recent Reviews'
-                                : '${_user.nickname}\'s Recent Reviews',
+                          _isLoggedIn
+                              ? 'Your Recent Reviews'
+                              : '${_user.nickname}\'s Recent Reviews',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const Spacer(),
@@ -227,7 +224,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           followType: FollowType.follower,
         ),
         SizedBox(width: (_isLoggedIn ? 0 : 20)),
-        if (!_isLoggedIn) const FollowUserButton(isFollowing: true)
+        if (!_isLoggedIn)
+          FollowUserButton(
+            username: _user.username,
+            isFollowing: true,
+          ),
       ],
     );
   }
