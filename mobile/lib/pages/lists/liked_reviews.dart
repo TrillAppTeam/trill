@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
 import 'package:trill/api/likes.dart';
+import '../../api/reviews.dart';
 import '../../api/users.dart';
+import '../../widgets/detailed_review_tile.dart';
 import '../../widgets/review_row.dart';
 import '../../widgets/user_row.dart';
 import '../profile.dart';
@@ -23,6 +25,7 @@ class _LikedReviewsScreenState extends State<LikedReviewsScreen> {
         "Blablabla", 5, 37)
   ];
   bool _isLoading = false;
+  List<Review>? _reviews;
 
   @override
   void initState() {
@@ -46,42 +49,80 @@ class _LikedReviewsScreenState extends State<LikedReviewsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Liked Reviews'),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  itemCount: _likeResults?.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: [
-                        SizedBox(height: 15),
-                        ReviewRow(
-                          title:
-                          'Dierks Bentley',
-                          artist: 'Dierks Bentley',
-                          releaseYear: '2003',
-                          reviewerName: 'Matthew',
-                          starRating: 5,
-                          reviewId: 69,
-                          reviewText:
-                          'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
-                          likeCount: 33,
-                          imageUrl: 'images/DierksBentleyTest.jpg',
-                        ),
-                      ],
-                    );
-                }
+      appBar: AppBar(
+        title: const Text('Liked Reviews'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: _buildReviews()
+      ),
+    );
+  }
+
+  Widget _buildReviewList() {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        final review = _reviews![index];
+        return Column(
+          children: [
+            index == 0
+                ? const SizedBox(height: 10)
+                : const Divider(
+              color: Colors.grey,
+            ),
+            DetailedReviewTile(
+              review: review,
+              onLiked: (isLiked) {
+                setState(() {
+                  review.isLiked = isLiked;
+                });
+              },
+            ),
+          ],
+        );
+      },
+      itemCount: _reviews!.length,
+      shrinkWrap: true,
+    );
+  }
+
+  Widget _buildReviewListWithLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildNoReviewsMessage() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Center(
+        child: Text(
+          'No reviews yet',
+          style: TextStyle(
+            color: Color(0xFF3FBCF4),
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
           ),
-        )
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReviews() {
+    return FutureBuilder<List<Review>?>(
+      future: getReviews('popular'),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            (_reviews == null || _reviews!.isEmpty)) {
+          return _buildReviewListWithLoading();
+        }
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          _reviews = snapshot.data!;
+          return _buildReviewList();
+        }
+        return _buildNoReviewsMessage();
+      },
     );
   }
 }
-
-// USE THE REVIEW FORMAT FROM PROFILE PAGE FOR NOW
-// FILL IN HARDCODED ADDL DATA
-// MAKE SURE "LIKE" BUTTON IS FILLED IN - will be done in API call in ReviewRow
-// IF REVIEW UNLIKED THEN REMOVE FROM PAGE
