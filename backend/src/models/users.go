@@ -80,7 +80,7 @@ func GetUsers(ctx context.Context, usernames []string) (*[]User, error) {
 	}
 
 	var users []User
-	if err := db.Where("name IN ?", usernames).Find(&users).Error; err != nil {
+	if err := db.Where("username IN ?", usernames).Find(&users).Error; err != nil {
 		return nil, err
 	}
 
