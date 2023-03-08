@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trill/mainpage.dart';
+import 'package:trill/main_page.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});

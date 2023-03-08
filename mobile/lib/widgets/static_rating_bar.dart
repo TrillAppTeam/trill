@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:trill/api/reviews.dart';
 
 class StaticRatingBar extends StatelessWidget {
   const StaticRatingBar({
@@ -19,10 +18,12 @@ class StaticRatingBar extends StatelessWidget {
       minRating: 1,
       allowHalfRating: true,
       itemSize: size,
-      itemBuilder: (context, _) => const Icon(
-        Icons.star,
-        color: Colors.white,
-      ),
+      itemBuilder: (context, index) {
+        return const Icon(
+          Icons.star,
+          color: Colors.white,
+        );
+      },
       onRatingUpdate: (rating) {},
       ignoreGestures: true,
     );

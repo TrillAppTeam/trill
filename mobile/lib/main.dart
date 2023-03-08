@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:trill/mainpage.dart';
 import 'package:trill/pages/confirm.dart';
-import 'package:trill/pages/login.dart';
-import 'package:trill/pages/lists/rated_albums.dart';
-import 'package:trill/pages/lists/liked_reviews.dart';
-import 'package:trill/pages/lists/listen_later.dart';
 import 'package:trill/pages/splash.dart';
 
 import 'authentication/configure_amplify.dart';

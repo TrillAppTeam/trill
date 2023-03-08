@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/detailed_review_tile.dart';
-import 'package:trill/widgets/expandable_text.dart';
-import 'package:trill/widgets/like_button.dart';
-import 'package:trill/widgets/review_tile.dart';
-import 'package:trill/widgets/static_rating_bar.dart';
 
 class FriendsFeedScreen extends StatefulWidget {
   const FriendsFeedScreen({super.key});

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter_login/flutter_login.dart';
-import 'package:trill/mainpage.dart';
+import 'package:trill/main_page.dart';
 
 class ConfirmScreen extends StatefulWidget {
   final SignupData data;
