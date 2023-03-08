@@ -340,6 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   review.isLiked = isLiked;
                 });
               },
+              clickableUsername: !_isLoggedIn,
             ),
           ],
         );

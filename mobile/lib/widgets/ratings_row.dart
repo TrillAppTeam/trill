@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/reviews.dart';
+import 'package:trill/pages/album_details.dart';
 import 'package:trill/widgets/static_rating_bar.dart';
 
 class RatingsRow extends StatefulWidget {
@@ -45,10 +46,25 @@ class _RatingsRowState extends State<RatingsRow> {
                     (Review review) {
                       return Column(
                         children: [
-                          Image.network(
-                            // todo: need image
-                            'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
-                            width: 75,
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const AlbumDetailsScreen(
+                                    albumID: '3xFXzriygSZ63hRXMHdZti',
+                                  ),
+                                ),
+                              );
+                            },
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(3),
+                              child: Image.network(
+                                'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
+                                width: 75,
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 10),
                           StaticRatingBar(rating: review.rating, size: 12),

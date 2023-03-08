@@ -64,6 +64,9 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
   - Loading page
 - Remember to clean database before demo
 
+- Bugs:
+  - Changing review sort doesn't update the like button
+
 - Minor bugs:
   - Keyboard opens when click on text field in search bar, another bottom nav page, then sidebar
   - Spotify album release date errors
