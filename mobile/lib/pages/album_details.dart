@@ -75,11 +75,14 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
       _isLoading = true;
       _reviews = null;
     });
+
     final album = await getSpotifyAlbum(widget.albumID);
-    setState(() {
-      _album = album!;
-      _isLoading = false;
-    });
+    if (album != null) {
+      setState(() {
+        _album = album;
+        _isLoading = false;
+      });
+    }
   }
 
   void _getLoggedInUser() async {
@@ -100,15 +103,15 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const LoadingScreen()
-        : RefreshIndicator(
-            onRefresh: _fetchAlbumDetails,
-            backgroundColor: const Color(0xFF1A1B29),
-            color: const Color(0xFF3FBCF4),
-            child: Scaffold(
-              appBar: AppBar(),
-              body: SingleChildScrollView(
+    return RefreshIndicator(
+      onRefresh: _fetchAlbumDetails,
+      backgroundColor: const Color(0xFF1A1B29),
+      color: const Color(0xFF3FBCF4),
+      child: Scaffold(
+        appBar: AppBar(),
+        body: _isLoading
+            ? const LoadingScreen()
+            : SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height,
@@ -158,8 +161,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen> {
                   ),
                 ),
               ),
-            ),
-          );
+      ),
+    );
   }
 
   Widget _buildBackdrop(BuildContext context) {

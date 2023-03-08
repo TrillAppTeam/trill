@@ -53,9 +53,8 @@ class DetailedReviewTile extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  // todo: set album id
-                  builder: (context) => const AlbumDetailsScreen(
-                    albumID: '3xFXzriygSZ63hRXMHdZti',
+                  builder: (context) => AlbumDetailsScreen(
+                    albumID: review.albumID,
                   ),
                 ),
               );
