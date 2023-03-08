@@ -28,6 +28,7 @@ class _AlbumsRowState extends State<AlbumsRow> {
           widget.title,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
+            fontSize: 20
           ),
         ),
         const SizedBox(height: 15),

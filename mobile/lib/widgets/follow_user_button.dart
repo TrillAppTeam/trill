@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../api/follows.dart';
+
 class FollowUserButton extends StatefulWidget {
   final bool isFollowing;
+  final String username;
 
-  const FollowUserButton({super.key, required this.isFollowing});
+  const FollowUserButton({super.key, required this.isFollowing, required this.username});
 
   @override
   _FollowUserButtonState createState() => _FollowUserButtonState();
@@ -25,6 +28,12 @@ class _FollowUserButtonState extends State<FollowUserButton> {
       onTap: () {
         setState(() {
           isFollowing = !isFollowing;
+          if (isFollowing) {
+            follow(widget.username);
+          }
+          else {
+            unfollow(widget.username);
+          }
         });
       },
       child: Container(

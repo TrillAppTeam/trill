@@ -94,7 +94,7 @@ class _FollowsScreenState extends State<FollowsScreen>
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     trailing: _tabController!.index == 0
-                            ? FollowUserButton(isFollowing: true,)
+                            ? FollowUserButton(isFollowing: true, username: _userResults.users[index])
                             : Icon(Icons.arrow_forward_outlined, color: Colors.white.withOpacity(0.2),
                     )  ,
                   ),

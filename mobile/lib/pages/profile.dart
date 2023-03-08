@@ -227,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           followType: FollowType.follower,
         ),
         SizedBox(width: (_isLoggedIn ? 0 : 20)),
-        if (!_isLoggedIn) const FollowUserButton(isFollowing: true)
+        if (!_isLoggedIn) FollowUserButton(isFollowing: true, username: widget.username)
       ],
     );
   }
