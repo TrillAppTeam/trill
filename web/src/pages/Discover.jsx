@@ -7,7 +7,7 @@ import NewsCard from "../components/NewsCard"
 import Album from "../components/Album"
 import Review from "../components/Review"
 import Loading from "../components/Loading"
-import AlbumReview from "../components/AlbumReview"
+import NoTextAlbumReview from "../components/NoTextAlbumReview"
 
 // Partials
 import HelloGrammys from "../partials/HelloGrammys"
@@ -84,16 +84,16 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
                 </div>
             </section>
 

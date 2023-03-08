@@ -5,7 +5,7 @@ import Album from "./Album";
 import Avatar from "./Avatar"
 import Stars from "./Stars"
 
-function AlbumReview(props) {
+function NoTextAlbumReview(props) {
     const {name, user, rating} = props.album;
 
     return (
@@ -30,4 +30,4 @@ function AlbumReview(props) {
       );
 }
 
-export default AlbumReview
+export default NoTextAlbumReview

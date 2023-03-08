@@ -6,14 +6,16 @@ import axios from "axios"
 // Components
 import AvgReviews from "../components/AvgReviews";
 import Titles from "../components/Titles";
+import Avatar from "../components/Avatar"
 import AlbumDetailsReview from "../components/AlbumDetailsReview";
+
+// Utils
 import ReactStars from "react-rating-stars-component";
 
 // Images 
 import SpotifySVG from "/spotify.svg"
 
 function AlbumDetails() {
-    const [ showModal, setShowModal ] = useState(false);
     const [ rating, setRating ] = useState(0);
     const [ reviewText, setReviewText ] = useState("")
     const { state } = useLocation();
@@ -25,6 +27,13 @@ function AlbumDetails() {
     useEffect(() => {
         setReviewText(data?.data.review_text);
     }, [data?.data]);
+
+    
+    const [isLiked, setIsLiked] = useState(false);
+
+    const handleLikeClick = () => {
+        setIsLiked(!isLiked);
+    }
     
     const rate = useMutation(review => { 
         return axios.put(`https://api.trytrill.com/main/reviews?albumID=${id}`, review, 
@@ -111,76 +120,84 @@ function AlbumDetails() {
 
             {/* Review Section */}
             <div className="pt-10">
-                <div className="pt-10">
                     <Titles title="Your Review" />
-                    {data ? null: <h1 className="italic">You haven't reviewed this album yet.</h1>}
+                    {data ? null: <h1 className="italic text-violet-300">You haven't reviewed this album yet.</h1>}
+   
+                    <div className="flex flex-row p-5">
+                        <Avatar user={{ profilePic: null, username: currentUser, size: "12" }} />
 
-                    {/* <button className="btn btn-xs bg-[#383b59] mb-4 hover:bg-trillBlue hover:text-black mt-2"
-                            onClick={() => setShowModal(!showModal)}>
-                        Add Review
-                    </button> */}
-                    <div className="flex flex-col p-5 shadow-sm rounded-xl lg:p-8 bg-[#383b59] text-gray-100">
-                            <div className="flex flex-col items-center w-full">
-                                {/* <h2 className="text-3xl font-semibold text-center">Rate and Review</h2> */}
-                                {isLoading ? null : <ReactStars
-                                    count={5}
-                                    onChange={ratingChanged}
-                                    size={40}
-                                    isHalf={true}
-                                    emptyIcon={<i className="far fa-star"></i>}
-                                    halfIcon={<i className="fa fa-star-half-alt"></i>}
-                                    fullIcon={<i className="fa fa-star"></i>}
-                                    activeColor="#ffd700"
-                                    value={data?.data.rating / 2 || rating}
-                                />}
-                                <div className="flex flex-col w-full">
-                                    <textarea 
-                                        rows="3" 
-                                        placeholder="This album is..." 
-                                        className="bg-[#383b59] p-4 rounded-md resize-none text-gray-200"
-                                        value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-                                     ></textarea>
-                                    <button 
+                        <div className="flex flex-col pl-5 w-full justify-between">
+                            {/* Profile Picture, Rating, and Listen Date */}
+                            <p className="text-gray-500 pb-2">Review by
+                                <span className="text-gray-400 font-bold"> You</span>
+                            </p>                                    
+                            
+                            {isLoading ? null : <ReactStars
+                                count={5}D
+                                onChange={ratingChanged}
+                                size={30}
+                                isHalf={true}
+                                emptyIcon={<i className="far fa-star"></i>}
+                                halfIcon={<i className="fa fa-star-half-alt"></i>}
+                                fullIcon={<i className="fa fa-star"></i>}
+                                activeColor="#ffd700"
+                                value={data?.data.rating / 2 || rating}
+                            />}
+
+                            {/* Review Text Area */}
+                            <textarea 
+                                rows="3" 
+                                placeholder="This album is..." 
+                                className="bg-trillPurple p-4 my-2 rounded-md resize-none text-gray-400"
+                                value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+                                >
+                            </textarea>
+                            
+                            <div className="flex flex-row items-center">
+                                <button 
                                     type="button" 
-                                    className="py-3 text-lg mt-6 font-bold rounded-md text-gray-900 bg-violet-400"
+                                    className="py-1 mr-3 w-24 text-sm mt-3 font-bold rounded-md text-gray-900 bg-violet-400 hover:text-violet-800"
                                     onClick={postReview}
-                                    >Add Review</button>
+                                    >
+                                    {data ? "Edit Review" : "Add Review"}
+                                </button>
+
+                                <div className="text-gray-600 pt-3">
+                                    {rate.isLoading ? (
+                                        "Saving..."
+                                        ) : (
+                                            <>
+                                                { rate.isError ? (
+                                                    <div>An error occurred.</div>
+                                                ) : null}
+                                    
+                                                { rate.isSuccess ? <div>Saved</div> : null}
+                                            </>
+                                    ) }
                                 </div>
                             </div>
-                        </div>
-                    {/* { showModal ? 
-                        <div className="flex flex-col p-5 shadow-sm rounded-xl lg:p-8 bg-[#383b59] text-gray-100">
-                            <div className="flex flex-col items-center w-full">
-                                <h2 className="text-3xl font-semibold text-center">Rate and Review</h2>
-                                {isLoading ? null : <ReactStars
-                                    count={5}
-                                    onChange={ratingChanged}
-                                    size={40}
-                                    isHalf={true}
-                                    emptyIcon={<i className="far fa-star"></i>}
-                                    halfIcon={<i className="fa fa-star-half-alt"></i>}
-                                    fullIcon={<i className="fa fa-star"></i>}
-                                    activeColor="#ffd700"
-                                    value={data?.data.rating / 2}
-                                />}
-                                <div className="flex flex-col w-full">
-                                    <textarea 
-                                        rows="3" 
-                                        placeholder="This album is..." 
-                                        className="bg-[#383b59] p-4 rounded-md resize-none text-gray-200"
-                                        value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-                                     ></textarea>
-                                    <button 
-                                    type="button" 
-                                    className="py-3 text-lg mt-6 font-bold rounded-md text-gray-900 bg-violet-400"
-                                    onClick={postReview}
-                                    >Add Review</button>
+                            
+
+                            {/* Only show likes if the review has been posted */}
+                            {data ? 
+                                <div className="flex flex-row gap-2 text-gray-500 text-sm pt-5">
+                                    <div onClick={handleLikeClick}
+                                        className="flex gap-1 items-center transition duration-300 ease-in-out hover:text-gray-400 cursor-pointer font-bold"
+                                    >
+                                        <p className={`${isLiked ? 'text-red-500' : 'text-gray-500'}`}>
+                                            ❤︎
+                                        </p>
+
+                                        <p className={`${isLiked ? 'text-gray-300' : ''}`}>
+                                            {isLiked ? 'Liked' : 'Like review'}
+                                        </p>
+                                    </div>
+                                    <p>0 likes</p>
                                 </div>
-                            </div>
+                               : null
+                            }
                         </div>
-                        : 
-                        null 
-                    } */}
+    
                 </div>
                 
                 <div className="pt-10">
