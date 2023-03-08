@@ -6,11 +6,13 @@ import 'package:trill/api/reviews.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 import 'package:trill/widgets/albums_row.dart';
+import 'package:trill/widgets/detailed_review_tile.dart';
 import 'package:trill/widgets/follow_button.dart';
 import 'package:trill/widgets/follow_user_button.dart';
 import 'package:trill/widgets/ratings_row.dart';
 
 import 'package:trill/widgets/review_row.dart';
+import 'package:trill/widgets/review_tile.dart';
 import 'loading_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -27,11 +29,13 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late SharedPreferences _prefs;
-
   late PublicUser _user;
-  bool _isLoggedIn = false;
 
+  bool _isLoggedIn = false;
   bool _isLoading = false;
+
+  String _selectedSort = 'popular';
+  List<Review>? _reviews;
 
   @override
   void initState() {
@@ -73,7 +77,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   vertical: 30,
                 ),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildUserDetails(),
                     const SizedBox(height: 15),
@@ -116,68 +119,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 25),
-                    Row(
-                      children: [
-                        Text(
-                          _isLoggedIn
-                              ? 'Your Recent Reviews'
-                              : '${_user.nickname}\'s Recent Reviews',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const Spacer(),
-                        const Text(
-                          "See All",
-                          style: TextStyle(fontSize: 11),
-                        ),
-                      ],
+                    const SizedBox(height: 15),
+                    const Divider(
+                      color: Colors.grey,
+                      height: 2,
+                      thickness: 2,
                     ),
                     const SizedBox(height: 15),
-                    ReviewRow(
-                      title:
-                          'Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer',
-                      artist: 'Dierks Bentley',
-                      releaseYear: '2003',
-                      reviewerName: 'Matthew',
-                      starRating: 5,
-                      reviewId: 69,
-                      reviewText:
-                          'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
-                      likeCount: 33,
-                      imageUrl: 'images/DierksBentleyTest.jpg',
-                    ),
-                    const SizedBox(height: 25),
-                    Row(
-                      children: const [
-                        Text(
-                          "Matthew's Most Popular Reviews",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Spacer(),
-                        Text(
-                          "See All",
-                          style: TextStyle(
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    ReviewRow(
-                      title:
-                          'Lucy In The Sky With Diamonds And Other Words That Make This Title Longer And Longer',
-                      artist: 'Dierks Bentley',
-                      releaseYear: '2003',
-                      reviewerName: 'Matthew',
-                      starRating: 9,
-                      reviewId: 69,
-                      reviewText:
-                          'What was I thinkin\'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resourcewith or without the use of tools to unlock a resource that has been secured with a password',
-                      likeCount: 33,
-                      imageUrl: 'images/DierksBentleyTest.jpg',
-                    ),
+                    _buildReviewDetails(),
+                    _buildReviews(),
                   ],
                 ),
               ),
@@ -218,12 +168,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           username: widget.username,
           followType: FollowType.following,
         ),
-        SizedBox(width: (_isLoggedIn ? 30 : 20)),
+        SizedBox(
+          width: (_isLoggedIn ? 30 : 20),
+        ),
         FollowButton(
           username: widget.username,
           followType: FollowType.follower,
         ),
-        SizedBox(width: (_isLoggedIn ? 0 : 20)),
+        SizedBox(
+          width: (_isLoggedIn ? 0 : 20),
+        ),
         if (!_isLoggedIn)
           FollowUserButton(
             username: _user.username,
@@ -302,6 +256,135 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildReviewDetails() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              DropdownButton<String>(
+                value: _selectedSort,
+                items: const [
+                  DropdownMenuItem(
+                    value: 'popular',
+                    child: Text('Most liked'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'newest',
+                    child: Text('Newest'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'oldest',
+                    child: Text('Oldest'),
+                  ),
+                ],
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedSort = value!;
+                    _buildReviews();
+                  });
+                },
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Color(0xFF3FBCF4),
+                ),
+                iconSize: 24,
+                elevation: 16,
+                style: const TextStyle(
+                  color: Color(0xFF3FBCF4),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                underline: Container(
+                  height: 2,
+                  color: const Color(0xFF3FBCF4),
+                ),
+                dropdownColor: const Color(0xFF1A1B29),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewList() {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        final review = _reviews![index];
+        return Column(
+          children: [
+            index == 0
+                ? const SizedBox(height: 10)
+                : const Divider(
+                    color: Colors.grey,
+                  ),
+            DetailedReviewTile(
+              review: review,
+              onLiked: (isLiked) {
+                setState(() {
+                  review.isLiked = isLiked;
+                });
+              },
+            ),
+          ],
+        );
+      },
+      itemCount: _reviews!.length,
+      shrinkWrap: true,
+    );
+  }
+
+  Widget _buildReviewListWithLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildNoReviewsMessage() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Center(
+        child: Text(
+          'No reviews yet',
+          style: TextStyle(
+            color: Color(0xFF3FBCF4),
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReviews() {
+    return FutureBuilder<List<Review>?>(
+      future: getReviews(_selectedSort, _user.username),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            (_reviews == null || _reviews!.isEmpty)) {
+          return _buildReviewListWithLoading();
+        }
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          _reviews = snapshot.data!;
+          return _buildReviewList();
+        }
+        return _buildNoReviewsMessage();
+      },
     );
   }
 }

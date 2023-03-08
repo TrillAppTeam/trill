@@ -5,11 +5,13 @@ import 'package:trill/api/follows.dart';
 class FollowUserButton extends StatefulWidget {
   final String username;
   final bool isFollowing;
+  final void Function(bool)? onFollowed;
 
   const FollowUserButton({
     super.key,
     required this.username,
     required this.isFollowing,
+    this.onFollowed,
   });
 
   @override
@@ -35,6 +37,9 @@ class _FollowUserButtonState extends State<FollowUserButton> {
             setState(() {
               _isFollowing = false;
             });
+            if (widget.onFollowed != null) {
+              widget.onFollowed!(false);
+            }
           } else {
             safePrint('Failed to unfollow ${widget.username}');
           }
@@ -44,6 +49,9 @@ class _FollowUserButtonState extends State<FollowUserButton> {
             setState(() {
               _isFollowing = true;
             });
+            if (widget.onFollowed != null) {
+              widget.onFollowed!(true);
+            }
           } else {
             safePrint('Failed to follow ${widget.username}');
           }
