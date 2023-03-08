@@ -107,7 +107,7 @@ class _MainPageState extends State<MainPage> {
         ? const Scaffold(body: LoadingScreen())
         : Scaffold(
             backgroundColor: const Color(0xFF1A1B29),
-            appBar: AppBar(),
+            appBar: AppBar(backgroundColor: const Color(0xFF374151)),
             drawer: Sidebar(
                 user: _user,
                 onUserUpdated: (PublicUser user) {

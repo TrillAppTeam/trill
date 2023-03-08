@@ -96,11 +96,30 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Welcome to Trill, $_nickname!',
-              style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 30,
+            Row(
+              children: [
+                const Text(
+                  'Welcome back,',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  ' $_nickname.',
+                  style: const TextStyle(
+                    color: Colors.blue,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            const Text(
+              'Here\'s what the world has been listening to.',
+              style: TextStyle(
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
