@@ -218,7 +218,7 @@ class Review {
       username: json['username'],
       albumID: json['album_id'],
       rating: json['rating'],
-      reviewText: json['review_text'],
+      reviewText: json['review_text'].trim(),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       likes: json['likes'],
