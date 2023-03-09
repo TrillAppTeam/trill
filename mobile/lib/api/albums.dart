@@ -59,10 +59,11 @@ DateTime parseReleaseDate(String releaseDate) {
   try {
     return DateTime.parse(releaseDate);
   } catch (e) {
-    // Spotify can return albums with different release date precisions
-    // If it doesn't the date precision, we're pretending it was released today just so the app doesn't crash
-    // The Spotify API does return a release date precision field but that's too much work
-    return DateTime.now();
+    try {
+      return DateTime.parse('$releaseDate-01');
+    } catch (e) {
+      return DateTime.parse('$releaseDate-01-01');
+    }
   }
 }
 

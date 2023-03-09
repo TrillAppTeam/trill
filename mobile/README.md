@@ -17,23 +17,17 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
 
 ## Demo things
 
-- Album Details + Reviews
-  - List is in the dart file
+Test on physical device
 
-- API
-  - Implement profile pics APIs
-  - Change all placeholder widgets
+API
+- Implement profile pics APIs
+- Implement missing APIs as they are completed
 
-- UI!!
-  - Copy web for everything
-  - Loading page
-  - Change all placeholder widgets
-- Remember to clean database before demo
+UI!!
+- Copy web for everything
+- Loading page
 
-- Test on physical device
+Remember to clean database before demo to avoid crashes lol
 
-- Bugs:
-  - Can't scroll to the bottom of album details reviews because I put it in a sizedbox. When I don't put it in a sizedbox, the app crashes since the listview expands vertically infinitely. I have spent probably 15 hours trying to fix this over the past week and chatgpt can't fix it so I give up. It has to do with putting the listview in the tabbarview that changed the vertical constraints of the listview, since it worked fine before that, but no matter what i've tried i still get the same error
-
-- Minor bugs:
-  - Spotify album release date errors
+Bugs:
+- Can't scroll to the bottom of album details reviews because I put it in a sizedbox. When I don't put it in a sizedbox, the app crashes since the listview expands vertically infinitely. I have spent probably 15 hours trying to fix this over the past week and chatgpt can't fix it so I give up. It has to do with putting the listview in the tabbarview that changed the vertical constraints of the listview, since it worked fine before that, but no matter what i've tried i still get the same error

@@ -34,9 +34,22 @@ class AlbumRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  "${_album.artists.map((artist) => artist.name).join(", ")} - ${DateFormat('MMMM yyyy').format(_album.releaseDate)}",
-                  style: const TextStyle(color: Colors.grey),
+                Row(
+                  children: [
+                    Text(
+                      _album.artists.map((artist) => artist.name).join(", "),
+                      style: const TextStyle(
+                        color: Color(0xFFCCCCCC),
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      DateFormat('yyyy').format(_album.releaseDate),
+                      style: const TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

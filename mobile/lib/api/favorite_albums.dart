@@ -34,7 +34,7 @@ Future<List<SpotifyAlbum>?> getFavoriteAlbums([String? username]) async {
   }
 }
 
-Future<bool> addFavoriteAlbum(String albumID) async {
+Future<bool> favoriteAlbum(String albumID) async {
   const String tag = '[addFavoriteAlbum]';
 
   safePrint('$tag albumID: $albumID');
@@ -54,7 +54,7 @@ Future<bool> addFavoriteAlbum(String albumID) async {
   return response.statusCode == 201;
 }
 
-Future<bool> deleteFavoriteAlbum(String albumID) async {
+Future<bool> unfavoriteAlbum(String albumID) async {
   const String tag = '[deleteFavoriteAlbum]';
 
   safePrint('$tag albumID: $albumID');

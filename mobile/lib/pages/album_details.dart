@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
+import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/pages/write_review.dart';
+import 'package:trill/widgets/favorite_button.dart';
+import 'package:trill/widgets/listen_later_button.dart';
 import 'package:trill/widgets/review_tile.dart';
+import 'package:trill/widgets/static_rating_bar.dart';
 
 // todo: add review button
 // todo: refresh upon review added
@@ -12,20 +17,9 @@ import 'package:trill/widgets/review_tile.dart';
 // todo: add to listenlater, add to favorite albums
 // stretch: open in spotify
 
-// todo: format album details
-// todo: fix album details header
-
-// todo: put own review at top and allow editing
 // todo: create review only if user doesn't have review
-
 // todo: update and delete own review
 
-// todo: get user profile pic
-// todo: click on username/pfp to get user profile
-
-// todo: all, friends, self compound dropdown
-
-// todo: review summary (total reviews, average review)
 class AlbumDetailsScreen extends StatefulWidget {
   final String albumID;
 
@@ -38,10 +32,18 @@ class AlbumDetailsScreen extends StatefulWidget {
 class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     with TickerProviderStateMixin {
   late SpotifyAlbum _album;
-  List<Review>? _reviews;
+
+  List<Review>? _globalReviews;
+  late int _numReviews;
+
+  List<Review>? _followingReviews;
+  List<Review>? _myReviews;
 
   String _selectedSort = 'popular';
   bool _isLoading = true;
+
+  bool _isFavorited = false;
+  final bool _isInListenLater = false;
 
   late String _loggedInUser = "";
 
@@ -64,10 +66,31 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   Future<void> _fetchAlbumDetails() async {
     setState(() {
       _isLoading = true;
-      _reviews = null;
+      _globalReviews = null;
+      _followingReviews = null;
+      _myReviews = null;
     });
 
+    final globalReviews =
+        await getAlbumReviews(_selectedSort, widget.albumID, false);
+
+    // these should really be done through the apis tbh
+    setState(() {
+      _numReviews = globalReviews == null ? 0 : globalReviews.length;
+    });
+
+    final favoriteAlbums = await getFavoriteAlbums() ?? [];
+
+    for (int i = 0; i < favoriteAlbums.length; i++) {
+      if (favoriteAlbums[i].id == widget.albumID) {
+        setState(() {
+          _isFavorited = true;
+        });
+      }
+    }
+
     final album = await getSpotifyAlbum(widget.albumID);
+
     if (album != null) {
       setState(() {
         _album = album;
@@ -81,16 +104,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     _loggedInUser = prefs.getString('username') ?? "";
   }
 
-  // Navigator.push(
-  //   context,
-  //   MaterialPageRoute(
-  //     builder: (context) => WriteReviewScreen(
-  //       album: _album,
-  //       onReviewAdded: _fetchAlbumDetails,
-  //     ),
-  //   ),
-  // );
-
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -101,12 +114,14 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         backgroundColor: const Color(0xFF1A1B29),
         appBar: AppBar(),
         body: _isLoading
-            ? const LoadingScreen()
+            ? Container()
             : SingleChildScrollView(
                 child: Column(
                   children: [
                     const SizedBox(height: 12),
                     _buildAlbumDetails(),
+                    const SizedBox(height: 5),
+                    _buildAlbumButtons(),
                     _buildReviewDetails(),
                     const SizedBox(height: 12),
                     SizedBox(
@@ -121,28 +136,99 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   }
 
   Widget _buildAlbumDetails() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 12,
+      ),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: Image.network(
+                _album.images[0].url,
+                width: 120,
+                height: 120,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _album.name,
+                  style: const TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                Row(
+                  children: [
+                    Text(
+                      _album.artists.map((artist) => artist.name).join(", "),
+                      style: const TextStyle(
+                        color: Color(0xFFCCCCCC),
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      DateFormat('yyyy').format(_album.releaseDate),
+                      style: const TextStyle(
+                        color: Color(0xFF999999),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    // todo: get average rating
+                    const StaticRatingBar(rating: 7, size: 20),
+                    const SizedBox(width: 5),
+                    Text(
+                      '(${_numReviews.toString()})',
+                      style: const TextStyle(
+                        color: Color(0xFFCCCCCC),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAlbumButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Text(
-          _album.artists[0].name,
-          style: const TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.w500,
-          ),
+        FavoriteButton(
+          albumID: widget.albumID,
+          isFavorited: _isFavorited,
+          onError: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                backgroundColor: Color(0xFFAA2222),
+                content: Text(
+                  "Maximum favorite albums count of 4 reached. Remove an album from your profile to add more!",
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+            );
+          },
         ),
-        const SizedBox(height: 8.0),
-        Text(
-          'Released: ${_album.releaseDate}',
-          style: const TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: 8.0),
-        Text(
-          _album.label,
-          style: const TextStyle(fontSize: 14.0),
+        ListenLaterButton(
+          albumID: widget.albumID,
+          isInListenLater: _isInListenLater,
         ),
       ],
     );
@@ -215,11 +301,11 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     );
   }
 
-  Widget _buildReviewList() {
+  Widget _buildReviewList(List<Review> reviews) {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        final review = _reviews![index];
+        final review = reviews[index];
         return Column(
           children: [
             index == 0
@@ -239,7 +325,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
           ],
         );
       },
-      itemCount: _reviews!.length,
+      itemCount: reviews.length,
     );
   }
 
@@ -273,12 +359,12 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
           builder: (context, snapshot) {
             if (_tabController.index == 0 &&
                 snapshot.connectionState == ConnectionState.waiting &&
-                (_reviews == null || _reviews!.isEmpty)) {
+                (_globalReviews == null || _globalReviews!.isEmpty)) {
               return _buildReviewListWithLoading();
             }
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-              _reviews = snapshot.data!;
-              return _buildReviewList();
+              _globalReviews = snapshot.data!;
+              return _buildReviewList(_globalReviews!);
             }
             return _buildNoReviewsMessage();
           },
@@ -289,12 +375,12 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
           builder: (context, snapshot) {
             if (_tabController.index == 1 &&
                 snapshot.connectionState == ConnectionState.waiting &&
-                (_reviews == null || _reviews!.isEmpty)) {
+                (_followingReviews == null || _followingReviews!.isEmpty)) {
               return _buildReviewListWithLoading();
             }
             if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-              _reviews = snapshot.data!;
-              return _buildReviewList();
+              _followingReviews = snapshot.data!;
+              return _buildReviewList(_followingReviews!);
             }
             return _buildNoReviewsMessage();
           },
@@ -305,14 +391,14 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
           builder: (context, snapshot) {
             if (_tabController.index == 2 &&
                 snapshot.connectionState == ConnectionState.waiting &&
-                (_reviews == null || _reviews!.isEmpty)) {
+                (_myReviews == null || _myReviews!.isEmpty)) {
               return _buildReviewListWithLoading();
             }
             if (snapshot.hasData) {
-              _reviews = [snapshot.data!];
-              return _buildReviewList();
+              _myReviews = [snapshot.data!];
+              return _buildReviewList(_myReviews!);
             }
-            return _buildNoReviewsMessage();
+            return Container();
           },
         ),
       ],

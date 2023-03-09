@@ -31,7 +31,7 @@ class _FollowUserButtonState extends State<FollowUserButton> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () async {
         if (_isFollowing) {
           final success = await unfollow(widget.username);
