@@ -22,7 +22,8 @@ function AlbumDetails() {
     const { name, year, artist, img, link, id } = state;
     const currentUser = localStorage.getItem("username");
 
-    const {isLoading, data, error, refetch: refetchReview} = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    const { isLoading, data, error, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    const { data: favoriteAlbums, refetch: refecthFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
     
     useEffect(() => {
         setReviewText(data?.data.review_text);
@@ -48,9 +49,9 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refetchReview();} });
+    }, {onSuccess: () => {refetchReview();}} );
 
-    const favoriteAlbum = useMutation(() => { 
+    const addFavoriteAlbum = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, {}, 
             { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
             .then((res) => {
@@ -59,7 +60,18 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {} );
+    }, {onSuccess: () => {refecthFavoriteAlbums();}} );
+
+    const deleteFavoriteAlbum = useMutation(() => { 
+        return axios.delete(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, 
+            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            .then((res) => {
+                return res;
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, {onSuccess: () => {refecthFavoriteAlbums();}} );
 
     const ratingChanged = (newRating) => {
         setRating(newRating*2);
@@ -70,8 +82,13 @@ function AlbumDetails() {
     }
 
     const addToFavoriteAlbums = () => {
-        favoriteAlbum.mutate();
+        addFavoriteAlbum.mutate();
     }
+
+    const removeFromFavoriteAlbums = () => {
+        deleteFavoriteAlbum.mutate();
+    }
+
 
     return (
         <div className="max-w-5xl mx-auto">
@@ -86,13 +103,24 @@ function AlbumDetails() {
                                     <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
                                 </div>
                             }
-                            <button 
-                                className="btn btn-xs bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2"
-                                onClick={addToFavoriteAlbums}
-                            >
+
+                            {favoriteAlbums?.data.some((album) => album.id === id) ? (
+                                <button 
+                                    className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
+                                    onClick={removeFromFavoriteAlbums}
+                                >
+                                    Remove From Favorite Albums
+                                </button>
+                            ) : (
+                                <button 
+                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2"
+                                    onClick={addToFavoriteAlbums}
+                                >
                                     Add to Favorite Albums
-                            </button>
-                            <button className="btn btn-xs bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2">Add to Listen Later</button>
+                                </button>
+                            )}
+
+                            <button className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2">Add to Listen Later</button>
                     </div>
                     
                     <div className="pl-10 flex flex-row gap-10">
