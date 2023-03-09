@@ -77,7 +77,7 @@ function Review(props) {
                             <Stars rating={ rating } />
                             
                             <p className="text-sm text-gray-500 my-auto">Listened to by
-                                <span className="text-trillBlue"> {username} </span>
+                                <span className="text-trillBlue"> @{username} </span>
                                 on  
                                 <span className="text-gray-400"> {formattedDate}</span>
                             </p>

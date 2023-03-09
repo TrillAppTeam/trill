@@ -22,7 +22,9 @@ function AlbumDetails() {
     const { name, year, artist, img, link, id } = state;
     const currentUser = localStorage.getItem("username");
 
-    const { isLoading, data, error, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    const { data: reviewFromFriends } = useQuery([`reviews?sort=newest&albumID=${id}&following=true`]);
+
+    const { isLoading, data, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
     const { data: favoriteAlbums, refetch: refecthFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
     
     useEffect(() => {
@@ -227,9 +229,16 @@ function AlbumDetails() {
                 
                 <div className="pt-10">
                     <Titles title="Reviews From Friends" />
-                    {/* <AlbumDetailsReview review={ reviewDummy } />
-                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <AlbumDetailsReview review={ reviewDummy }/> */}
+
+                    {console.log(reviewFromFriends)}
+
+                    {reviewFromFriends?.data.slice(0, 2).map((review, index, array) => (
+                        <div key={index}>
+                            <AlbumDetailsReview review={review} />
+                            {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                        </div>
+                    ))} 
+
                 </div>
 
                 <div className="pt-10">
