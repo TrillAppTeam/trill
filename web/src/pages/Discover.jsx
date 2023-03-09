@@ -51,7 +51,9 @@ let reviewDummy = {
 }
 
 function Discover() {
-    const { isLoading, error, data} = useQuery({ queryKey: ['users'] });
+    const { isLoading, data } = useQuery({ queryKey: ['users'] });
+    const { data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
+
 
     return (
         <div>
@@ -99,9 +101,12 @@ function Discover() {
 
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
-                <Review review={reviewDummy}/>
-                <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />
-                <Review review={reviewDummy}/>
+                {friendsData?.data.slice(0, 2).map((review, index, array) => (
+                    <div key={index}>
+                        <Review review={review} />
+                        {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                    </div>
+                ))} 
             </section>
 
             {/* Music News */}

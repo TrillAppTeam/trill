@@ -21,9 +21,11 @@ function Profile() {
     const paramString = user ? `?username=${user}` : '';
 
     const [ isFollowing, setIsFollowing ] = useState(false);
-    const { isLoading, data: userData, error: userError } = useQuery([`users${paramString}`]);
+    const { isLoading, data: userData} = useQuery([`users${paramString}`]);
     const { data: following, refetch: refetchFollowing } = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
     const { data: followers, refetch: refetchFollowers } = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
+    const { data: reviewsNew } = useQuery([`reviews?sort=newest&username=${userData?.data.username}`]);
+    const { data: reviewsPopular } = useQuery([`reviews?sort=popular&username=${userData?.data.username}`]);
     
     const follow = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, {}, 
@@ -62,29 +64,6 @@ function Profile() {
     const handleUnfollow = () => {
         unfollow.mutate();
     }
-
-    let albumDummy = { 
-        "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
-        "name": "Harry's House",
-        "artists": [
-            {
-                "name": "Harry Styles"
-            }
-        ],
-        "external_urls": {
-            "spotify": "https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h"
-        },
-        "release_date": "2021",
-        "size": "150"
-    };
-
-    let reviewDummy = {
-        ...albumDummy,
-        user: "Ligma Johnson",
-        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-        review: "Harry has done it yet again.",
-        rating: 5,
-    };
 
     return (
         <>
@@ -137,10 +116,10 @@ function Profile() {
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-center gap-5">
+                            {/* <Album album = {albumDummy} />
                             <Album album = {albumDummy} />
                             <Album album = {albumDummy} />
-                            <Album album = {albumDummy} />
-                            <Album album = {albumDummy} />
+                            <Album album = {albumDummy} /> */}
                         </div>
                 </div>
                 
@@ -149,15 +128,25 @@ function Profile() {
 
             {/* Recent Reviews: Last 2 reviews from the user */}
             <Titles title="Recent Reviews"/>
-            {/* <Review review={ reviewDummy } />
-            <div className="border-t border-gray-600 max-w-5xl mx-auto m-4" />
-            <Review review={ reviewDummy }/> */}
+                {reviewsNew?.data.slice(0, 2).map((review, index, array) => (
+                    <div key={index}>
+                        <Review review={review} />
+                        {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                    </div>
+                ))} 
+                <div className="pb-10" /> 
 
             {/* Popular Reviews: Two most popular reviews by likes, by the user */}
             <Titles title="Popular Reviews"/>
-            {/* <Review review={ reviewDummy } />
-            <div className="border-t border-gray-600 max-w-5xl mx-auto m-4" />
-            <Review review={ reviewDummy }/> */}
+                {reviewsPopular?.data.slice(0, 2).map((review, index, array) => (
+                    <div key={index}>
+
+                        {console.log(reviewsPopular.data)}
+                        <Review review={review} />
+                        {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                    </div>
+                ))}
+                <div className="pb-10" /> 
 
             {/* Following: Avatars of people the user follows */}
             <Titles title="Following"/>

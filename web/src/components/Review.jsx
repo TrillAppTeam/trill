@@ -59,7 +59,7 @@ function Review(props) {
                     
                     {/* Album Art */}
                     <div className="p-3 m-2">
-                        <Album album = {{...albumData?.data, size: "100"}} />
+                        <Album album = {{...albumData?.data, size: "130"}} />
                     </div>
                     <div className="flex flex-col p-3 gap-4 w-4/5">
                         {/* Album Name and Album Year */}
