@@ -9,13 +9,14 @@ import Stars from "../components/Stars"
 import Heart from '/heart.svg';
 
 function Review(props) {
-    const { user, profilePic, rating, review, name: albumName, release_date: albumYear, artists: artist } = props.review;
+    const { user, profilePic, rating, review, albumImg, albumName, albumYear, artist} = props.review;
 
     const [isLiked, setIsLiked] = useState(false);
 
     const handleLikeClick = () => {
         setIsLiked(!isLiked);
     }
+    
 
     return (
         <div className="max-w-6xl mx-auto">
@@ -24,7 +25,7 @@ function Review(props) {
 
                 {/* Album Art */}
                 <div className="p-3 m-2">
-                    <Album album = {props.review} />
+                    <Album album = {{ img : albumImg, size : "100", name : albumName }} />
                 </div>
 
                 <div className="flex flex-col p-3 gap-4 w-4/5">
@@ -32,14 +33,14 @@ function Review(props) {
                     <div className="flex flex-row gap-4">
                         <h1 className="text-xl text-gray-200">
                             <span className="font-bold italic">{albumName} </span> 
-                            - {artist[0].name}
+                            - {artist}
                         </h1>
                         <h1 className="text-xl text-gray-500">{albumYear}</h1>
                     </div>
 
                     {/* Profile Picture, Rating, and Listen Date */}
                     <div className="flex flex-row gap-4">
-                        <Avatar user={{ profilePic: profilePic, username: "avwede", size: "6" }} />
+                        <Avatar user={{ profilePic: profilePic, firstName: "Ashley", size: "6" }} />
                         <Stars rating={ rating } />
                         
                         <p className="text-sm text-gray-500 my-auto">Listened to by

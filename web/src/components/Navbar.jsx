@@ -9,7 +9,6 @@ import TrillLogo from "/trillTransparent.png"
 // Components
 import Avatar from "./Avatar"
 import Search from "./Search"
-import { useQuery } from "@tanstack/react-query";
 
 const navigation = [
   { name: 'Discover', link: '', current: true },
@@ -22,10 +21,6 @@ function classNames(...classes) {
 }
 
 function Navbar() {
-  const {error, data} = useQuery({ queryKey: ['users'] });
-  if (data)
-    localStorage.setItem("username", data.data.username);
-  
   return (
 
       <Disclosure as="nav" className="bg-gray-700">
@@ -36,7 +31,7 @@ function Navbar() {
               
               {/* Mobile menu button*/}
               <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-200 hover:bg-gray-700 hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-trillBlue">
+                <Disclosure.Button className="inline-flex items-center justify-center rounded-md p-2 text-gray-200 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-trillBlue">
                   <span className="sr-only">Open main menu</span>
                   {open ? (
                     <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
@@ -47,7 +42,7 @@ function Navbar() {
               </div>
               
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <Link to="">
+                <Link to="/">
                   <div className="flex flex-shrink-0 items-center">
                     <img
                       className="block h-11 w-auto lg:hidden"
@@ -88,7 +83,7 @@ function Navbar() {
                     <Menu.Button className="flex rounded-full">
                       <span className="sr-only">Open user menu</span>
                       {/* User Profile Picture */}
-                      <Avatar user={{ profilePic: null, username: data?.data.username, size: "11", linkDisabled: true }} />
+                      <Avatar user={{ profilePic: null, firstName: "Ashley", size: "11" }} />
 
                     </Menu.Button>
                   </div>
@@ -105,8 +100,7 @@ function Navbar() {
                       <Menu.Item>
                         {({ active }) => (
                           <Link to='Profile'
-                            className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
-                            state={{username: data?.data.username}}
+                            className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-white font-bold')}
                           >
                             Profile
                           </Link>
@@ -115,7 +109,7 @@ function Navbar() {
                       <Menu.Item>
                         {({ active }) => (
                           <Link to='/'
-                            className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
+                            className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-white font-bold')}
                           >
                             Sign out
                           </Link>
@@ -135,7 +129,7 @@ function Navbar() {
                   key={item.name}
                   as="a"
                   href={item.href}
-                  className= "text-gray-300 hover:bg-gray-500 hover:text-gray-200 block px-3 py-2 rounded-md font-bold"
+                  className= "text-gray-300 hover:bg-gray-500 hover:text-white block px-3 py-2 rounded-md font-bold"
                   aria-current={item.current ? 'page' : undefined}
                 >
                   {item.name}

@@ -17,11 +17,6 @@ type CognitoClient struct {
 	UserPoolId  string
 }
 
-type HTTPError struct {
-	Code int
-	Err  error
-}
-
 func ConnectDB() (*gorm.DB, error) {
 	var secrets = utils.GetSecrets()
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?allowNativePasswords=true&parseTime=true", secrets.User, secrets.Password, secrets.Host, secrets.Port, secrets.Database)
@@ -54,8 +49,4 @@ func InitCognitoClient(ctx context.Context) (*CognitoClient, error) {
 		secrets.CognitoAppClientId,
 		secrets.CognitoUserPoolId,
 	}, nil
-}
-
-func (e *HTTPError) Error() string {
-	return fmt.Sprintf(e.Err.Error())
 }

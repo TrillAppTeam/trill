@@ -47,12 +47,6 @@ provider:
         type: request
         functionName: auth
     cors: true
-  iam:
-    role:
-      statements:
-      - Effect: Allow
-        Action: "cognito-idp:AdminGetUser"
-        Resource: "*"
   environment:
     MYSQLHOST: ${self:custom.secrets.MYSQLHOST}
     MYSQLPORT: ${self:custom.secrets.MYSQLPORT}
