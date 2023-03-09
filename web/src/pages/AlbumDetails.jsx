@@ -22,9 +22,11 @@ function AlbumDetails() {
     const { name, year, artist, img, link, id } = state;
     const currentUser = localStorage.getItem("username");
 
-    const { data: reviewFromFriends } = useQuery([`reviews?sort=newest&albumID=${id}&following=true`]);
-
     const { isLoading, data, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    const { data: reviewFromFriends } = useQuery([`reviews?sort=newest&albumID=${id}&following=true`]);
+    const { data: popularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
+    const { data: recentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
+
     const { data: favoriteAlbums, refetch: refecthFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
     
     useEffect(() => {
@@ -229,8 +231,8 @@ function AlbumDetails() {
                 
                 <div className="pt-10">
                     <Titles title="Reviews From Friends" />
-
                     {console.log(reviewFromFriends)}
+                    {reviewFromFriends?.data.length == 0 ? <h1 className="italic text-violet-300">Your friends haven't reviewed this album yet.</h1> : null}
 
                     {reviewFromFriends?.data.slice(0, 2).map((review, index, array) => (
                         <div key={index}>
@@ -242,18 +244,30 @@ function AlbumDetails() {
                 </div>
 
                 <div className="pt-10">
-                    <Titles title="Popular Reviews" />
-                    {/* <AlbumDetailsReview review={ reviewDummy } />
-                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <AlbumDetailsReview review={ reviewDummy }/> */}
+                    <Titles title="Popular Reviews Globally" />
+                    {popularGlobal?.data.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
+                    
+                    {popularGlobal?.data.slice(0, 2).map((review, index, array) => (
+                        <div key={index}>
+                            <AlbumDetailsReview review={review} />
+                            {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                        </div>
+                    ))} 
                 </div>
 
                 <div className="pt-10">
-                    <Titles title="Recent Reviews" />
-                    {/* <AlbumDetailsReview review={ reviewDummy } />
-                    <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <AlbumDetailsReview review={ reviewDummy }/> */}
+                    <Titles title="Recent Reviews Globally" />
+                    {recentGlobal?.data.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
+
+                    {recentGlobal?.data.slice(0, 2).map((review, index, array) => (
+                        <div key={index}>
+                            <AlbumDetailsReview review={review} />
+                            {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                        </div>
+                    ))} 
                 </div>
+
+                <div className="pb-10"/>
             </div>
         </div>
         

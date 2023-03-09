@@ -57,7 +57,7 @@ function AlbumDetailsReview(props) {
                     {/* Profile Picture, Rating, and Listen Date */}
                     <div className="flex flex-row gap-4 text-md">
                         <Stars rating={rating} />
-                        <p className="text-sm text-gray-500 my-auto">Listened to by
+                        <p className="text-md text-gray-500 my-auto">Listened to by
                             <span className="text-trillBlue"> @{username} </span>
                             on  
                             <span className="text-gray-400"> {formattedDate}</span>
