@@ -109,7 +109,7 @@ function Profile() {
                 </div>
               
                 <div className="pt-5">
-                    <UserStats albums={30} followers={followers?.data.users.length} following={following?.data.users.length}/>
+                    <UserStats albums={reviewsNew?.data.length} followers={followers?.data.users.length} following={following?.data.users.length}/>
                 </div>
             </div>
 
