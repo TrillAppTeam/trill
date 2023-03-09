@@ -317,7 +317,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 });
               },
               isMyReview: _isLoggedIn,
-              onUpdated: _isLoggedIn
+              onUpdate: _isLoggedIn
                   ? (rating, reviewText) async {
                       final success = await createOrUpdateReview(
                           review.albumID, rating, reviewText);
@@ -329,6 +329,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
                     }
                   : (rating, reviewText) {},
+              onDelete: () async {
+                final success = await deleteReview(
+                  review.albumID,
+                );
+                if (success) {
+                  setState(() {
+                    _reviews!.removeAt(index);
+                  });
+                }
+              },
             ),
           ],
         );

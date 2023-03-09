@@ -7,14 +7,9 @@ import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/favorite_button.dart';
 import 'package:trill/widgets/listen_later_button.dart';
+import 'package:trill/widgets/new_review.dart';
 import 'package:trill/widgets/review_tile.dart';
 import 'package:trill/widgets/rating_bar.dart';
-
-// todo: add review button
-// todo: refresh upon review added
-
-// todo: create review only if user doesn't have review
-// todo: update and delete own review
 
 class AlbumDetailsScreen extends StatefulWidget {
   final String albumID;
@@ -30,7 +25,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   late SpotifyAlbum _album;
 
   List<Review>? _globalReviews;
-  late int _numReviews;
+  int _numReviews = 0;
 
   List<Review>? _followingReviews;
   List<Review>? _myReviews;
@@ -40,6 +35,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
 
   bool _isFavorited = false;
   final bool _isInListenLater = false;
+  bool _isReviewed = false;
 
   late String _loggedInUser = "";
 
@@ -67,16 +63,23 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       _myReviews = null;
     });
 
+    // these should really be done through the apis tbh
+    final myReview = await getReview(widget.albumID);
+    if (myReview != null) {
+      setState(() {
+        _isReviewed = true;
+      });
+    }
+
     final globalReviews =
         await getAlbumReviews(_selectedSort, widget.albumID, false);
-
-    // these should really be done through the apis tbh
-    setState(() {
-      _numReviews = globalReviews == null ? 0 : globalReviews.length;
-    });
+    if (globalReviews != null) {
+      setState(() {
+        _numReviews = globalReviews.length;
+      });
+    }
 
     final favoriteAlbums = await getFavoriteAlbums() ?? [];
-
     for (int i = 0; i < favoriteAlbums.length; i++) {
       if (favoriteAlbums[i].id == widget.albumID) {
         setState(() {
@@ -86,7 +89,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     }
 
     final album = await getSpotifyAlbum(widget.albumID);
-
     if (album != null) {
       setState(() {
         _album = album;
@@ -119,6 +121,30 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                     const SizedBox(height: 5),
                     _buildAlbumButtons(),
                     _buildReviewDetails(),
+                    if (!_isReviewed)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 20),
+                          const Padding(
+                            padding: EdgeInsets.only(left: 15),
+                            child: Text(
+                              'Add your review:',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          _buildWriteReview(),
+                          const Divider(
+                            color: Colors.grey,
+                            thickness: 2,
+                          ),
+                        ],
+                      ),
                     const SizedBox(height: 12),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.75,
@@ -234,56 +260,62 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Reviews',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            DropdownButton<String>(
-              value: _selectedSort,
-              items: const [
-                DropdownMenuItem(
-                  value: 'popular',
-                  child: Text('Most liked'),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                 ),
-                DropdownMenuItem(
-                  value: 'newest',
-                  child: Text('Newest'),
+              ),
+              DropdownButton<String>(
+                value: _selectedSort,
+                items: const [
+                  DropdownMenuItem(
+                    value: 'popular',
+                    child: Text('Most liked'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'newest',
+                    child: Text('Newest'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'oldest',
+                    child: Text('Oldest'),
+                  ),
+                ],
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedSort = value!;
+                    _buildReviews();
+                  });
+                },
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Color(0xFF3FBCF4),
                 ),
-                DropdownMenuItem(
-                  value: 'oldest',
-                  child: Text('Oldest'),
+                iconSize: 24,
+                elevation: 16,
+                style: const TextStyle(
+                  color: Color(0xFF3FBCF4),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
-              onChanged: (String? value) {
-                setState(() {
-                  _selectedSort = value!;
-                  _buildReviews();
-                });
-              },
-              icon: const Icon(
-                Icons.arrow_drop_down,
-                color: Color(0xFF3FBCF4),
+                underline: Container(
+                  height: 2,
+                  color: const Color(0xFF3FBCF4),
+                ),
+                dropdownColor: const Color(0xFF1A1B29),
               ),
-              iconSize: 24,
-              elevation: 16,
-              style: const TextStyle(
-                color: Color(0xFF3FBCF4),
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-              underline: Container(
-                height: 2,
-                color: const Color(0xFF3FBCF4),
-              ),
-              dropdownColor: const Color(0xFF1A1B29),
-            ),
-          ],
+            ],
+          ),
         ),
         TabBar(
           controller: _tabController,
@@ -295,6 +327,19 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         ),
       ],
     );
+  }
+
+  Widget _buildWriteReview() {
+    return NewReview(onCreate: (rating, reviewText) async {
+      final success =
+          await createOrUpdateReview(widget.albumID, rating, reviewText);
+      if (success) {
+        setState(() {
+          _isReviewed = true;
+          _buildReviews();
+        });
+      }
+    });
   }
 
   Widget _buildReviewList(List<Review> reviews) {
@@ -317,7 +362,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                 });
               },
               isMyReview: _loggedInUser == review.username,
-              onUpdated: _loggedInUser == review.username
+              onUpdate: _loggedInUser == review.username
                   ? (rating, reviewText) async {
                       final success = await createOrUpdateReview(
                           widget.albumID, rating, reviewText);
@@ -329,6 +374,17 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                       }
                     }
                   : (rating, reviewText) {},
+              onDelete: () async {
+                final success = await deleteReview(
+                  widget.albumID,
+                );
+                if (success) {
+                  setState(() {
+                    reviews.removeAt(index);
+                    _isReviewed = false;
+                  });
+                }
+              },
             ),
           ],
         );
@@ -406,7 +462,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
               _myReviews = [snapshot.data!];
               return _buildReviewList(_myReviews!);
             }
-            return Container();
+            return _buildNoReviewsMessage();
           },
         ),
       ],

@@ -14,14 +14,16 @@ class DetailedReviewTile extends StatefulWidget {
     required this.review,
     required this.onLiked,
     this.isMyReview = false,
-    this.onUpdated,
+    this.onUpdate,
+    this.onDelete,
   }) : super(key: key);
 
   final Review review;
   final void Function(bool) onLiked;
 
   bool isMyReview;
-  final void Function(int, String)? onUpdated;
+  final void Function(int, String)? onUpdate;
+  final Function? onDelete;
 
   @override
   State<DetailedReviewTile> createState() => _DetailedReviewTileState();
@@ -64,7 +66,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
   }
 
   void _saveEditing() {
-    widget.onUpdated!(_editingRating, _reviewTextController!.text);
+    widget.onUpdate!(_editingRating, _reviewTextController!.text);
     setState(() {
       _isEditing = false;
     });
@@ -74,6 +76,9 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
     switch (value) {
       case 'edit':
         _startEditing();
+        break;
+      case 'delete':
+        widget.onDelete!();
         break;
       case 'report':
         safePrint('no');
@@ -89,22 +94,59 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
         onSelected: (value) => _handleMenuClick(value),
         itemBuilder: (context) => [
           if (widget.isMyReview)
-            const PopupMenuItem<String>(
+            PopupMenuItem<String>(
               value: 'edit',
-              child: Text(
-                'Edit',
-                style: TextStyle(
-                  color: Color(0xFFCCCCCC),
-                ),
+              child: Row(
+                children: const [
+                  Icon(
+                    Icons.edit_outlined,
+                    color: Color(0xFFCCCCCC),
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    'Edit',
+                    style: TextStyle(
+                      color: Color(0xFFCCCCCC),
+                    ),
+                  ),
+                ],
               ),
             ),
-          const PopupMenuItem<String>(
-            value: 'report',
-            child: Text(
-              'Report',
-              style: TextStyle(
-                color: Color(0xFFAA2222),
+          if (widget.isMyReview)
+            PopupMenuItem<String>(
+              value: 'delete',
+              child: Row(
+                children: const [
+                  Icon(
+                    Icons.delete_outline,
+                    color: Color(0xFFAA2222),
+                  ),
+                  SizedBox(width: 5),
+                  Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: Color(0xFFAA2222),
+                    ),
+                  ),
+                ],
               ),
+            ),
+          PopupMenuItem<String>(
+            value: 'report',
+            child: Row(
+              children: const [
+                Icon(
+                  Icons.flag_outlined,
+                  color: Color(0xFFAA2222),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  'Report',
+                  style: TextStyle(
+                    color: Color(0xFFAA2222),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -114,7 +156,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
           color: Colors.grey,
         ),
       ),
-      title: _buildTitle(),
+      title: _buildRatingBar(),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -155,7 +197,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
     );
   }
 
-  Widget _buildTitle() {
+  Widget _buildRatingBar() {
     if (_isEditing) {
       return ReviewRatingBar(
         rating: widget.review.rating,
