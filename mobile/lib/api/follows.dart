@@ -15,7 +15,6 @@ Future<Follow?> getFollowers([String? username]) async {
   safePrint('$tag username: $username');
 
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
@@ -25,8 +24,7 @@ Future<Follow?> getFollowers([String? username]) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return Follow.fromJson(jsonDecode(response.body));
@@ -44,7 +42,6 @@ Future<Follow?> getFollowing([String? username]) async {
   safePrint('$tag username: $username');
 
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
@@ -54,8 +51,7 @@ Future<Follow?> getFollowing([String? username]) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return Follow.fromJson(jsonDecode(response.body));
@@ -71,7 +67,6 @@ Future<bool> follow(String userToFollow) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.post(
     Uri.parse('${Constants.baseURI}/follows?username=$userToFollow'),
@@ -80,8 +75,7 @@ Future<bool> follow(String userToFollow) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 201;
 }
@@ -93,7 +87,6 @@ Future<bool> unfollow(String userToUnfollow) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.delete(
     Uri.parse('${Constants.baseURI}/follows?username=$userToUnfollow'),
@@ -102,8 +95,7 @@ Future<bool> unfollow(String userToUnfollow) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 200;
 }

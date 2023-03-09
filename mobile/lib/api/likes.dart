@@ -12,7 +12,6 @@ Future<int?> getLikeCount(int reviewID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/likes?reviewID=$reviewID'),
@@ -21,8 +20,7 @@ Future<int?> getLikeCount(int reviewID) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return int.parse(response.body);
@@ -38,7 +36,6 @@ Future<bool> likeReview(int reviewID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.put(
     Uri.parse('${Constants.baseURI}/likes?reviewID=$reviewID'),
@@ -47,8 +44,7 @@ Future<bool> likeReview(int reviewID) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 201;
 }
@@ -60,7 +56,6 @@ Future<bool> unlikeReview(int reviewID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.delete(
     Uri.parse('${Constants.baseURI}/likes?reviewID=$reviewID'),
@@ -69,8 +64,7 @@ Future<bool> unlikeReview(int reviewID) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 200;
 }
@@ -105,4 +99,3 @@ class TestLike {
   TestLike(this.username, this.reviewID, this.albumName, this.artistName,
       this.year, this.reviewBody, this.starRating, this.likeCount);
 }
-

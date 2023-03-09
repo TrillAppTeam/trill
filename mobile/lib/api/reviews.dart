@@ -10,12 +10,10 @@ import 'package:trill/constants.dart';
 Future<Review?> getReview(String albumID, [String? username]) async {
   const String tag = '[getReview]';
 
-  safePrint('$tag username: ${username ?? 'null'}');
-  safePrint('$tag albumID: $albumID');
+  safePrint('$tag username: ${username ?? 'null'}; albumID: $albumID');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   String uri = '${Constants.baseURI}/reviews?albumID=$albumID';
   if (username != null) {
@@ -29,8 +27,7 @@ Future<Review?> getReview(String albumID, [String? username]) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return Review.fromJson(jsonDecode(response.body));
@@ -46,13 +43,10 @@ Future<List<Review>?> getAlbumReviews(
     String sort, String albumID, bool following) async {
   const String tag = '[getAlbumReviews]';
 
-  safePrint('$tag sort: $sort');
-  safePrint('$tag albumID: $albumID');
-  safePrint('$tag following: $following');
+  safePrint('$tag sort: $sort; albumID: $albumID; following: $following');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   String uri = '${Constants.baseURI}/reviews?sort=$sort&albumID=$albumID';
   if (following == true) {
@@ -66,8 +60,7 @@ Future<List<Review>?> getAlbumReviews(
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return List<Review>.from(
@@ -81,12 +74,10 @@ Future<List<Review>?> getAlbumReviews(
 Future<List<Review>?> getReviews(String sort, [String? username]) async {
   const String tag = '[getReviews]';
 
-  safePrint('$tag username: ${username ?? 'null'}');
-  safePrint('$tag sort: $sort');
+  safePrint('$tag username: ${username ?? 'null'}; sort: $sort');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   String uri = '${Constants.baseURI}/reviews?sort=$sort';
   if (username != null) {
@@ -100,8 +91,7 @@ Future<List<Review>?> getReviews(String sort, [String? username]) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return List<Review>.from(
@@ -116,7 +106,6 @@ Future<List<Review>?> getFriendsFeed() async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/reviews?sort=newest&following=true'),
@@ -125,8 +114,7 @@ Future<List<Review>?> getFriendsFeed() async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return List<Review>.from(
@@ -140,13 +128,11 @@ Future<bool> createOrUpdateReview(String albumID, int rating,
     [String? reviewText]) async {
   const String tag = '[createOrUpdateReview]';
 
-  safePrint('$tag albumID: $albumID');
-  safePrint('$tag rating: $rating');
-  safePrint('$tag reviewText: ${reviewText ?? 'null'}');
+  safePrint(
+      '$tag albumID: $albumID; rating: $rating; reviewText: ${reviewText ?? 'null'}');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.put(
     Uri.parse('${Constants.baseURI}/reviews?albumID=$albumID'),
@@ -160,8 +146,7 @@ Future<bool> createOrUpdateReview(String albumID, int rating,
     }),
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 201;
 }
@@ -173,7 +158,6 @@ Future<bool> deleteReview(String albumID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.delete(
     Uri.parse('${Constants.baseURI}/reviews?albumID=$albumID'),
@@ -182,14 +166,12 @@ Future<bool> deleteReview(String albumID) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 200;
 }
 
 class Review {
-  // prob need to make some fields not final to modify them?
   final int reviewID;
   final String username;
   final String albumID;

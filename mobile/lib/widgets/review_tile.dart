@@ -99,6 +99,7 @@ class ReviewTile extends StatelessWidget {
               ],
             ),
           LikeButton(
+            key: ValueKey('likeButton_${review.reviewID}'),
             reviewID: review.reviewID,
             isLiked: review.isLiked,
             numLikes: review.likes,

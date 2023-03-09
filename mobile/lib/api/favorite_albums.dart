@@ -16,7 +16,6 @@ Future<List<SpotifyAlbum>?> getFavoriteAlbums([String? username]) async {
   safePrint('$tag username: $username');
 
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/favoritealbums?username=$username'),
@@ -25,8 +24,7 @@ Future<List<SpotifyAlbum>?> getFavoriteAlbums([String? username]) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return List<SpotifyAlbum>.from(
@@ -43,7 +41,6 @@ Future<bool> addFavoriteAlbum(String albumID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.post(
     Uri.parse('${Constants.baseURI}/favoritealbums?albumID=$albumID'),
@@ -52,8 +49,7 @@ Future<bool> addFavoriteAlbum(String albumID) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 201;
 }
@@ -65,7 +61,6 @@ Future<bool> deleteFavoriteAlbum(String albumID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.delete(
     Uri.parse('${Constants.baseURI}/favoritealbums?albumID=$albumID'),
@@ -74,8 +69,7 @@ Future<bool> deleteFavoriteAlbum(String albumID) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 200;
 }

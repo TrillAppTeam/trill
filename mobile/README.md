@@ -16,70 +16,24 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
 ---
 
 ## Demo things
-- Home Page - Prathik
-  - Home Page UI
-    - Popular Albums this week - Cathy
-    - Recent News
-    - Hello Grammys
-    - Trill Favorites
-  - Connect Home Page to popular albums API
 
-- Profile page - Cathy
-  - Change UI for profile page to more match web
-  - All review list at bottom of profile
-  - Favorite albums - Prathik
-    - Connect to favorite albums UI
-    - Hold to delete favorite album
-  - Follow/unfollow other users - Prathik
-    - Separate logged in user vs other users
-    - Unfollow from follow list too
-
-- Friends Feed - Cathy
-  - UI
-  - Connect to API
-
-- Navigation - Cathy
-  - Persist bottom nav on every page
-  - App bar on each page
-    - Sidebar button becomes back button when navigating
-
-- Album Details + Reviews - Cathy
+- Album Details + Reviews
   - List is in the dart file
-
-- Sidebar - Prathik
-  - Fix calling user API
-  - UI
-    - Account details
-    - Listen later
-    - Liked reviews
-    - Review list
-    - Edit profile
-    - Logout
 
 - API
   - Implement profile pics APIs
   - Change all placeholder widgets
 
 - UI!!
+  - Copy web for everything
   - Loading page
+  - Change all placeholder widgets
 - Remember to clean database before demo
 
+- Test on physical device
+
+- Bugs:
+  - Can't scroll to the bottom of album details reviews because I put it in a sizedbox. When I don't put it in a sizedbox, the app crashes since the listview expands vertically infinitely. I have spent probably 15 hours trying to fix this over the past week and chatgpt can't fix it so I give up. It has to do with putting the listview in the tabbarview that changed the vertical constraints of the listview, since it worked fine before that, but no matter what i've tried i still get the same error
+
 - Minor bugs:
-  - Keyboard opens when click on text field in search bar, another bottom nav page, then sidebar
   - Spotify album release date errors
-
----
-
-APIs we need:
-- Profile pictures
-- Popular albums globally
-  - Set time limit (e.g. this week, this month)
-- Average rating for album
-- User data for follows
-- Add follow counts when getting a public user
-- User data for reviews
-- Album details when getting reviews
-  - For reviews on profile page, friends feed, and anywhere other than album details
-- Liked reviews list
-  - Also need album details
-- Listen later

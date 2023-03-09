@@ -13,7 +13,6 @@ Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/album?albumID=$albumID'),
@@ -22,8 +21,7 @@ Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return SpotifyAlbum.fromJson(jsonDecode(response.body));
@@ -39,7 +37,6 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/albums?query=$query'),
@@ -48,8 +45,7 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return List<SpotifyAlbum>.from(

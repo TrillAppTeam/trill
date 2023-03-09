@@ -13,7 +13,6 @@ Future<List<User>?> searchUsers(String query) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/users?search=$query'),
@@ -22,8 +21,7 @@ Future<List<User>?> searchUsers(String query) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return List<User>.from(
@@ -38,7 +36,6 @@ Future<PublicUser?> getPublicUser([String? username]) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   username ??= prefs.getString('username');
   safePrint('$tag username: $username');
@@ -50,8 +47,7 @@ Future<PublicUser?> getPublicUser([String? username]) async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return PublicUser.fromJson(jsonDecode(response.body));
@@ -65,7 +61,6 @@ Future<PrivateUser?> getPrivateUser() async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/users'),
@@ -74,8 +69,7 @@ Future<PrivateUser?> getPrivateUser() async {
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return PrivateUser.fromJson(jsonDecode(response.body));
@@ -88,13 +82,11 @@ Future<bool> updateCurrUser(
     {String? bio, String? profilePic, String? nickname}) async {
   const String tag = '[updateCurrUser]';
 
-  safePrint('$tag bio: ${bio ?? 'null'}');
-  safePrint('$tag profilePic: ${profilePic ?? 'null'}');
-  safePrint('$tag nickname: ${nickname ?? 'null'}');
+  safePrint(
+      '$tag bio: ${bio ?? 'null'}; profilePic: ${profilePic ?? 'null'}; nickname: ${nickname ?? 'null'}');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.put(
     Uri.parse('${Constants.baseURI}/users'),
@@ -108,8 +100,7 @@ Future<bool> updateCurrUser(
     }),
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 200;
 }
