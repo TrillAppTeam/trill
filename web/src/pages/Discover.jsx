@@ -104,7 +104,7 @@ function Discover() {
                 {friendsData?.data.slice(0, 2).map((review, index, array) => (
                     <div key={index}>
                         <Review review={review} />
-                        {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                        {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
                 ))} 
             </section>

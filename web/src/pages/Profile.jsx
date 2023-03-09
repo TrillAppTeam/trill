@@ -24,8 +24,8 @@ function Profile() {
     const { isLoading, data: userData} = useQuery([`users${paramString}`]);
     const { data: following, refetch: refetchFollowing } = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
     const { data: followers, refetch: refetchFollowers } = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
-    const { data: reviewsNew } = useQuery(['reviews?sort=newest']);
-    const { data: reviewsPopular } = useQuery(['reviews?sort=popular']);
+    const { data: reviewsNew } = useQuery([`reviews?sort=newest&username=${userData?.data.username}`]);
+    const { data: reviewsPopular } = useQuery([`reviews?sort=popular&username=${userData?.data.username}`]);
     
     const follow = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, {}, 
@@ -64,29 +64,6 @@ function Profile() {
     const handleUnfollow = () => {
         unfollow.mutate();
     }
-
-    let albumDummy = { 
-        "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
-        "name": "Harry's House",
-        "artists": [
-            {
-                "name": "Harry Styles"
-            }
-        ],
-        "external_urls": {
-            "spotify": "https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h"
-        },
-        "release_date": "2021",
-        "size": "150"
-    };
-
-    let reviewDummy = {
-        ...albumDummy,
-        user: "Ligma Johnson",
-        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-        review: "Harry has done it yet again.",
-        rating: 5,
-    };
 
     return (
         <>
@@ -139,10 +116,10 @@ function Profile() {
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-center gap-5">
+                            {/* <Album album = {albumDummy} />
                             <Album album = {albumDummy} />
                             <Album album = {albumDummy} />
-                            <Album album = {albumDummy} />
-                            <Album album = {albumDummy} />
+                            <Album album = {albumDummy} /> */}
                         </div>
                 </div>
                 
@@ -154,7 +131,7 @@ function Profile() {
                 {reviewsNew?.data.slice(0, 2).map((review, index, array) => (
                     <div key={index}>
                         <Review review={review} />
-                        {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                        {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
                 ))} 
                 <div className="pb-10" /> 
@@ -163,8 +140,10 @@ function Profile() {
             <Titles title="Popular Reviews"/>
                 {reviewsPopular?.data.slice(0, 2).map((review, index, array) => (
                     <div key={index}>
+
+                        {console.log(reviewsPopular.data)}
                         <Review review={review} />
-                        {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                        {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
                 ))}
                 <div className="pb-10" /> 
