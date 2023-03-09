@@ -59,55 +59,63 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       appBar: AppBar(
           title: const Text('Edit Profile'),
           backgroundColor: Colors.transparent),
-      body: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              TextFormField(
-                initialValue: widget.initialNickname,
-                decoration: InputDecoration(
-                  labelText: 'Nickname',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  fillColor: Colors.grey[900],
-                  filled: true,
+      body: GestureDetector(
+        onTap: () {
+          final FocusScopeNode currentScope = FocusScope.of(context);
+          if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        },
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                TextFormField(
+                  initialValue: widget.initialNickname,
+                  decoration: InputDecoration(
+                    labelText: 'Nickname',
+                    labelStyle: const TextStyle(color: Colors.white),
+                    fillColor: Colors.grey[900],
+                    filled: true,
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  onChanged: (value) {
+                    setState(() {
+                      _nickname = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a nickname';
+                    }
+                    return null;
+                  },
                 ),
-                keyboardType: TextInputType.multiline,
-                onChanged: (value) {
-                  setState(() {
-                    _nickname = value;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a nickname';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                initialValue: widget.initialBio,
-                decoration: InputDecoration(
-                  labelText: 'Biography',
-                  labelStyle: const TextStyle(color: Colors.white),
-                  fillColor: Colors.grey[900],
-                  filled: true,
+                const SizedBox(height: 20),
+                TextFormField(
+                  initialValue: widget.initialBio,
+                  decoration: InputDecoration(
+                    labelText: 'Biography',
+                    labelStyle: const TextStyle(color: Colors.white),
+                    fillColor: Colors.grey[900],
+                    filled: true,
+                  ),
+                  keyboardType: TextInputType.multiline,
+                  onChanged: (value) {
+                    setState(() {
+                      _bio = value;
+                    });
+                  },
                 ),
-                keyboardType: TextInputType.multiline,
-                onChanged: (value) {
-                  setState(() {
-                    _bio = value;
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _updateUser,
-                child: const Text('Save Profile'),
-              ),
-            ],
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _updateUser,
+                  child: const Text('Save Profile'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
