@@ -19,10 +19,11 @@ function AlbumDetails() {
     const [ rating, setRating ] = useState(0);
     const [ reviewText, setReviewText ] = useState("")
     const { state } = useLocation();
-    const { name, year, artist, img, link, id} = state;
+    const { name, year, artist, img, link, id } = state;
     const currentUser = localStorage.getItem("username");
 
-    const {isLoading, data, error, refetch: refetchReview} = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    const { isLoading, data, error, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    const { data: favoriteAlbums, refetch: refecthFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
     
     useEffect(() => {
         setReviewText(data?.data.review_text);
@@ -48,7 +49,29 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refetchReview();}});
+    }, {onSuccess: () => {refetchReview();}} );
+
+    const addFavoriteAlbum = useMutation(() => { 
+        return axios.post(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, {}, 
+            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            .then((res) => {
+                return res;
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, {onSuccess: () => {refecthFavoriteAlbums();}} );
+
+    const deleteFavoriteAlbum = useMutation(() => { 
+        return axios.delete(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, 
+            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            .then((res) => {
+                return res;
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, {onSuccess: () => {refecthFavoriteAlbums();}} );
 
     const ratingChanged = (newRating) => {
         setRating(newRating*2);
@@ -58,28 +81,14 @@ function AlbumDetails() {
         rate.mutate({rating: rating, review_text: reviewText})
     }
 
-    let albumDummy = { 
-        "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
-        "name": "Harry's House",
-        "artists": [
-            {
-                "name": "Harry Styles"
-            }
-        ],
-        "external_urls": {
-            "spotify": "https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h"
-        },
-        "release_date": "2021",
-        "size": "150"
-    };
+    const addToFavoriteAlbums = () => {
+        addFavoriteAlbum.mutate();
+    }
 
-    let reviewDummy = {
-        ...albumDummy,
-        user: "Ligma Johnson",
-        profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-        review: "Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.Harry has done it yet again.",
-        rating: 5,
-    };
+    const removeFromFavoriteAlbums = () => {
+        deleteFavoriteAlbum.mutate();
+    }
+
 
     return (
         <div className="max-w-5xl mx-auto">
@@ -94,8 +103,24 @@ function AlbumDetails() {
                                     <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
                                 </div>
                             }
-                            <button className="btn btn-xs bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2">Add to Favorite Albums</button>
-                            <button className="btn btn-xs bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2">Add to Listen Later</button>
+
+                            {favoriteAlbums?.data.some((album) => album.id === id) ? (
+                                <button 
+                                    className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
+                                    onClick={removeFromFavoriteAlbums}
+                                >
+                                    Remove From Favorite Albums
+                                </button>
+                            ) : (
+                                <button 
+                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2"
+                                    onClick={addToFavoriteAlbums}
+                                >
+                                    Add to Favorite Albums
+                                </button>
+                            )}
+
+                            <button className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2">Add to Listen Later</button>
                     </div>
                     
                     <div className="pl-10 flex flex-row gap-10">
@@ -202,23 +227,23 @@ function AlbumDetails() {
                 
                 <div className="pt-10">
                     <Titles title="Reviews From Friends" />
-                    <AlbumDetailsReview review={ reviewDummy } />
+                    {/* <AlbumDetailsReview review={ reviewDummy } />
                     <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <AlbumDetailsReview review={ reviewDummy }/>
+                    <AlbumDetailsReview review={ reviewDummy }/> */}
                 </div>
 
                 <div className="pt-10">
                     <Titles title="Popular Reviews" />
-                    <AlbumDetailsReview review={ reviewDummy } />
+                    {/* <AlbumDetailsReview review={ reviewDummy } />
                     <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <AlbumDetailsReview review={ reviewDummy }/>
+                    <AlbumDetailsReview review={ reviewDummy }/> */}
                 </div>
 
                 <div className="pt-10">
                     <Titles title="Recent Reviews" />
-                    <AlbumDetailsReview review={ reviewDummy } />
+                    {/* <AlbumDetailsReview review={ reviewDummy } />
                     <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                    <AlbumDetailsReview review={ reviewDummy }/>
+                    <AlbumDetailsReview review={ reviewDummy }/> */}
                 </div>
             </div>
         </div>
