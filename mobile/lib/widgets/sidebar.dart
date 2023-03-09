@@ -147,7 +147,7 @@ class _SidebarState extends State<Sidebar> {
               onTap: () {
                 Amplify.Auth.signOut().then(
                   (_) {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const Login(),

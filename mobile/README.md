@@ -17,8 +17,6 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
 
 ## Demo things
 
-app bars
-
 Test on physical device
 
 API

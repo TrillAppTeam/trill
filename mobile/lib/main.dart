@@ -27,8 +27,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: 'Trill',
       theme: ThemeData(
-        primaryColor: const Color(0xFFBC6AAB),
-        scaffoldBackgroundColor: const Color(0x321A1B29),
+        scaffoldBackgroundColor: const Color(0xFF1A1B29),
         fontFamily: 'Source Sans Pro',
         textTheme: Typography.whiteMountainView,
         inputDecorationTheme: const InputDecorationTheme(
