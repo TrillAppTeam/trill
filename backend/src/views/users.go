@@ -9,7 +9,7 @@ type User struct {
 	Username       string `json:"username"`
 	Bio            string `json:"bio"`
 	Email          string `json:"email,omitempty"`
-	Nickname       string `json:"nickname,omitempty"`
+	Nickname       string `json:"nickname"`
 	ProfilePicture string `json:"profile_picture"`
 }
 
