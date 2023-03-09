@@ -149,15 +149,15 @@ function Profile() {
 
             {/* Recent Reviews: Last 2 reviews from the user */}
             <Titles title="Recent Reviews"/>
-            <Review review={ reviewDummy } />
+            {/* <Review review={ reviewDummy } />
             <div className="border-t border-gray-600 max-w-5xl mx-auto m-4" />
-            <Review review={ reviewDummy }/>
+            <Review review={ reviewDummy }/> */}
 
             {/* Popular Reviews: Two most popular reviews by likes, by the user */}
             <Titles title="Popular Reviews"/>
-            <Review review={ reviewDummy } />
+            {/* <Review review={ reviewDummy } />
             <div className="border-t border-gray-600 max-w-5xl mx-auto m-4" />
-            <Review review={ reviewDummy }/>
+            <Review review={ reviewDummy }/> */}
 
             {/* Following: Avatars of people the user follows */}
             <Titles title="Following"/>
