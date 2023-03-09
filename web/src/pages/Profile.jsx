@@ -26,6 +26,7 @@ function Profile() {
     const { data: followers, refetch: refetchFollowers } = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
     const { data: reviewsNew } = useQuery([`reviews?sort=newest&username=${userData?.data.username}`]);
     const { data: reviewsPopular } = useQuery([`reviews?sort=popular&username=${userData?.data.username}`]);
+    const { data: favoriteAlbums } = useQuery([`favoritealbums?username=${userData?.data.username}`]);
     
     const follow = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, {}, 
@@ -115,11 +116,10 @@ function Profile() {
             <div className="flex flex-row justify-between flex-wrap mx-auto mb-24">
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
-                        <div className="text-white flex flex-row justify-center gap-5">
-                            {/* <Album album = {albumDummy} />
-                            <Album album = {albumDummy} />
-                            <Album album = {albumDummy} />
-                            <Album album = {albumDummy} /> */}
+                        <div className="text-white flex flex-row justify-left gap-5">
+                            {favoriteAlbums?.data.map((favoriteAlbum) => (
+                                <Album album={{...favoriteAlbum, size: "150"}} />
+                            ))} 
                         </div>
                 </div>
                 
@@ -140,8 +140,6 @@ function Profile() {
             <Titles title="Popular Reviews"/>
                 {reviewsPopular?.data.slice(0, 2).map((review, index, array) => (
                     <div key={index}>
-
-                        {console.log(reviewsPopular.data)}
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
