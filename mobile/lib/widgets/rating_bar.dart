@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-class StaticRatingBar extends StatelessWidget {
-  const StaticRatingBar({
+class ReviewRatingBar extends StatelessWidget {
+  const ReviewRatingBar({
     Key? key,
     required this.rating,
     required this.size,
+    this.isStatic = true,
+    this.onRatingUpdate,
   }) : super(key: key);
 
   final int rating;
   final double size;
+
+  final bool isStatic;
+  final void Function(double)? onRatingUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +24,13 @@ class StaticRatingBar extends StatelessWidget {
       allowHalfRating: true,
       itemSize: size,
       itemBuilder: (context, index) {
-        return const Icon(
+        return Icon(
           Icons.star,
-          color: Colors.white,
+          color: isStatic ? Colors.white : Colors.yellow,
         );
       },
-      onRatingUpdate: (rating) {},
-      ignoreGestures: true,
+      onRatingUpdate: isStatic ? (rating) {} : onRatingUpdate!,
+      ignoreGestures: isStatic,
     );
   }
 }

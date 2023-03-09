@@ -5,6 +5,8 @@ import 'package:trill/pages/loading_screen.dart';
 import '../../widgets/album_row.dart';
 import '../album_details.dart';
 
+// todo: swipe or click edit button to delete listen later
+
 class ListenLaterScreen extends StatefulWidget {
   const ListenLaterScreen({super.key});
 
@@ -40,6 +42,7 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF1A1B29),
       appBar: AppBar(
         title: const Text('Listen Later'),
       ),

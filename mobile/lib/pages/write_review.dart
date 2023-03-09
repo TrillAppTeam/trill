@@ -27,7 +27,7 @@ class _WriteReviewScreenState extends State<WriteReviewScreen> {
   void initState() {
     super.initState();
     Future.delayed(
-      Duration(),
+      const Duration(),
       () => SystemChannels.textInput.invokeMethod('TextInput.hide'),
     );
   }

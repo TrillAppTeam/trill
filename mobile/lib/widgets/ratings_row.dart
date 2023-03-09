@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/album_details.dart';
-import 'package:trill/widgets/static_rating_bar.dart';
+import 'package:trill/widgets/rating_bar.dart';
 
 class RatingsRow extends StatefulWidget {
   final String title;
@@ -67,7 +67,7 @@ class _RatingsRowState extends State<RatingsRow> {
                             ),
                           ),
                           const SizedBox(height: 10),
-                          StaticRatingBar(rating: review.rating, size: 12),
+                          ReviewRatingBar(rating: review.rating, size: 12),
                         ],
                       );
                     },

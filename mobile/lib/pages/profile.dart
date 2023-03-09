@@ -72,10 +72,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               backgroundColor: const Color(0xFF1A1B29),
               appBar: _isLoggedIn ? null : AppBar(),
               body: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 30,
-                ),
                 child: Column(
                   children: [
                     _buildUserDetails(),
@@ -84,19 +80,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 15),
                     _buildUserStats(),
                     const SizedBox(height: 15),
-                    FutureBuilder<List<SpotifyAlbum>?>(
-                      future: getFavoriteAlbums(_user.username),
-                      builder: (context, snapshot) {
-                        return AlbumsRow(
-                          title: _isLoggedIn
-                              ? 'Your Favorite Albums'
-                              : '${_user.nickname}\'s Favorite Albums',
-                          albums: snapshot.hasData ? snapshot.data! : [],
-                          emptyText: _isLoggedIn
-                              ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
-                              : 'No favorite albums yet',
-                        );
-                      },
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: FutureBuilder<List<SpotifyAlbum>?>(
+                        future: getFavoriteAlbums(_user.username),
+                        builder: (context, snapshot) {
+                          return AlbumsRow(
+                            title: _isLoggedIn
+                                ? 'Your Favorite Albums'
+                                : '${_user.nickname}\'s Favorite Albums',
+                            albums: snapshot.hasData ? snapshot.data! : [],
+                            emptyText: _isLoggedIn
+                                ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
+                                : 'No favorite albums yet',
+                          );
+                        },
+                      ),
                     ),
                     const SizedBox(height: 15),
                     const Divider(
@@ -168,6 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildUserStats() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -185,7 +185,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )
           ],
         ),
-        const Spacer(),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -199,7 +198,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Text("Albums This Month", style: TextStyle(fontSize: 11))
           ],
         ),
-        const Spacer(),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -216,7 +214,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )
           ],
         ),
-        const Spacer(),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -319,7 +316,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   review.isLiked = isLiked;
                 });
               },
-              clickableUsername: !_isLoggedIn,
+              isMyReview: _isLoggedIn,
+              onUpdated: _isLoggedIn
+                  ? (rating, reviewText) async {
+                      final success = await createOrUpdateReview(
+                          review.albumID, rating, reviewText);
+                      if (success) {
+                        setState(() {
+                          review.rating = rating;
+                          review.reviewText = reviewText;
+                        });
+                      }
+                    }
+                  : (rating, reviewText) {},
             ),
           ],
         );

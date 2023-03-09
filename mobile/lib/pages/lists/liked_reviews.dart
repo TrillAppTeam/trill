@@ -11,45 +11,29 @@ class LikedReviewsScreen extends StatefulWidget {
 }
 
 class _LikedReviewsScreenState extends State<LikedReviewsScreen> {
-  List<TestLike>? _likeResults = [
-    TestLike("prathik2001", 3924, "Dierks Bentley", "Dierks Bentley", 2004,
-        "Blablabla", 5, 37),
-    TestLike("prathik2001", 3924, "Dierks Bentley", "Dierks Bentley", 2004,
-        "Blablabla", 5, 37),
-    TestLike("prathik2001", 3924, "Dierks Bentley", "Dierks Bentley", 2004,
-        "Blablabla", 5, 37)
-  ];
   bool _isLoading = false;
   List<Review>? _reviews;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserDetails();
-  }
-
-  Future<void> _fetchUserDetails() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    //List<Like>? userResults = await getLikes();
-
-    setState(() {
-      _likeResults = _likeResults!;
-      _isLoading = false;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Liked Reviews'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: _buildReviews(),
+    return RefreshIndicator(
+      onRefresh: () => Future<void>.value(null),
+      backgroundColor: const Color(0xFF1A1B29),
+      color: const Color(0xFF3FBCF4),
+      child: Scaffold(
+        backgroundColor: const Color(0xFF1A1B29),
+        appBar: AppBar(
+          title: const Text('Liked Reviews'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: _buildReviews(),
+        ),
       ),
     );
   }

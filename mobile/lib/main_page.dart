@@ -104,73 +104,76 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     // todo: set trill loading screen if user info not set
     return !_userInfoSet
-        ? const Scaffold(body: LoadingScreen())
-        :  Scaffold(
-              backgroundColor: const Color(0xFF1A1B29),
-              appBar: AppBar(backgroundColor: const Color(0xFF374151)),
-              drawer: Sidebar(
-                  user: _user,
-                  onUserUpdated: (PublicUser user) {
-                    _user = PrivateUser(
-                      username: user.username,
-                      bio: user.bio,
-                      nickname: user.nickname,
-                      profilePic: user.profilePic,
-                      email: _user.email,
-                    );
-                  }),
-              // IndexedStack keeps the states of each page
-              body: IndexedStack(
-                index: _currentIndex,
-                children: _screens,
+        ? const Scaffold(
+            backgroundColor: Color(0xFF1A1B29),
+            body: LoadingScreen(),
+          )
+        : Scaffold(
+            backgroundColor: const Color(0xFF1A1B29),
+            appBar: AppBar(backgroundColor: const Color(0xFF374151)),
+            drawer: Sidebar(
+                user: _user,
+                onUserUpdated: (PublicUser user) {
+                  _user = PrivateUser(
+                    username: user.username,
+                    bio: user.bio,
+                    nickname: user.nickname,
+                    profilePic: user.profilePic,
+                    email: _user.email,
+                  );
+                }),
+            // IndexedStack keeps the states of each page
+            body: IndexedStack(
+              index: _currentIndex,
+              children: _screens,
+            ),
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFFBC6AAB).withOpacity(.2),
+                    blurRadius: 15,
+                  ),
+                ],
               ),
-              bottomNavigationBar: Container(
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0xFFBC6AAB).withOpacity(.2),
-                      blurRadius: 15,
-                    ),
-                  ],
-                ),
-                child: BottomNavigationBar(
-                  type: BottomNavigationBarType.fixed,
-                  backgroundColor: const Color(0xFF1A1B29),
-                  selectedItemColor: const Color(0xFFBC6AAB),
-                  unselectedItemColor: const Color(0xFF888888),
-                  showUnselectedLabels: false,
-                  iconSize: 30,
-                  elevation: 10,
-                  currentIndex: _currentIndex,
-                  onTap: (index) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
-                  },
-                  items: const [
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.home_outlined),
-                      activeIcon: Icon(Icons.home),
-                      label: '____',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.search_outlined),
-                      activeIcon: Icon(Icons.search),
-                      label: '____',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.people_alt_outlined),
-                      activeIcon: Icon(Icons.people_alt),
-                      label: '____',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.person_outline_outlined),
-                      activeIcon: Icon(Icons.person),
-                      label: '____',
-                    ),
-                  ],
-                ),
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: const Color(0xFF1A1B29),
+                selectedItemColor: const Color(0xFFBC6AAB),
+                unselectedItemColor: const Color(0xFF888888),
+                showUnselectedLabels: false,
+                iconSize: 30,
+                elevation: 10,
+                currentIndex: _currentIndex,
+                onTap: (index) {
+                  setState(() {
+                    _currentIndex = index;
+                  });
+                },
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.home_outlined),
+                    activeIcon: Icon(Icons.home),
+                    label: '____',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.search_outlined),
+                    activeIcon: Icon(Icons.search),
+                    label: '____',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.people_alt_outlined),
+                    activeIcon: Icon(Icons.people_alt),
+                    label: '____',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person_outline_outlined),
+                    activeIcon: Icon(Icons.person),
+                    label: '____',
+                  ),
+                ],
               ),
-        );
+            ),
+          );
   }
 }

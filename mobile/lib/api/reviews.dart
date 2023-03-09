@@ -175,8 +175,8 @@ class Review {
   final int reviewID;
   final String username;
   final String albumID;
-  final int rating;
-  final String reviewText;
+  int rating;
+  String reviewText;
   final DateTime createdAt;
   final DateTime updatedAt;
   int likes;

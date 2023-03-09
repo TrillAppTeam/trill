@@ -1,6 +1,6 @@
 # trill
 
-:)
+:(
 
 ## Amplify Configuration Instructions
 
@@ -17,6 +17,8 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
 
 ## Demo things
 
+app bars
+
 Test on physical device
 
 API
@@ -26,8 +28,17 @@ API
 UI!!
 - Copy web for everything
 - Loading page
+- Fix overflowing review tiles
 
 Remember to clean database before demo to avoid crashes lol
 
 Bugs:
 - Can't scroll to the bottom of album details reviews because I put it in a sizedbox. When I don't put it in a sizedbox, the app crashes since the listview expands vertically infinitely. I have spent probably 15 hours trying to fix this over the past week and chatgpt can't fix it so I give up. It has to do with putting the listview in the tabbarview that changed the vertical constraints of the listview, since it worked fine before that, but no matter what i've tried i still get the same error
+
+---
+
+## Stretch goals
+
+- Link to Spotify album url and open up album in Spotify app
+  - Web has this but it's much hard/maybe impossible on mobile
+- Easier way to delete listen later and favorite albums

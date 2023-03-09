@@ -5,17 +5,13 @@ import 'package:trill/api/albums.dart';
 import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/loading_screen.dart';
-import 'package:trill/pages/write_review.dart';
 import 'package:trill/widgets/favorite_button.dart';
 import 'package:trill/widgets/listen_later_button.dart';
 import 'package:trill/widgets/review_tile.dart';
-import 'package:trill/widgets/static_rating_bar.dart';
+import 'package:trill/widgets/rating_bar.dart';
 
 // todo: add review button
 // todo: refresh upon review added
-
-// todo: add to listenlater, add to favorite albums
-// stretch: open in spotify
 
 // todo: create review only if user doesn't have review
 // todo: update and delete own review
@@ -114,7 +110,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         backgroundColor: const Color(0xFF1A1B29),
         appBar: AppBar(),
         body: _isLoading
-            ? Container()
+            ? const LoadingScreen()
             : SingleChildScrollView(
                 child: Column(
                   children: [
@@ -189,7 +185,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                 Row(
                   children: [
                     // todo: get average rating
-                    const StaticRatingBar(rating: 7, size: 20),
+                    const ReviewRatingBar(rating: 7, size: 20),
                     const SizedBox(width: 5),
                     Text(
                       '(${_numReviews.toString()})',
@@ -320,7 +316,19 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   review.isLiked = isLiked;
                 });
               },
-              clickableUsername: _loggedInUser != review.username,
+              isMyReview: _loggedInUser == review.username,
+              onUpdated: _loggedInUser == review.username
+                  ? (rating, reviewText) async {
+                      final success = await createOrUpdateReview(
+                          widget.albumID, rating, reviewText);
+                      if (success) {
+                        setState(() {
+                          review.rating = rating;
+                          review.reviewText = reviewText;
+                        });
+                      }
+                    }
+                  : (rating, reviewText) {},
             ),
           ],
         );
