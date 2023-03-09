@@ -26,7 +26,10 @@ API
 UI!!
 - Copy web for everything
 - Loading page
+
+Things
 - Fix overflowing review tiles
+- Fix review text not updating when trying to edit after creating new review
 
 Remember to clean database before demo to avoid crashes lol
 
