@@ -51,7 +51,7 @@ function Profile() {
     }, {onSuccess: () => {refetchFollowing(); refetchFollowers();}});
 
     useEffect(() => {
-        if (followers?.data.users.includes(localStorage.getItem('username'))) {
+        if (followers?.data?.users?.includes(localStorage.getItem('username'))) {
             setIsFollowing(true);
         } else {
             setIsFollowing(false);
@@ -109,7 +109,7 @@ function Profile() {
                 </div>
               
                 <div className="pt-5">
-                    <UserStats albums={reviewsNew?.data.length} followers={followers?.data.users.length} following={following?.data.users.length}/>
+                    <UserStats albums={reviewsNew?.data.length} followers={followers?.data?.users?.length} following={following?.data?.users?.length}/>
                 </div>
             </div>
 
@@ -117,7 +117,7 @@ function Profile() {
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-left gap-5">
-                            {favoriteAlbums?.data.map((favoriteAlbum) => (
+                            {favoriteAlbums?.data?.map((favoriteAlbum) => (
                                 <Album album={{...favoriteAlbum, size: "150"}} />
                             ))} 
                         </div>
@@ -128,7 +128,7 @@ function Profile() {
 
             {/* Recent Reviews: Last 2 reviews from the user */}
             <Titles title="Recent Reviews"/>
-                {reviewsNew?.data.slice(0, 2).map((review, index, array) => (
+                {reviewsNew?.data?.slice(0, 2).map((review, index, array) => (
                     <div key={index}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
@@ -138,7 +138,7 @@ function Profile() {
 
             {/* Popular Reviews: Two most popular reviews by likes, by the user */}
             <Titles title="Popular Reviews"/>
-                {reviewsPopular?.data.slice(0, 2).map((review, index, array) => (
+                {reviewsPopular?.data?.slice(0, 2).map((review, index, array) => (
                     <div key={index}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
@@ -150,7 +150,7 @@ function Profile() {
             <Titles title="Following"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {following?.data.users.map(user => {return <Avatar key={user} user={{profilePic: null, username: user, size: '11'}}/>})}
+                    {following?.data?.users?.map(user => {return <Avatar key={user} user={{profilePic: null, username: user, size: '11'}}/>})}
                 </div>
             </div>
 
@@ -158,7 +158,7 @@ function Profile() {
             <Titles title="Followers"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {followers?.data.users.map(user => {return <Avatar key={user} user={{profilePic: null, username: user, size: '11'}}/>})}
+                    {followers?.data?.users?.map(user => {return <Avatar key={user} user={{profilePic: null, username: user, size: '11'}}/>})}
                 </div>
             </div>
         </div>}
