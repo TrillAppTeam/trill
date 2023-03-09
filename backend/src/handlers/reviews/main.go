@@ -108,7 +108,6 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: ErrorSort.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	var followingModels *[]models.Follows = nil
 	reviewQuery := models.Review{
 		Username: func() string {
 			if hasUserParam {
@@ -119,9 +118,10 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		AlbumID: albumID,
 	}
 
+	var users *[]models.User = nil
 	if following {
 		var err error
-		followingModels, err = models.GetFollowing(ctx, requestor)
+		users, err = models.GetFollowing(ctx, requestor)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}
@@ -135,7 +135,7 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 	case "oldest":
 		fallthrough
 	case "popular":
-		reviews, err = models.GetReviews(ctx, &reviewQuery, followingModels, sort)
+		reviews, err = models.GetReviews(ctx, &reviewQuery, users, sort)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}

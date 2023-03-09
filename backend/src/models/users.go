@@ -7,13 +7,8 @@ import (
 	"net/http"
 
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
-	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
 	"gorm.io/gorm"
 )
-
-type PublicCognitoUser struct {
-	Nickname string
-}
 
 type PrivateCognitoUser struct {
 	Email string
@@ -21,41 +16,9 @@ type PrivateCognitoUser struct {
 
 type User struct {
 	Username       string `json:"username" gorm:"varchar(128);primarykey"`
+	Nickname       string `json:"nickname" gorm:"varchar(128)"`
 	Bio            string `json:"bio" gorm:"varchar(1024)"`
 	ProfilePicture string `json:"profile_picture" gorm:"varchar(512)"`
-}
-
-func GetPublicCognitoUser(ctx context.Context, username string) (*PublicCognitoUser, error) {
-	cognitoClient, err := InitCognitoClient(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	cognitoUserInput := cognitoidentityprovider.AdminGetUserInput{
-		UserPoolId: &cognitoClient.UserPoolId,
-		Username:   &username,
-	}
-
-	cogInfo, err := cognitoClient.Client.AdminGetUser(ctx, &cognitoUserInput)
-	if err != nil {
-		return nil, err
-	}
-
-	// get email from user attributes
-	nickname := ""
-	for _, v := range cogInfo.UserAttributes {
-		if *v.Name == "nickname" {
-			nickname = *v.Value
-		}
-	}
-
-	if len(nickname) == 0 {
-		return nil, errors.New("could not find user nickname")
-	}
-
-	return &PublicCognitoUser{
-		Nickname: nickname,
-	}, nil
 }
 
 func GetPrivateCognitoUser(ctx context.Context, authToken string) (*PrivateCognitoUser, error) {
@@ -110,6 +73,20 @@ func GetUser(ctx context.Context, username string) (*User, error) {
 	return &user, nil
 }
 
+func GetUsers(ctx context.Context, usernames []string) (*[]User, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var users []User
+	if err := db.Where("username IN ?", usernames).Find(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return &users, nil
+}
+
 func SearchUser(ctx context.Context, username string) (*[]User, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
@@ -134,28 +111,6 @@ func UpdateUser(ctx context.Context, user *User) error {
 	updatedUser := db.Save(&user)
 	if updatedUser.Error != nil {
 		return updatedUser.Error
-	}
-
-	return nil
-}
-
-func UpdatePublicCognitoUser(ctx context.Context, user *PublicCognitoUser, authToken string) error {
-	cognitoClient, err := InitCognitoClient(ctx)
-	if err != nil {
-		return err
-	}
-
-	userAttributes := make([]types.AttributeType, 1)
-	key := "nickname"
-	userAttributes[0] = types.AttributeType{Name: &key, Value: &user.Nickname}
-	cognitoUserInput := cognitoidentityprovider.UpdateUserAttributesInput{
-		AccessToken:    &authToken,
-		UserAttributes: userAttributes,
-	}
-
-	_, err = cognitoClient.Client.UpdateUserAttributes(ctx, &cognitoUserInput)
-	if err != nil {
-		return err
 	}
 
 	return nil

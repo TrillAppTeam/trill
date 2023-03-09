@@ -41,7 +41,7 @@ func GetReview(ctx context.Context, username string, albumID string) (*Review, e
 	}
 }
 
-func GetReviews(ctx context.Context, review *Review, following *[]Follows, sort string) (*[]Review, error) {
+func GetReviews(ctx context.Context, review *Review, following *[]User, sort string) (*[]Review, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -54,11 +54,11 @@ func GetReviews(ctx context.Context, review *Review, following *[]Follows, sort 
 
 	query := make(map[string]interface{})
 	if following != nil {
-		followingUsernames := make([]string, len(*following))
+		usernames := make([]string, len(*following))
 		for i, f := range *following {
-			followingUsernames[i] = f.Following
+			usernames[i] = f.Username
 		}
-		query[fmt.Sprintf("%susername", prepend)] = followingUsernames
+		query[fmt.Sprintf("%susername", prepend)] = usernames
 	}
 
 	if len(review.AlbumID) != 0 {

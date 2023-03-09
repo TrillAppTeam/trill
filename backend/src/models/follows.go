@@ -9,7 +9,8 @@ type Follows struct {
 	Following string `gorm:"foreignKey:Username"`
 }
 
-func GetFollowing(ctx context.Context, followee string) (*[]Follows, error) {
+// TODO consolidate GetFollowing and GetFollowers
+func GetFollowing(ctx context.Context, followee string) (*[]User, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -20,10 +21,19 @@ func GetFollowing(ctx context.Context, followee string) (*[]Follows, error) {
 		return nil, err
 	}
 
-	return &following, nil
+	usernames := make([]string, len(following))
+	for i, f := range following {
+		usernames[i] = f.Following
+	}
+	users, err := GetUsers(ctx, usernames)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
-func GetFollowers(ctx context.Context, followee string) (*[]Follows, error) {
+func GetFollowers(ctx context.Context, followee string) (*[]User, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -34,7 +44,16 @@ func GetFollowers(ctx context.Context, followee string) (*[]Follows, error) {
 		return nil, err
 	}
 
-	return &followers, nil
+	usernames := make([]string, len(followers))
+	for i, f := range followers {
+		usernames[i] = f.Followee
+	}
+	users, err := GetUsers(ctx, usernames)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func CreateFollow(ctx context.Context, follows *Follows) error {

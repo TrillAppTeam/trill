@@ -26,6 +26,7 @@ func create(ctx context.Context, req CognitoEvent) (CognitoEvent, error) {
 
 	user := models.User{
 		Username:       req.UserName,
+		Nickname:       req.Request.UserAttributes["nickname"],
 		Bio:            "",
 		ProfilePicture: "",
 	}
