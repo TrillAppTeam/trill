@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:trill/api/follows.dart';
 import 'package:trill/api/likes.dart';
 import '../../api/reviews.dart';
-import '../../api/users.dart';
 import '../../widgets/detailed_review_tile.dart';
-import '../../widgets/review_row.dart';
-import '../../widgets/user_row.dart';
-import '../profile.dart';
 
 class LikedReviewsScreen extends StatefulWidget {
   const LikedReviewsScreen({super.key});
@@ -54,7 +49,7 @@ class _LikedReviewsScreenState extends State<LikedReviewsScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: _buildReviews()
+        child: _buildReviews(),
       ),
     );
   }
@@ -69,8 +64,8 @@ class _LikedReviewsScreenState extends State<LikedReviewsScreen> {
             index == 0
                 ? const SizedBox(height: 10)
                 : const Divider(
-              color: Colors.grey,
-            ),
+                    color: Colors.grey,
+                  ),
             DetailedReviewTile(
               review: review,
               onLiked: (isLiked) {

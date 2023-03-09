@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/albums.dart';
-import 'package:trill/api/follows.dart';
-import '../../api/users.dart';
+import 'package:trill/api/favorite_albums.dart';
+import 'package:trill/pages/loading_screen.dart';
 import '../../widgets/album_row.dart';
-import '../../widgets/review_row.dart';
-import '../../widgets/user_row.dart';
 import '../album_details.dart';
-import '../profile.dart';
 
 class ListenLaterScreen extends StatefulWidget {
   const ListenLaterScreen({super.key});
@@ -16,56 +13,61 @@ class ListenLaterScreen extends StatefulWidget {
 }
 
 class _ListenLaterScreenState extends State<ListenLaterScreen> {
-  List<SpotifyAlbum>? _albumResults;
+  late List<SpotifyAlbum> _favoriteAlbums;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    _fetchUserDetails();
+    _fetchListenLater();
   }
 
-  Future<void> _fetchUserDetails() async {
+  Future<void> _fetchListenLater() async {
     setState(() {
       _isLoading = true;
     });
 
-    List<SpotifyAlbum>? albumResults = await searchSpotifyAlbums("speak now");
+    final favoriteAlbums = await getFavoriteAlbums();
 
-    setState(() {
-      _albumResults = albumResults!;
-      _isLoading = false;
-    });
+    if (favoriteAlbums != null) {
+      setState(() {
+        _favoriteAlbums = favoriteAlbums;
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Listen Later'),
-        ),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            :  ListView.builder(
-                  itemCount: _albumResults?.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => AlbumDetailsScreen(
-                              albumID: _albumResults![index].id,
-                            ),
+      appBar: AppBar(
+        title: const Text('Listen Later'),
+      ),
+      body: _isLoading
+          ? const LoadingScreen()
+          : RefreshIndicator(
+              onRefresh: _fetchListenLater,
+              backgroundColor: const Color(0xFF1A1B29),
+              color: const Color(0xFF3FBCF4),
+              child: ListView.builder(
+                itemCount: _favoriteAlbums.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AlbumDetailsScreen(
+                            albumID: _favoriteAlbums[index].id,
                           ),
-                        );
-                      },
-                      child: AlbumRow(album: _albumResults![index]),
-                    );
-                  },
-                ),
-            );
+                        ),
+                      );
+                    },
+                    child: AlbumRow(album: _favoriteAlbums[index]),
+                  );
+                },
+              ),
+            ),
+    );
   }
 }
-
-// use SEARCH album format
