@@ -8,7 +8,7 @@ import axios from 'axios';
 function Home() {
     // Leaving this for testing, use first one for local testing and larger one for pushing to main
     // const isLoading = false;
-    const { isLoading, error} = useQuery(['fetchToken'], () => 
+    const { isLoading, error } = useQuery(['fetchToken'], () => 
         axios({
             method: 'post',
             url: 'https://trill.auth.us-east-1.amazoncognito.com/oauth2/token',

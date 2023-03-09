@@ -10,22 +10,31 @@ type User struct {
 	Bio            string `json:"bio"`
 	Email          string `json:"email,omitempty"`
 	Nickname       string `json:"nickname,omitempty"`
-	ProfilePicture string `json:"profilePicture"`
+	ProfilePicture string `json:"profile_picture"`
 }
 
 // Combines the two JSON's to one string
-func MarshalUser(ctx context.Context, userModel *models.User, cognitoUserModel *models.CognitoUser) (string, error) {
+func MarshalFullUser(ctx context.Context, userModel *models.User, publicCognitoUserModel *models.PublicCognitoUser,
+	privateCognitoUserModel *models.PrivateCognitoUser) (string, error) {
 	user := User{
 		Username:       userModel.Username,
 		Bio:            userModel.Bio,
-		Email:          cognitoUserModel.Email,
-		Nickname:       cognitoUserModel.Nickname,
+		Email:          privateCognitoUserModel.Email,
+		Nickname:       publicCognitoUserModel.Nickname,
 		ProfilePicture: userModel.ProfilePicture,
 	}
 
 	return Marshal(ctx, user)
 }
 
+func MarshalUsers(ctx context.Context, userModels *[]models.User) (string, error) {
+	return Marshal(ctx, userModels)
+}
+
 func UnmarshalUser(ctx context.Context, marshalledUser string, userModel *models.User) error {
 	return Unmarshal(ctx, marshalledUser, userModel)
+}
+
+func UnmarshalPublicCognitoUser(ctx context.Context, marshalledPublicCognitoUser string, publicCognitoUserModel *models.PublicCognitoUser) error {
+	return Unmarshal(ctx, marshalledPublicCognitoUser, publicCognitoUserModel)
 }

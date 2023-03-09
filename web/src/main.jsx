@@ -32,7 +32,7 @@ const defaultQueryFn = async ({ queryKey }) => {
       'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
     }}).then((res) => {
       return res;
-  });
+  }).catch((err) => {return null});
   return data;
 }
 
@@ -97,6 +97,11 @@ const router = createBrowserRouter([
       },
       {
         path: "Profile",
+        element: <Profile />,
+        errorElement: <Error />
+      },
+      {
+        path: "Profile/:user",
         element: <Profile />,
         errorElement: <Error />
       },

@@ -1,3 +1,4 @@
+// Team Photos
 import Ashley from "/ashley.png"
 import Cathy from "/cathy.png"
 import Chris from "/chris.png"
@@ -5,29 +6,18 @@ import David from "/david.png"
 import Prathik from "/prathik.png"
 import Conrad from "/conrad.png"
 
+// Components
 import Album from "../components/Album"
 import Titles from "../components/Titles"
+
+// Partials
+import TrillTeamFavorites from "./TrillTeamFavorites"
 
 function TeamSection() {
     return (
         <section className="py-6 text-gray-100">
             
-             <div>
-                <Titles title="Trill Team Favorites"></Titles>
-                <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/f/f8/Taylor_Swift_-_Folklore.png", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Continuum_by_John_Mayer_%282006%29.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://m.media-amazon.com/images/I/51uCkvt4ZjL._UF1000,1000_QL80_.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/b/bf/SZA_-_Ctrl_cover.png", size: "100"}} />
-                    <Album album = {{ img: "https://i.scdn.co/image/ab67616d0000b273d58e537cea05c2156792c53d", size: "100"}} />
-                    <Album album = {{ img: "https://m.media-amazon.com/images/I/71+q4wh2+YL._UF1000,1000_QL80_.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://upload.wikimedia.org/wikipedia/en/thumb/d/da/Combs_growin_up.jpg/220px-Combs_growin_up.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://m.media-amazon.com/images/I/41kIEeScTiL._UF1000,1000_QL80_.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://media.pitchfork.com/photos/6380d5021628784965dd6626/1:1/w_600/Phoebe-Bridgers-Stranger-in-the-Alps.jpg", size: "100"}} />
-                    <Album album = {{ img: "https://media.pitchfork.com/photos/5929b665b1335d7bf169aa5e/1:1/w_600/916a09f4.jpg", size: "100"}} />
-                </div>
-                <p className="max-w-6xl mx-auto text-gray-400 pt-2 pb-10 text-left italic">Our team's top picks.</p>
-            </div>
+            <TrillTeamFavorites />
 
             <div className="container flex flex-col items-center justify-center p-4 mx-auto sm:p-10">
                 <p className="p-2 text-md font-medium tracking-wider text-center uppercase">Development team</p>

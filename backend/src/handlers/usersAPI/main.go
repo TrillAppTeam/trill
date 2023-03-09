@@ -29,7 +29,11 @@ func handler(ctx context.Context, req Request) (Response, error) {
 
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
-		return get(ctx, req)
+		if _, ok := req.QueryStringParameters["search"]; ok {
+			return search(ctx, req)
+		} else {
+			return get(ctx, req)
+		}
 	case "PUT":
 		return update(ctx, req)
 	default:
@@ -38,24 +42,54 @@ func handler(ctx context.Context, req Request) (Response, error) {
 	}
 }
 
-// GET: Returns user info
-func get(ctx context.Context, req Request) (Response, error) {
-	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
-	if !ok {
-		return Response{StatusCode: 500, Body: "failed to parse username"}, nil
-	}
-	user, err := models.GetUser(ctx, username)
-	if err != nil { // TODO: Better error handling
-		return Response{StatusCode: 500, Body: err.Error()}, nil
+func search(ctx context.Context, req Request) (Response, error) {
+	search, _ := req.QueryStringParameters["search"]
+	users, err := models.SearchUser(ctx, search)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
+	body, err := views.MarshalUsers(ctx, users)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	return Response{StatusCode: 200, Body: body, Headers: views.DefaultHeaders}, nil
+}
+
+func get(ctx context.Context, req Request) (Response, error) {
+	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
+	}
+
+	var body, userToGet string
 	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
-	cognitoUser, err := models.GetCognitoUser(ctx, authToken)
+	username, ok := req.QueryStringParameters["username"]
+	privateCognitoUser := &models.PrivateCognitoUser{}
+	if !ok { // get public + private info
+		var err error
+		userToGet = requestor
+		privateCognitoUser, err = models.GetPrivateCognitoUser(ctx, authToken)
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error()}, nil
+		}
+	} else { // get public info
+		userToGet = username
+	}
+
+	user, err := models.GetUser(ctx, userToGet)
+	if err != nil {
+		if httpErr, ok := err.(*models.HTTPError); ok {
+			return Response{StatusCode: httpErr.Code, Body: httpErr.Error()}, nil
+		}
+		return Response{StatusCode: 500, Body: err.Error()}, nil
+	}
+	publicCognitoUser, err := models.GetPublicCognitoUser(ctx, userToGet)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
-
-	body, err := views.MarshalUser(ctx, user, cognitoUser)
+	body, err = views.MarshalFullUser(ctx, user, publicCognitoUser, privateCognitoUser)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
@@ -72,14 +106,20 @@ func update(ctx context.Context, req Request) (Response, error) {
 	if !ok {
 		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
+	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
 
 	user, err := models.GetUser(ctx, username)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
+	publicCognitoUser := &models.PublicCognitoUser{}
 
 	if err = views.UnmarshalUser(ctx, req.Body, user); err != nil {
 		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
+	} else if err = views.UnmarshalPublicCognitoUser(ctx, req.Body, publicCognitoUser); err != nil {
+		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
+	} else if err = models.UpdatePublicCognitoUser(ctx, publicCognitoUser, authToken); err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	} else if err = models.UpdateUser(ctx, user); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
