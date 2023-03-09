@@ -52,7 +52,7 @@ let reviewDummy = {
 
 function Discover() {
     const { isLoading, data } = useQuery({ queryKey: ['users'] });
-    const { isLoading: friendsLoad, data: friendsData, error: friendsError } = useQuery(['reviews?sort=newest&following=true']);
+    const { data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
 
 
     return (

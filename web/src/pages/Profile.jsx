@@ -21,9 +21,11 @@ function Profile() {
     const paramString = user ? `?username=${user}` : '';
 
     const [ isFollowing, setIsFollowing ] = useState(false);
-    const { isLoading, data: userData, error: userError } = useQuery([`users${paramString}`]);
+    const { isLoading, data: userData} = useQuery([`users${paramString}`]);
     const { data: following, refetch: refetchFollowing } = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
     const { data: followers, refetch: refetchFollowers } = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
+    const { data: reviewsNew } = useQuery(['reviews?sort=newest']);
+    const { data: reviewsPopular } = useQuery(['reviews?sort=popular']);
     
     const follow = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, {}, 
@@ -149,15 +151,23 @@ function Profile() {
 
             {/* Recent Reviews: Last 2 reviews from the user */}
             <Titles title="Recent Reviews"/>
-            {/* <Review review={ reviewDummy } />
-            <div className="border-t border-gray-600 max-w-5xl mx-auto m-4" />
-            <Review review={ reviewDummy }/> */}
+                {reviewsNew?.data.slice(0, 2).map((review, index, array) => (
+                    <div key={index}>
+                        <Review review={review} />
+                        {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                    </div>
+                ))} 
+                <div className="pb-10" /> 
 
             {/* Popular Reviews: Two most popular reviews by likes, by the user */}
             <Titles title="Popular Reviews"/>
-            {/* <Review review={ reviewDummy } />
-            <div className="border-t border-gray-600 max-w-5xl mx-auto m-4" />
-            <Review review={ reviewDummy }/> */}
+                {reviewsPopular?.data.slice(0, 2).map((review, index, array) => (
+                    <div key={index}>
+                        <Review review={review} />
+                        {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                    </div>
+                ))}
+                <div className="pb-10" /> 
 
             {/* Following: Avatars of people the user follows */}
             <Titles title="Following"/>
