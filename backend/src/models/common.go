@@ -57,5 +57,5 @@ func InitCognitoClient(ctx context.Context) (*CognitoClient, error) {
 }
 
 func (e *HTTPError) Error() string {
-	return fmt.Sprintf(e.Err.Error())
+	return e.Err.Error()
 }

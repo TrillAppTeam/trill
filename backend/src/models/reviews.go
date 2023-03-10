@@ -25,6 +25,10 @@ var (
 	ErrorInvalidArguments error = errors.New("invalid arguments provided to GetReviews")
 )
 
+var (
+	maxPopularAlbums = 10
+)
+
 func GetReview(ctx context.Context, username string, albumID string) (*Review, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
@@ -91,6 +95,36 @@ func GetReviews(ctx context.Context, review *Review, following *[]User, paginate
 	}
 
 	return reviews, nil
+}
+
+func GetPopularAlbumsFromReviews(ctx context.Context) (*[]string, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var results *[]struct {
+		AlbumID string
+	}
+	threshold := time.Now().Add(-7 * 24 * time.Hour)
+
+	err = db.Model(&Review{}).
+		Select("album_id, COUNT(*) as count").
+		Where("created_at >= ?", threshold).
+		Group("album_id").
+		Order("count DESC").
+		Limit(maxPopularAlbums).
+		Find(&results).Error
+	if err != nil {
+		return nil, err
+	}
+
+	albums := make([]string, maxPopularAlbums)
+	for i, a := range *results {
+		albums[i] = a.AlbumID
+	}
+
+	return &albums, nil
 }
 
 func CreateReview(ctx context.Context, review *Review) error {
