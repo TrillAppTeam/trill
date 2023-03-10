@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:trill/main_page.dart';
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   State<Login> createState() => _LoginState();
 }
@@ -121,23 +124,24 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
-      logo: AssetImage('images/logo.png'),
+      logo: const AssetImage('images/logo.png'),
       onLogin: (data) => _onLogin(context, data),
       onRecoverPassword: (_) => Future.value(),
+      // if u forget ur password too bad
       // onRecoverPassword: (username) => _onRecoverPassword(context, username),
       onSignup: (data) => _onSignup(context, data),
       theme: LoginTheme(
-        primaryColor: Color(0xFF1F1D36),
-        accentColor: Color(0xFF3FBCF4),
-        buttonStyle: TextStyle(
+        primaryColor: const Color(0xFF1F1D36),
+        accentColor: const Color(0xFF3FBCF4),
+        buttonStyle: const TextStyle(
           color: Colors.black,
         ),
-        cardTheme: CardTheme(
+        cardTheme: const CardTheme(
           color: Color(0xFFEEEEEE),
           elevation: 5,
           margin: EdgeInsets.only(top: 15),
         ),
-        inputTheme: InputDecorationTheme(
+        inputTheme: const InputDecorationTheme(
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Color(0xFFAAAAAA), width: 3),
           ),
@@ -148,13 +152,13 @@ class _LoginState extends State<Login> {
           focusColor: Color(0xFF3FBCF4),
         ),
         buttonTheme: LoginButtonTheme(
-          backgroundColor: Color(0xFF3FBCF4),
-          highlightColor: Color(0xFF1F9CD4),
+          backgroundColor: const Color(0xFF3FBCF4),
+          highlightColor: const Color(0xFF1F9CD4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30),
           ),
         ),
-        authButtonPadding: EdgeInsets.fromLTRB(25, 20, 25, 10),
+        authButtonPadding: const EdgeInsets.fromLTRB(25, 20, 25, 10),
       ),
       onSubmitAnimationCompleted: () {
         if (!_isSignedIn) {
@@ -163,7 +167,12 @@ class _LoginState extends State<Login> {
             arguments: _signupData,
           );
         } else {
-          Navigator.of(context).pushReplacementNamed('/main');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MainPage(),
+            ),
+          );
         }
       },
       userType: LoginUserType.name,
@@ -178,13 +187,13 @@ class _LoginState extends State<Login> {
       additionalSignupFields: [
         UserFormField(
           keyName: 'Nickname',
-          icon: Icon(Icons.face),
+          icon: const Icon(Icons.face),
           displayName: 'Name',
           fieldValidator: (value) => nicknameValidator(value),
         ),
         UserFormField(
           keyName: 'Email',
-          icon: Icon(Icons.mail_outline),
+          icon: const Icon(Icons.mail_outline),
           fieldValidator: (value) => emailValidator(value),
         ),
       ],
@@ -198,6 +207,3 @@ class Regex {
   // https://stackoverflow.com/a/32686261/9449426
   static final email = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
 }
-
-// todo: fix "an activation link has been sent" when sending confirmation page
-// there is already a user signed in issue

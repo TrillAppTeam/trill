@@ -1,334 +1,389 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:trill/api/follows.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/api/albums.dart';
+import 'package:trill/api/favorite_albums.dart';
+import 'package:trill/api/reviews.dart';
+import 'package:trill/api/users.dart';
+import 'package:trill/constants.dart';
+import 'package:trill/widgets/albums_row.dart';
+import 'package:trill/widgets/detailed_review_tile.dart';
+import 'package:trill/widgets/follow_button.dart';
+import 'package:trill/widgets/follow_user_button.dart';
+import 'package:trill/widgets/ratings_row.dart';
+
+import 'package:trill/widgets/review_row.dart';
+import 'package:trill/widgets/review_tile.dart';
+import 'loading_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
+  final String username;
+
+  const ProfileScreen({
+    super.key,
+    required this.username,
+  });
+
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late SharedPreferences _prefs;
+  late PublicUser _user;
+
+  bool _isLoggedIn = false;
+  bool _isLoading = false;
+
+  String _selectedSort = 'popular';
+  List<Review>? _reviews;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserDetails();
+  }
+
+  Future<void> _fetchUserDetails() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    _prefs = await SharedPreferences.getInstance();
+    String loggedInUser = _prefs.getString('username') ?? "";
+    _isLoggedIn = loggedInUser == widget.username;
+
+    final user = await getPublicUser(widget.username);
+
+    setState(() {
+      _user = user!;
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 30.0, vertical: 30.0),
+    return _isLoading
+        ? const LoadingScreen()
+        : RefreshIndicator(
+            onRefresh: _fetchUserDetails,
+            backgroundColor: const Color(0xFF1A1B29),
+            color: const Color(0xFF3FBCF4),
+            child: Scaffold(
+              backgroundColor: const Color(0xFF1A1B29),
+              appBar: _isLoggedIn ? null : AppBar(),
+              body: SingleChildScrollView(
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                          backgroundImage: AssetImage("images/gerber.jpg"),
-                          radius: 40.0),
-                      Column(children: [
-                        const Text(
-                          'Matthew Gerber',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const Text('@GerbersGrumblings'),
-                      ]),
-                      SizedBox(height: 5),
-                      Text(
-                          "Dr. Matthew Gerber is a professor of Computer Science at the University of Central Florida. "
-                          "He specializes in being quirky.",
-                          style: TextStyle(fontSize: 11)),
-                      SizedBox(height: 15),
-                      Container(
-                        child: Row(
-                          children: [
-                            Spacer(),
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Color(0xFFBC6AAB), width: 1),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                              ),
-                              child: Center(
-                                child: FutureBuilder<Follow?>(
-                                  future: getFollowers(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      String followerCount = snapshot
-                                          .data!.users.length
-                                          .toString();
-                                      return RichText(
-                                        text: TextSpan(
-                                          text: 'Followers: $followerCount',
-                                          style: TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.bold),
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () => Navigator.pushNamed(
-                                                context, '/followers'),
-                                        ),
-                                      );
-                                    } else {
-                                      return Text('Loading');
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                            Spacer(flex: 2),
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                    color: Color(0xFFBC6AAB), width: 1),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30)),
-                              ),
-                              child: Center(
-                                child: FutureBuilder<Follow?>(
-                                  future: getFollowing(),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.hasData) {
-                                      String followingCount = snapshot
-                                          .data!.users.length
-                                          .toString();
-                                      return RichText(
-                                        text: TextSpan(
-                                          text: 'Following: $followingCount',
-                                          style: TextStyle(
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.bold),
-                                          recognizer: TapGestureRecognizer()
-                                            ..onTap = () => Navigator.pushNamed(
-                                                context, '/following'),
-                                        ),
-                                      );
-                                    } else {
-                                      return Text('Loading');
-                                    }
-                                  },
-                                ),
-                              ),
-                            ),
-                            Spacer()
-                          ],
-                        ),
+                  children: [
+                    _buildUserDetails(),
+                    const SizedBox(height: 15),
+                    _buildFollows(),
+                    const SizedBox(height: 15),
+                    _buildUserStats(),
+                    const SizedBox(height: 15),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: FutureBuilder<List<SpotifyAlbum>?>(
+                        future: getFavoriteAlbums(_user.username),
+                        builder: (context, snapshot) {
+                          return AlbumsRow(
+                            title: _isLoggedIn
+                                ? 'Your Favorite Albums'
+                                : '${_user.nickname}\'s Favorite Albums',
+                            albums: snapshot.hasData ? snapshot.data! : [],
+                            emptyText: _isLoggedIn
+                                ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
+                                : 'No favorite albums yet',
+                          );
+                        },
                       ),
-                      SizedBox(height: 15),
-                      Row(children: [
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("455",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold)),
-                              Text("Total Albums",
-                                  style: TextStyle(fontSize: 11))
-                            ]),
-                        Spacer(),
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("3",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Color(0xFFBC6AAB),
-                                      fontWeight: FontWeight.bold)),
-                              Text("Albums This Year",
-                                  style: TextStyle(fontSize: 11))
-                            ]),
-                        Spacer(),
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("30",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold)),
-                              Text("Lists", style: TextStyle(fontSize: 11))
-                            ]),
-                        Spacer(),
-                        Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("5",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Color(0xFFBC6AAB),
-                                      fontWeight: FontWeight.bold)),
-                              Text("Reviews", style: TextStyle(fontSize: 11))
-                            ]),
-                      ]),
-                      SizedBox(height: 15),
-                      Center(
-                          child: Text("Matthew's Favorite Albums",
-                              style: TextStyle(fontWeight: FontWeight.bold))),
-                      SizedBox(height: 15),
-                      Row(children: [
-                        Image.asset('images/DierksBentleyTest.jpg', width: 65),
-                        Spacer(),
-                        Image.asset('images/DierksBentleyTest.jpg', width: 65),
-                        Spacer(),
-                        Image.asset('images/DierksBentleyTest.jpg', width: 65),
-                        Spacer(),
-                        Image.asset('images/DierksBentleyTest.jpg', width: 65)
-                      ]),
-                      SizedBox(height: 15),
-                      Divider(
-                        color: Colors.grey,
-                        height: 2,
-                        thickness: 2,
-                      ),
-                      SizedBox(height: 15),
-                      Row(
-                        children: [
-                          Text(
-                            "Matthew's Recent Ratings",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 11),
-                          ),
-                          Spacer(),
-                          Text(
-                            "See All",
-                            style: TextStyle(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 15),
-                      Row(children: [
-                        Column(children: [
-                          Image.asset('images/DierksBentleyTest.jpg',
-                              width: 65),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                            ],
-                          ),
-                        ]),
-                        Spacer(),
-                        Column(children: [
-                          Image.asset('images/DierksBentleyTest.jpg',
-                              width: 65),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                            ],
-                          ),
-                        ]),
-                        Spacer(),
-                        Column(children: [
-                          Image.asset('images/DierksBentleyTest.jpg',
-                              width: 65),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                            ],
-                          ),
-                        ]),
-                        Spacer(),
-                        Column(children: [
-                          Image.asset('images/DierksBentleyTest.jpg',
-                              width: 65),
-                          SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                              Icon(Icons.star, color: Colors.white, size: 12),
-                            ],
-                          ),
-                        ]),
-                      ]),
-                      SizedBox(height: 25),
-                      Row(
-                        children: [
-                          Text(
-                            "Matthew's Recent Reviews",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 11),
-                          ),
-                          Spacer(),
-                          Text(
-                            "See All",
-                            style: TextStyle(fontSize: 11),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 15),
-                      Container(
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        color: Color(0xFF392B3A),
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(children: [
-                                        Text("Dierks Bentley",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 11)),
-                                        Text(" 2003",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 11)),
-                                      ]),
-                                      Row(children: [
-                                        Text("Reviewed by ",
-                                            style: TextStyle(fontSize: 9)),
-                                        Text("Matthew ",
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontSize: 9)),
-                                        Icon(Icons.star,
-                                            color: Colors.white, size: 10),
-                                        Icon(Icons.star,
-                                            color: Colors.white, size: 10),
-                                        Icon(Icons.star,
-                                            color: Colors.white, size: 10),
-                                      ]),
-                                      SizedBox(height: 5),
-                                      Text(
-                                          "What was I thinkin'? Frederick Dierks Bentley Password cracking is a term used to describe the penetration of a network, system, or resource"
-                                          "with or without the use of tools to ulock a resource that has been secured with a password."
-                                          " Password cracking tools may seem like powerful decryptors, but in reality are little more than"
-                                          "    fast, sophisticated guessing machines.",
-                                          style: TextStyle(fontSize: 9),
-                                          maxLines: 6,
-                                          overflow: TextOverflow.ellipsis)
-                                    ]),
-                              ),
-                              Container(
-                                  padding: EdgeInsets.fromLTRB(15, 0, 0, 0),
-                                  child: Image.asset(
-                                      "images/DierksBentleyTest.jpg",
-                                      width: 100)),
-                            ]),
-                      )
-                    ]))));
+                    ),
+                    const SizedBox(height: 15),
+                    const Divider(
+                      color: Colors.grey,
+                      height: 2,
+                      thickness: 2,
+                    ),
+                    const SizedBox(height: 15),
+                    _buildReviewDetails(),
+                    _buildReviews(),
+                  ],
+                ),
+              ),
+            ),
+          );
+  }
+
+  Widget _buildUserDetails() {
+    return Column(
+      children: [
+        const CircleAvatar(
+          backgroundImage: AssetImage("images/gerber.jpg"),
+          radius: 40.0,
+        ),
+        Text(
+          _user.nickname,
+          style: const TextStyle(
+            color: Colors.blue,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text('@${_user.username}'),
+        const SizedBox(height: 5),
+        Text(
+          _user.bio,
+          style: const TextStyle(fontSize: 12),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFollows() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FollowButton(
+          username: widget.username,
+          followType: FollowType.following,
+        ),
+        SizedBox(
+          width: (_isLoggedIn ? 30 : 20),
+        ),
+        FollowButton(
+          username: widget.username,
+          followType: FollowType.follower,
+        ),
+        SizedBox(
+          width: (_isLoggedIn ? 0 : 20),
+        ),
+        if (!_isLoggedIn)
+          FollowUserButton(
+            username: _user.username,
+            isFollowing: true,
+          ),
+      ],
+    );
+  }
+
+  Widget _buildUserStats() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              "455",
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Total Albums",
+              style: TextStyle(fontSize: 11),
+            )
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              "3",
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFFBC6AAB),
+                  fontWeight: FontWeight.bold),
+            ),
+            Text("Albums This Month", style: TextStyle(fontSize: 11))
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              "30",
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold),
+            ),
+            Text(
+              "Listen Laters",
+              style: TextStyle(fontSize: 11),
+            )
+          ],
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              "5",
+              style: TextStyle(
+                fontSize: 20,
+                color: Color(0xFFBC6AAB),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              "Reviews",
+              style: TextStyle(fontSize: 11),
+            )
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildReviewDetails() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              DropdownButton<String>(
+                value: _selectedSort,
+                items: const [
+                  DropdownMenuItem(
+                    value: 'popular',
+                    child: Text('Most liked'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'newest',
+                    child: Text('Newest'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'oldest',
+                    child: Text('Oldest'),
+                  ),
+                ],
+                onChanged: (String? value) {
+                  setState(() {
+                    _selectedSort = value!;
+                    _buildReviews();
+                  });
+                },
+                icon: const Icon(
+                  Icons.arrow_drop_down,
+                  color: Color(0xFF3FBCF4),
+                ),
+                iconSize: 24,
+                elevation: 16,
+                style: const TextStyle(
+                  color: Color(0xFF3FBCF4),
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+                underline: Container(
+                  height: 2,
+                  color: const Color(0xFF3FBCF4),
+                ),
+                dropdownColor: const Color(0xFF1A1B29),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReviewList() {
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        final review = _reviews![index];
+        return Column(
+          children: [
+            index == 0
+                ? const SizedBox(height: 10)
+                : const Divider(
+                    color: Colors.grey,
+                  ),
+            DetailedReviewTile(
+              review: review,
+              onLiked: (isLiked) {
+                setState(() {
+                  review.isLiked = isLiked;
+                });
+              },
+              isMyReview: _isLoggedIn,
+              onUpdate: _isLoggedIn
+                  ? (rating, reviewText) async {
+                      final success = await createOrUpdateReview(
+                          review.albumID, rating, reviewText);
+                      if (success) {
+                        setState(() {
+                          review.rating = rating;
+                          review.reviewText = reviewText;
+                        });
+                      }
+                    }
+                  : (rating, reviewText) {},
+              onDelete: () async {
+                final success = await deleteReview(
+                  review.albumID,
+                );
+                if (success) {
+                  setState(() {
+                    _reviews!.removeAt(index);
+                  });
+                }
+              },
+            ),
+          ],
+        );
+      },
+      itemCount: _reviews!.length,
+      shrinkWrap: true,
+    );
+  }
+
+  Widget _buildReviewListWithLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildNoReviewsMessage() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Center(
+        child: Text(
+          'No reviews yet',
+          style: TextStyle(
+            color: Color(0xFF3FBCF4),
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReviews() {
+    return FutureBuilder<List<Review>?>(
+      future: getReviews(_selectedSort, _user.username),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            (_reviews == null || _reviews!.isEmpty)) {
+          return _buildReviewListWithLoading();
+        }
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          _reviews = snapshot.data!;
+          return _buildReviewList();
+        }
+        return _buildNoReviewsMessage();
+      },
+    );
   }
 }

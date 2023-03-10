@@ -1,5 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import '../models/album.dart';
+import 'package:trill/api/users.dart';
+import 'package:trill/pages/album_details.dart';
+import 'package:trill/pages/profile.dart';
+import 'package:trill/widgets/album_row.dart';
+import 'package:trill/widgets/user_row.dart';
+import '../api/albums.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -9,66 +16,183 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  List<Album> searchResults = [];
+  String _searchType = 'albums';
+  List<SpotifyAlbum>? _albumResults = [];
+  List<User>? _userResults = [];
 
   final _searchController = TextEditingController();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
+  bool _isLoading = false;
+  Timer? _searchTimer;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _fetchResults() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    if (_searchType == "albums") {
+      List<SpotifyAlbum>? response =
+          await searchSpotifyAlbums(_searchController.text);
+      setState(() {
+        _albumResults = response;
+        _isLoading = false;
+      });
+    } else if (_searchType == "users") {
+      List<User>? response = await searchUsers(_searchController.text);
+      setState(() {
+        _userResults = response;
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container (
-            padding: EdgeInsets.all(8.0),
-            child: Column (
-              children: [ 
-                TextField(
-                  controller: _searchController,
-                  decoration: InputDecoration(hintText: 'Enter search query',
-                                              border: OutlineInputBorder()),
-                  onSubmitted: (query) {
-                  // Make API call and get results
-                  List<Album> response = [Album(name: "Dierks Bentley", artistName: "Dierks Bentley", year: 2003),
-                      Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),
-                    Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),Album(name: "Speak Now", artistName: "Taylor Swift", year: 2010),];
-                  // Set results in state
-                    setState(() {
-                      searchResults = response;
-                    }
-                  );
-                },
-              ),
-              SizedBox(height: 30),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: searchResults.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                      // Navigate to album page
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(16.0),
-                        child: Row(
-                          children: [
-                            Image.asset("images/DierksBentleyTest.jpg", width: 80, height: 80),
-                            SizedBox(width: 16),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(searchResults[index].name, style: TextStyle(fontSize: 18)),
-                                SizedBox(height: 4),
-                                Text("${searchResults[index].artistName} - ${searchResults[index].year}",
-                                     style: TextStyle(color: Colors.grey)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+      body: GestureDetector(
+        onTap: () {
+          final FocusScopeNode currentScope = FocusScope.of(context);
+          if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          }
+        },
+        child: SafeArea(
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
+            child: Column(
+              children: [
+                const Text(
+                  'Search',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ]
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        decoration: const InputDecoration(
+                          hintText: 'Enter search query',
+                          border: OutlineInputBorder(),
+                        ),
+                        onChanged: (query) {
+                          _searchTimer?.cancel();
+                          _searchTimer = Timer(
+                              const Duration(milliseconds: 500), _fetchResults);
+                        },
+                        onEditingComplete: () {
+                          final FocusScopeNode currentScope =
+                              FocusScope.of(context);
+                          if (!currentScope.hasPrimaryFocus &&
+                              currentScope.hasFocus) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          }
+                          _fetchResults();
+                        },
+                      ),
+                    ),
+                    DropdownButton<String>(
+                      value: _searchType,
+                      onChanged: (String? value) {
+                        setState(() {
+                          _searchType = value!;
+                          _albumResults = null;
+                          _userResults = null;
+                          _searchController.clear();
+                        });
+                      },
+                      items: const [
+                        DropdownMenuItem(
+                          value: 'albums',
+                          child: Text('Albums'),
+                        ),
+                        DropdownMenuItem(
+                          value: 'users',
+                          child: Text('Users'),
+                        ),
+                      ],
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: Color(0xFF3FBCF4),
+                      ),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: const TextStyle(
+                        color: Color(0xFF3FBCF4),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      underline: Container(
+                        height: 2,
+                        color: const Color(0xFF3FBCF4),
+                      ),
+                      dropdownColor: const Color(0xFF1A1B29),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: _isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : RefreshIndicator(
+                          key: _refreshIndicatorKey,
+                          onRefresh: _fetchResults,
+                          child: ListView.builder(
+                            itemCount: _searchType == "albums"
+                                ? _albumResults?.length ?? 0
+                                : _userResults?.length ?? 0,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (_searchType == "albums") {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            AlbumDetailsScreen(
+                                          albumID: _albumResults![index].id,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: AlbumRow(album: _albumResults![index]),
+                                );
+                              } else if (_searchType == "users") {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ProfileScreen(
+                                          username:
+                                              _userResults![index].username,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: UserRow(user: _userResults![index]),
+                                );
+                              } else {
+                                // Return empty container if search type is not recognized
+                                return Container();
+                              }
+                            },
+                          ),
+                        ),
+                ),
+              ],
+            ),
           ),
+        ),
       ),
     );
   }

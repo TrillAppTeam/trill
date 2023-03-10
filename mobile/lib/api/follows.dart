@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/constants.dart';
 
 /// If no username is passed, get followers for logged in user
 Future<Follow?> getFollowers([String? username]) async {
@@ -14,18 +15,16 @@ Future<Follow?> getFollowers([String? username]) async {
   safePrint('$tag username: $username');
 
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
-        'https://api.trytrill.com/main/follows?type=getFollowers&username=$username'),
+        '${Constants.baseURI}/follows?type=getFollowers&username=$username'),
     headers: {
       'Authorization': 'Bearer $token',
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return Follow.fromJson(jsonDecode(response.body));
@@ -43,18 +42,16 @@ Future<Follow?> getFollowing([String? username]) async {
   safePrint('$tag username: $username');
 
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
     Uri.parse(
-        'https://api.trytrill.com/main/follows?type=getFollowing&username=$username'),
+        '${Constants.baseURI}/follows?type=getFollowing&username=$username'),
     headers: {
       'Authorization': 'Bearer $token',
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return Follow.fromJson(jsonDecode(response.body));
@@ -70,17 +67,15 @@ Future<bool> follow(String userToFollow) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.post(
-    Uri.parse('https://api.trytrill.com/main/follows?username=$userToFollow'),
+    Uri.parse('${Constants.baseURI}/follows?username=$userToFollow'),
     headers: {
       'Authorization': 'Bearer $token',
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 201;
 }
@@ -92,17 +87,15 @@ Future<bool> unfollow(String userToUnfollow) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
-  final response = await http.post(
-    Uri.parse('https://api.trytrill.com/main/follows?username=$userToUnfollow'),
+  final response = await http.delete(
+    Uri.parse('${Constants.baseURI}/follows?username=$userToUnfollow'),
     headers: {
       'Authorization': 'Bearer $token',
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 200;
 }

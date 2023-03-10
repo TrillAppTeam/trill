@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/constants.dart';
 
 Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
   const String tag = '[getSpotifyAlbum]';
@@ -12,17 +13,15 @@ Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/album?albumID=$albumID'),
+    Uri.parse('${Constants.baseURI}/album?albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return SpotifyAlbum.fromJson(jsonDecode(response.body));
@@ -38,17 +37,15 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
-  // safePrint('$tag access token: $token');
 
   final response = await http.get(
-    Uri.parse('https://api.trytrill.com/main/albums?query=$query'),
+    Uri.parse('${Constants.baseURI}/albums?query=$query'),
     headers: {
       'Authorization': 'Bearer $token',
     },
   );
 
-  safePrint('$tag ${response.statusCode}');
-  safePrint('$tag ${response.body}');
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
     return List<SpotifyAlbum>.from(
@@ -58,20 +55,32 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
   }
 }
 
+DateTime parseReleaseDate(String releaseDate) {
+  try {
+    return DateTime.parse(releaseDate);
+  } catch (e) {
+    try {
+      return DateTime.parse('$releaseDate-01');
+    } catch (e) {
+      return DateTime.parse('$releaseDate-01-01');
+    }
+  }
+}
+
 class SpotifyAlbum {
   final String albumType;
   final SpotifyExternalURLs externalURLs;
   final String href;
   final String id;
-  final List<SpotifyImages> images;
+  final List<SpotifyImage> images;
   final String name;
-  final String releaseDate;
+  final DateTime releaseDate;
   final String type;
   final String uri;
   final List<String> genres;
   final String label;
   final int popularity;
-  final List<SpotifyArtists> artists;
+  final List<SpotifyArtist> artists;
 
   const SpotifyAlbum({
     required this.albumType,
@@ -95,17 +104,17 @@ class SpotifyAlbum {
       externalURLs: SpotifyExternalURLs.fromJson(json['external_urls']),
       href: json['href'],
       id: json['id'],
-      images: List<SpotifyImages>.from(
-          json['images'].map((x) => SpotifyImages.fromJson(x))),
+      images: List<SpotifyImage>.from(
+          json['images'].map((x) => SpotifyImage.fromJson(x))),
       name: json['name'],
-      releaseDate: json['release_date'],
+      releaseDate: parseReleaseDate(json['release_date']),
       type: json['type'],
       uri: json['uri'],
       genres: List<String>.from(json['genres'] ?? []),
       label: json['label'],
       popularity: json['popularity'],
-      artists: List<SpotifyArtists>.from(
-          json['artists'].map((x) => SpotifyArtists.fromJson(x))),
+      artists: List<SpotifyArtist>.from(
+          json['artists'].map((x) => SpotifyArtist.fromJson(x))),
     );
   }
 }
@@ -124,19 +133,19 @@ class SpotifyExternalURLs {
   }
 }
 
-class SpotifyImages {
+class SpotifyImage {
   final String url;
   final int height;
   final int width;
 
-  const SpotifyImages({
+  const SpotifyImage({
     required this.url,
     required this.height,
     required this.width,
   });
 
-  factory SpotifyImages.fromJson(Map<String, dynamic> json) {
-    return SpotifyImages(
+  factory SpotifyImage.fromJson(Map<String, dynamic> json) {
+    return SpotifyImage(
       url: json['url'],
       height: json['height'],
       width: json['width'],
@@ -144,21 +153,21 @@ class SpotifyImages {
   }
 }
 
-class SpotifyArtists {
+class SpotifyArtist {
   final String id;
   final String name;
   final String type;
   final String uri;
 
-  const SpotifyArtists({
+  const SpotifyArtist({
     required this.id,
     required this.name,
     required this.type,
     required this.uri,
   });
 
-  factory SpotifyArtists.fromJson(Map<String, dynamic> json) {
-    return SpotifyArtists(
+  factory SpotifyArtist.fromJson(Map<String, dynamic> json) {
+    return SpotifyArtist(
       id: json['id'],
       name: json['name'],
       type: json['type'],

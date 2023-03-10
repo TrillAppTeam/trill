@@ -1,13 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:flutter_login/flutter_login.dart';
+import 'package:trill/main_page.dart';
 
 class ConfirmScreen extends StatefulWidget {
   final SignupData data;
 
-  ConfirmScreen(this.data);
+  const ConfirmScreen(this.data, {super.key});
 
   @override
   State<ConfirmScreen> createState() => _ConfirmState();
@@ -69,7 +69,7 @@ class _ConfirmState extends State<ConfirmScreen> {
         backgroundColor: backgroundColor,
         content: Text(
           error,
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
         ),
       ),
     );
@@ -78,19 +78,19 @@ class _ConfirmState extends State<ConfirmScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1F1D36),
+      backgroundColor: const Color(0xFF1F1D36),
       body: Center(
         child: SafeArea(
           minimum: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(children: [
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             Image.asset(
               'images/logo.png',
               width: 180,
             ),
             Card(
               elevation: 12,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20)),
               ),
               margin: const EdgeInsets.all(30),
@@ -98,10 +98,10 @@ class _ConfirmState extends State<ConfirmScreen> {
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextField(
                       controller: _controller,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         enabledBorder: UnderlineInputBorder(
                           borderSide:
                               BorderSide(color: Color(0xFFAAAAAA), width: 3),
@@ -112,17 +112,16 @@ class _ConfirmState extends State<ConfirmScreen> {
                         ),
                         iconColor: Color(0xFF3FBCF4),
                         focusColor: Color(0xFF3FBCF4),
-                        contentPadding:
-                            const EdgeInsets.symmetric(vertical: 4.0),
+                        contentPadding: EdgeInsets.symmetric(vertical: 4.0),
                         prefixIcon: Icon(Icons.lock),
                         labelText: 'Confirmation Code',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(40)),
                         ),
                       ),
-                      style: TextStyle(color: Color(0xFF666666)),
+                      style: const TextStyle(color: Color(0xFF666666)),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     MaterialButton(
                       onPressed: _isEnabled
                           ? () {
@@ -131,19 +130,23 @@ class _ConfirmState extends State<ConfirmScreen> {
                                 if (!mounted) {
                                   return;
                                 }
-                                Navigator.pushReplacementNamed(
-                                    context, '/main');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const MainPage(),
+                                  ),
+                                );
                               });
                             }
                           : null,
                       elevation: 4,
-                      color: Color(0xFF3FBCF4),
-                      disabledColor: Color(0xFF3FBCF4),
+                      color: const Color(0xFF3FBCF4),
+                      disabledColor: const Color(0xFF3FBCF4),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
-                      padding: EdgeInsets.fromLTRB(25, 12, 25, 12),
-                      child: Text(
+                      padding: const EdgeInsets.fromLTRB(25, 12, 25, 12),
+                      child: const Text(
                         'CONFIRM',
                         style: TextStyle(
                           color: Colors.black,
@@ -160,7 +163,7 @@ class _ConfirmState extends State<ConfirmScreen> {
                               Colors.blueAccent);
                         });
                       },
-                      child: Text(
+                      child: const Text(
                         'Resend Code',
                         style: TextStyle(color: Colors.grey),
                       ),
