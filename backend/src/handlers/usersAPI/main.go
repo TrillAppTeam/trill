@@ -43,7 +43,7 @@ func handler(ctx context.Context, req Request) (Response, error) {
 }
 
 func search(ctx context.Context, req Request) (Response, error) {
-	search, _ := req.QueryStringParameters["search"]
+	search := req.QueryStringParameters["search"]
 	users, err := models.SearchUser(ctx, search)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
@@ -64,12 +64,12 @@ func get(ctx context.Context, req Request) (Response, error) {
 	}
 
 	var body, userToGet string
-	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
 	username, ok := req.QueryStringParameters["username"]
 	privateCognitoUser := &models.PrivateCognitoUser{}
 	if !ok { // get public + private info
 		var err error
 		userToGet = requestor
+		authToken := strings.Split((req.Headers["authorization"]), " ")[1]
 		privateCognitoUser, err = models.GetPrivateCognitoUser(ctx, authToken)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error()}, nil
@@ -85,11 +85,7 @@ func get(ctx context.Context, req Request) (Response, error) {
 		}
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
-	publicCognitoUser, err := models.GetPublicCognitoUser(ctx, userToGet)
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error()}, nil
-	}
-	body, err = views.MarshalFullUser(ctx, user, publicCognitoUser, privateCognitoUser)
+	body, err = views.MarshalFullUser(ctx, user, privateCognitoUser)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
@@ -106,20 +102,14 @@ func update(ctx context.Context, req Request) (Response, error) {
 	if !ok {
 		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
-	authToken := strings.Split((req.Headers["authorization"]), " ")[1]
 
 	user, err := models.GetUser(ctx, username)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	publicCognitoUser := &models.PublicCognitoUser{}
 
 	if err = views.UnmarshalUser(ctx, req.Body, user); err != nil {
 		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
-	} else if err = views.UnmarshalPublicCognitoUser(ctx, req.Body, publicCognitoUser); err != nil {
-		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
-	} else if err = models.UpdatePublicCognitoUser(ctx, publicCognitoUser, authToken); err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	} else if err = models.UpdateUser(ctx, user); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

@@ -8,7 +8,7 @@ function SearchAlbum(props) {
     // year: album.release_date, 
     // artist: album.artists[0].name, 
     // spotifyLink: album.external_urls.spotify
-    const {name, release_date: year, artists, external_urls: spotifyLink } = props.album;
+    const {name, release_date: year, artists, external_urls: spotifyLink} = props.album;
     
     return (
         <div className="max-w-6xl mx-auto">

@@ -7,7 +7,7 @@ import NewsCard from "../components/NewsCard"
 import Album from "../components/Album"
 import Review from "../components/Review"
 import Loading from "../components/Loading"
-import AlbumReview from "../components/AlbumReview"
+import NoTextAlbumReview from "../components/NoTextAlbumReview"
 
 // Partials
 import HelloGrammys from "../partials/HelloGrammys"
@@ -51,7 +51,9 @@ let reviewDummy = {
 }
 
 function Discover() {
-    const { isLoading, error, data} = useQuery({ queryKey: ['users'] });
+    const { isLoading, data } = useQuery({ queryKey: ['users'] });
+    const { data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
+
 
     return (
         <div>
@@ -84,24 +86,27 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <AlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
                 </div>
             </section>
 
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
-                <Review review={reviewDummy}/>
-                <div className="border-t border-gray-600 max-w-6xl mx-auto" />
-                <Review review={reviewDummy}/>
+                {friendsData?.data.slice(0, 2).map((review, index, array) => (
+                    <div key={index}>
+                        <Review review={review} />
+                        {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                    </div>
+                ))} 
             </section>
 
             {/* Music News */}
