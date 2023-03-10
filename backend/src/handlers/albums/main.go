@@ -30,9 +30,9 @@ func handler(ctx context.Context, req Request) (Response, error) {
 		s, ok := req.QueryStringParameters["search"]
 		trySearch, _ := strconv.ParseBool(s)
 		if ok && trySearch {
-			return getPopular(initCtx, req)
+			return search(initCtx, req)
 		}
-		return search(initCtx, req)
+		return getPopular(initCtx, req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
@@ -40,26 +40,33 @@ func handler(ctx context.Context, req Request) (Response, error) {
 }
 
 func getPopular(ctx context.Context, req Request) (Response, error) {
-
-	return Response{}, nil
+	query := "foobie"
+	apiURL := "https://api.spotify.com/v1/albums?ids=%s"
+	return doSpotifyAlbumRequest(ctx, apiURL, query), nil
 }
 
 // GET: Returns album info
 func search(ctx context.Context, req Request) (Response, error) {
-	token, err := utils.GetSpotifyToken()
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-	}
-
 	query, ok := req.QueryStringParameters["query"]
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse query", Headers: views.DefaultHeaders}, nil
 	}
+	apiURL := "https://api.spotify.com/v1/search?q=%s&type=album"
+
+	return doSpotifyAlbumRequest(ctx, apiURL, query), nil
+}
+
+func doSpotifyAlbumRequest(ctx context.Context, apiURL string, query string) Response {
+	token, err := utils.GetSpotifyToken()
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}
+	}
+
 	encodedQuery := url.QueryEscape(query)
-	reqURL := fmt.Sprintf("https://api.spotify.com/v1/search?q=%s&type=album", encodedQuery)
+	reqURL := fmt.Sprintf(apiURL, encodedQuery)
 	buf, err := utils.DoSpotifyRequest(token, reqURL)
 	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}
 	}
 
 	var spotifyAlbums views.SpotifyAlbums
@@ -70,19 +77,19 @@ func search(ctx context.Context, req Request) (Response, error) {
 			StatusCode: spotifyError.Status,
 			Body:       "Spotify request error: " + spotifyError.Message,
 			Headers:    views.DefaultHeaders,
-		}, nil
+		}
 	}
 
 	body, err := views.MarshalSpotifyAlbums(ctx, &spotifyAlbums.Albums.Items)
 	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}
 	}
 
 	return Response{
 		StatusCode: 200,
 		Body:       body,
 		Headers:    views.DefaultHeaders,
-	}, nil
+	}
 }
 
 func main() {
