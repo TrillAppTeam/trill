@@ -41,14 +41,18 @@ func GetReview(ctx context.Context, username string, albumID string) (*Review, e
 	}
 }
 
-func GetReviews(ctx context.Context, review *Review, following *[]User, sort string) (*[]Review, error) {
+func GetReviews(ctx context.Context, review *Review, following *[]User, paginate *Paginate) (*[]Review, error) {
 	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	queryBuilder, err := BuildQueryFromPaginate(db, paginate)
 	if err != nil {
 		return nil, err
 	}
 
 	prepend := ""
-	if sort == "popular" {
+	if paginate.Sort == "popular" {
 		prepend = "reviews."
 	}
 
@@ -69,13 +73,13 @@ func GetReviews(ctx context.Context, review *Review, following *[]User, sort str
 
 	var reviews *[]Review
 	var result *gorm.DB
-	switch sort {
+	switch paginate.Sort {
 	case "newest":
-		result = db.Preload("Likes").Where(query).Order("created_at desc").Find(&reviews)
+		result = queryBuilder.Preload("Likes").Where(query).Order("created_at desc").Find(&reviews)
 	case "oldest":
-		result = db.Preload("Likes").Where(query).Order("created_at asc").Find(&reviews)
+		result = queryBuilder.Preload("Likes").Where(query).Order("created_at asc").Find(&reviews)
 	case "popular":
-		result = db.Preload("Likes").
+		result = queryBuilder.Preload("Likes").
 			Joins("LEFT JOIN likes ON reviews.review_id = likes.review_id").
 			Where(query).
 			Group("reviews.review_id").

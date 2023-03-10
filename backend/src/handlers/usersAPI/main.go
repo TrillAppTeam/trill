@@ -4,38 +4,34 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/views"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"gorm.io/gorm"
 )
 
-type Request = events.APIGatewayV2HTTPRequest
-type Response = events.APIGatewayV2HTTPResponse
+type Request = handlers.Request
+type Response = handlers.Response
 
 var db *gorm.DB
 
 func handler(ctx context.Context, req Request) (Response, error) {
-	if db == nil {
-		var err error
-		db, err = models.ConnectDB()
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
+	initCtx, err := handlers.InitContext(ctx, db)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	ctx = context.WithValue(ctx, "db", db)
 
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
 		if _, ok := req.QueryStringParameters["search"]; ok {
-			return search(ctx, req)
+			return search(initCtx, req)
 		} else {
-			return get(ctx, req)
+			return get(initCtx, req)
 		}
 	case "PUT":
-		return update(ctx, req)
+		return update(initCtx, req)
 	default:
 		err := fmt.Errorf("HTTP method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error(), Headers: views.DefaultHeaders}, nil

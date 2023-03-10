@@ -3,43 +3,49 @@ package main
 import (
 	"context"
 	"fmt"
-	"trill/src/models"
+	"strconv"
+	"trill/src/handlers"
 	"trill/src/utils"
 	"trill/src/views"
 
 	"net/url"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"gorm.io/gorm"
 )
 
-type Request = events.APIGatewayV2HTTPRequest
-type Response = events.APIGatewayV2HTTPResponse
+type Request = handlers.Request
+type Response = handlers.Response
 
 var db *gorm.DB
 
 func handler(ctx context.Context, req Request) (Response, error) {
-	if db == nil {
-		var err error
-		db, err = models.ConnectDB()
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
+	initCtx, err := handlers.InitContext(ctx, db)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	ctx = context.WithValue(ctx, "db", db)
 
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
-		return read(ctx, req)
+		s, ok := req.QueryStringParameters["search"]
+		trySearch, _ := strconv.ParseBool(s)
+		if ok && trySearch {
+			return getPopular(initCtx, req)
+		}
+		return search(initCtx, req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
 	}
 }
 
+func getPopular(ctx context.Context, req Request) (Response, error) {
+
+	return Response{}, nil
+}
+
 // GET: Returns album info
-func read(ctx context.Context, req Request) (Response, error) {
+func search(ctx context.Context, req Request) (Response, error) {
 	token, err := utils.GetSpotifyToken()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil

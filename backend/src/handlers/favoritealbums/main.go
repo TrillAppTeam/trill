@@ -3,37 +3,33 @@ package main
 import (
 	"context"
 	"fmt"
+	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/utils"
 	"trill/src/views"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"gorm.io/gorm"
 )
 
-type Request = events.APIGatewayV2HTTPRequest
-type Response = events.APIGatewayV2HTTPResponse
+type Request = handlers.Request
+type Response = handlers.Response
 
 var db *gorm.DB
 
 func handler(ctx context.Context, req Request) (Response, error) {
-	if db == nil {
-		var err error
-		db, err = models.ConnectDB()
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
+	initCtx, err := handlers.InitContext(ctx, db)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	ctx = context.WithValue(ctx, "db", db)
 
 	switch req.RequestContext.HTTP.Method {
 	case "POST":
-		return create(ctx, req)
+		return create(initCtx, req)
 	case "GET":
-		return read(ctx, req)
+		return get(initCtx, req)
 	case "DELETE":
-		return delete(ctx, req)
+		return delete(initCtx, req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
@@ -81,7 +77,7 @@ func create(ctx context.Context, req Request) (Response, error) {
 
 // Gets the user's favorite albums
 // @PARAMS - username (string)
-func read(ctx context.Context, req Request) (Response, error) {
+func get(ctx context.Context, req Request) (Response, error) {
 	token, err := utils.GetSpotifyToken()
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/views"
 
@@ -11,29 +12,25 @@ import (
 	"gorm.io/gorm"
 )
 
-type Request events.APIGatewayV2HTTPRequest
-type Response events.APIGatewayV2HTTPResponse
+type Request = handlers.Request
+type Response = handlers.Response
 
 var db *gorm.DB
 
-func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
-	if db == nil {
-		var err error
-		db, err = models.ConnectDB()
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
+func handler(ctx context.Context, req Request) (Response, error) {
+	initCtx, err := handlers.InitContext(ctx, db)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	ctx = context.WithValue(ctx, "db", db)
 
 	switch req.RequestContext.HTTP.Method {
 	case "POST":
 		return follow(ctx, req)
 	case "GET":
 		if req.QueryStringParameters["type"] == "getFollowers" {
-			return getFollowers(ctx, req)
+			return getFollowers(initCtx, req)
 		} else if req.QueryStringParameters["type"] == "getFollowing" {
-			return getFollowing(ctx, req)
+			return getFollowing(initCtx, req)
 		} else {
 			err := fmt.Errorf("invalid 'type' parameter for GET method")
 			return Response{StatusCode: 400, Body: err.Error()}, err

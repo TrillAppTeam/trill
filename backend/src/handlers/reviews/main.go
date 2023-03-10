@@ -5,53 +5,46 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/views"
 
 	"gorm.io/gorm"
 
-	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
-type Request = events.APIGatewayV2HTTPRequest
-type Response = events.APIGatewayV2HTTPResponse
+type Request = handlers.Request
+type Response = handlers.Response
 
 var (
 	ErrorAlbumID     error = errors.New("failed to parse album ID")
 	ErrorUsername    error = errors.New("failed to parse username")
 	ErrorRequestor   error = errors.New("failed to get requestor from token")
-	ErrorSort        error = errors.New("failed to parse sort")
 	ErrorSortInvalid error = errors.New("invalid sort parameter")
 )
 
 var db *gorm.DB
 
 func handler(ctx context.Context, req Request) (Response, error) {
-	if db == nil {
-		var err error
-		db, err = models.ConnectDB()
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
+	initCtx, err := handlers.InitContext(ctx, db)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	ctx = context.WithValue(ctx, "db", db)
 
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
-		_, ok := req.QueryStringParameters["sort"]
-		if ok {
-			return getReviews(ctx, req)
-		} else {
-			return getReview(ctx, req)
+		if _, ok := req.QueryStringParameters["sort"]; ok {
+			return getReviews(initCtx, req)
 		}
+		return getReview(initCtx, req)
 	case "PUT":
-		return createOrUpdateReview(ctx, req)
+		return createOrUpdateReview(initCtx, req)
 	case "DELETE":
-		return deleteReview(ctx, req)
+		return deleteReview(initCtx, req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
-		return Response{StatusCode: 405, Body: err.Error()}, err
+		return Response{StatusCode: 405, Body: err.Error(), Headers: views.DefaultHeaders}, err
 	}
 }
 
@@ -103,9 +96,9 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 	followingRaw := req.QueryStringParameters["following"]
 	following, _ := strconv.ParseBool(followingRaw)
 
-	sort, ok := req.QueryStringParameters["sort"]
-	if !ok {
-		return Response{StatusCode: 500, Body: ErrorSort.Error(), Headers: views.DefaultHeaders}, nil
+	paginate, err := handlers.GetPaginateFromRequest(ctx, req)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
 	reviewQuery := models.Review{
@@ -128,14 +121,13 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 	}
 
 	var reviews *[]models.Review
-	var err error
-	switch sort {
+	switch paginate.Sort {
 	case "newest":
 		fallthrough
 	case "oldest":
 		fallthrough
 	case "popular":
-		reviews, err = models.GetReviews(ctx, &reviewQuery, users, sort)
+		reviews, err = models.GetReviews(ctx, &reviewQuery, users, paginate)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}
