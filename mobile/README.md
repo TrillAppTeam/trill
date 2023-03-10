@@ -21,11 +21,14 @@ Test on physical device
 
 API
 - Implement profile pics APIs
+- Change follow APIs to reflect new changes
+- Add listen later APIs once merged
 - Implement missing APIs as they are completed
 
 UI!!
 - Copy web for everything
 - Loading page
+- Default profile picture like web
 - Fix overflowing review tiles
 
 Remember to clean database before demo to avoid crashes lol
