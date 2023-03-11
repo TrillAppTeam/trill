@@ -46,6 +46,8 @@ paths:
           description: user info
         403:
           description: forbidden
+        404:
+          description: user not found
         405:
           description: invalid http method
         500:
@@ -193,7 +195,7 @@ paths:
       parameters:
       - name: query
         in: query
-        description: Search query (leave blank for global popular)
+        description: Search query (leave blank for most popular albums over past week)
         default: speak now
         type: string
       responses:
@@ -210,29 +212,27 @@ paths:
       tags:
       - reviews
       operationId: getReview
-      description: Specify sort to get all reviews for album. Specify username to get user's review for album.
+      description: __Specific to one album__ <br> • Current user's review for album - *albumID* (doesn't return array) <br> • Username's review for album - *albumID* and *username* (doesn't return array) <br> • Current user's followed user's reviews for album - *sort*, *albumID*, and *following*=*true* <br> • All reviews for album - *sort* and *albumID* <br><br> __All reviews__ <br> • All reviews by current user - *sort* <br> • All reviews by username - *sort* and *username* <br> • All reviews by current user's followed users - *sort*, and *following*=*true* <br><br> Any other combination will probably have unintended results.
       produces:
       - application/json
       security:
       - AccessToken: []
       parameters:
+      - name: sort
+        description: popular, newest, or oldest
+        in: query
+        type: string
+        default: popular
       - name: albumID
         in: query
         description: Spotify album ID
-        default: 4aawyAB9vmqN3uQ7FjRGTy
         type: string
-      - name: sort
-        in: query
-        description: popular, newest, or oldest
-        default: popular
-        type: string
-      - name: following
-        in: query
-        description: whether to get followers feed or not
-        type: boolean
       - name: username
         in: query
         type: string
+      - name: following
+        in: query
+        type: boolean
       responses:
         200:
           description: success
