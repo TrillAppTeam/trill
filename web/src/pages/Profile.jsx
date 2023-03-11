@@ -51,11 +51,14 @@ function Profile() {
     }, {onSuccess: () => {refetchFollowing(); refetchFollowers();}});
 
     useEffect(() => {
-        if (followers?.data?.users?.includes(localStorage.getItem('username'))) {
-            setIsFollowing(true);
-        } else {
-            setIsFollowing(false);
-        }
+        followers?.data?.map((follower) => {
+            if (follower.username.includes(localStorage.getItem('username'))) {
+                setIsFollowing(true);
+            } else {
+                setIsFollowing(false);
+            }
+        });
+
     }, [followers?.data]);
     
     const handleFollow = () => {
@@ -109,7 +112,7 @@ function Profile() {
                 </div>
               
                 <div className="pt-5">
-                    <UserStats albums={reviewsNew?.data.length} followers={followers?.data?.users?.length} following={following?.data?.users?.length}/>
+                    <UserStats albums={reviewsNew?.data.length} followers={followers?.data?.length || 0} following={following?.data?.length || 0}/>
                 </div>
             </div>
 
@@ -150,7 +153,7 @@ function Profile() {
             <Titles title="Following"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {following?.data?.users?.map(user => {return <Avatar key={user} user={{profilePic: null, username: user, size: '11'}}/>})}
+                    {following?.data.map(user => {return <Avatar key={user} user={{profilePic: null, username: user.username, size: '11'}}/>})}
                 </div>
             </div>
 
@@ -158,7 +161,7 @@ function Profile() {
             <Titles title="Followers"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {followers?.data?.users?.map(user => {return <Avatar key={user} user={{profilePic: null, username: user, size: '11'}}/>})}
+                    {followers?.data.map(user => {return <Avatar key={user} user={{profilePic: null, username: user.username, size: '11'}}/>})}
                 </div>
             </div>
         </div>}
