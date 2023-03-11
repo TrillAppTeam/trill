@@ -30,7 +30,7 @@ const grammyNews = {
 function Discover() {
     const { isLoading, data } = useQuery({ queryKey: ['users'] });
     const { data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
-
+    const { data: recentGlobalData } = useQuery(['reviews?sort=newest']);
 
     return (
         <div>
@@ -55,7 +55,7 @@ function Discover() {
                 <Titles title="New From Friends"/>
                 <div className="text-white flex flex-row justify-left gap-5 max-w-6xl mx-auto">
                     {friendsData?.data.slice(0, 10).map((review, index, array) => (
-                        <div key={index}>
+                        <div key={review.review_id}>
                             <NoTextAlbumReview review={review} />
                         </div>
                     ))} 
@@ -65,7 +65,7 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
                 {friendsData?.data.slice(0, 2).map((review, index, array) => (
-                    <div key={index}>
+                    <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
@@ -75,7 +75,11 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Recent Reviews - Globally"/>
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
-                    {/* <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} /> */}
+                    {recentGlobalData?.data.slice(0, 10).map((review, index, array) => (
+                        <div key={review.review_id}>
+                            <NoTextAlbumReview review={review} />
+                        </div>
+                    ))} 
                 </div>
             </section>
 
