@@ -27,29 +27,6 @@ const grammyNews = {
     imgLink: "https://i8.amplience.net/i/naras/2023-grammy-nominations-main-key-art.jpg?w=821&sm=c", 
 }
 
-let albumDummy = { 
-    "images": [{"url": "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0"}], 
-    "name": "Harry's House",
-    "artists": [
-        {
-            "name": "Harry Styles"
-        }
-    ],
-    "external_urls": {
-        "spotify": "https://open.spotify.com/album/5r36AJ6VOJtp00oxSkBZ5h"
-    },
-    "release_date": "2021",
-    "size": "100"
-}
-
-let reviewDummy = {
-    ...albumDummy,
-    user: "Ligma Johnson",
-    profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-    review: "Harry has done it yet again.",
-    rating: 5,
-}
-
 function Discover() {
     const { isLoading, data } = useQuery({ queryKey: ['users'] });
     const { data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
@@ -70,32 +47,18 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
-                    <Album album = {albumDummy} />
+
                 </div>
             </section>
 
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
-                <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
-                    <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} />
+                <div className="text-white flex flex-row justify-left gap-5 max-w-6xl mx-auto">
+                    {friendsData?.data.slice(0, 10).map((review, index, array) => (
+                        <div key={index}>
+                            <NoTextAlbumReview review={review} />
+                        </div>
+                    ))} 
                 </div>
             </section>
 
@@ -107,6 +70,13 @@ function Discover() {
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
                 ))} 
+            </section>
+
+            <section className="pt-14"> 
+                <Titles title="Recent Reviews - Globally"/>
+                <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
+                    {/* <NoTextAlbumReview album={{ ...albumDummy, size: "100", user: "avwede", rating: 5}} /> */}
+                </div>
             </section>
 
             {/* Music News */}
