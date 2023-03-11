@@ -51,11 +51,14 @@ function Profile() {
     }, {onSuccess: () => {refetchFollowing(); refetchFollowers();}});
 
     useEffect(() => {
-        if (followers?.data?.users?.includes(localStorage.getItem('username'))) {
-            setIsFollowing(true);
-        } else {
-            setIsFollowing(false);
-        }
+        followers?.data?.map((follower) => {
+            if (follower.username.includes(localStorage.getItem('username'))) {
+                setIsFollowing(true);
+            } else {
+                setIsFollowing(false);
+            }
+        });
+
     }, [followers?.data]);
     
     const handleFollow = () => {
@@ -109,7 +112,7 @@ function Profile() {
                 </div>
               
                 <div className="pt-5">
-                    <UserStats albums={reviewsNew?.data.length} followers={followers?.data?.users?.length} following={following?.data?.users?.length}/>
+                    <UserStats albums={reviewsNew?.data.length} followers={followers?.data?.length || 0} following={following?.data?.length || 0}/>
                 </div>
             </div>
 
