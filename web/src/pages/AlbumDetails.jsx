@@ -27,8 +27,9 @@ function AlbumDetails() {
     const { data: popularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
     const { data: recentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
 
-    const { data: favoriteAlbums, refetch: refecthFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
-    
+    const { data: favoriteAlbums, refetch: refetchFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
+    const { data: listenLater, refetch: refetchListenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
+
     useEffect(() => {
         setReviewText(data?.data.review_text);
     }, [data?.data]);
@@ -64,7 +65,7 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refecthFavoriteAlbums();}} );
+    }, {onSuccess: () => {refetchFavoriteAlbums();}} );
 
     const deleteFavoriteAlbum = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, 
@@ -75,7 +76,29 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refecthFavoriteAlbums();}} );
+    }, {onSuccess: () => {refetchFavoriteAlbums();}} );
+
+    const addListenLater = useMutation(() => { 
+        return axios.post(`https://api.trytrill.com/main/listenlateralbums?albumID=${id}`, {}, 
+            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            .then((res) => {
+                return res;
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, {onSuccess: () => {refetchListenLater();}} );
+
+    const deleteListenLater = useMutation(() => { 
+        return axios.delete(`https://api.trytrill.com/main/listenlateralbums?albumID=${id}`, 
+            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            .then((res) => {
+                return res;
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, {onSuccess: () => {refetchListenLater();}} );
 
     const ratingChanged = (newRating) => {
         setRating(newRating*2);
@@ -93,6 +116,13 @@ function AlbumDetails() {
         deleteFavoriteAlbum.mutate();
     }
 
+    const addToListenLater = () => {
+        addListenLater.mutate();
+    }
+
+    const removeFromListenLater = () => {
+        deleteListenLater.mutate();
+    }
 
     return (
         <div className="max-w-5xl mx-auto">
@@ -108,7 +138,7 @@ function AlbumDetails() {
                                 </div>
                             }
 
-                            {favoriteAlbums?.data.some((album) => album.id === id) ? (
+                            {Array.isArray(favoriteAlbums?.data) && favoriteAlbums?.data.some((album) => album.id === id) ? (
                                 <button 
                                     className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
                                     onClick={removeFromFavoriteAlbums}
@@ -124,7 +154,21 @@ function AlbumDetails() {
                                 </button>
                             )}
 
-                            <button className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-trillBlue hover:text-black mt-2">Add to Listen Later</button>
+                            {Array.isArray(listenLater?.data) && listenLater?.data.some((album) => album.id === id) ? (
+                                <button 
+                                    className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
+                                    onClick={removeFromListenLater}
+                                >
+                                    Remove From Listen Later
+                                </button>
+                            ) : (
+                                <button 
+                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2"
+                                    onClick={addToListenLater}
+                                >
+                                    Add to Listen Later
+                                </button>
+                            )}
                     </div>
                     
                     <div className="pl-10 flex flex-row gap-10">
@@ -231,7 +275,6 @@ function AlbumDetails() {
                 
                 <div className="pt-10">
                     <Titles title="Reviews From Friends" />
-                    {console.log(reviewFromFriends)}
                     {reviewFromFriends?.data.length == 0 ? <h1 className="italic text-violet-300">Your friends haven't reviewed this album yet.</h1> : null}
 
                     {reviewFromFriends?.data.slice(0, 2).map((review, index, array) => (
