@@ -31,6 +31,8 @@ function Discover() {
     const { isLoading, data } = useQuery({ queryKey: ['users'] });
     const { isLoading: friendsDataLoading, data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
     const { isLoading: recentGlobalDataLoading, data: recentGlobalData } = useQuery(['reviews?sort=newest']);
+    const { isLoading: popularGlobalWeeklyLoading, data: popularGlobalWeeklyData, error: popularGlobalWeeklyError } = useQuery([`albums?timespan=weekly`]);
+    const { isLoading: popularGlobalAllTimeLoading, data: popularGlobalAllTimeData, error: popularGlobalAllTimeError } = useQuery([`albums?timespan=all`]);
 
     return (
         <div>
@@ -47,7 +49,11 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    Coming soon...
+                    {popularGlobalWeeklyLoading ? "Loading..." :  
+                            popularGlobalWeeklyData?.data.slice(0, 10).map((album) => (
+                                console.log(album)
+                            ))
+                    }
                 </div>
             </section>
 
