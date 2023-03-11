@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom"
 import { useQuery } from '@tanstack/react-query';
+import { DateTime } from 'luxon';
+
 
 // Components
 import Avatar from "./Avatar"
@@ -9,6 +11,9 @@ import Album from "./Album";
 function NoTextAlbumReview(props) {
     const { username, profilePic, created_at, updated_at, review_id, album_id, rating } = props.review;
     const { isLoading, data: albumData, error: albumError } = useQuery([`album?albumID=${album_id}`]);
+    
+    const dateTimeObj = DateTime.fromISO(updated_at ? updated_at : created_at);
+    const formattedDate = dateTimeObj.toFormat('MM/dd')
 
     return (
         <div className="relative max-w-[100px]">
@@ -34,7 +39,7 @@ function NoTextAlbumReview(props) {
             
             <div className="flex flex-row justify-between text-xs pt-1 text-gray-400">
                 <Stars rating={rating} />
-                <p>Feb 18</p>
+                <p>{formattedDate}</p>
             </div>
         </div>
       );
