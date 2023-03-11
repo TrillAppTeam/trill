@@ -26,7 +26,7 @@ function Profile() {
     const { data: followers, refetch: refetchFollowers } = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
     const { data: reviewsNew } = useQuery([`reviews?sort=newest&username=${userData?.data.username}`]);
     const { data: reviewsPopular } = useQuery([`reviews?sort=popular&username=${userData?.data.username}`]);
-    const { data: favoriteAlbums } = useQuery([`favoritealbums?username=${userData?.data.username}`]);
+    const { isLoading: favoriteAlbumsLoading, data: favoriteAlbums } = useQuery([`favoritealbums?username=${userData?.data.username}`]);
     
     const follow = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, {}, 
@@ -120,12 +120,14 @@ function Profile() {
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-left gap-5">
-                        {Array.isArray(favoriteAlbums?.data) 
-                            ? favoriteAlbums.data.map((favoriteAlbum) => (
-                                <Album album={{...favoriteAlbum, size: "150"}} />
-                            ))
-                            : <h1 className="italic text-trillBlue">No favorite albums.</h1>
-                        }   
+                            {favoriteAlbumsLoading 
+                            ?   "Loading..."
+                            :   Array.isArray(favoriteAlbums?.data) 
+                                ? favoriteAlbums.data.map((favoriteAlbum) => (
+                                    <Album album={{...favoriteAlbum, size: "150"}} />
+                                ))
+                                : <h1 className="italic text-trillBlue">No favorite albums.</h1>
+                            }
                         </div>
                 </div>
                 
