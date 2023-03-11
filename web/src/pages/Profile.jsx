@@ -120,9 +120,12 @@ function Profile() {
                 <div className="w-2/3 pr-12">
                     <Titles title="Favorite Albums"/>
                         <div className="text-white flex flex-row justify-left gap-5">
-                            {favoriteAlbums?.data?.map((favoriteAlbum) => (
+                        {Array.isArray(favoriteAlbums?.data) 
+                            ? favoriteAlbums.data.map((favoriteAlbum) => (
                                 <Album album={{...favoriteAlbum, size: "150"}} />
-                            ))} 
+                            ))
+                            : <h1 className="italic text-trillBlue">No favorite albums.</h1>
+                        }   
                         </div>
                 </div>
                 
