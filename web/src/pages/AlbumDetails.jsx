@@ -19,7 +19,6 @@ function AlbumDetails() {
     const [ rating, setRating ] = useState(0);
     const [ reviewText, setReviewText ] = useState("")
     const [ isEditing, setIsEditing ] = useState(false);
-    const [ isLiked, setIsLiked ] = useState(false);
 
     const { state } = useLocation();
     const { name, year, artist, img, link, id } = state;
@@ -256,7 +255,10 @@ function AlbumDetails() {
                                     <button 
                                         type="button" 
                                         className="py-1 mr-3 w-24 text-sm mt-3 font-bold rounded-md text-gray-900 bg-violet-400 hover:text-white"
-                                        onClick={postReview}
+                                        onClick={() => {
+                                            postReview();
+                                            setIsEditing(false);
+                                        }}
                                         >
                                         {data ? "Save" : "Add Review"}
                                     </button>
@@ -264,7 +266,10 @@ function AlbumDetails() {
                                         <button 
                                             type="button" 
                                             className="py-1 mr-3 w-24 text-sm mt-3 font-bold rounded-md text-gray-900 bg-red-900 hover:text-white"
-                                            onClick={removeReview}
+                                            onClick={() => {
+                                                removeReview();
+                                                setIsEditing(false);
+                                            }}
                                         >
                                             Delete
                                         </button>
