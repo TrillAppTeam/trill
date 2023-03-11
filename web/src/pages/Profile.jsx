@@ -153,7 +153,7 @@ function Profile() {
             <Titles title="Following"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {following?.data?.users?.map(user => {return <Avatar key={user} user={{profilePic: null, username: user, size: '11'}}/>})}
+                    {following?.data.map(user => {return <Avatar key={user} user={{profilePic: null, username: user.username, size: '11'}}/>})}
                 </div>
             </div>
 
@@ -161,7 +161,7 @@ function Profile() {
             <Titles title="Followers"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {followers?.data?.users?.map(user => {return <Avatar key={user} user={{profilePic: null, username: user, size: '11'}}/>})}
+                    {followers?.data.map(user => {return <Avatar key={user} user={{profilePic: null, username: user.username, size: '11'}}/>})}
                 </div>
             </div>
         </div>}
