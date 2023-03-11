@@ -19,7 +19,9 @@ function NoTextAlbumReview(props) {
         <div className="relative max-w-[100px]">
             <div className="ring-2 ring-gray-500 inline-block">
                 { !albumData 
-                    ? <img src={trillLogo}></img>
+                    ?   <div className="py-[14px]">
+                            <img src={trillLogo} width="150"></img>
+                        </div>
                     : 
                     <>
                         {console.log(albumData)}
