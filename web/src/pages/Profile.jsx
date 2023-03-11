@@ -137,7 +137,7 @@ function Profile() {
             {/* Recent Reviews: Last 2 reviews from the user */}
             <Titles title="Recent Reviews"/>
                 {reviewsNew?.data?.slice(0, 2).map((review, index, array) => (
-                    <div key={index}>
+                    <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
@@ -147,7 +147,7 @@ function Profile() {
             {/* Popular Reviews: Two most popular reviews by likes, by the user */}
             <Titles title="Popular Reviews"/>
                 {reviewsPopular?.data?.slice(0, 2).map((review, index, array) => (
-                    <div key={index}>
+                    <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
@@ -158,7 +158,7 @@ function Profile() {
             <Titles title="Following"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {following?.data.map(user => {return <Avatar key={user} user={{profilePic: null, username: user.username, size: '11'}}/>})}
+                    {following?.data.map(user => {return <Avatar key={user.username} user={{profilePic: null, username: user.username, size: '11'}}/>})}
                 </div>
             </div>
 
@@ -166,7 +166,7 @@ function Profile() {
             <Titles title="Followers"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
                 <div className="flex gap-2 flex-wrap">
-                    {followers?.data.map(user => {return <Avatar key={user} user={{profilePic: null, username: user.username, size: '11'}}/>})}
+                    {followers?.data.map(user => {return <Avatar key={user.username} user={{profilePic: null, username: user.username, size: '11'}}/>})}
                 </div>
             </div>
         </div>}
