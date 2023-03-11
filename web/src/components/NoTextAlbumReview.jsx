@@ -2,11 +2,11 @@ import { Link } from "react-router-dom"
 import { useQuery } from '@tanstack/react-query';
 import { DateTime } from 'luxon';
 
-
 // Components
 import Avatar from "./Avatar"
 import Stars from "./Stars"
-import Album from "./Album";
+import Album from "./Album"
+import trillLogo from "/trillTransparent.png"
 
 function NoTextAlbumReview(props) {
     const { username, profilePic, created_at, updated_at, review_id, album_id, rating } = props.review;
@@ -19,8 +19,13 @@ function NoTextAlbumReview(props) {
         <div className="relative max-w-[100px]">
             <div className="ring-2 ring-gray-500 inline-block">
                 { !albumData 
-                    ? null 
-                    : <Album album={{...albumData?.data, size: "150"}}/> 
+                    ? <img src={trillLogo}></img>
+                    : 
+                    <>
+                        {console.log(albumData)}
+                        <Album album={{...albumData?.data, size: "150"}}/> 
+                    </>
+                    
                 }
 
                 <div className="bg-gray-700 px-2 py-2">
