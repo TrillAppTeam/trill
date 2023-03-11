@@ -29,8 +29,8 @@ const grammyNews = {
 
 function Discover() {
     const { isLoading, data } = useQuery({ queryKey: ['users'] });
-    const { data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
-    const { data: recentGlobalData } = useQuery(['reviews?sort=newest']);
+    const { isLoading: friendsDataLoading, data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
+    const { isLoading: recentGlobalDataLoading, data: recentGlobalData } = useQuery(['reviews?sort=newest']);
 
     return (
         <div>
@@ -47,39 +47,45 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-
+                    Coming soon...
                 </div>
             </section>
 
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
                 <div className="text-white flex flex-row justify-left gap-5 max-w-6xl mx-auto">
-                    {friendsData?.data.slice(0, 10).map((review, index, array) => (
-                        <div key={review.review_id}>
-                            <NoTextAlbumReview review={review} />
-                        </div>
-                    ))} 
+                    {friendsDataLoading ? "Loading..." :  
+                        friendsData?.data.slice(0, 10).map((review) => (
+                            <div key={review.review_id}>
+                                <NoTextAlbumReview review={review} />
+                            </div>
+                        ))
+                    }
                 </div>
             </section>
 
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
-                {friendsData?.data.slice(0, 2).map((review, index, array) => (
-                    <div key={review.review_id}>
-                        <Review review={review} />
-                        {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
-                    </div>
-                ))} 
+                {friendsDataLoading ? "Loading..." :  
+                    friendsData?.data.slice(0, 2).map((review, index, array) => (
+                        <div key={review.review_id}>
+                            <Review review={review} />
+                            {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                        </div>
+                    ))
+                }
             </section>
 
             <section className="pt-14"> 
                 <Titles title="Recent Reviews - Globally"/>
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
-                    {recentGlobalData?.data.slice(0, 10).map((review, index, array) => (
-                        <div key={review.review_id}>
-                            <NoTextAlbumReview review={review} />
-                        </div>
-                    ))} 
+                    {recentGlobalDataLoading ? "Loading..."  
+                        : recentGlobalData?.data.slice(0, 10).map((review) => (
+                            <div key={review.review_id}>
+                                <NoTextAlbumReview review={review} />
+                            </div>
+                          )) 
+                    }
                 </div>
             </section>
 
