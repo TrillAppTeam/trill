@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { DateTime } from 'luxon';
 import axios from 'axios';
+import { Link } from "react-router-dom";
 
 // Components
 import Avatar from "../components/Avatar"
@@ -58,7 +59,9 @@ function AlbumDetailsReview(props) {
                     <div className="flex flex-row gap-4 text-md">
                         <Stars rating={rating} />
                         <p className="text-md text-gray-500 my-auto">Listened to by
-                            <span className="text-trillBlue"> @{username} </span>
+                            <Link to={`/User/Profile/${username}`}>
+                                <span className="text-trillBlue hover:text-white"> @{username} </span>
+                            </Link>
                             on  
                             <span className="text-gray-400"> {formattedDate}</span>
                         </p>                   
