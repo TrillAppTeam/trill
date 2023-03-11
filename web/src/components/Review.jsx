@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { DateTime } from 'luxon';
 import axios from 'axios';
+import { Link } from "react-router-dom"
 
 // Components
 import Album from "../components/Album";
@@ -77,7 +78,10 @@ function Review(props) {
                             <Stars rating={ rating } />
                             
                             <p className="text-sm text-gray-500 my-auto">Listened to by
-                                <span className="text-trillBlue"> @{username} </span>
+                                <Link to={`/User/Profile/${username}`}>
+                                    <span className="text-trillBlue hover:text-white"> @{username} </span>
+                                </Link>
+                               
                                 on  
                                 <span className="text-gray-400"> {formattedDate}</span>
                             </p>
