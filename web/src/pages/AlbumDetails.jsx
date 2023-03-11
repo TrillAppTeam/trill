@@ -18,6 +18,9 @@ import SpotifySVG from "/spotify.svg"
 function AlbumDetails() {
     const [ rating, setRating ] = useState(0);
     const [ reviewText, setReviewText ] = useState("")
+    const [ isEditing, setIsEditing ] = useState(false);
+    const [ isLiked, setIsLiked ] = useState(false);
+
     const { state } = useLocation();
     const { name, year, artist, img, link, id } = state;
     const currentUser = localStorage.getItem("username");
@@ -33,21 +36,25 @@ function AlbumDetails() {
     useEffect(() => {
         setReviewText(data?.data.review_text);
     }, [data?.data]);
-
     
-    const [isLiked, setIsLiked] = useState(false);
-
-    const handleLikeClick = () => {
-        setIsLiked(!isLiked);
-    }
-    
-    const rate = useMutation(review => { 
+    const addOrUpdateReview = useMutation(review => { 
         return axios.put(`https://api.trytrill.com/main/reviews?albumID=${id}`, review, 
             { headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                 'Content-Type': 'application/json'
                 }
             })
+            .then((res) => {
+                return res;
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }, {onSuccess: () => {refetchReview();}} );
+
+    const deleteReview = useMutation(() => { 
+        return axios.delete(`https://api.trytrill.com/main/reviews?albumID=${id}`, 
+            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -105,7 +112,14 @@ function AlbumDetails() {
     };
 
     const postReview = () => {
-        rate.mutate({rating: rating, review_text: reviewText})
+        addOrUpdateReview.mutate({rating: rating, review_text: reviewText})
+    }
+
+    const removeReview = () => {
+        deleteReview.mutate({rating: rating, review_text: reviewText});
+        setReviewText("");
+        setRating(0); 
+        setData(null);
     }
 
     const addToFavoriteAlbums = () => {
@@ -186,92 +200,97 @@ function AlbumDetails() {
                         </div>
                     </div>
                 </div>    
-
-                {/* Average Reviews Section */}
                 <AvgReviews />
             </div>
 
-            {/* Review Section */}
             <div className="pt-10">
-                    <Titles title="Your Review" />
-                    {data ? null: <h1 className="italic text-violet-300">You haven't reviewed this album yet.</h1>}
-   
-                    <div className="flex flex-row p-5">
-                        <Avatar user={{ profilePic: null, username: currentUser, size: "12" }} />
-
-                        <div className="flex flex-col pl-5 w-full justify-between">
-                            {/* Profile Picture, Rating, and Listen Date */}
-                            <p className="text-gray-500 pb-2">Review by
-                                <span className="text-gray-400 font-bold"> You</span>
-                            </p>                                    
-                            
-                            {isLoading ? null : <ReactStars
-                                count={5}D
-                                onChange={ratingChanged}
-                                size={30}
-                                isHalf={true}
-                                emptyIcon={<i className="far fa-star"></i>}
-                                halfIcon={<i className="fa fa-star-half-alt"></i>}
-                                fullIcon={<i className="fa fa-star"></i>}
-                                activeColor="#ffd700"
-                                value={data?.data.rating / 2 || rating}
-                            />}
-
-                            {/* Review Text Area */}
-                            <textarea 
-                                rows="3" 
-                                placeholder="This album is..." 
-                                className="bg-trillPurple p-4 my-2 rounded-md resize-none text-gray-400"
-                                value={reviewText} onChange={(e) => setReviewText(e.target.value)}
-                                >
-                            </textarea>
-                            
-                            <div className="flex flex-row items-center">
-                                <button 
-                                    type="button" 
-                                    className="py-1 mr-3 w-24 text-sm mt-3 font-bold rounded-md text-gray-900 bg-violet-400 hover:text-violet-800"
-                                    onClick={postReview}
-                                    >
-                                    {data ? "Edit Review" : "Add Review"}
-                                </button>
-
-                                <div className="text-gray-600 pt-3">
-                                    {rate.isLoading ? (
-                                        "Saving..."
-                                        ) : (
-                                            <>
-                                                { rate.isError ? (
-                                                    <div>An error occurred.</div>
-                                                ) : null}
-                                    
-                                                { rate.isSuccess ? <div>Saved</div> : null}
-                                            </>
-                                    ) }
-                                </div>
+                <Titles title="Your Review" />
+                {data && !isEditing
+                ?   <>  
+                        <div className="flex flex-row justify-between">
+                            <div className="justify-left">
+                                <AlbumDetailsReview review={data.data} />
                             </div>
                             
-
-                            {/* Only show likes if the review has been posted */}
-                            {data ? 
-                                <div className="flex flex-row gap-2 text-gray-500 text-sm pt-5">
-                                    <div onClick={handleLikeClick}
-                                        className="flex gap-1 items-center transition duration-300 ease-in-out hover:text-gray-400 cursor-pointer font-bold"
-                                    >
-                                        <p className={`${isLiked ? 'text-red-500' : 'text-gray-500'}`}>
-                                            ❤︎
-                                        </p>
-
-                                        <p className={`${isLiked ? 'text-gray-300' : ''}`}>
-                                            {isLiked ? 'Liked' : 'Like review'}
-                                        </p>
-                                    </div>
-                                    <p>0 likes</p>
-                                </div>
-                               : null
-                            }
+                            <button 
+                                className="mt-5 btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black"
+                                onClick={() => setIsEditing(true)}
+                            >
+                                Edit Review
+                            </button>
                         </div>
-    
-                </div>
+                        
+                    </>
+                : 
+                    <>
+                        <div className="flex flex-row p-5">
+                            <Avatar user={{ profilePic: null, username: currentUser, size: "12" }} />
+                            <div className="flex flex-col pl-5 w-full justify-between">
+                                {/* Profile Picture, Rating, and Listen Date */}
+                                <p className="text-gray-500 pb-2">Review by
+                                    <span className="text-gray-400 font-bold"> You</span>
+                                </p>                                    
+                                
+                                {isLoading ? null : <ReactStars
+                                    key={data?.data.id}
+                                    count={5}
+                                    onChange={ratingChanged}
+                                    size={30}
+                                    isHalf={true}
+                                    emptyIcon={<i className="far fa-star"></i>}
+                                    halfIcon={<i className="fa fa-star-half-alt"></i>}
+                                    fullIcon={<i className="fa fa-star"></i>}
+                                    activeColor="#ffd700"
+                                    value={data?.data.rating / 2 || rating}
+                                />}
+
+                                <textarea 
+                                    rows="3" 
+                                    placeholder="This album is..." 
+                                    className="bg-trillPurple p-4 my-2 rounded-md resize-none text-gray-400"
+                                    value={reviewText} onChange={(e) => setReviewText(e.target.value)}
+                                    >
+                                </textarea>
+                                
+                                <div className="flex flex-row items-center">
+                                    <button 
+                                        type="button" 
+                                        className="py-1 mr-3 w-24 text-sm mt-3 font-bold rounded-md text-gray-900 bg-violet-400 hover:text-white"
+                                        onClick={postReview}
+                                        >
+                                        {data ? "Save" : "Add Review"}
+                                    </button>
+                                    {data ? (
+                                        <button 
+                                            type="button" 
+                                            className="py-1 mr-3 w-24 text-sm mt-3 font-bold rounded-md text-gray-900 bg-red-900 hover:text-white"
+                                            onClick={removeReview}
+                                        >
+                                            Delete
+                                        </button>
+                                    ) : null}
+
+
+                                    <div className="text-gray-600 pt-3">
+                                        {addOrUpdateReview.isLoading ? (
+                                            "Saving..."
+                                            ) : (
+                                                <>
+                                                    { addOrUpdateReview.isError ? (
+                                                        <div>An error occurred.</div>
+                                                    ) : null}
+                                        
+                                                    { addOrUpdateReview.isSuccess ? <div>Saved</div> : null}
+                                                </>
+                                        ) }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>  
+                    </>
+                }
+
+                    
                 
                 <div className="pt-10">
                     <Titles title="Reviews From Friends" />

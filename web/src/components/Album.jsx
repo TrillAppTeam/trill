@@ -22,9 +22,6 @@ function Album(props) {
                         <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
                     </div>
                 }
-
-               
-
             </Link>
         </div>
       );

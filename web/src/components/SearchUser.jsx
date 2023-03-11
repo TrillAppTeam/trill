@@ -1,13 +1,6 @@
 // Components
 import Avatar from "./Avatar"
 
-// Dummy Data
-{/* <SearchUser user={{
-    username: "avwede",
-    profilePic: "https://www.meme-arsenal.com/memes/be23686a25bc2d9b52a04ebdf6e4f280.jpg",
-    size: "11"
-}}/> */}
-
 function SearchUser(props) {
     const { profilePic, username, size } = props.user;
 

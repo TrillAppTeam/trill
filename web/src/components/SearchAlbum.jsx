@@ -3,11 +3,6 @@ import Album from "../components/Album"
 import SpotifySVG from "/spotify.svg"
 
 function SearchAlbum(props) {
-    // img: album.images[0]?.url, 
-    // name: album.name, 
-    // year: album.release_date, 
-    // artist: album.artists[0].name, 
-    // spotifyLink: album.external_urls.spotify
     const {name, release_date: year, artists, external_urls: spotifyLink} = props.album;
     
     return (
