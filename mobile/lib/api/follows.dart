@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 
 /// If no username is passed, get followers for logged in user
@@ -102,15 +103,18 @@ Future<bool> unfollow(String userToUnfollow) async {
 
 // Followee follows the following
 class Follow {
-  final List<String> users;
+  final List<PublicUser> users;
 
   const Follow({
     required this.users,
   });
 
-  factory Follow.fromJson(Map<String, dynamic> json) {
+  factory Follow.fromJson(List<dynamic> json) {
+    final users = json
+        .map((userJson) => PublicUser.fromJson(userJson as Map<String, dynamic>))
+        .toList();
     return Follow(
-      users: List<String>.from(json['users']),
+      users: users
     );
   }
 }

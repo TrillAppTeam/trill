@@ -1,5 +1,7 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:trill/api/users.dart';
 import 'package:trill/api/follows.dart';
 import 'package:trill/constants.dart';
 import 'package:trill/pages/lists/follows.dart';
@@ -38,6 +40,8 @@ class _FollowButtonState extends State<FollowButton> {
               ? getFollowing(widget.username)
               : getFollowers(widget.username),
           builder: (context, snapshot) {
+            safePrint(snapshot.connectionState);
+            safePrint(snapshot.hasData);
             if (snapshot.hasData) {
               String followCount = snapshot.data!.users.length.toString();
               return RichText(

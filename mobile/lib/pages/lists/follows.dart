@@ -88,19 +88,26 @@ class _FollowsScreenState extends State<FollowsScreen>
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProfileScreen(
-                      username: _userResults.users[index],
+                      username: _userResults.users[index].username,
                     ),
                   ),
                 );
               },
               child: ListTile(
                 title: Text(
-                  (_userResults.users[index]),
+                  (_userResults.users[index].username),
                   style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text((_userResults.users[index].nickname)),
+                leading: const CircleAvatar(
+                  radius: 32,
+                  backgroundImage: NetworkImage(
+                    'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
+                  ),
                 ),
                 trailing: _tabController!.index == 0
                     ? FollowUserButton(
-                  username: _userResults.users[index],
+                  username: _userResults.users[index].username,
                   isFollowing: true,
                 )
                     : Icon(

@@ -50,7 +50,7 @@ class _SidebarState extends State<Sidebar> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const SizedBox(height: 30),
+            const SizedBox(height: 75),
             Container(
               padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
               child: ClipRRect(
@@ -120,7 +120,7 @@ class _SidebarState extends State<Sidebar> {
                 );
               },
             ),
-            const SizedBox(height: 30),
+            const SizedBox(height: 50),
             ListTile(
               leading: const Icon(Icons.edit_outlined, color: Colors.white),
               title: const Text('Edit Profile'),
