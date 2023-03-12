@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 
 // Components
@@ -49,10 +48,10 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    {popularGlobalWeeklyLoading ? "Loading..." :  
-                            popularGlobalWeeklyData?.data.slice(0, 10).map((album) => (
-                                console.log(album)
-                            ))
+                    {popularGlobalWeeklyLoading? "Loading..."  
+                        : popularGlobalWeeklyData?.data?.albums.map((album) => (
+                            <Album album={album} />
+                        ))
                     }
                 </div>
             </section>
@@ -91,6 +90,17 @@ function Discover() {
                                 <NoTextAlbumReview review={review} />
                             </div>
                           )) 
+                    }
+                </div>
+            </section>
+
+            <section className="pt-14"> 
+                <Titles title="Popular Albums All Time - Globally"/>
+                <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
+                    {popularGlobalAllTimeLoading? "Loading..."  
+                        : popularGlobalAllTimeData?.data?.albums.map((album) => (
+                            <Album album={album} />
+                        ))
                     }
                 </div>
             </section>
