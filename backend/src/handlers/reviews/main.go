@@ -122,11 +122,10 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 
 	var reviews *[]models.Review
 	switch paginate.Sort {
-	case "newest":
-		fallthrough
-	case "oldest":
-		fallthrough
-	case "popular":
+	case
+		"newest",
+		"oldest",
+		"popular":
 		reviews, err = models.GetReviews(ctx, &reviewQuery, users, paginate)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
