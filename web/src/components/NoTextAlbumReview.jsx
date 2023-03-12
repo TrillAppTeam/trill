@@ -24,7 +24,6 @@ function NoTextAlbumReview(props) {
                         </div>
                     : 
                     <>
-                        {console.log(albumData)}
                         <Album album={{...albumData?.data, size: "150"}}/> 
                     </>
                     
