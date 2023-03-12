@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/views"
 
@@ -12,28 +13,24 @@ import (
 	"gorm.io/gorm"
 )
 
-type Request = events.APIGatewayV2HTTPRequest
-type Response = events.APIGatewayV2HTTPResponse
+type Request = handlers.Request
+type Response = handlers.Response
 
 var db *gorm.DB
 
-func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (Response, error) {
-	if db == nil {
-		var err error
-		db, err = models.ConnectDB()
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
+func handler(ctx context.Context, req Request) (Response, error) {
+	initCtx, err := handlers.InitContext(ctx, db)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	ctx = context.WithValue(ctx, "db", db)
 
 	switch req.RequestContext.HTTP.Method {
 	case "GET":
-		return getLikeCount(ctx, req)
+		return getLikeCount(initCtx, req)
 	case "PUT":
-		return like(ctx, req)
+		return like(initCtx, req)
 	case "DELETE":
-		return unlike(ctx, req)
+		return unlike(initCtx, req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err

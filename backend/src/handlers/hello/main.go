@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/aws/aws-lambda-go/events"
+	"trill/src/handlers"
+
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
@@ -9,9 +10,10 @@ import (
 // AWS Lambda Proxy Request functionality (default behavior)
 //
 // https://serverless.com/framework/docs/providers/aws/events/apigateway/#lambda-proxy-integration
-type Response events.APIGatewayV2HTTPResponse
+type Request = handlers.Request
+type Response = handlers.Response
 
-func Handler(req events.APIGatewayV2HTTPRequest) (Response, error) {
+func Handler(req Request) (Response, error) {
 	// yummers
 	return Response{StatusCode: 200, Body: "Hello"}, nil
 }

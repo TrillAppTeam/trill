@@ -25,6 +25,10 @@ var (
 	ErrorInvalidArguments error = errors.New("invalid arguments provided to GetReviews")
 )
 
+var (
+	maxPopularAlbums = 10
+)
+
 func GetReview(ctx context.Context, username string, albumID string) (*Review, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
@@ -41,14 +45,18 @@ func GetReview(ctx context.Context, username string, albumID string) (*Review, e
 	}
 }
 
-func GetReviews(ctx context.Context, review *Review, following *[]User, sort string) (*[]Review, error) {
+func GetReviews(ctx context.Context, review *Review, following *[]User, paginate *Paginate) (*[]Review, error) {
 	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	queryBuilder, err := BuildQueryFromPaginate(db, paginate)
 	if err != nil {
 		return nil, err
 	}
 
 	prepend := ""
-	if sort == "popular" {
+	if paginate.Sort == "popular" {
 		prepend = "reviews."
 	}
 
@@ -69,13 +77,13 @@ func GetReviews(ctx context.Context, review *Review, following *[]User, sort str
 
 	var reviews *[]Review
 	var result *gorm.DB
-	switch sort {
+	switch paginate.Sort {
 	case "newest":
-		result = db.Preload("Likes").Where(query).Order("created_at desc").Find(&reviews)
+		result = queryBuilder.Preload("Likes").Where(query).Order("created_at desc").Find(&reviews)
 	case "oldest":
-		result = db.Preload("Likes").Where(query).Order("created_at asc").Find(&reviews)
+		result = queryBuilder.Preload("Likes").Where(query).Order("created_at asc").Find(&reviews)
 	case "popular":
-		result = db.Preload("Likes").
+		result = queryBuilder.Preload("Likes").
 			Joins("LEFT JOIN likes ON reviews.review_id = likes.review_id").
 			Where(query).
 			Group("reviews.review_id").
@@ -87,6 +95,47 @@ func GetReviews(ctx context.Context, review *Review, following *[]User, sort str
 	}
 
 	return reviews, nil
+}
+
+func GetPopularAlbumsFromReviews(ctx context.Context, timespan string) (*[]string, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var results *[]struct {
+		AlbumID string
+	}
+	day := -24 * time.Hour
+	threshold := time.Now()
+	switch timespan {
+	case "weekly":
+		threshold = threshold.Add(7 * day)
+	case "monthly":
+		threshold = threshold.Add(30 * day)
+	case "yearly":
+		threshold = threshold.Add(365 * day)
+	case "all":
+		threshold = time.Time{}
+	}
+
+	err = db.Model(&Review{}).
+		Select("album_id, COUNT(*) as count").
+		Where("created_at >= ?", threshold).
+		Group("album_id").
+		Order("count DESC").
+		Limit(maxPopularAlbums).
+		Find(&results).Error
+	if err != nil {
+		return nil, err
+	}
+
+	albums := make([]string, maxPopularAlbums)
+	for i, a := range *results {
+		albums[i] = a.AlbumID
+	}
+
+	return &albums, nil
 }
 
 func CreateReview(ctx context.Context, review *Review) error {

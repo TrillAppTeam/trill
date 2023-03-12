@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 
+	"trill/src/handlers"
 	"trill/src/models"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -15,14 +16,10 @@ type CognitoEvent = events.CognitoEventUserPoolsPostConfirmation
 var db *gorm.DB
 
 func create(ctx context.Context, req CognitoEvent) (CognitoEvent, error) {
-	if db == nil {
-		var err error
-		db, err = models.ConnectDB()
-		if err != nil {
-			return req, err
-		}
+	initCtx, err := handlers.InitContext(ctx, db)
+	if err != nil {
+		return req, err
 	}
-	ctx = context.WithValue(ctx, "db", db)
 
 	user := models.User{
 		Username:       req.UserName,
@@ -31,7 +28,7 @@ func create(ctx context.Context, req CognitoEvent) (CognitoEvent, error) {
 		ProfilePicture: "",
 	}
 
-	return req, models.CreateUser(ctx, &user)
+	return req, models.CreateUser(initCtx, &user)
 }
 
 func main() {
