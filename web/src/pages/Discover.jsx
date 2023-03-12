@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 
 // Components
@@ -31,6 +30,8 @@ function Discover() {
     const { isLoading, data } = useQuery({ queryKey: ['users'] });
     const { isLoading: friendsDataLoading, data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
     const { isLoading: recentGlobalDataLoading, data: recentGlobalData } = useQuery(['reviews?sort=newest']);
+    const { isLoading: popularGlobalWeeklyLoading, data: popularGlobalWeeklyData, error: popularGlobalWeeklyError } = useQuery([`albums?timespan=weekly`]);
+    const { isLoading: popularGlobalAllTimeLoading, data: popularGlobalAllTimeData, error: popularGlobalAllTimeError } = useQuery([`albums?timespan=all`]);
 
     return (
         <div>
@@ -47,7 +48,11 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    Coming soon...
+                    {popularGlobalWeeklyLoading? "Loading..."  
+                        : popularGlobalWeeklyData?.data?.albums.map((album) => (
+                            <Album album={album} />
+                        ))
+                    }
                 </div>
             </section>
 
@@ -85,6 +90,17 @@ function Discover() {
                                 <NoTextAlbumReview review={review} />
                             </div>
                           )) 
+                    }
+                </div>
+            </section>
+
+            <section className="pt-14"> 
+                <Titles title="Popular Albums All Time - Globally"/>
+                <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
+                    {popularGlobalAllTimeLoading? "Loading..."  
+                        : popularGlobalAllTimeData?.data?.albums.map((album) => (
+                            <Album album={album} />
+                        ))
                     }
                 </div>
             </section>
