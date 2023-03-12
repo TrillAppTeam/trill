@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 	"trill/src/handlers"
@@ -17,6 +18,11 @@ import (
 
 type Request = handlers.Request
 type Response = handlers.Response
+
+var (
+	ErrorTimespanParse error = errors.New("empty timespan parameter")
+	ErrorTimespan      error = errors.New("invalid value for timespan")
+)
 
 var db *gorm.DB
 
@@ -40,7 +46,24 @@ func handler(ctx context.Context, req Request) (Response, error) {
 }
 
 func getPopular(ctx context.Context, req Request) (Response, error) {
-	albumIDs, err := models.GetPopularAlbumsFromReviews(ctx)
+	timespan, ok := req.QueryStringParameters["timespan"]
+	if !ok {
+		return Response{StatusCode: 400, Body: ErrorTimespanParse.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	switch timespan {
+	case
+		"daily",
+		"weekly",
+		"monthly",
+		"yearly",
+		"all":
+		break
+	default:
+		return Response{StatusCode: 400, Body: ErrorTimespan.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	albumIDs, err := models.GetPopularAlbumsFromReviews(ctx, timespan)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

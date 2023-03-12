@@ -198,6 +198,11 @@ paths:
         description: Search query (leave blank for most popular albums over past week)
         default: speak now
         type: string
+      - name: timespan
+        in: query
+        type: string
+        description: daily, weekly, monthly, yearly, or all (for most popular albums)
+        default: weekly
       responses:
         200:
           description: success

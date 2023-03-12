@@ -97,7 +97,7 @@ func GetReviews(ctx context.Context, review *Review, following *[]User, paginate
 	return reviews, nil
 }
 
-func GetPopularAlbumsFromReviews(ctx context.Context) (*[]string, error) {
+func GetPopularAlbumsFromReviews(ctx context.Context, timespan string) (*[]string, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -106,7 +106,18 @@ func GetPopularAlbumsFromReviews(ctx context.Context) (*[]string, error) {
 	var results *[]struct {
 		AlbumID string
 	}
-	threshold := time.Now().Add(-7 * 24 * time.Hour)
+	day := -24 * time.Hour
+	threshold := time.Now()
+	switch timespan {
+	case "weekly":
+		threshold = threshold.Add(7 * day)
+	case "monthly":
+		threshold = threshold.Add(30 * day)
+	case "yearly":
+		threshold = threshold.Add(365 * day)
+	case "all":
+		threshold = time.Time{}
+	}
 
 	err = db.Model(&Review{}).
 		Select("album_id, COUNT(*) as count").
