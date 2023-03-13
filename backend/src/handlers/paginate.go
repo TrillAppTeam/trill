@@ -16,7 +16,7 @@ var (
 )
 
 var (
-	maxLimit int = 50
+	maxLimit int = 20
 )
 
 type PaginateError struct {

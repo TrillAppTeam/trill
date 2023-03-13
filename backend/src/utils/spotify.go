@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -54,7 +55,14 @@ func GetSpotifyToken() (*SpotifyToken, error) {
 	return &token, nil
 }
 
-func DoSpotifyRequest(token *SpotifyToken, reqURL string) (*bytes.Buffer, error) {
+func DoSpotifyRequest(ctx context.Context, apiURL string, query string) ([]byte, error) {
+	token, err := GetSpotifyToken()
+	if err != nil {
+		return nil, err
+	}
+
+	encodedQuery := url.QueryEscape(query)
+	reqURL := fmt.Sprintf(apiURL, encodedQuery)
 	request, err := http.NewRequest("GET", reqURL, nil)
 	if err != nil {
 		return nil, err
@@ -75,5 +83,5 @@ func DoSpotifyRequest(token *SpotifyToken, reqURL string) (*bytes.Buffer, error)
 		return nil, err
 	}
 
-	return &buf, nil
+	return buf.Bytes(), nil
 }

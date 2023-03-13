@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 )
 
 var DefaultHeaders = map[string]string{
@@ -14,6 +15,7 @@ var DefaultHeaders = map[string]string{
 
 func Marshal(ctx context.Context, view interface{}) (string, error) {
 	var buf bytes.Buffer
+	fmt.Printf("in marshal: %+v\n", view)
 	response, err := json.Marshal(view)
 	if err != nil {
 		return "", err

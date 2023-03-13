@@ -3,7 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"strings"
 
+	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/utils"
 	"trill/src/views"
@@ -33,7 +35,7 @@ func handler(ctx context.Context, req Request) (Response, error) {
 	case "POST":
 		return create(ctx, req)
 	case "GET":
-		return read(ctx, req)
+		return get(ctx, req)
 	case "DELETE":
 		return delete(ctx, req)
 	default:
@@ -83,13 +85,7 @@ func create(ctx context.Context, req Request) (Response, error) {
 
 // Gets the user's Listen Later albums
 // @PARAMS - username (string)
-func read(ctx context.Context, req Request) (Response, error) {
-	token, err := utils.GetSpotifyToken()
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-	}
-
-	// Get the username from the request params
+func get(ctx context.Context, req Request) (Response, error) {
 	username, ok := req.QueryStringParameters["username"]
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
@@ -104,34 +100,18 @@ func read(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 204}, nil
 	}
 
-	albumInfos := make([]views.SpotifyAlbum, len(*listenLaterAlbums))
-	for i, f := range *listenLaterAlbums {
-		reqURL := fmt.Sprintf("https://api.spotify.com/v1/albums/%s", f.AlbumID)
-		buf, err := utils.DoSpotifyRequest(token, reqURL)
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
-
-		var spotifyAlbum views.SpotifyAlbum
-		spotifyErrorResponse := views.UnmarshalSpotifyAlbum(ctx, buf.Bytes(), &spotifyAlbum)
-		if spotifyErrorResponse != nil {
-			spotifyError := spotifyErrorResponse.Error
-			return Response{
-				StatusCode: spotifyError.Status,
-				Body:       "Spotify request error: " + spotifyError.Message,
-				Headers:    views.DefaultHeaders,
-			}, nil
-		}
-
-		albumInfos[i] = spotifyAlbum
+	albumIDs := make([]string, len(*listenLaterAlbums))
+	for i, a := range *listenLaterAlbums {
+		albumIDs[i] = a.AlbumID
 	}
-
-	body, err := views.MarshalSpotifyAlbums(ctx, &albumInfos)
+	query := strings.Join(albumIDs, ",")
+	apiURL := "https://api.spotify.com/v1/albums/%s"
+	buf, err := utils.DoSpotifyRequest(ctx, apiURL, query)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return Response{StatusCode: 200, Body: body, Headers: views.DefaultHeaders}, nil
+	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, []views.SpotifyAlbum{}, views.Marshal), nil
 }
 
 // Deletes an album from a user's Listen Later albums

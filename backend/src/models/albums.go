@@ -9,6 +9,11 @@ type FavoriteAlbum struct {
 	AlbumID  string
 }
 
+type ListenLaterAlbum struct {
+	Username string
+	AlbumID  string
+}
+
 func GetFavoriteAlbums(ctx context.Context, username string) (*[]FavoriteAlbum, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
@@ -41,11 +46,6 @@ func DeleteFavoriteAlbum(ctx context.Context, favoriteAlbum *FavoriteAlbum) erro
 	}
 
 	return nil
-}
-
-type ListenLaterAlbum struct {
-	Username string
-	AlbumID  string
 }
 
 func GetListenLaterAlbums(ctx context.Context, username string) (*[]ListenLaterAlbum, error) {
