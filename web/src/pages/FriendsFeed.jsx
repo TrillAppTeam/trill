@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 
 
 function FriendsFeed() {
-    const {isLoading, data, error} = useQuery(['reviews?sort=newest&following=true']);
+    const { isLoading, data } = useQuery(['reviews?sort=newest&following=true']);
 
     return (
         <div className="max-w-6xl mx-auto">

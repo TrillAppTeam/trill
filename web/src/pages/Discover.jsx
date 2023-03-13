@@ -48,10 +48,12 @@ function Discover() {
             {/* <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
-                    {popularGlobalWeeklyLoading? "Loading..."  
-                        : popularGlobalWeeklyData?.data?.albums.map((album) => (
-                            <Album album={album} />
-                        ))
+                    {popularGlobalWeeklyLoading
+                        ? "Loading..."  
+                        : console.log(popularGlobalWeeklyData)
+                        // : popularGlobalWeeklyData?.data?.albums.map((album) => (
+                        //     <Album album={album} />
+                        // ))
                     }
                 </div>
             </section> */}
