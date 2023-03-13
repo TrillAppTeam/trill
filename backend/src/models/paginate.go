@@ -9,7 +9,7 @@ type Paginate struct {
 }
 
 var (
-	PAGINATE_DEFAULT_LIMIT = 50
+	PAGINATE_DEFAULT_LIMIT = 20
 	PAGINATE_DEFAULT_PAGE  = 1
 	PAGINATE_DEFAULT_SORT  = "newest"
 )

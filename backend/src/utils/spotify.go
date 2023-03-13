@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -16,6 +17,12 @@ type SpotifyToken struct {
 	TokenType   string `json:"token_type"`
 	ExpiresIn   int    `json:"expires_in"`
 }
+
+var (
+	AlbumAPIURL       string = "https://api.spotify.com/v1/albums/%s"
+	AlbumsAPIURL      string = "https://api.spotify.com/v1/albums?ids=%s"
+	AlbumSearchAPIURL string = "https://api.spotify.com/v1/search?q=%s&type=album"
+)
 
 func GetSpotifyToken() (*SpotifyToken, error) {
 	var secrets = GetSecrets()
@@ -54,7 +61,14 @@ func GetSpotifyToken() (*SpotifyToken, error) {
 	return &token, nil
 }
 
-func DoSpotifyRequest(token *SpotifyToken, reqURL string) (*bytes.Buffer, error) {
+func DoSpotifyRequest(ctx context.Context, apiURL string, query string) ([]byte, error) {
+	token, err := GetSpotifyToken()
+	if err != nil {
+		return nil, err
+	}
+
+	encodedQuery := url.QueryEscape(query)
+	reqURL := fmt.Sprintf(apiURL, encodedQuery)
 	request, err := http.NewRequest("GET", reqURL, nil)
 	if err != nil {
 		return nil, err
@@ -75,5 +89,5 @@ func DoSpotifyRequest(token *SpotifyToken, reqURL string) (*bytes.Buffer, error)
 		return nil, err
 	}
 
-	return &buf, nil
+	return buf.Bytes(), nil
 }

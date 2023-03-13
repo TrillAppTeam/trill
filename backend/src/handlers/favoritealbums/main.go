@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"strings"
 	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/utils"
@@ -78,12 +79,6 @@ func create(ctx context.Context, req Request) (Response, error) {
 // Gets the user's favorite albums
 // @PARAMS - username (string)
 func get(ctx context.Context, req Request) (Response, error) {
-	token, err := utils.GetSpotifyToken()
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-	}
-
-	// Get the username from the request params
 	username, ok := req.QueryStringParameters["username"]
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
@@ -95,37 +90,20 @@ func get(ctx context.Context, req Request) (Response, error) {
 	}
 
 	if len(*favoriteAlbums) == 0 {
-		return Response{StatusCode: 204}, nil
+		return Response{StatusCode: 204, Headers: views.DefaultHeaders}, nil
 	}
 
-	albumInfos := make([]views.SpotifyAlbum, len(*favoriteAlbums))
-	for i, f := range *favoriteAlbums {
-		reqURL := fmt.Sprintf("https://api.spotify.com/v1/albums/%s", f.AlbumID)
-		buf, err := utils.DoSpotifyRequest(token, reqURL)
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
-
-		var spotifyAlbum views.SpotifyAlbum
-		spotifyErrorResponse := views.UnmarshalSpotifyAlbum(ctx, buf.Bytes(), &spotifyAlbum)
-		if spotifyErrorResponse != nil {
-			spotifyError := spotifyErrorResponse.Error
-			return Response{
-				StatusCode: spotifyError.Status,
-				Body:       "Spotify request error: " + spotifyError.Message,
-				Headers:    views.DefaultHeaders,
-			}, nil
-		}
-
-		albumInfos[i] = spotifyAlbum
+	albumIDs := make([]string, len(*favoriteAlbums))
+	for i, a := range *favoriteAlbums {
+		albumIDs[i] = a.AlbumID
 	}
-
-	body, err := views.MarshalSpotifyAlbums(ctx, &albumInfos)
+	query := strings.Join(albumIDs, ",")
+	buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumsAPIURL, query)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return Response{StatusCode: 200, Body: body, Headers: views.DefaultHeaders}, nil
+	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &views.SpotifyAlbums{}), nil
 }
 
 // Deletes an album from a user's favorite albums

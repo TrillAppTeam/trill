@@ -130,7 +130,7 @@ func GetPopularAlbumsFromReviews(ctx context.Context, timespan string) (*[]strin
 		return nil, err
 	}
 
-	albums := make([]string, maxPopularAlbums)
+	albums := make([]string, len(*results))
 	for i, a := range *results {
 		albums[i] = a.AlbumID
 	}

@@ -5,8 +5,10 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"trill/src/handlers"
 	"trill/src/models"
+	"trill/src/utils"
 	"trill/src/views"
 
 	"gorm.io/gorm"
@@ -71,12 +73,21 @@ func getReview(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 404, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	} else if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-	}
-	if review == nil {
+	} else if review == nil {
 		return Response{StatusCode: 204, Headers: views.DefaultHeaders}, nil
 	}
 
-	body, err := views.MarshalReview(ctx, review, username)
+	buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumAPIURL, albumID)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+	var album views.SpotifyAlbum
+	resp := handlers.UnmarshalSpotify(ctx, buf, &album)
+	if resp != nil {
+		return *resp, nil
+	}
+
+	body, err := views.MarshalReview(ctx, review, username, &album)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
@@ -91,7 +102,7 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 	}
 
 	username, hasUserParam := req.QueryStringParameters["username"]
-	albumID := req.QueryStringParameters["albumID"]
+	albumID, hasAlbumParam := req.QueryStringParameters["albumID"]
 
 	followingRaw := req.QueryStringParameters["following"]
 	following, _ := strconv.ParseBool(followingRaw)
@@ -134,7 +145,25 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 400, Body: ErrorSortInvalid.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	body, err := views.MarshalReviews(ctx, reviews, requestor)
+	var albums *views.SpotifyAlbums = nil
+	if !hasAlbumParam {
+		albumIDs := make([]string, len(*reviews))
+		for i, r := range *reviews {
+			albumIDs[i] = r.AlbumID
+		}
+		query := strings.Join(albumIDs, ",")
+		buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumsAPIURL, query)
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		}
+
+		albums = new(views.SpotifyAlbums)
+		if resp := handlers.UnmarshalSpotify(ctx, buf, albums); resp != nil {
+			return *resp, nil
+		}
+	}
+
+	body, err := views.MarshalReviews(ctx, reviews, requestor, albums)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

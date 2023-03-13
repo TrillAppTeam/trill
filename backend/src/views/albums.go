@@ -3,8 +3,14 @@ package views
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"trill/src/models"
 )
+
+type SpotifyView interface {
+	Marshal(context.Context) (string, error)
+}
 
 type SpotifyAlbum struct {
 	AlbumType    string `json:"album_type"`
@@ -34,6 +40,10 @@ type SpotifyAlbum struct {
 }
 
 type SpotifyAlbums struct {
+	Albums []SpotifyAlbum `json:"albums"`
+}
+
+type SpotifyAlbumSearch struct {
 	Albums struct {
 		Href     string         `json:"href"`
 		Items    []SpotifyAlbum `json:"items"`
@@ -57,33 +67,32 @@ type FavoriteAlbum struct {
 	AlbumID  string `json:"album_id"`
 }
 
-func MarshalSpotifyAlbum(ctx context.Context, unmarshalledSpotifyAlbum *SpotifyAlbum) (string, error) {
-	return Marshal(ctx, unmarshalledSpotifyAlbum)
+var (
+	ErrorSpotifyAlbumCast  error = errors.New("invalid type for unmarshalledSpotifyAlbum")
+	ErrorSpotifyAlbumsCast error = errors.New("invalid type for unmarshalledSpotifyAlbums")
+)
+
+func (s *SpotifyAlbum) Marshal(ctx context.Context) (string, error) {
+	return Marshal(ctx, s)
 }
 
-func UnmarshalSpotifyAlbum(ctx context.Context, marshalledSpotifyAlbum []byte, spotifyAlbumView *SpotifyAlbum) *SpotifyError {
+func (s *SpotifyAlbums) Marshal(ctx context.Context) (string, error) {
+	return Marshal(ctx, s.Albums)
+}
+
+func (s *SpotifyAlbumSearch) Marshal(ctx context.Context) (string, error) {
+	return Marshal(ctx, s.Albums.Items)
+}
+
+func UnmarshalSpotify(ctx context.Context, marshalledSpotify []byte, spotifyView SpotifyView) *SpotifyError {
 	errorResponse := new(SpotifyError)
-	json.Unmarshal(marshalledSpotifyAlbum, &errorResponse)
+	json.Unmarshal(marshalledSpotify, &errorResponse)
 	if errorResponse.Error != nil {
 		return errorResponse
 	}
 
-	json.Unmarshal(marshalledSpotifyAlbum, spotifyAlbumView)
-	return nil
-}
-
-func MarshalSpotifyAlbums(ctx context.Context, unmarshalledSpotifyAlbums *[]SpotifyAlbum) (string, error) {
-	return Marshal(ctx, unmarshalledSpotifyAlbums)
-}
-
-func UnmarshalSpotifyAlbums(ctx context.Context, marshalledSpotifyAlbums []byte, spotifyAlbumsView *SpotifyAlbums) *SpotifyError {
-	errorResponse := new(SpotifyError)
-	json.Unmarshal(marshalledSpotifyAlbums, &errorResponse)
-	if errorResponse.Error != nil {
-		return errorResponse
-	}
-
-	json.Unmarshal(marshalledSpotifyAlbums, spotifyAlbumsView)
+	json.Unmarshal(marshalledSpotify, spotifyView)
+	fmt.Printf("%+v\n", spotifyView)
 	return nil
 }
 
