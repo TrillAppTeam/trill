@@ -45,7 +45,7 @@ function Discover() {
             </section>
             
             {/* Album Discovery */}
-            <section className="pt-14"> 
+            {/* <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
                     {popularGlobalWeeklyLoading? "Loading..."  
@@ -54,7 +54,7 @@ function Discover() {
                         ))
                     }
                 </div>
-            </section>
+            </section> */}
 
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
@@ -81,7 +81,7 @@ function Discover() {
                 }
             </section>
 
-            <section className="pt-14"> 
+            {/* <section className="pt-14"> 
                 <Titles title="Recent Reviews - Globally"/>
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
                     {recentGlobalDataLoading ? "Loading..."  
@@ -92,9 +92,9 @@ function Discover() {
                           )) 
                     }
                 </div>
-            </section>
+            </section> */}
 
-            <section className="pt-14"> 
+            {/* <section className="pt-14"> 
                 <Titles title="Popular Albums All Time - Globally"/>
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
                     {popularGlobalAllTimeLoading? "Loading..."  
@@ -103,7 +103,7 @@ function Discover() {
                         ))
                     }
                 </div>
-            </section>
+            </section> */}
 
             {/* Music News */}
             <section className="pt-14">

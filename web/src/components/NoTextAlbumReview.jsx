@@ -10,7 +10,7 @@ import trillLogo from "/trillTransparent.png"
 
 function NoTextAlbumReview(props) {
     const { username, profilePic, created_at, updated_at, review_id, album_id, rating } = props.review;
-    const { isLoading, data: albumData, error: albumError } = useQuery([`album?albumID=${album_id}`]);
+    const { isLoading, data: albumData, error: albumError } = useQuery([`albums?albumID=${album_id}`]);
     
     const dateTimeObj = DateTime.fromISO(updated_at ? updated_at : created_at);
     const formattedDate = dateTimeObj.toFormat('MM/dd')
