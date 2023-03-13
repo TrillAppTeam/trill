@@ -77,8 +77,7 @@ func getReview(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 204, Headers: views.DefaultHeaders}, nil
 	}
 
-	apiURL := "https://api.spotify.com/v1/albums/%s"
-	buf, err := utils.DoSpotifyRequest(ctx, apiURL, albumID)
+	buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumAPIURL, albumID)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

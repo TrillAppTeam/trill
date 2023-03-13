@@ -200,14 +200,6 @@ functions:
           method: get
           authorizer:
             name: customAuthorizer
-  album:
-    handler: bin/album
-    events:
-      - httpApi:
-          path: /album
-          method: get
-          authorizer:
-            name: customAuthorizer
   favoritealbums:
     handler: bin/favoritealbums
     events:
