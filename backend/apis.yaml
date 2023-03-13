@@ -437,6 +437,82 @@ paths:
           description: invalid http method
         500:
           description: error
+  /listenlateralbums:
+    get:
+      tags:
+      - listen later albums
+      operationId: create
+      produces:
+      - application/json
+      security:
+      - AccessToken: []
+      parameters:
+      - name: username
+        in: query
+        required: true
+        default: cjherrera1
+        type: string
+      responses:
+        200:
+          description: success
+        204:
+          description: no albums in Listen Later
+        403:
+          description: forbidden
+        405:
+          description: invalid http method
+        500:
+          description: error
+    post:
+      tags:
+      - listen later albums
+      operationId: addListenLaterAlbums
+      consumes:
+      - application/json
+      security:
+      - AccessToken: []
+      parameters:
+      - in: query
+        name: albumID
+        description: Spotify album ID
+        type: string
+        default: 4aawyAB9vmqN3uQ7FjRGTy
+      responses:
+        201:
+          description: added to database
+        400:
+          description: invalid request
+        403:
+          description: forbidden
+        405:
+          description: invalid http method
+        500:
+          description: error
+    delete:
+      tags:
+      - listen later albums
+      operationId: deleteListenLaterAlbums
+      consumes:
+      - application/json
+      security:
+      - AccessToken: []
+      parameters:
+      - in: query
+        name: albumID
+        description: Spotify album ID
+        type: string
+        default: 4aawyAB9vmqN3uQ7FjRGTy
+      responses:
+        200:
+          description: deleted from database
+        400:
+          description: invalid request
+        403:
+          description: forbidden
+        405:
+          description: invalid http method
+        500:
+          description: error
           
 definitions:
   UpdateUserRequest:
@@ -467,6 +543,7 @@ definitions:
       review_text:
         type: string
         example: "i hated it"
+  
 
 host: api.trytrill.com
 basePath: /TSD-181-AlbumInReview
