@@ -7,7 +7,7 @@ import Loading from "../components/Loading";
 
 
 function FriendsFeed() {
-    const {isLoading, data, error} = useQuery(['reviews?sort=newest&following=true']);
+    const { isLoading, data } = useQuery(['reviews?sort=newest&following=true']);
 
     return (
         <div className="max-w-6xl mx-auto">
@@ -16,11 +16,11 @@ function FriendsFeed() {
                     <h1 className="font-bold text-3xl md:text-4xl text-white text-center pt-10 pb-10">Discover new songs together.</h1>
                     <Titles title="Friends Feed" />
                     {data?.data.slice(0, 20).map((review, index, array) => (
-                    <div key={index}>
-                        <Review review={review} />
-                        {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
-                    </div>
-                ))}                  
+                        <div key={index}>
+                            <Review review={review} />
+                            {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                        </div>
+                    ))}                  
                 </>
             }
             <div className="pb-20" />

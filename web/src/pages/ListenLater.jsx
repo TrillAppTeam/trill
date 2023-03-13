@@ -8,7 +8,7 @@ import Loading from "../components/Loading"
 
 function ListenLater() {
     const currentUser = localStorage.getItem("username");
-    const { isLoading, data: listenLater, refetch: refetchListenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
+    const { isLoading, data: listenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
     return (
         <div className="max-w-6xl mx-auto">           
