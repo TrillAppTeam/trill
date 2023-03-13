@@ -1,6 +1,8 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 
+import '../api/listen_later.dart';
+
 class ListenLaterButton extends StatefulWidget {
   final String albumID;
   final bool isInListenLater;
@@ -28,29 +30,24 @@ class _ListenLaterButtonState extends State<ListenLaterButton> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        safePrint('one day we will have listen later api...');
-        setState(() {
-          _isInListenLater = !_isInListenLater;
-        });
-        // if (_isInListenLater) {
-        //   final success = await removeListenLater(widget.albumID);
-        //   if (success) {
-        //     setState(() {
-        //       _isInListenLater = false;
-        //     });
-        //   } else {
-        //     safePrint('Failed to remove album ${widget.albumID} from listen later');
-        //   }
-        // } else {
-        //   final success = await addListenLater(widget.albumID);
-        //   if (success) {
-        //     setState(() {
-        //       _isInListenLater = true;
-        //     });
-        //   } else {
-        //     safePrint('Failed to add album ${widget.albumID} to listen later');
-        //   }
-        // }
+        if (_isInListenLater) {   final success = await unListenLater(widget.albumID);
+          if (success) {
+            setState(() {
+              _isInListenLater = false;
+            });
+          } else {
+            safePrint('Failed to remove album ${widget.albumID} from listen later');
+          }
+        } else {
+          final success = await ListenLater(widget.albumID);
+          if (success) {
+            setState(() {
+              _isInListenLater = true;
+            });
+          } else {
+            safePrint('Failed to add album ${widget.albumID} to listen later');
+          }
+        }
       },
       child: Container(
         width: 180,

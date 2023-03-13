@@ -1,7 +1,8 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/api/albums.dart';
-import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/pages/loading_screen.dart';
+import '../../api/listen_later.dart';
 import '../../widgets/album_row.dart';
 import '../album_details.dart';
 
@@ -15,7 +16,7 @@ class ListenLaterScreen extends StatefulWidget {
 }
 
 class _ListenLaterScreenState extends State<ListenLaterScreen> {
-  late List<SpotifyAlbum> _favoriteAlbums;
+  late List<SpotifyAlbum> _listenLaterAlbums = [];
   bool _isLoading = false;
 
   @override
@@ -29,14 +30,17 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
       _isLoading = true;
     });
 
-    final favoriteAlbums = await getFavoriteAlbums();
+    final listenLaterAlbums = await getListenLaters();
 
-    if (favoriteAlbums != null) {
+    if (listenLaterAlbums != null) {
       setState(() {
-        _favoriteAlbums = favoriteAlbums;
-        _isLoading = false;
+        _listenLaterAlbums = listenLaterAlbums;
       });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -48,12 +52,29 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
       ),
       body: _isLoading
           ? const LoadingScreen()
+          : (_listenLaterAlbums == null || _listenLaterAlbums.isEmpty)
+          ? Row(
+              children: const [
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'No listen later albums. Add some albums to listen later to see them here!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontSize: 36
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
           : RefreshIndicator(
               onRefresh: _fetchListenLater,
               backgroundColor: const Color(0xFF1A1B29),
               color: const Color(0xFF3FBCF4),
               child: ListView.builder(
-                itemCount: _favoriteAlbums.length,
+                itemCount: _listenLaterAlbums.length,
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
@@ -61,12 +82,12 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => AlbumDetailsScreen(
-                            albumID: _favoriteAlbums[index].id,
+                            albumID: _listenLaterAlbums[index].id,
                           ),
                         ),
                       );
                     },
-                    child: AlbumRow(album: _favoriteAlbums[index]),
+                    child: AlbumRow(album: _listenLaterAlbums[index]),
                   );
                 },
               ),

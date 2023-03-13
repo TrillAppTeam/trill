@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/api/favorite_albums.dart';
+import 'package:trill/api/listen_later.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/favorite_button.dart';
@@ -34,7 +35,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   bool _isLoading = true;
 
   bool _isFavorited = false;
-  final bool _isInListenLater = false;
+  bool _isInListenLater = false;
   bool _isReviewed = false;
 
   late String _loggedInUser = "";
@@ -84,6 +85,15 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       if (favoriteAlbums[i].id == widget.albumID) {
         setState(() {
           _isFavorited = true;
+        });
+      }
+    }
+
+    final listenLaterAlbums = await getListenLaters() ?? [];
+    for (int i = 0; i < listenLaterAlbums.length; i++) {
+      if (listenLaterAlbums[i].id == widget.albumID) {
+        setState(() {
+          _isInListenLater = true;
         });
       }
     }
