@@ -20,6 +20,7 @@ function SearchResults() {
                     {userLoad ? <Loading /> :
                         userData?.data.map(user => {
                             return <>
+                                {console.log(user)}
                                 <SearchUser user={{
                                     username: user.username,
                                     profilePic: user.profilePic,
@@ -33,8 +34,6 @@ function SearchResults() {
                 </div> 
                 :
                 <div>
-                    {/* Remove Eventually!! */}
-                    {console.log(albumData?.data)}
                     <Titles title={`${albumData?.data.length == undefined ? "" : albumData?.data.length} Search Results for "${query}" in ${type}`} />
                     {albumLoad ? <Loading /> :
                         albumData?.data.map(album => {

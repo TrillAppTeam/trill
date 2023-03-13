@@ -12,7 +12,7 @@ import Loading from './Loading';
 
 function Review(props) {
     const { username, profilePic, created_at, updated_at, review_text, review_id, artists, album_id, likes: likesConst, requestor_liked, rating } = props.review;
-    const { isLoading, data: albumData, error: albumError } = useQuery([`album?albumID=${album_id}`]);
+    const { isLoading, data: albumData, error: albumError } = useQuery([`albums?albumID=${album_id}`]);
 
     const like = useMutation(() => { 
         return axios.put(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, {}, 

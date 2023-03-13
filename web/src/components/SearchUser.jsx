@@ -6,7 +6,6 @@ function SearchUser(props) {
 
     return(
         <div className="flex flex-row flex-wrap py-2 justify-between mx-5">
-            {console.log(username)}
             <div className="flex flex-row">
 
                 <div className="pt-1">
