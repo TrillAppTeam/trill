@@ -29,9 +29,9 @@ const grammyNews = {
 function Discover() {
     const { isLoading, data } = useQuery({ queryKey: ['users'] });
     const { isLoading: friendsDataLoading, data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
-    const { isLoading: recentGlobalDataLoading, data: recentGlobalData } = useQuery(['reviews?sort=newest']);
-    const { isLoading: popularGlobalWeeklyLoading, data: popularGlobalWeeklyData, error: popularGlobalWeeklyError } = useQuery([`albums?timespan=weekly`]);
-    const { isLoading: popularGlobalAllTimeLoading, data: popularGlobalAllTimeData, error: popularGlobalAllTimeError } = useQuery([`albums?timespan=all`]);
+    // const { isLoading: recentGlobalDataLoading, data: recentGlobalData } = useQuery(['reviews?sort=newest']);
+    // const { isLoading: popularGlobalWeeklyLoading, data: popularGlobalWeeklyData, error: popularGlobalWeeklyError } = useQuery([`albums?timespan=weekly`]);
+    // const { isLoading: popularGlobalAllTimeLoading, data: popularGlobalAllTimeData, error: popularGlobalAllTimeError } = useQuery([`albums?timespan=all`]);
 
     return (
         <div>
@@ -50,10 +50,12 @@ function Discover() {
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
                     {popularGlobalWeeklyLoading
                         ? "Loading..."  
-                        : console.log(popularGlobalWeeklyData)
-                        // : popularGlobalWeeklyData?.data?.albums.map((album) => (
-                        //     <Album album={album} />
-                        // ))
+                        // : console.log(popularGlobalWeeklyData)
+                        : popularGlobalWeeklyData?.data?.map((album) => (
+                            <div key={album.id}>
+                                <Album album={album} />
+                            </div>
+                        ))
                     }
                 </div>
             </section> */}
@@ -100,7 +102,7 @@ function Discover() {
                 <Titles title="Popular Albums All Time - Globally"/>
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
                     {popularGlobalAllTimeLoading? "Loading..."  
-                        : popularGlobalAllTimeData?.data?.albums.map((album) => (
+                        : popularGlobalAllTimeData?.data?.map((album) => (
                             <Album album={album} />
                         ))
                     }
