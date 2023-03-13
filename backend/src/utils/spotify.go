@@ -18,6 +18,12 @@ type SpotifyToken struct {
 	ExpiresIn   int    `json:"expires_in"`
 }
 
+var (
+	AlbumAPIURL       string = "https://api.spotify.com/v1/albums/%s"
+	AlbumsAPIURL      string = "https://api.spotify.com/v1/albums?ids=%s"
+	AlbumSearchAPIURL string = "https://api.spotify.com/v1/search?q=%s&type=album"
+)
+
 func GetSpotifyToken() (*SpotifyToken, error) {
 	var secrets = GetSecrets()
 

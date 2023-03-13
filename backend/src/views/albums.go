@@ -8,6 +8,10 @@ import (
 	"trill/src/models"
 )
 
+type SpotifyView interface {
+	Marshal(context.Context) (string, error)
+}
+
 type SpotifyAlbum struct {
 	AlbumType    string `json:"album_type"`
 	ExternalUrls struct {
@@ -36,6 +40,10 @@ type SpotifyAlbum struct {
 }
 
 type SpotifyAlbums struct {
+	Albums []SpotifyAlbum `json:"albums"`
+}
+
+type SpotifyAlbumSearch struct {
 	Albums struct {
 		Href     string         `json:"href"`
 		Items    []SpotifyAlbum `json:"items"`
@@ -64,21 +72,19 @@ var (
 	ErrorSpotifyAlbumsCast error = errors.New("invalid type for unmarshalledSpotifyAlbums")
 )
 
-func MarshalSpotifyAlbum(ctx context.Context, unmarshalledSpotifyAlbum interface{}) (string, error) {
-	return Marshal(ctx, unmarshalledSpotifyAlbum)
+func (s *SpotifyAlbum) Marshal(ctx context.Context) (string, error) {
+	return Marshal(ctx, s)
 }
 
-func MarshalSpotifyAlbums(ctx context.Context, unmarshalledSpotifyAlbums interface{}) (string, error) {
-	fmt.Printf("in marshalspotifyalbums: %p\n", &unmarshalledSpotifyAlbums)
-	fmt.Printf("%+v\n", unmarshalledSpotifyAlbums)
-	spotifyAlbums, ok := unmarshalledSpotifyAlbums.(*SpotifyAlbums)
-	if !ok {
-		return "", ErrorSpotifyAlbumsCast
-	}
-	return Marshal(ctx, spotifyAlbums.Albums.Items)
+func (s *SpotifyAlbums) Marshal(ctx context.Context) (string, error) {
+	return Marshal(ctx, s.Albums)
 }
 
-func UnmarshalSpotify(ctx context.Context, marshalledSpotify []byte, spotifyView interface{}) *SpotifyError {
+func (s *SpotifyAlbumSearch) Marshal(ctx context.Context) (string, error) {
+	return Marshal(ctx, s.Albums.Items)
+}
+
+func UnmarshalSpotify(ctx context.Context, marshalledSpotify []byte, spotifyView SpotifyView) *SpotifyError {
 	errorResponse := new(SpotifyError)
 	json.Unmarshal(marshalledSpotify, &errorResponse)
 	if errorResponse.Error != nil {
@@ -86,6 +92,7 @@ func UnmarshalSpotify(ctx context.Context, marshalledSpotify []byte, spotifyView
 	}
 
 	json.Unmarshal(marshalledSpotify, spotifyView)
+	fmt.Printf("%+v\n", spotifyView)
 	return nil
 }
 

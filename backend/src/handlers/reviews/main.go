@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"strings"
 	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/utils"
@@ -145,26 +146,25 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 400, Body: ErrorSortInvalid.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	var albums []views.SpotifyAlbum = nil
+	var albums *views.SpotifyAlbums = nil
 	if !hasAlbumParam {
 		albumIDs := make([]string, len(*reviews))
 		for i, r := range *reviews {
 			albumIDs[i] = r.AlbumID
 		}
-		apiURL := "https://api.spotify.com/v1/albums?ids=%s"
-		buf, err := utils.DoSpotifyRequest(ctx, apiURL, albumID)
+		query := strings.Join(albumIDs, ",")
+		buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumsAPIURL, query)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}
-		// albums = new([]views.SpotifyAlbum)
-		albums = make([]views.SpotifyAlbum, len(albumIDs))
-		resp := handlers.UnmarshalSpotify(ctx, buf, &albums)
-		if resp != nil {
+
+		albums = new(views.SpotifyAlbums)
+		if resp := handlers.UnmarshalSpotify(ctx, buf, albums); resp != nil {
 			return *resp, nil
 		}
 	}
 
-	body, err := views.MarshalReviews(ctx, reviews, requestor, &albums)
+	body, err := views.MarshalReviews(ctx, reviews, requestor, albums)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

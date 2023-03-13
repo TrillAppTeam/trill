@@ -7,16 +7,16 @@ import (
 )
 
 type Review struct {
-	ReviewID       int          `json:"review_id"`
-	Username       string       `json:"username"`
-	AlbumID        string       `json:"album_id"`
-	Rating         int          `json:"rating"`
-	ReviewText     string       `json:"review_text"`
-	CreatedAt      time.Time    `json:"created_at"`
-	UpdatedAt      time.Time    `json:"updated_at"`
-	Likes          int          `json:"likes"`
-	RequestorLiked bool         `json:"requestor_liked"`
-	Album          SpotifyAlbum `json:"album,omitempty"`
+	ReviewID       int           `json:"review_id"`
+	Username       string        `json:"username"`
+	AlbumID        string        `json:"album_id"`
+	Rating         int           `json:"rating"`
+	ReviewText     string        `json:"review_text"`
+	CreatedAt      time.Time     `json:"created_at"`
+	UpdatedAt      time.Time     `json:"updated_at"`
+	Likes          int           `json:"likes"`
+	RequestorLiked bool          `json:"requestor_liked"`
+	Album          *SpotifyAlbum `json:"album,omitempty"`
 }
 
 func marshalReview(ctx context.Context, reviewModel *models.Review, requestor string, album *SpotifyAlbum) Review {
@@ -38,7 +38,7 @@ func marshalReview(ctx context.Context, reviewModel *models.Review, requestor st
 		UpdatedAt:      reviewModel.UpdatedAt,
 		Likes:          len(reviewModel.Likes),
 		RequestorLiked: requestorLiked,
-		Album:          *album,
+		Album:          album,
 	}
 
 	return review
@@ -48,15 +48,15 @@ func MarshalReview(ctx context.Context, reviewModel *models.Review, requestor st
 	return Marshal(ctx, marshalReview(ctx, reviewModel, requestor, album))
 }
 
-func MarshalReviews(ctx context.Context, reviewModels *[]models.Review, requestor string, albums *[]SpotifyAlbum) (string, error) {
+func MarshalReviews(ctx context.Context, reviewModels *[]models.Review, requestor string, albums *SpotifyAlbums) (string, error) {
 	reviewsInfos := make([]Review, len(*reviewModels))
 	if albums != nil {
 		for i, r := range *reviewModels {
-			reviewsInfos[i] = marshalReview(ctx, &r, requestor, &(*albums)[i])
+			reviewsInfos[i] = marshalReview(ctx, &r, requestor, &albums.Albums[i])
 		}
 	} else {
 		for i, r := range *reviewModels {
-			reviewsInfos[i] = marshalReview(ctx, &r, requestor, &SpotifyAlbum{})
+			reviewsInfos[i] = marshalReview(ctx, &r, requestor, nil)
 		}
 	}
 

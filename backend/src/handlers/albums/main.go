@@ -49,13 +49,13 @@ func get(ctx context.Context, req Request) (Response, error) {
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse query", Headers: views.DefaultHeaders}, nil
 	}
-	apiURL := "https://api.spotify.com/v1/albums/%s"
-	buf, err := utils.DoSpotifyRequest(ctx, apiURL, albumID)
+
+	buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumAPIURL, albumID)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &views.SpotifyAlbum{}, views.Marshal), nil
+	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &views.SpotifyAlbum{}), nil
 }
 
 func getPopular(ctx context.Context, req Request) (Response, error) {
@@ -79,17 +79,18 @@ func getPopular(ctx context.Context, req Request) (Response, error) {
 	albumIDs, err := models.GetPopularAlbumsFromReviews(ctx, timespan)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	} else if len(*albumIDs) == 0 {
+		return Response{StatusCode: 204, Headers: views.DefaultHeaders}, nil
 	}
+
 	query := strings.Join(*albumIDs, ",")
-	apiURL := "https://api.spotify.com/v1/albums?ids=%s"
-	buf, err := utils.DoSpotifyRequest(ctx, apiURL, query)
+	buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumsAPIURL, query)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	albums := make([]views.SpotifyAlbum, len(*albumIDs))
-	fmt.Printf("%+v\n", buf)
-	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &albums, views.Marshal), nil
+	// return Response{StatusCode: 200, Body: string(buf), Headers: views.DefaultHeaders}, nil
+	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &views.SpotifyAlbums{}), nil
 }
 
 // GET: Returns album info
@@ -98,13 +99,12 @@ func search(ctx context.Context, req Request) (Response, error) {
 	if !ok {
 		return Response{StatusCode: 500, Body: "Failed to parse query", Headers: views.DefaultHeaders}, nil
 	}
-	apiURL := "https://api.spotify.com/v1/search?q=%s&type=album"
-	buf, err := utils.DoSpotifyRequest(ctx, apiURL, query)
+	buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumSearchAPIURL, query)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &views.SpotifyAlbums{}, views.MarshalSpotifyAlbums), nil
+	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &views.SpotifyAlbumSearch{}), nil
 }
 
 func main() {

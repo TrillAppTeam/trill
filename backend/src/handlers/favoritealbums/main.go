@@ -98,13 +98,12 @@ func get(ctx context.Context, req Request) (Response, error) {
 		albumIDs[i] = a.AlbumID
 	}
 	query := strings.Join(albumIDs, ",")
-	apiURL := "https://api.spotify.com/v1/albums/%s"
-	buf, err := utils.DoSpotifyRequest(ctx, apiURL, query)
+	buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumsAPIURL, query)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, []views.SpotifyAlbum{}, views.Marshal), nil
+	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &views.SpotifyAlbums{}), nil
 }
 
 // Deletes an album from a user's favorite albums
