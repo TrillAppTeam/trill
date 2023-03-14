@@ -19,7 +19,10 @@ type Response = handlers.Response
 var db *gorm.DB
 
 func handler(ctx context.Context, req Request) (Response, error) {
-	initCtx, err := handlers.InitContext(ctx, db)
+	var initCtx context.Context
+	var err error
+	initCtx, db, err = handlers.InitContext(ctx, db)
+	fmt.Printf("db in handler: %p\n", db)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

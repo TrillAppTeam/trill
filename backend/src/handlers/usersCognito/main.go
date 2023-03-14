@@ -16,7 +16,9 @@ type CognitoEvent = events.CognitoEventUserPoolsPostConfirmation
 var db *gorm.DB
 
 func create(ctx context.Context, req CognitoEvent) (CognitoEvent, error) {
-	initCtx, err := handlers.InitContext(ctx, db)
+	var initCtx context.Context
+	var err error
+	initCtx, db, err = handlers.InitContext(ctx, db)
 	if err != nil {
 		return req, err
 	}
