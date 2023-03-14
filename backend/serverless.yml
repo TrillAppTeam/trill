@@ -102,7 +102,6 @@ functions:
             name: customAuthorizer
   usersAPI:
     handler: bin/usersAPI
-    reservedConcurrency: 5
     events:
       - httpApi:
           path: /users
@@ -116,7 +115,6 @@ functions:
             name: customAuthorizer
   usersCognito:
     handler: bin/usersCognito
-    reservedConcurrency: 5
     events:
       - cognitoUserPool:
           pool: trill-users
@@ -124,7 +122,6 @@ functions:
           trigger: PostConfirmation
   likes:
     handler: bin/likes
-    reservedConcurrency: 5
     events:
       - httpApi:
           path: /likes
@@ -143,7 +140,6 @@ functions:
             name: customAuthorizer
   reviews:
     handler: bin/reviews
-    reservedConcurrency: 5
     events:
       - httpApi:
           path: /reviews
@@ -162,7 +158,6 @@ functions:
             name: customAuthorizer
   follows:
     handler: bin/follows
-    reservedConcurrency: 5
     events:
       - httpApi:
           path: /follows
@@ -181,7 +176,6 @@ functions:
             name: customAuthorizer
   listenlateralbums:
     handler: bin/listenlateralbums
-    reservedConcurrency: 5
     events:
       - httpApi:
           path: /listenlateralbums
@@ -200,7 +194,6 @@ functions:
             name: customAuthorizer
   albums:
     handler: bin/albums
-    reservedConcurrency: 5
     events:
       - httpApi:
           path: /albums
@@ -209,7 +202,6 @@ functions:
             name: customAuthorizer
   favoritealbums:
     handler: bin/favoritealbums
-    reservedConcurrency: 5
     events:
       - httpApi:
           path: /favoritealbums
