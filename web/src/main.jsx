@@ -17,6 +17,7 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import AlbumDetails from './pages/AlbumDetails';
 import SearchResults from './pages/SearchResults';
+import MyReviews from './pages/MyReviews';
 
 
 import {
@@ -113,6 +114,11 @@ const router = createBrowserRouter([
       {
         path: "AlbumDetails",
         element: <AlbumDetails />,
+        errorElement: <Error />
+      },
+      {
+        path: "MyReviews",
+        element: <MyReviews />,
         errorElement: <Error />
       }
     ],
