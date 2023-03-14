@@ -22,22 +22,20 @@ type Response = events.APIGatewayV2HTTPResponse
 var db *gorm.DB
 
 func handler(ctx context.Context, req Request) (Response, error) {
-	if db == nil {
-		var err error
-		db, err = models.ConnectDB()
-		if err != nil {
-			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-		}
+	var initCtx context.Context
+	var err error
+	initCtx, db, err = handlers.InitContext(ctx, db)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
-	ctx = context.WithValue(ctx, "db", db)
 
 	switch req.RequestContext.HTTP.Method {
 	case "POST":
-		return create(ctx, req)
+		return create(initCtx, req)
 	case "GET":
-		return get(ctx, req)
+		return get(initCtx, req)
 	case "DELETE":
-		return delete(ctx, req)
+		return delete(initCtx, req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err
