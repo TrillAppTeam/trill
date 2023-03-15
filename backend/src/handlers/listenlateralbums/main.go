@@ -69,6 +69,11 @@ func create(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 400, Body: "user already has 100 albums", Headers: views.DefaultHeaders}, err
 	}
 
+	requestorReviewed, err := models.RequestorReviewed(ctx, albumID, username)
+	if err != nil || requestorReviewed {
+		return Response{StatusCode: 409, Body: "Album has already been reviewed"}, err
+	}
+
 	err = models.CreateListenLaterAlbum(ctx, &insertRecord)
 	if err != nil {
 		return Response{StatusCode: 500, Body: "Error inserting data into database"}, err
@@ -84,9 +89,9 @@ func create(ctx context.Context, req Request) (Response, error) {
 // Gets the user's Listen Later albums
 // @PARAMS - username (string)
 func get(ctx context.Context, req Request) (Response, error) {
-	username, ok := req.QueryStringParameters["username"]
+	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		return Response{StatusCode: 500, Body: "Failed to parse username"}, nil
+		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
 	}
 
 	listenLaterAlbums, err := models.GetListenLaterAlbums(ctx, username)

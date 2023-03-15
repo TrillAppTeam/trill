@@ -8,7 +8,7 @@ import (
 
 type Review struct {
 	ReviewID       int           `json:"review_id"`
-	Username       string        `json:"username"`
+	User           models.User   `json:"user"`
 	AlbumID        string        `json:"album_id"`
 	Rating         int           `json:"rating"`
 	ReviewText     string        `json:"review_text"`
@@ -30,7 +30,7 @@ func marshalReview(ctx context.Context, reviewModel *models.Review, requestor st
 
 	review := Review{
 		ReviewID:       reviewModel.ReviewID,
-		Username:       reviewModel.Username,
+		User:           reviewModel.User,
 		AlbumID:        reviewModel.AlbumID,
 		Rating:         reviewModel.Rating,
 		ReviewText:     reviewModel.ReviewText,

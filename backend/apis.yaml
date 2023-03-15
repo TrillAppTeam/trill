@@ -12,6 +12,7 @@ tags:
 - name: likes
   description: review likes
 - name: favorite albums
+- name: listen later albums
 
 securityDefinitions:
   AccessToken:
@@ -176,13 +177,11 @@ paths:
       - name: query
         in: query
         description: Search query (if searching)
-        default: speak now
         type: string
       - name: timespan
         in: query
         type: string
         description: daily, weekly, monthly, yearly, or all (for most popular albums)
-        default: weekly
       responses:
         200:
           description: success
@@ -446,12 +445,6 @@ paths:
       - application/json
       security:
       - AccessToken: []
-      parameters:
-      - name: username
-        in: query
-        required: true
-        default: cjherrera1
-        type: string
       responses:
         200:
           description: success
@@ -486,6 +479,8 @@ paths:
           description: forbidden
         405:
           description: invalid http method
+        409:
+          description: album already reviewed
         500:
           description: error
     delete:
@@ -525,7 +520,7 @@ definitions:
       bio:
         type: string
         example: "this is my bio"
-      profilePicture:
+      profile_picture:
         type: string
         example: "idk the format but uh yeah"
       nickname:
@@ -543,9 +538,8 @@ definitions:
       review_text:
         type: string
         example: "i hated it"
-  
 
 host: api.trytrill.com
-basePath: /TSD-181-AlbumInReview
+basePath: /main
 schemes:
  - https

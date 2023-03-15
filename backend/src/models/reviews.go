@@ -17,7 +17,14 @@ type Review struct {
 	ReviewText string    `json:"review_text"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
+	User       User      `gorm:"foreignKey:Username;references:Username"`
 	Likes      []Like    `gorm:"foreignKey:ReviewID;references:ReviewID;constraint:OnDelete:CASCADE;"`
+}
+
+type ReviewStats struct {
+	AverageRating     float64
+	NumRatings        int
+	RequestorReviewed bool
 }
 
 var (
@@ -36,7 +43,7 @@ func GetReview(ctx context.Context, username string, albumID string) (*Review, e
 	}
 
 	var review *Review
-	if result := db.Preload("Likes").Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(&review); result.Error != nil {
+	if result := db.Preload("User").Preload("Likes").Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(&review); result.Error != nil {
 		return nil, err
 	} else if result.RowsAffected == 0 {
 		return nil, ErrorReviewNotFound
@@ -79,11 +86,11 @@ func GetReviews(ctx context.Context, review *Review, following *[]User, paginate
 	var result *gorm.DB
 	switch paginate.Sort {
 	case "newest":
-		result = queryBuilder.Preload("Likes").Where(query).Order("created_at desc").Find(&reviews)
+		result = queryBuilder.Preload("User").Preload("Likes").Where(query).Order("created_at desc").Find(&reviews)
 	case "oldest":
-		result = queryBuilder.Preload("Likes").Where(query).Order("created_at asc").Find(&reviews)
+		result = queryBuilder.Preload("User").Preload("Likes").Where(query).Order("created_at asc").Find(&reviews)
 	case "popular":
-		result = queryBuilder.Preload("Likes").
+		result = queryBuilder.Preload("User").Preload("Likes").
 			Joins("LEFT JOIN likes ON reviews.review_id = likes.review_id").
 			Where(query).
 			Group("reviews.review_id").
@@ -161,4 +168,41 @@ func DeleteReview(ctx context.Context, review *Review) error {
 	}
 
 	return nil
+}
+
+func GetReviewStats(ctx context.Context, albumID string, requestor string) (*ReviewStats, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var reviewStats *ReviewStats
+	if err := db.Model(&Review{}).
+		Select("AVG(rating) as average_rating, COUNT(*) as num_ratings").
+		Where("album_id = ?", albumID).Scan(&reviewStats).Error; err != nil {
+		return nil, err
+	}
+
+	reviewStats.RequestorReviewed, err = RequestorReviewed(ctx, albumID, requestor)
+	if err != nil {
+		return nil, err
+	}
+
+	return reviewStats, nil
+}
+
+func RequestorReviewed(ctx context.Context, albumID string, requestor string) (bool, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	var requestorReviewCount int64
+	if err := db.Model(&Review{}).
+		Where("album_id = ? AND username = ?", albumID, requestor).
+		Count(&requestorReviewCount).Error; err != nil {
+		return false, err
+	}
+
+	return requestorReviewCount > 0, nil
 }

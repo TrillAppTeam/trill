@@ -53,16 +53,18 @@ func handler(ctx context.Context, req Request) (Response, error) {
 }
 
 func getReview(ctx context.Context, req Request) (Response, error) {
-	username, ok := req.QueryStringParameters["username"]
+	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		username, ok = req.RequestContext.Authorizer.Lambda["username"].(string)
-		if !ok {
-			return Response{
-				StatusCode: 500,
-				Body:       fmt.Sprintf("%s or %s", ErrorRequestor.Error(), ErrorUsername.Error()),
-				Headers:    views.DefaultHeaders,
-			}, nil
-		}
+		return Response{
+			StatusCode: 500,
+			Body:       fmt.Sprintf(ErrorRequestor.Error()),
+			Headers:    views.DefaultHeaders,
+		}, nil
+	}
+
+	reviewerUsername, queryOK := req.QueryStringParameters["username"]
+	if !queryOK {
+		reviewerUsername = requestor
 	}
 
 	albumID, ok := req.QueryStringParameters["albumID"]
@@ -70,7 +72,7 @@ func getReview(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	review, err := models.GetReview(ctx, username, albumID)
+	review, err := models.GetReview(ctx, reviewerUsername, albumID)
 	if err == models.ErrorReviewNotFound {
 		return Response{StatusCode: 404, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	} else if err != nil {
@@ -89,7 +91,7 @@ func getReview(ctx context.Context, req Request) (Response, error) {
 		return *resp, nil
 	}
 
-	body, err := views.MarshalReview(ctx, review, username, &album)
+	body, err := views.MarshalReview(ctx, review, requestor, &album)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
@@ -197,6 +199,15 @@ func createOrUpdateReview(ctx context.Context, req Request) (Response, error) {
 	if err := models.CreateReview(ctx, &review); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
+
+	deleteRecord := models.ListenLaterAlbum{
+		Username: requestor,
+		AlbumID:  albumID,
+	}
+	if err := models.DeleteListenLaterAlbum(ctx, &deleteRecord); err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
 	return Response{
 		StatusCode: 201,
 		Body: fmt.Sprintf("Successfully added/updated review for album %s from %s in database.",

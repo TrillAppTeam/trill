@@ -13,30 +13,41 @@ type SpotifyView interface {
 }
 
 type SpotifyAlbum struct {
-	AlbumType    string `json:"album_type"`
-	ExternalUrls struct {
-		Spotify string `json:"spotify"`
-	} `json:"external_urls"`
-	Href   string `json:"href"`
-	ID     string `json:"id"`
-	Images []struct {
-		URL    string `json:"url"`
-		Height int    `json:"height"`
-		Width  int    `json:"width"`
-	} `json:"images"`
-	Name        string   `json:"name"`
-	ReleaseDate string   `json:"release_date"`
-	Type        string   `json:"type"`
-	URI         string   `json:"uri"`
-	Genres      []string `json:"genres"`
-	Label       string   `json:"label"`
-	Popularity  int      `json:"popularity"`
-	Artists     []struct {
+	Name        string `json:"name"`
+	ID          string `json:"id"`
+	ReleaseDate string `json:"release_date"`
+
+	Artists []struct {
 		ID   string `json:"id"`
 		Name string `json:"name"`
 		Type string `json:"type"`
 		URI  string `json:"uri"`
 	} `json:"artists"`
+	Images []struct {
+		URL    string `json:"url"`
+		Height int    `json:"height"`
+		Width  int    `json:"width"`
+	} `json:"images"`
+
+	AverageRating     *float64 `json:"average_rating,omitempty"`
+	NumRatings        *int     `json:"num_ratings,omitempty"`
+	RequestorReviewed *bool    `json:"requestor_reviewed,omitempty"`
+
+	RequestorFavorited *bool `json:"requestor_favorited,omitempty"`
+	InListenLater      *bool `json:"in_listen_later,omitempty"`
+
+	Label      string   `json:"label"`
+	Genres     []string `json:"genres"`
+	Popularity int      `json:"popularity"`
+
+	URI          string `json:"uri"`
+	Href         string `json:"href"`
+	ExternalUrls struct {
+		Spotify string `json:"spotify"`
+	} `json:"external_urls"`
+
+	AlbumType string `json:"album_type"`
+	Type      string `json:"type"`
 }
 
 type SpotifyAlbums struct {
@@ -82,6 +93,19 @@ func (s *SpotifyAlbums) Marshal(ctx context.Context) (string, error) {
 
 func (s *SpotifyAlbumSearch) Marshal(ctx context.Context) (string, error) {
 	return Marshal(ctx, s.Albums.Items)
+}
+
+func MarshalDetailedAlbum(ctx context.Context, album SpotifyAlbum, reviewStats models.ReviewStats,
+	requestorFavorited bool, inListenLater bool) (string, error) {
+
+	album.AverageRating = &reviewStats.AverageRating
+	album.NumRatings = &reviewStats.NumRatings
+	album.RequestorReviewed = &reviewStats.RequestorReviewed
+
+	album.RequestorFavorited = &requestorFavorited
+	album.InListenLater = &inListenLater
+
+	return Marshal(ctx, album)
 }
 
 func UnmarshalSpotify(ctx context.Context, marshalledSpotify []byte, spotifyView SpotifyView) *SpotifyError {

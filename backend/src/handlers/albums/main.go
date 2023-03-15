@@ -20,6 +20,7 @@ type Response = handlers.Response
 var (
 	ErrorTimespanParse error = errors.New("empty timespan parameter")
 	ErrorTimespan      error = errors.New("invalid value for timespan")
+	ErrorUsername      error = errors.New("failed to parse username")
 )
 
 var db *gorm.DB
@@ -52,12 +53,47 @@ func get(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: "Failed to parse query", Headers: views.DefaultHeaders}, nil
 	}
 
+	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+	if !ok {
+		return Response{
+			StatusCode: 500,
+			Body:       fmt.Sprint(ErrorUsername.Error()),
+			Headers:    views.DefaultHeaders,
+		}, nil
+	}
+
 	buf, err := utils.DoSpotifyRequest(ctx, utils.AlbumAPIURL, albumID)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	return handlers.GenerateResponseFromSpotifyBody(ctx, buf, &views.SpotifyAlbum{}), nil
+	var album views.SpotifyAlbum
+	resp := handlers.UnmarshalSpotify(ctx, buf, &album)
+	if resp != nil {
+		return *resp, nil
+	}
+
+	reviewStats, err := models.GetReviewStats(ctx, album.ID, requestor)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	requestorFavorited, err := models.IsFavorited(ctx, albumID, requestor)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	inListenLater, err := models.InListenLater(ctx, albumID, requestor)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	body, err := views.MarshalDetailedAlbum(ctx, album, *reviewStats, requestorFavorited, inListenLater)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	return Response{StatusCode: 200, Body: body, Headers: views.DefaultHeaders}, nil
 }
 
 func getPopular(ctx context.Context, req Request) (Response, error) {
