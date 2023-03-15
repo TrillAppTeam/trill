@@ -29,9 +29,9 @@ const grammyNews = {
 function Discover() {
     const { isLoading, data } = useQuery({ queryKey: ['users'] });
     const { isLoading: friendsDataLoading, data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
-    // const { isLoading: recentGlobalDataLoading, data: recentGlobalData } = useQuery(['reviews?sort=newest']);
-    // const { isLoading: popularGlobalWeeklyLoading, data: popularGlobalWeeklyData, error: popularGlobalWeeklyError } = useQuery([`albums?timespan=weekly`]);
-    // const { isLoading: popularGlobalAllTimeLoading, data: popularGlobalAllTimeData, error: popularGlobalAllTimeError } = useQuery([`albums?timespan=all`]);
+    const { isLoading: recentGlobalDataLoading, data: recentGlobalData } = useQuery(['reviews?sort=newest']);
+    const { isLoading: popularGlobalWeeklyLoading, data: popularGlobalWeeklyData, error: popularGlobalWeeklyError } = useQuery([`albums?timespan=weekly`]);
+    const { isLoading: popularGlobalAllTimeLoading, data: popularGlobalAllTimeData, error: popularGlobalAllTimeError } = useQuery([`albums?timespan=all`]);
 
     return (
         <div>
@@ -45,12 +45,11 @@ function Discover() {
             </section>
             
             {/* Album Discovery */}
-            {/* <section className="pt-14"> 
+            <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
                     {popularGlobalWeeklyLoading
                         ? "Loading..."  
-                        // : console.log(popularGlobalWeeklyData)
                         : popularGlobalWeeklyData?.data?.map((album) => (
                             <div key={album.id}>
                                 <Album album={album} />
@@ -58,7 +57,7 @@ function Discover() {
                         ))
                     }
                 </div>
-            </section> */}
+            </section>
 
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
@@ -85,7 +84,7 @@ function Discover() {
                 }
             </section>
 
-            {/* <section className="pt-14"> 
+            <section className="pt-14"> 
                 <Titles title="Recent Reviews - Globally"/>
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
                     {recentGlobalDataLoading ? "Loading..."  
@@ -96,9 +95,9 @@ function Discover() {
                           )) 
                     }
                 </div>
-            </section> */}
+            </section>
 
-            {/* <section className="pt-14"> 
+            <section className="pt-14"> 
                 <Titles title="Popular Albums All Time - Globally"/>
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
                     {popularGlobalAllTimeLoading? "Loading..."  
@@ -107,7 +106,7 @@ function Discover() {
                         ))
                     }
                 </div>
-            </section> */}
+            </section>
 
             {/* Music News */}
             <section className="pt-14">
