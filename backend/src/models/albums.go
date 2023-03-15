@@ -48,6 +48,21 @@ func DeleteFavoriteAlbum(ctx context.Context, favoriteAlbum *FavoriteAlbum) erro
 	return nil
 }
 
+func IsFavorited(ctx context.Context, albumID string, requestor string) (bool, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	var count int64
+	result := db.Model(&FavoriteAlbum{}).Where("username = ? AND album_id = ?", requestor, albumID).Count(&count)
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return count > 0, nil
+}
+
 func GetListenLaterAlbums(ctx context.Context, username string) (*[]ListenLaterAlbum, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
@@ -80,4 +95,19 @@ func DeleteListenLaterAlbum(ctx context.Context, listenLaterAlbum *ListenLaterAl
 	}
 
 	return nil
+}
+
+func InListenLater(ctx context.Context, albumID string, requestor string) (bool, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	var count int64
+	result := db.Model(&ListenLaterAlbum{}).Where("username = ? AND album_id = ?", requestor, albumID).Count(&count)
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return count > 0, nil
 }

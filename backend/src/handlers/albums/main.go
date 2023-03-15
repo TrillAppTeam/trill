@@ -78,7 +78,17 @@ func get(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	body, err := views.MarshalDetailedAlbum(ctx, album, *reviewStats)
+	requestorFavorited, err := models.IsFavorited(ctx, albumID, requestor)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	inListenLater, err := models.InListenLater(ctx, albumID, requestor)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	body, err := views.MarshalDetailedAlbum(ctx, album, *reviewStats, requestorFavorited, inListenLater)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

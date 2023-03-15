@@ -183,13 +183,26 @@ func GetReviewStats(ctx context.Context, albumID string, requestor string) (*Rev
 		return nil, err
 	}
 
+	reviewStats.RequestorReviewed, err = RequestorReviewed(ctx, albumID, requestor)
+	if err != nil {
+		return nil, err
+	}
+
+	return reviewStats, nil
+}
+
+func RequestorReviewed(ctx context.Context, albumID string, requestor string) (bool, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
 	var requestorReviewCount int64
 	if err := db.Model(&Review{}).
 		Where("album_id = ? AND username = ?", albumID, requestor).
 		Count(&requestorReviewCount).Error; err != nil {
-		return nil, err
+		return false, err
 	}
-	reviewStats.RequestorReviewed = requestorReviewCount > 0
 
-	return reviewStats, nil
+	return requestorReviewCount > 0, nil
 }

@@ -29,12 +29,12 @@ type SpotifyAlbum struct {
 		Width  int    `json:"width"`
 	} `json:"images"`
 
-	AverageRating float64 `json:"average_rating,omitempty"`
-	NumRatings    int     `json:"num_ratings,omitempty"`
+	AverageRating     float64 `json:"average_rating,omitempty"`
+	NumRatings        int     `json:"num_ratings,omitempty"`
+	RequestorReviewed *bool   `json:"requestor_reviewed,omitempty"`
 
-	RequestorReviewed  bool `json:"requestor_reviewed,omitempty"`
-	RequestorFavorited bool `json:"requestor_favorited,omitempty"`
-	InListenLater      bool `json:"in_listen_later,omitempty"`
+	RequestorFavorited *bool `json:"requestor_favorited,omitempty"`
+	InListenLater      *bool `json:"in_listen_later,omitempty"`
 
 	Label      string   `json:"label"`
 	Genres     []string `json:"genres"`
@@ -95,10 +95,15 @@ func (s *SpotifyAlbumSearch) Marshal(ctx context.Context) (string, error) {
 	return Marshal(ctx, s.Albums.Items)
 }
 
-func MarshalDetailedAlbum(ctx context.Context, album SpotifyAlbum, reviewStats models.ReviewStats) (string, error) {
+func MarshalDetailedAlbum(ctx context.Context, album SpotifyAlbum, reviewStats models.ReviewStats,
+	requestorFavorited bool, inListenLater bool) (string, error) {
+
 	album.AverageRating = reviewStats.AverageRating
 	album.NumRatings = reviewStats.NumRatings
-	album.RequestorReviewed = reviewStats.RequestorReviewed
+	album.RequestorReviewed = &reviewStats.RequestorReviewed
+
+	album.RequestorFavorited = &requestorFavorited
+	album.InListenLater = &inListenLater
 
 	return Marshal(ctx, album)
 }
