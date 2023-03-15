@@ -7,14 +7,14 @@
 
 # ifeq ($(SUBDIRS),)
 # $(shell echo $(SUBDIRS))
-SUBDIRS := $(wildcard src/handlers/*/)
+SUBDIRS := $(wildcard src/handlers/*/main.go)
 BRANCH_NAME := $(shell git rev-parse --abbrev-ref HEAD)
 # endif
 
 build: $(SUBDIRS)
 
 $(SUBDIRS):
-	env GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/$(patsubst src/handlers/%/,%, $@) $@main.go
+	env GOARCH=amd64 GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -o bin/$(patsubst src/handlers/%/main.go,%, $@) $@
 
 clean: 
 	rm -rf ./bin

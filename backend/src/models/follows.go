@@ -75,3 +75,19 @@ func DeleteFollow(ctx context.Context, follows *Follows) error {
 
 	return nil
 }
+
+// true if followee follows following
+func IsFollowing(ctx context.Context, followee string, following string) (bool, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	var count int64
+	result := db.Model(&Follows{}).Where("following = ? AND followee = ?", following, followee).Count(&count)
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	return count > 0, nil
+}

@@ -83,7 +83,28 @@ func get(ctx context.Context, req Request) (Response, error) {
 		}
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
-	body, err = views.MarshalFullUser(ctx, user, privateCognitoUser)
+
+	following, err := models.GetFollowing(ctx, userToGet)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	followers, err := models.GetFollowers(ctx, userToGet)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	requestorFollows, err := models.IsFollowing(ctx, requestor, userToGet)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	followsRequestor, err := models.IsFollowing(ctx, userToGet, requestor)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	body, err = views.MarshalFullUser(ctx, user, privateCognitoUser, following, followers, requestorFollows, followsRequestor)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
