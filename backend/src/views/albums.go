@@ -13,30 +13,34 @@ type SpotifyView interface {
 }
 
 type SpotifyAlbum struct {
-	AlbumType    string `json:"album_type"`
-	ExternalUrls struct {
-		Spotify string `json:"spotify"`
-	} `json:"external_urls"`
-	Href   string `json:"href"`
-	ID     string `json:"id"`
-	Images []struct {
-		URL    string `json:"url"`
-		Height int    `json:"height"`
-		Width  int    `json:"width"`
-	} `json:"images"`
-	Name        string   `json:"name"`
-	ReleaseDate string   `json:"release_date"`
-	Type        string   `json:"type"`
-	URI         string   `json:"uri"`
-	Genres      []string `json:"genres"`
-	Label       string   `json:"label"`
-	Popularity  int      `json:"popularity"`
-	Artists     []struct {
+	Name        string `json:"name"`
+	ID          string `json:"id"`
+	ReleaseDate string `json:"release_date"`
+
+	Artists []struct {
 		ID   string `json:"id"`
 		Name string `json:"name"`
 		Type string `json:"type"`
 		URI  string `json:"uri"`
 	} `json:"artists"`
+	Images []struct {
+		URL    string `json:"url"`
+		Height int    `json:"height"`
+		Width  int    `json:"width"`
+	} `json:"images"`
+
+	Label      string   `json:"label"`
+	Genres     []string `json:"genres"`
+	Popularity int      `json:"popularity"`
+
+	URI          string `json:"uri"`
+	Href         string `json:"href"`
+	ExternalUrls struct {
+		Spotify string `json:"spotify"`
+	} `json:"external_urls"`
+
+	AlbumType string `json:"album_type"`
+	Type      string `json:"type"`
 }
 
 type SpotifyAlbums struct {
