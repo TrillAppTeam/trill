@@ -5,8 +5,10 @@ import (
 )
 
 type Follows struct {
-	Followee  string `gorm:"foreignKey:Username"`
-	Following string `gorm:"foreignKey:Username"`
+	Followee      string
+	Following     string
+	FolloweeUser  User `gorm:"foreignKey:Username;references:Followee"`
+	FollowingUser User `gorm:"foreignKey:Username;references:Following"`
 }
 
 // TODO consolidate GetFollowing and GetFollowers
@@ -17,20 +19,16 @@ func GetFollowing(ctx context.Context, followee string) (*[]User, error) {
 	}
 
 	var following []Follows
-	if err := db.Where("followee = ?", followee).Find(&following).Error; err != nil {
+	if err := db.Preload("FollowingUser").Where("followee = ?", followee).Find(&following).Error; err != nil {
 		return nil, err
 	}
 
-	usernames := make([]string, len(following))
+	users := make([]User, len(following))
 	for i, f := range following {
-		usernames[i] = f.Following
-	}
-	users, err := GetUsers(ctx, usernames)
-	if err != nil {
-		return nil, err
+		users[i] = f.FollowingUser
 	}
 
-	return users, nil
+	return &users, nil
 }
 
 func GetFollowers(ctx context.Context, followee string) (*[]User, error) {
@@ -40,20 +38,16 @@ func GetFollowers(ctx context.Context, followee string) (*[]User, error) {
 	}
 
 	var followers []Follows
-	if err := db.Where("following = ?", followee).Find(&followers).Error; err != nil {
+	if err := db.Preload("FolloweeUser").Where("following = ?", followee).Find(&followers).Error; err != nil {
 		return nil, err
 	}
 
-	usernames := make([]string, len(followers))
+	users := make([]User, len(followers))
 	for i, f := range followers {
-		usernames[i] = f.Followee
-	}
-	users, err := GetUsers(ctx, usernames)
-	if err != nil {
-		return nil, err
+		users[i] = f.FolloweeUser
 	}
 
-	return users, nil
+	return &users, nil
 }
 
 func CreateFollow(ctx context.Context, follows *Follows) error {
