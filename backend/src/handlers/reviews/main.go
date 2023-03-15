@@ -205,6 +205,15 @@ func createOrUpdateReview(ctx context.Context, req Request) (Response, error) {
 	if err := models.CreateReview(ctx, &review); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
+
+	deleteRecord := models.ListenLaterAlbum{
+		Username: requestor,
+		AlbumID:  albumID,
+	}
+	if err := models.DeleteListenLaterAlbum(ctx, &deleteRecord); err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
 	return Response{
 		StatusCode: 201,
 		Body: fmt.Sprintf("Successfully added/updated review for album %s from %s in database.",
