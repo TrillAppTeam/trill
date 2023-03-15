@@ -53,16 +53,18 @@ func handler(ctx context.Context, req Request) (Response, error) {
 }
 
 func getReview(ctx context.Context, req Request) (Response, error) {
-	username, ok := req.QueryStringParameters["username"]
+	requestor, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
 	if !ok {
-		username, ok = req.RequestContext.Authorizer.Lambda["username"].(string)
-		if !ok {
-			return Response{
-				StatusCode: 500,
-				Body:       fmt.Sprintf("%s or %s", ErrorRequestor.Error(), ErrorUsername.Error()),
-				Headers:    views.DefaultHeaders,
-			}, nil
-		}
+		return Response{
+			StatusCode: 500,
+			Body:       fmt.Sprintf("%s or %s", ErrorRequestor.Error(), ErrorUsername.Error()),
+			Headers:    views.DefaultHeaders,
+		}, nil
+	}
+
+	reviewerUsername, ok := req.QueryStringParameters["username"]
+	if !ok {
+		reviewerUsername = requestor
 	}
 
 	albumID, ok := req.QueryStringParameters["albumID"]
@@ -70,7 +72,7 @@ func getReview(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: ErrorAlbumID.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	review, err := models.GetReview(ctx, username, albumID)
+	review, err := models.GetReview(ctx, reviewerUsername, albumID)
 	if err == models.ErrorReviewNotFound {
 		return Response{StatusCode: 404, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	} else if err != nil {
@@ -89,7 +91,12 @@ func getReview(ctx context.Context, req Request) (Response, error) {
 		return *resp, nil
 	}
 
-	body, err := views.MarshalReview(ctx, review, username, &album)
+	reviewer, err := models.GetUser(ctx, review.Username)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	body, err := views.MarshalReview(ctx, review, requestor, *reviewer, &album)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
@@ -165,7 +172,21 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		}
 	}
 
-	body, err := views.MarshalReviews(ctx, reviews, requestor, albums)
+	usernames := make([]string, len(*reviews))
+	for i, r := range *reviews {
+		usernames[i] = r.Username
+	}
+	reviewers, err := models.GetUsers(ctx, usernames)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+	// Construct map for marshalling: reviewersMap[username] = corresponding User struct
+	reviewersMap := make(map[string]models.User)
+	for _, reviewer := range *reviewers {
+		reviewersMap[reviewer.Username] = reviewer
+	}
+
+	body, err := views.MarshalReviews(ctx, reviews, requestor, reviewersMap, albums)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
