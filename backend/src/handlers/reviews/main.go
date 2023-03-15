@@ -63,13 +63,7 @@ func getReview(ctx context.Context, req Request) (Response, error) {
 	}
 
 	reviewerUsername, queryOK := req.QueryStringParameters["username"]
-	if !queryOK && !ok {
-		return Response{
-			StatusCode: 500,
-			Body:       fmt.Sprintf(ErrorUsername.Error()),
-			Headers:    views.DefaultHeaders,
-		}, nil
-	} else {
+	if !queryOK {
 		reviewerUsername = requestor
 	}
 

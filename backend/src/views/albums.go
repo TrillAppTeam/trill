@@ -29,9 +29,9 @@ type SpotifyAlbum struct {
 		Width  int    `json:"width"`
 	} `json:"images"`
 
-	AverageRating     float64 `json:"average_rating,omitempty"`
-	NumRatings        int     `json:"num_ratings,omitempty"`
-	RequestorReviewed *bool   `json:"requestor_reviewed,omitempty"`
+	AverageRating     *float64 `json:"average_rating,omitempty"`
+	NumRatings        *int     `json:"num_ratings,omitempty"`
+	RequestorReviewed *bool    `json:"requestor_reviewed,omitempty"`
 
 	RequestorFavorited *bool `json:"requestor_favorited,omitempty"`
 	InListenLater      *bool `json:"in_listen_later,omitempty"`
@@ -98,8 +98,8 @@ func (s *SpotifyAlbumSearch) Marshal(ctx context.Context) (string, error) {
 func MarshalDetailedAlbum(ctx context.Context, album SpotifyAlbum, reviewStats models.ReviewStats,
 	requestorFavorited bool, inListenLater bool) (string, error) {
 
-	album.AverageRating = reviewStats.AverageRating
-	album.NumRatings = reviewStats.NumRatings
+	album.AverageRating = &reviewStats.AverageRating
+	album.NumRatings = &reviewStats.NumRatings
 	album.RequestorReviewed = &reviewStats.RequestorReviewed
 
 	album.RequestorFavorited = &requestorFavorited
