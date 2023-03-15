@@ -19,7 +19,7 @@ type Review struct {
 	Album          *SpotifyAlbum `json:"album,omitempty"`
 }
 
-func marshalReview(ctx context.Context, reviewModel *models.Review, requestor string, reviewer models.User, album *SpotifyAlbum) Review {
+func marshalReview(ctx context.Context, reviewModel *models.Review, requestor string, album *SpotifyAlbum) Review {
 	requestorLiked := false
 	for _, user := range reviewModel.Likes {
 		if user.Username == requestor {
@@ -30,7 +30,7 @@ func marshalReview(ctx context.Context, reviewModel *models.Review, requestor st
 
 	review := Review{
 		ReviewID:       reviewModel.ReviewID,
-		User:           reviewer,
+		User:           reviewModel.User,
 		AlbumID:        reviewModel.AlbumID,
 		Rating:         reviewModel.Rating,
 		ReviewText:     reviewModel.ReviewText,
@@ -44,19 +44,19 @@ func marshalReview(ctx context.Context, reviewModel *models.Review, requestor st
 	return review
 }
 
-func MarshalReview(ctx context.Context, reviewModel *models.Review, requestor string, reviewer models.User, album *SpotifyAlbum) (string, error) {
-	return Marshal(ctx, marshalReview(ctx, reviewModel, requestor, reviewer, album))
+func MarshalReview(ctx context.Context, reviewModel *models.Review, requestor string, album *SpotifyAlbum) (string, error) {
+	return Marshal(ctx, marshalReview(ctx, reviewModel, requestor, album))
 }
 
-func MarshalReviews(ctx context.Context, reviewModels *[]models.Review, requestor string, reviewersMap map[string]models.User, albums *SpotifyAlbums) (string, error) {
+func MarshalReviews(ctx context.Context, reviewModels *[]models.Review, requestor string, albums *SpotifyAlbums) (string, error) {
 	reviewsInfos := make([]Review, len(*reviewModels))
 	if albums != nil {
 		for i, r := range *reviewModels {
-			reviewsInfos[i] = marshalReview(ctx, &r, requestor, reviewersMap[r.Username], &albums.Albums[i])
+			reviewsInfos[i] = marshalReview(ctx, &r, requestor, &albums.Albums[i])
 		}
 	} else {
 		for i, r := range *reviewModels {
-			reviewsInfos[i] = marshalReview(ctx, &r, requestor, reviewersMap[r.Username], nil)
+			reviewsInfos[i] = marshalReview(ctx, &r, requestor, nil)
 		}
 	}
 

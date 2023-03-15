@@ -91,12 +91,7 @@ func getReview(ctx context.Context, req Request) (Response, error) {
 		return *resp, nil
 	}
 
-	reviewer, err := models.GetUser(ctx, review.Username)
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-	}
-
-	body, err := views.MarshalReview(ctx, review, requestor, *reviewer, &album)
+	body, err := views.MarshalReview(ctx, review, requestor, &album)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
@@ -172,21 +167,7 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		}
 	}
 
-	usernames := make([]string, len(*reviews))
-	for i, r := range *reviews {
-		usernames[i] = r.Username
-	}
-	reviewers, err := models.GetUsers(ctx, usernames)
-	if err != nil {
-		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
-	}
-	// Construct map for marshalling: reviewersMap[username] = corresponding User struct
-	reviewersMap := make(map[string]models.User)
-	for _, reviewer := range *reviewers {
-		reviewersMap[reviewer.Username] = reviewer
-	}
-
-	body, err := views.MarshalReviews(ctx, reviews, requestor, reviewersMap, albums)
+	body, err := views.MarshalReviews(ctx, reviews, requestor, albums)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}

@@ -17,6 +17,7 @@ type Review struct {
 	ReviewText string    `json:"review_text"`
 	CreatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
 	UpdatedAt  time.Time `gorm:"default:CURRENT_TIMESTAMP"`
+	User       User      `gorm:"foreignKey:Username;references:Username"`
 	Likes      []Like    `gorm:"foreignKey:ReviewID;references:ReviewID;constraint:OnDelete:CASCADE;"`
 }
 
@@ -36,7 +37,7 @@ func GetReview(ctx context.Context, username string, albumID string) (*Review, e
 	}
 
 	var review *Review
-	if result := db.Preload("Likes").Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(&review); result.Error != nil {
+	if result := db.Preload("User").Preload("Likes").Where("username = ? AND album_id = ?", username, albumID).Limit(1).Find(&review); result.Error != nil {
 		return nil, err
 	} else if result.RowsAffected == 0 {
 		return nil, ErrorReviewNotFound
@@ -79,11 +80,11 @@ func GetReviews(ctx context.Context, review *Review, following *[]User, paginate
 	var result *gorm.DB
 	switch paginate.Sort {
 	case "newest":
-		result = queryBuilder.Preload("Likes").Where(query).Order("created_at desc").Find(&reviews)
+		result = queryBuilder.Preload("User").Preload("Likes").Where(query).Order("created_at desc").Find(&reviews)
 	case "oldest":
-		result = queryBuilder.Preload("Likes").Where(query).Order("created_at asc").Find(&reviews)
+		result = queryBuilder.Preload("User").Preload("Likes").Where(query).Order("created_at asc").Find(&reviews)
 	case "popular":
-		result = queryBuilder.Preload("Likes").
+		result = queryBuilder.Preload("User").Preload("Likes").
 			Joins("LEFT JOIN likes ON reviews.review_id = likes.review_id").
 			Where(query).
 			Group("reviews.review_id").
