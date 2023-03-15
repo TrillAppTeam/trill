@@ -21,6 +21,12 @@ type Review struct {
 	Likes      []Like    `gorm:"foreignKey:ReviewID;references:ReviewID;constraint:OnDelete:CASCADE;"`
 }
 
+type ReviewStats struct {
+	AverageRating     float64
+	NumRatings        int
+	RequestorReviewed bool
+}
+
 var (
 	ErrorReviewNotFound   error = errors.New("review does not exist")
 	ErrorInvalidArguments error = errors.New("invalid arguments provided to GetReviews")
@@ -162,4 +168,28 @@ func DeleteReview(ctx context.Context, review *Review) error {
 	}
 
 	return nil
+}
+
+func GetReviewStats(ctx context.Context, albumID string, requestor string) (*ReviewStats, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var reviewStats *ReviewStats
+	if err := db.Model(&Review{}).
+		Select("AVG(rating) as average_rating, COUNT(*) as num_ratings").
+		Where("album_id = ?", albumID).Scan(&reviewStats).Error; err != nil {
+		return nil, err
+	}
+
+	var requestorReviewCount int64
+	if err := db.Model(&Review{}).
+		Where("album_id = ? AND username = ?", albumID, requestor).
+		Count(&requestorReviewCount).Error; err != nil {
+		return nil, err
+	}
+	reviewStats.RequestorReviewed = requestorReviewCount > 0
+
+	return reviewStats, nil
 }
