@@ -26,8 +26,8 @@ function AlbumDetails() {
 
     const { isLoading, data, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
     const { data: reviewFromFriends } = useQuery([`reviews?sort=newest&albumID=${id}&following=true`]);
-    const { data: popularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
-    const { data: recentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
+    const { data: popularGlobal, refetch: refetchPopularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
+    const { data: recentGlobal, refetch: refetchRecentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
 
     const { data: albumStats, refetch: refetchAlbumStats } = useQuery([`albums?albumID=${id}`]);
 
@@ -54,6 +54,8 @@ function AlbumDetails() {
     }, {onSuccess: () => {
         refetchReview();
         refetchAlbumStats();
+        refetchPopularGlobal();
+        refetchRecentGlobal();
     }} );
 
     const deleteReview = useMutation(() => { 
@@ -68,6 +70,8 @@ function AlbumDetails() {
     }, {onSuccess: () => {
         refetchReview();
         refetchAlbumStats();
+        refetchPopularGlobal();
+        refetchRecentGlobal();
     }} );
 
     const addFavoriteAlbum = useMutation(() => { 
