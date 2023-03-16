@@ -131,7 +131,7 @@ function Profile() {
                         </div>
                 </div>
                 
-                <AvgReviews />
+                {/* <AvgReviews /> */}
             </div>
 
             {/* Recent Reviews: Last 2 reviews from the user */}
