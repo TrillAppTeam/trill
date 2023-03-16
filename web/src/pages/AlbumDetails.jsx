@@ -184,10 +184,10 @@ function AlbumDetails() {
                                 </button>
                             ) : (
                                 <button 
-                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2"
+                                    className={albumStats?.data?.requestor_reviewed ? "btn btn-xs text-gray-400 bg-gray-800 hover:bg-gray-800 cursor-not-allowed mt-2" : "btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2" }
                                     onClick={addToListenLater}
                                 >
-                                    Add to Listen Later
+                                    {albumStats?.data?.requestor_reviewed ? "Already Reviewed" : "Add to Listen Later"}
                                 </button>
                             )}
                     </div>
