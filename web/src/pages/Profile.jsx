@@ -5,7 +5,6 @@ import axios from 'axios';
  
 // Components
 import Titles from "../components/Titles"
-import AvgReviews from "../components/AvgReviews"
 import UserStats from "../components/UserStats"
 import Album from "../components/Album"
 import Avatar from "../components/Avatar"
@@ -131,7 +130,7 @@ function Profile() {
                         </div>
                 </div>
                 
-                <AvgReviews />
+                {/* <AvgReviews /> */}
             </div>
 
             {/* Recent Reviews: Last 2 reviews from the user */}

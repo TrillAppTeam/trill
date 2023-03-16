@@ -29,6 +29,8 @@ function AlbumDetails() {
     const { data: popularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
     const { data: recentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
 
+    const { data: albumStats, refetch: refetchAlbumStats } = useQuery([`albums?albumID=${id}`]);
+
     const { data: favoriteAlbums, refetch: refetchFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
     const { data: listenLater, refetch: refetchListenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
@@ -49,7 +51,10 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refetchReview();}} );
+    }, {onSuccess: () => {
+        refetchReview();
+        refetchAlbumStats();
+    }} );
 
     const deleteReview = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/reviews?albumID=${id}`, 
@@ -60,7 +65,10 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refetchReview();}} );
+    }, {onSuccess: () => {
+        refetchReview();
+        refetchAlbumStats();
+    }} );
 
     const addFavoriteAlbum = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, {}, 
@@ -176,10 +184,10 @@ function AlbumDetails() {
                                 </button>
                             ) : (
                                 <button 
-                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2"
+                                    className={albumStats?.data?.requestor_reviewed ? "btn btn-xs text-gray-400 bg-gray-800 hover:bg-gray-800 cursor-not-allowed mt-2" : "btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2" }
                                     onClick={addToListenLater}
                                 >
-                                    Add to Listen Later
+                                    {albumStats?.data?.requestor_reviewed ? "Already Reviewed" : "Add to Listen Later"}
                                 </button>
                             )}
                     </div>
@@ -199,7 +207,12 @@ function AlbumDetails() {
                         </div>
                     </div>
                 </div>    
-                <AvgReviews />
+                
+                <AvgReviews reviewStats={{
+                    average: albumStats?.data?.average_rating, 
+                    numRatings: albumStats?.data?.num_ratings
+                }} />
+                
             </div>
 
             <div className="pt-10">

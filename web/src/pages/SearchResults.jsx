@@ -9,8 +9,8 @@ import SearchUser from "../components/SearchUser";
 function SearchResults() {
     const { state } = useLocation();
     const { query, type } = state;
-    const { isLoading: albumLoad, data: albumData, error: albumError } = useQuery([`albums?query=${query}`], {enabled: type === "Albums"});
-    const { isLoading: userLoad, data: userData, error: userError } = useQuery([`users?search=${query}`], {enabled: type === "Users"});
+    const { isLoading: albumLoad, data: albumData } = useQuery([`albums?query=${query}`], {enabled: type === "Albums"});
+    const { isLoading: userLoad, data: userData } = useQuery([`users?search=${query}`], {enabled: type === "Users"});
     
     return(
         <div className="max-w-4xl mx-auto pt-8">

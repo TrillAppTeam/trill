@@ -1,57 +1,20 @@
 import Stars from "../components/Stars"
 
-function AvgReviews() {
-    return (
-        <div className="flex flex-col max-w-xl p-4 shadow-sm rounded-xl bg-[#383b59] text-gray-100">
-            <div className="flex flex-col w-full">
-                <h2 className="px-20 text-xl text-center text-gray-200 pb-4">Average Rating</h2>
-                <p className="text-4xl mx-auto font-bold">9.8</p>  
+function AvgReviews(props) {
+    const {average, numRatings} = props.reviewStats
+    const roundedAverage = Math.ceil(average)
+    {console.log(props)}
 
-                <div className="flex text-2xl mx-auto pb-1">
-                    <Stars rating={10} />
+    return (
+        <div className="flex flex-col shadow-lg rounded-xl bg-[#383b59] text-gray-100 p-9 my-auto">
+                <h2 className="text-2xl text-center text-violet-300 pb-5 font-bold">Average Rating</h2>
+                <p className="text-5xl mx-auto font-bold">{average > 0.5 ? average / 2 : average}</p>  
+
+                <div className="flex text-3xl mx-auto pb-5">
+                    <Stars rating={roundedAverage} />
                 </div>
                 
-                <p className="text-sm italic text-gray-300 mx-auto pb-8">74 global ratings</p>
-
-                <div className="flex flex-col">
-                    <div className="flex items-center space-x-1">
-                        <span className="flex-shrink-0 w-12 text-sm text-gray-200">5 star</span>
-                        <div className="flex-1 h-4 overflow-hidden rounded-sm bg-gray-600">
-                            <div className="bg-trillBlue h-4 w-5/6"></div>
-                        </div>
-                        <span className="flex-shrink-0 w-12 text-sm text-right text-gray-200">83%</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                        <span className="flex-shrink-0 w-12 text-sm text-gray-200">4 star</span>
-                        <div className="flex-1 h-4 overflow-hidden rounded-sm bg-gray-600">
-                            <div className="bg-trillBlue h-4 w-4/6"></div>
-                        </div>
-                        <span className="flex-shrink-0 w-12 text-sm text-right text-gray-200">67%</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                        <span className="flex-shrink-0 w-12 text-sm text-gray-200">3 star</span>
-                        <div className="flex-1 h-4 overflow-hidden rounded-sm bg-gray-600">
-                            <div className="bg-trillBlue h-4 w-3/6"></div>
-                        </div>
-                        <span className="flex-shrink-0 w-12 text-sm text-right text-gray-200">50%</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                        <span className="flex-shrink-0 w-12 text-sm text-gray-200">2 star</span>
-                        <div className="flex-1 h-4 overflow-hidden rounded-sm bg-gray-600">
-                            <div className="bg-trillBlue h-4 w-2/6"></div>
-                        </div>
-                        <span className="flex-shrink-0 w-12 text-sm text-right text-gray-200">33%</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                        <span className="flex-shrink-0 w-12 text-sm text-gray-200">1 star</span>
-                        <div className="flex-1 h-4 overflow-hidden rounded-sm bg-gray-600">
-                            <div className="bg-trillBlue h-4 w-1/6"></div>
-                        </div>
-                        <span className="flex-shrink-0 w-12 text-sm text-right text-gray-200">17%</span>
-                    </div>
-                </div>
-            </div>
-
+                <p className="text-lg italic text-gray-300 mx-auto">{numRatings} global rating{numRatings === 1 ? "" : "s"}</p>
         </div>
     );
 }
