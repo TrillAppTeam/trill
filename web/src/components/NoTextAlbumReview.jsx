@@ -7,7 +7,7 @@ import Stars from "./Stars"
 import Album from "./Album"
 
 function NoTextAlbumReview(props) {
-    const { username, profilePic, created_at, updated_at, rating } = props.review;
+    const { user: {username}, profilePic, created_at, updated_at, rating } = props.review;
     const { images, name, release_date, artists, external_urls, id } = props.review.album;
 
     const album = { 
