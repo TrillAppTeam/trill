@@ -29,6 +29,8 @@ function AlbumDetails() {
     const { data: popularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
     const { data: recentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
 
+    const { data: albumStats, refetch: refetchAlbumStats } = useQuery([`albums?albumID=${id}`]);
+
     const { data: favoriteAlbums, refetch: refetchFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
     const { data: listenLater, refetch: refetchListenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
@@ -49,7 +51,10 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refetchReview();}} );
+    }, {onSuccess: () => {
+        refetchReview();
+        refetchAlbumStats();
+    }} );
 
     const deleteReview = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/reviews?albumID=${id}`, 
@@ -60,7 +65,10 @@ function AlbumDetails() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refetchReview();}} );
+    }, {onSuccess: () => {
+        refetchReview();
+        refetchAlbumStats();
+    }} );
 
     const addFavoriteAlbum = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, {}, 
@@ -199,7 +207,12 @@ function AlbumDetails() {
                         </div>
                     </div>
                 </div>    
-                <AvgReviews />
+                
+                <AvgReviews reviewStats={{
+                    average: albumStats?.data?.average_rating, 
+                    numRatings: albumStats?.data?.num_ratings
+                }} />
+                
             </div>
 
             <div className="pt-10">

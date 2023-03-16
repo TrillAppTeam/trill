@@ -5,7 +5,6 @@ import axios from 'axios';
  
 // Components
 import Titles from "../components/Titles"
-import AvgReviews from "../components/AvgReviews"
 import UserStats from "../components/UserStats"
 import Album from "../components/Album"
 import Avatar from "../components/Avatar"
