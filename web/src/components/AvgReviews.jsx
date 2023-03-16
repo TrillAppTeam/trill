@@ -14,7 +14,7 @@ function AvgReviews(props) {
           <p className="text-5xl mx-auto font-bold">
             {roundedAverage > 0.5
               ? (roundedAverage / 2).toFixed(1)
-              : roundedAverage.toFixed(1)}
+              : roundedAverage}
           </p>
 
           <div className="flex text-3xl mx-auto pb-5">
