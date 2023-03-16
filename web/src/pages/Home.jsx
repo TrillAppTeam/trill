@@ -6,8 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from 'axios';
 
 function Home() {
-    // Leaving this for testing, use first one for local testing and larger one for pushing to main
-    // const isLoading = false;
     const { isLoading, error } = useQuery(['fetchToken'], () => 
         axios({
             method: 'post',
@@ -24,10 +22,10 @@ function Home() {
                 localStorage.setItem('access_token', res.data.access_token);
                 return res;
             }),
-        { refetchOnWindowFocus: false });
+        { enabled: !localStorage.getItem('access_token'), refetchOnWindowFocus: false });
     return (
         <div className="bg-trillPurple min-h-screen flex flex-col">
-            {isLoading ? <Loading/> : <>
+            {isLoading && !localStorage.getItem('access_token') ? <Loading/> : <>
                 <Navbar />
                 {/* Page Content */}
                 <div className="flex-grow">
