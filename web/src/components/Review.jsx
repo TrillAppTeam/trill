@@ -10,8 +10,7 @@ import Avatar from "../components/Avatar";
 import Stars from "../components/Stars";
 
 function Review(props) {
-    
-    const { username, profilePic, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
+    const { user: {username}, profilePic, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
     const { images, name, release_date, artists, external_urls, id } = props.review.album;
 
     const album = { 

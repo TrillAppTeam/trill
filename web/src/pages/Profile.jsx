@@ -24,9 +24,9 @@ function Profile() {
     const { isLoading, data: userData} = useQuery([`users${paramString}`]);
     const { data: following, refetch: refetchFollowing } = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
     const { data: followers, refetch: refetchFollowers } = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
-    const { data: reviewsNew } = useQuery([`reviews?sort=newest&username=${userData?.data.username}`]);
-    const { data: reviewsPopular } = useQuery([`reviews?sort=popular&username=${userData?.data.username}`]);
-    const { isLoading: favoriteAlbumsLoading, data: favoriteAlbums } = useQuery([`favoritealbums?username=${userData?.data.username}`]);
+    const { data: reviewsNew } = useQuery([`reviews?sort=newest&username=${userData?.data.username}`], {enabled: !!userData});
+    const { data: reviewsPopular } = useQuery([`reviews?sort=popular&username=${userData?.data.username}`], {enabled: !!userData});
+    const { isLoading: favoriteAlbumsLoading, data: favoriteAlbums } = useQuery([`favoritealbums?username=${userData?.data.username}`], {enabled: !!userData});
     
     const follow = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, {}, 
