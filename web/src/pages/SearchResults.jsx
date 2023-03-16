@@ -20,7 +20,6 @@ function SearchResults() {
                     {userLoad ? <Loading /> :
                         userData?.data.map(user => {
                             return <>
-                                {console.log(user)}
                                 <SearchUser user={{
                                     username: user.username,
                                     profilePic: user.profilePic,

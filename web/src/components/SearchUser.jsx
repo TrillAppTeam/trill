@@ -1,8 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
+
 // Components
 import Avatar from "./Avatar"
 
 function SearchUser(props) {
     const { profilePic, username, size } = props.user;
+    const { data: following} = useQuery([`follows?type=getFollowing&username=${username}`]);
+    const { data: followers} = useQuery([`follows?type=getFollowers&username=${username}`]);
 
     return(
         <div className="flex flex-row flex-wrap py-2 justify-between mx-5">
@@ -14,7 +18,7 @@ function SearchUser(props) {
 
                 <div className="flex flex-col pl-10">
                     <h1 className="font-bold text-gray-200 text-lg">{username}</h1>
-                    <h1 className="text-sm">61 Followers, Following 51</h1>
+                    <h1 className="text-sm">{followers?.data.length} Followers, Following {following?.data.length}</h1>
                 </div>
 
             </div>
