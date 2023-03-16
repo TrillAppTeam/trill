@@ -9,7 +9,7 @@ import Avatar from "../components/Avatar"
 import Stars from "../components/Stars"
 
 function AlbumDetailsReview(props) {
-    const { username, profilePic, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
+    const { user: {username}, profilePic, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
 
     const like = useMutation(() => { 
         return axios.put(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, {}, 
