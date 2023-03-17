@@ -141,9 +141,7 @@ func update(ctx context.Context, req Request) (Response, error) {
 	if nickname, ok := form.Value["nickname"]; ok {
 		user.Nickname = nickname[0]
 	}
-	if profilePicture, ok := form.Value["profilePicture"]; ok {
-		user.ProfilePicture = profilePicture[0]
-	}
+	// todo: profile pic
 
 	if err = models.UpdateUser(ctx, user); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil

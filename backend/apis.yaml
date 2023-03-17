@@ -1,545 +1,534 @@
-swagger: '2.0'
+openapi: 3.0.0
 info:
   description: Click the lock icon to set the access token.
-  version: 1.0.0
+  version: 1.0.0-oas3
   title: Trill APIs
-
 tags:
-- name: users
-- name: follows
-- name: albums
-- name: reviews
-- name: likes
-  description: review likes
-- name: favorite albums
-- name: listen later albums
-
-securityDefinitions:
-  AccessToken:
-    type: apiKey
-    name: Authorization
-    in: header
-    description: >-
-      Enter the token with the `Bearer` prefix, e.g. "Bearer eyJraWQ...".
-
+  - name: users
+  - name: follows
+  - name: albums
+  - name: reviews
+  - name: likes
+    description: review likes
+  - name: favorite albums
+  - name: listen later albums
 paths:
   /users:
     get:
       tags:
-      - users
+        - users
       description: Get user information based on access token user
       operationId: getUser
-      produces:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: username
-        in: query
-        description: username to get (empty if username = user making the request and you are attempting to get email)
-        type: string
-      - name: search
-        in: query
-        description: username to search for (optional, not to be used with the username query parameter)
-        type: string
+        - name: username
+          in: query
+          description: >-
+            username to get (empty if username = user making the request and you
+            are attempting to get email)
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: >-
+            username to search for (optional, not to be used with the username
+            query parameter)
+          schema:
+            type: string
       responses:
-        200:
+        '200':
           description: user info
-        403:
+        '403':
           description: forbidden
-        404:
+        '404':
           description: user not found
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     put:
       tags:
-      - users
-      description: Update user bio or profile picture.
+        - users
+      description: Update user info.
       operationId: updateUser
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
-      parameters:
-      - in: body
-        name: updateRequest
-        description: Update bio and/or profilePicture
-        schema:
-          $ref: '#/definitions/UpdateUserRequest'
+        - AccessToken: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                bio:
+                  type: string
+                profilePicture:
+                  type: string
+                  format: binary
       responses:
-        200:
+        '200':
           description: success
-        400:
+        '400':
           description: invalid request body
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
   /follows:
     get:
       tags:
-      - follows
+        - follows
       operationId: getFollows
-      produces:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: type
-        in: query
-        description: getFollowers or getFollowing
-        required: true
-        default: getFollowers
-        type: string
-      - name: username
-        in: query
-        required: true
-        type: string
-        default: cathychian
+        - name: type
+          in: query
+          description: getFollowers or getFollowing
+          required: true
+          schema:
+            type: string
+            default: getFollowers
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            default: cathychian
       responses:
-        200:
+        '200':
           description: list of followers or following
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     post:
       tags:
-      - follows
+        - follows
       operationId: createFollow
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - in: query
-        name: username
-        description: user to follow
-        type: string
-        default: cathychian
+        - in: query
+          name: username
+          description: user to follow
+          schema:
+            type: string
+            default: cathychian
       responses:
-        201:
+        '201':
           description: follow added to database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     delete:
       tags:
-      - follows
+        - follows
       operationId: deleteFollow
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - in: query
-        name: username
-        description: user to unfollow
-        type: string
-        default: cathychian
+        - in: query
+          name: username
+          description: user to unfollow
+          schema:
+            type: string
+            default: cathychian
       responses:
-        200:
+        '200':
           description: follow deleted from database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
   /albums:
     get:
       tags:
-      - albums
+        - albums
       operationId: getAlbums
-      produces:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: albumID
-        in: query
-        description: Spotify album ID (if getting single album)
-        default: 4aawyAB9vmqN3uQ7FjRGTy
-        type: string
-      - name: query
-        in: query
-        description: Search query (if searching)
-        type: string
-      - name: timespan
-        in: query
-        type: string
-        description: daily, weekly, monthly, yearly, or all (for most popular albums)
+        - name: albumID
+          in: query
+          description: Spotify album ID (if getting single album)
+          schema:
+            type: string
+            default: 4aawyAB9vmqN3uQ7FjRGTy
+        - name: query
+          in: query
+          description: Search query (if searching)
+          schema:
+            type: string
+        - name: timespan
+          in: query
+          description: daily, weekly, monthly, yearly, or all (for most popular albums)
+          schema:
+            type: string
       responses:
-        200:
+        '200':
           description: success
-        204:
-          description: no content (for most popular albums if no reviews in timespan specified))
-        403:
+        '204':
+          description: >-
+            no content (for most popular albums if no reviews in timespan
+            specified))
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
   /reviews:
     get:
       tags:
-      - reviews
+        - reviews
       operationId: getReview
-      description: __Specific to one album__ <br> • Current user's review for album - *albumID* (doesn't return array) <br> • Username's review for album - *albumID* and *username* (doesn't return array) <br> • Current user's followed user's reviews for album - *sort*, *albumID*, and *following*=*true* <br> • All reviews for album - *sort* and *albumID* <br><br> __All reviews__ <br> • All reviews by current user - *sort* <br> • All reviews by username - *sort* and *username* <br> • All reviews by current user's followed users - *sort*, and *following*=*true* <br><br> Any other combination will probably have unintended results.
-      produces:
-      - application/json
+      description: >-
+        __Specific to one album__ <br> • Current user's review for album -
+        *albumID* (doesn't return array) <br> • Username's review for album -
+        *albumID* and *username* (doesn't return array) <br> • Current user's
+        followed user's reviews for album - *sort*, *albumID*, and
+        *following*=*true* <br> • All reviews for album - *sort* and *albumID*
+        <br><br> __All reviews__ <br> • All reviews by current user - *sort*
+        <br> • All reviews by username - *sort* and *username* <br> • All
+        reviews by current user's followed users - *sort*, and
+        *following*=*true* <br><br> Any other combination will probably have
+        unintended results.
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: sort
-        description: popular, newest, or oldest
-        in: query
-        type: string
-        default: popular
-      - name: albumID
-        in: query
-        description: Spotify album ID
-        type: string
-      - name: username
-        in: query
-        type: string
-      - name: following
-        in: query
-        type: boolean
+        - name: sort
+          description: popular, newest, or oldest
+          in: query
+          schema:
+            type: string
+            default: popular
+        - name: albumID
+          in: query
+          description: Spotify album ID
+          schema:
+            type: string
+        - name: username
+          in: query
+          schema:
+            type: string
+        - name: following
+          in: query
+          schema:
+            type: boolean
       responses:
-        200:
+        '200':
           description: success
-        204:
+        '204':
           description: no content
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     put:
       tags:
-      - reviews
+        - reviews
       operationId: createReview
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: albumID
-        in: query
-        required: true
-        default: 4aawyAB9vmqN3uQ7FjRGTy
-        type: string
-      - in: body
-        name: reviewRequest
+        - name: albumID
+          in: query
+          required: true
+          schema:
+            type: string
+            default: 4aawyAB9vmqN3uQ7FjRGTy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReview'
         description: review_text is optional
-        schema:
-          $ref: '#/definitions/CreateReview'
       responses:
-        201:
+        '201':
           description: added to database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     delete:
       tags:
-      - reviews
+        - reviews
       operationId: deleteReview
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: albumID
-        in: query
-        required: true
-        default: 4aawyAB9vmqN3uQ7FjRGTy
-        type: string
+        - name: albumID
+          in: query
+          required: true
+          schema:
+            type: string
+            default: 4aawyAB9vmqN3uQ7FjRGTy
       responses:
-        200:
+        '200':
           description: deleted from database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
   /likes:
     get:
       tags:
-      - likes
+        - likes
       operationId: getLikeCount
       description: Get like count for review
-      produces:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: reviewID
-        in: query
-        required: true
-        default: 789
-        type: string
+        - name: reviewID
+          in: query
+          required: true
+          schema:
+            type: string
+            default: 789
       responses:
-        200:
+        '200':
           description: success
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     put:
       tags:
-      - likes
+        - likes
       operationId: likeReview
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: reviewID
-        in: query
-        required: true
-        default: 789
-        type: string
+        - name: reviewID
+          in: query
+          required: true
+          schema:
+            type: string
+            default: 789
       responses:
-        201:
+        '201':
           description: added to database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     delete:
       tags:
-      - likes
+        - likes
       operationId: unlikeReview
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: reviewID
-        in: query
-        required: true
-        default: 789
-        type: string
+        - name: reviewID
+          in: query
+          required: true
+          schema:
+            type: string
+            default: 789
       responses:
-        200:
+        '200':
           description: deleted from database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
   /favoritealbums:
     get:
       tags:
-      - favorite albums
+        - favorite albums
       operationId: getFavoriteAlbums
-      produces:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - name: username
-        in: query
-        required: true
-        default: cathychian
-        type: string
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+            default: cathychian
       responses:
-        200:
+        '200':
           description: success
-        204:
+        '204':
           description: no favorite albums
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     post:
       tags:
-      - favorite albums
+        - favorite albums
       operationId: addFavoriteAlbums
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - in: query
-        name: albumID
-        description: Spotify album ID
-        type: string
-        default: 4aawyAB9vmqN3uQ7FjRGTy
+        - in: query
+          name: albumID
+          description: Spotify album ID
+          schema:
+            type: string
+            default: 4aawyAB9vmqN3uQ7FjRGTy
       responses:
-        201:
+        '201':
           description: added to database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     delete:
       tags:
-      - favorite albums
+        - favorite albums
       operationId: deleteFavoriteAlbums
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - in: query
-        name: albumID
-        description: Spotify album ID
-        type: string
-        default: 4aawyAB9vmqN3uQ7FjRGTy
+        - in: query
+          name: albumID
+          description: Spotify album ID
+          schema:
+            type: string
+            default: 4aawyAB9vmqN3uQ7FjRGTy
       responses:
-        200:
+        '200':
           description: deleted from database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
   /listenlateralbums:
     get:
       tags:
-      - listen later albums
+        - listen later albums
       operationId: create
-      produces:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       responses:
-        200:
+        '200':
           description: success
-        204:
+        '204':
           description: no albums in Listen Later
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
     post:
       tags:
-      - listen later albums
+        - listen later albums
       operationId: addListenLaterAlbums
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - in: query
-        name: albumID
-        description: Spotify album ID
-        type: string
-        default: 4aawyAB9vmqN3uQ7FjRGTy
+        - in: query
+          name: albumID
+          description: Spotify album ID
+          schema:
+            type: string
+            default: 4aawyAB9vmqN3uQ7FjRGTy
       responses:
-        201:
+        '201':
           description: added to database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        409:
+        '409':
           description: album already reviewed
-        500:
+        '500':
           description: error
     delete:
       tags:
-      - listen later albums
+        - listen later albums
       operationId: deleteListenLaterAlbums
-      consumes:
-      - application/json
       security:
-      - AccessToken: []
+        - AccessToken: []
       parameters:
-      - in: query
-        name: albumID
-        description: Spotify album ID
-        type: string
-        default: 4aawyAB9vmqN3uQ7FjRGTy
+        - in: query
+          name: albumID
+          description: Spotify album ID
+          schema:
+            type: string
+            default: 4aawyAB9vmqN3uQ7FjRGTy
       responses:
-        200:
+        '200':
           description: deleted from database
-        400:
+        '400':
           description: invalid request
-        403:
+        '403':
           description: forbidden
-        405:
+        '405':
           description: invalid http method
-        500:
+        '500':
           description: error
-          
-definitions:
-  UpdateUserRequest:
-    type: object
-    required:
-    - bio
-    - profilePicture
-    - nickname
-    properties:
-      bio:
-        type: string
-        example: "this is my bio"
-      profile_picture:
-        type: string
-        example: "idk the format but uh yeah"
-      nickname:
-        type: string
-        example: "paul"
-  CreateReview:
-    type: object
-    required:
-    - rating
-    - review_text
-    properties:
-      rating:
-        type: integer
-        example: 7
-      review_text:
-        type: string
-        example: "i hated it"
-
-host: api.trytrill.com
-basePath: /main
-schemes:
- - https
+servers:
+  - url: https://api.trytrill.com/main
+  - url: https://api.trytrill.com/upload-image-api
+components:
+  securitySchemes:
+    AccessToken:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Enter the token with the `Bearer` prefix, e.g. "Bearer eyJraWQ...".
+  schemas:
+    CreateReview:
+      type: object
+      required:
+        - rating
+        - review_text
+      properties:
+        rating:
+          type: integer
+          example: 7
+        review_text:
+          type: string
+          example: i hated it
