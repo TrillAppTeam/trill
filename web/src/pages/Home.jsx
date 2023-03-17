@@ -6,6 +6,12 @@ import { useQuery } from "@tanstack/react-query";
 import axios from 'axios';
 
 function Home() {
+    window.onbeforeunload = function() {
+        if (localStorage.getItem('access_token')) {
+            localStorage.clear();
+          }
+    }
+
     const navigate = useNavigate();
     const { isLoading } = useQuery(['fetchToken'], () => 
         axios({
