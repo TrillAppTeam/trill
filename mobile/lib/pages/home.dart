@@ -131,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+              SizedBox(height: 5),
               _buildPopularAlbums(),
               const SizedBox(height: 20),
               AlbumsRow(
