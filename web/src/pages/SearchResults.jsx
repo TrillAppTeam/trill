@@ -22,7 +22,7 @@ function SearchResults() {
                             return <>
                                 <SearchUser user={{
                                     username: user.username,
-                                    profilePic: user.profilePic,
+                                    profile_picture: user.profile_picture,
                                     size: "11"
                                 }}/>
                     
