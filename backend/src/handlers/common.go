@@ -1,8 +1,12 @@
 package handlers
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"mime"
+	"mime/multipart"
 	"trill/src/models"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -23,4 +27,23 @@ func InitContext(ctx context.Context, db *gorm.DB) (context.Context, *gorm.DB, e
 		}
 	}
 	return context.WithValue(ctx, "db", db), db, nil
+}
+
+func ParseMultipartRequest(req *events.APIGatewayV2HTTPRequest) (*multipart.Form, error) {
+	mediaType, params, err := mime.ParseMediaType(req.Headers["content-type"])
+	if err != nil {
+		return nil, err
+	}
+	if mediaType != "multipart/form-data" {
+		return nil, errors.New("invalid media type")
+	}
+
+	boundary := params["boundary"]
+	if boundary == "" {
+		return nil, errors.New("missing boundary")
+	}
+	body := bytes.NewReader([]byte(req.Body))
+	multipartReader := multipart.NewReader(body, boundary)
+
+	return multipartReader.ReadForm(0)
 }
