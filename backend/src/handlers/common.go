@@ -54,12 +54,5 @@ func ParseMultipartRequest(req *events.APIGatewayV2HTTPRequest) (*multipart.Form
 	}
 
 	multipartReader := multipart.NewReader(strings.NewReader(body), boundary)
-	form, err := multipartReader.ReadForm(0)
-
-	if err != nil {
-		// temp response for debugging
-		return nil, errors.New(fmt.Sprintf("Error when reading form:\n%s\n\nboundary:\n%s\n\nencoded body:\n%s", err.Error(), boundary, req.Body))
-	}
-
-	return form, nil
+	return multipartReader.ReadForm(0)
 }
