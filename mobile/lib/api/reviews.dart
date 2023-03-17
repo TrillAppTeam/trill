@@ -174,6 +174,7 @@ Future<bool> deleteReview(String albumID) async {
 class Review {
   final int reviewID;
   final String username;
+  final String profilePicture;
   final String albumID;
   int rating;
   String reviewText;
@@ -185,6 +186,7 @@ class Review {
   Review({
     required this.reviewID,
     required this.username,
+    required this.profilePicture,
     required this.albumID,
     required this.rating,
     required this.reviewText,
@@ -197,7 +199,8 @@ class Review {
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       reviewID: json['review_id'],
-      username: json['username'],
+      username: json['user']['username'],
+      profilePicture: json['user']['profile_picture'],
       albumID: json['album_id'],
       rating: json['rating'],
       reviewText: json['review_text'].trim(),

@@ -93,7 +93,7 @@ class _SidebarState extends State<Sidebar> {
                 const Spacer(),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             ListTile(
               leading:
                   const Icon(Icons.rate_review_outlined, color: Colors.white),
