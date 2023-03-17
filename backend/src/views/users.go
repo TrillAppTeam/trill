@@ -15,11 +15,11 @@ type FullUser struct {
 	Followers        []models.User `json:"followers"`
 	RequestorFollows bool          `json:"requestor_follows"`
 	FollowsRequestor bool          `json:"follows_requestor"`
+	ReviewCount      int64         `json:"review_count"`
 }
 
-// Combines the two JSON's to one string
 func MarshalFullUser(ctx context.Context, userModel *models.User, privateCognitoUserModel *models.PrivateCognitoUser,
-	following *[]models.User, followers *[]models.User, requestorFollows bool, followsRequestor bool) (string, error) {
+	following *[]models.User, followers *[]models.User, requestorFollows bool, followsRequestor bool, reviewCount int64) (string, error) {
 	user := FullUser{
 		Username:         userModel.Username,
 		Nickname:         userModel.Nickname,
@@ -30,6 +30,7 @@ func MarshalFullUser(ctx context.Context, userModel *models.User, privateCognito
 		Followers:        *followers,
 		RequestorFollows: requestorFollows,
 		FollowsRequestor: followsRequestor,
+		ReviewCount:      reviewCount,
 	}
 
 	return Marshal(ctx, user)
