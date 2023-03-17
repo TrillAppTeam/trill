@@ -9,7 +9,7 @@ import Avatar from "../components/Avatar"
 import Stars from "../components/Stars"
 
 function AlbumDetailsReview(props) {
-    const { user: {username}, profilePic, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
+    const { user: {username}, profile_picture, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
 
     const like = useMutation(() => { 
         return axios.put(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, {}, 
@@ -52,7 +52,7 @@ function AlbumDetailsReview(props) {
         <div className="max-w-6xl mx-auto">
 
             <div className="flex flex-row p-5">
-                <Avatar user={{ profilePic: profilePic, username: username, size: "12" }} />
+                <Avatar user={{ profile_picture: profile_picture, username: username, size: "12" }} />
 
                 <div className="flex flex-col pl-5 gap-4">
                     {/* Profile Picture, Rating, and Listen Date */}

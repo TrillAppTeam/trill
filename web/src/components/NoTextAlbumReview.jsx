@@ -7,7 +7,7 @@ import Stars from "./Stars"
 import Album from "./Album"
 
 function NoTextAlbumReview(props) {
-    const { user: {username}, profilePic, created_at, updated_at, rating } = props.review;
+    const { user: {username}, profile_picture, created_at, updated_at, rating } = props.review;
     const { images, name, release_date, artists, external_urls, id } = props.review.album;
 
     const album = { 
@@ -29,7 +29,7 @@ function NoTextAlbumReview(props) {
 
                 <div className="bg-gray-700 px-2 py-2">
                     <div className="text-xs text-left flex flex-row">
-                        <Avatar user={{ profilePic: profilePic, username: username, size: "4" }} />
+                        <Avatar user={{ profile_picture: profile_picture, username: username, size: "4" }} />
                         <div className="tooltip" data-tip={username}>
                             <Link to={`/User/Profile/${username}`}>
                                 <p className="text-md text-gray-300 pl-2 font-bold hover:text-trillBlue line-clamp-1 truncate">{username.length > 8 ? username.slice(0, 8) + '...' : username}</p>

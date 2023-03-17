@@ -240,7 +240,7 @@ function AlbumDetails() {
                 : 
                     <>
                         <div className="flex flex-row p-5">
-                            <Avatar user={{ profilePic: null, username: currentUser, size: "12" }} />
+                            <Avatar user={{ profile_picture: data?.data.profile_picture, username: currentUser, size: "12" }} />
                             <div className="flex flex-col pl-5 w-full justify-between">
                                 {/* Profile Picture, Rating, and Listen Date */}
                                 <p className="text-gray-500 pb-2">Review by

@@ -10,7 +10,7 @@ import Avatar from "../components/Avatar";
 import Stars from "../components/Stars";
 
 function Review(props) {
-    const { user: {username}, profilePic, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
+    const { user: {username}, profile_picture, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
     const { images, name, release_date, artists, external_urls, id } = props.review.album;
 
     const album = { 
@@ -81,7 +81,7 @@ function Review(props) {
 
                     {/* Profile Picture, Rating, and Listen Date */}
                     <div className="flex flex-row gap-4">
-                        <Avatar user={{ profilePic: profilePic, username: username, size: "6" }} />
+                        <Avatar user={{ profile_picture: profile_picture, username: username, size: "6" }} />
                         <Stars rating={ rating } />
                         
                         <p className="text-sm text-gray-500 my-auto">Listened to by
