@@ -1,12 +1,13 @@
 package handlers
 
 import (
-	"bytes"
 	"context"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"mime"
 	"mime/multipart"
+	"strings"
 	"trill/src/models"
 
 	"github.com/aws/aws-lambda-go/events"
@@ -42,13 +43,22 @@ func ParseMultipartRequest(req *events.APIGatewayV2HTTPRequest) (*multipart.Form
 	if boundary == "" {
 		return nil, errors.New("missing boundary")
 	}
-	body := bytes.NewReader([]byte(req.Body))
-	multipartReader := multipart.NewReader(body, boundary)
 
+	body := req.Body
+	if req.IsBase64Encoded {
+		decoded, err := base64.StdEncoding.DecodeString(req.Body)
+		if err != nil {
+			return nil, errors.New("error decoding base64-encoded body")
+		}
+		body = string(decoded)
+	}
+
+	multipartReader := multipart.NewReader(strings.NewReader(body), boundary)
 	form, err := multipartReader.ReadForm(0)
+
 	if err != nil {
 		// temp response for debugging
-		return nil, errors.New(fmt.Sprintf("Error when reading form: %s\n\nboundary:\n%s\n\nencoded body:\n%s", err.Error(), boundary, req.Body))
+		return nil, errors.New(fmt.Sprintf("Error when reading form:\n%s\n\nboundary:\n%s\n\nencoded body:\n%s", err.Error(), boundary, req.Body))
 	}
 
 	return form, nil
