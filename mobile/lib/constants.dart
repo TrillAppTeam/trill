@@ -1,5 +1,5 @@
 import 'package:trill/api/likes.dart';
-import 'package:trill/widgets/horizontal_albums_row.dart';
+import 'package:trill/widgets/hardcoded_albums_row.dart';
 
 enum FollowType {
   following,
@@ -29,86 +29,86 @@ class Constants {
           'https://i8.amplience.net/i/naras/2023-grammy-nominations-main-key-art.jpg?w=821&sm=c',
     },
   ];
-  static const List<GrammyAlbum> grammyList = [
-    GrammyAlbum(
+  static const List<HardcodedAlbum> grammyList = [
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b2732e8ed79e177ff6011076f5f0",
         id: "5r36AJ6VOJtp00oxSkBZ5h"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b273fe3b1b9cb7183a94e1aafd43",
         id: "1NgFBv1PxMG1zhFDW1OrRr"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b2732e02117d76426a08ac7c174f",
         id: "79ONNoS4M9tfIA1mYLBYVX"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b273ec10f247b100da1ce0d80b6d",
         id: "06mXfvDsRZNfnsGZvX2zpb"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b27335bd3c588974a8c239e5de87",
         id: "5mIT7iw9w64DMP2vxP9L1f"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b27363b9d8845fe7d34795c16c9d",
         id: "5K3aBzXwBvSltrtfBNYRl6"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b2730e58a0f8308c1ad403d105e7",
         id: "6FJxoadUE4JNVwWHghBwnb"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b27349d694203245f241a1bcaa72",
         id: "3RQQmkQEvNCY4prGKE6oc5"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b273c6b577e4c4a6d326354a89f7",
         id: "21jF5jlMtzo94wbxmJ18aa"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b273225d9c1b06ca69aec9b08381",
         id: "0uUtGVj0y9FjfKful7cABY"),
   ];
-  static const List<GrammyAlbum> trillList = [
-    GrammyAlbum(
+  static const List<HardcodedAlbum> trillList = [
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b273c288028c2592f400dd0b9233",
         id: "1pzvBxYgT6OVwJLtHkrdQK"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b2737af5fdc5ef048a68db62b85f",
         id: "1Xsprdt1q9rOzTic7b9zYM"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b2734c79d5ec52a6d0302f3add25",
         id: "76290XdXVF9rPzGdNRWdCh"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b2735274788f34fc7656d2856dfd",
         id: "0bQglEvsHphrS19FGODEGo"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b273d58e537cea05c2156792c53d",
         id: "3DGQ1iZ9XKUQxAUWjfC34w"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b273e11a75a2f2ff39cec788a015",
         id: "5MfAxS5zz8MlfROjGQVXhy"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b27387459a563f92e336d282ca59",
         id: "1m9DVgV0kEBiVZ4ElhJEte"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b27357b7f789d328c205b4d15893",
         id: "6uSnHSIBGKUiW1uKQLYZ7w"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b273a91b75c9ef65ed8d760ff600",
         id: "6Pp6qGEywDdofgFC1oFbSH"),
-    GrammyAlbum(
+    HardcodedAlbum(
         image:
             "https://i.scdn.co/image/ab67616d0000b2738a162cd60b075bef224ffab7",
         id: "4RzYS74QxvpqTDVwKbhuSg"),

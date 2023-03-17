@@ -15,7 +15,7 @@ Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
   String token = prefs.getString('token') ?? "";
 
   final response = await http.get(
-    Uri.parse('${Constants.baseURI}/album?albumID=$albumID'),
+    Uri.parse('${Constants.baseURI}/albums?albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -40,6 +40,31 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
 
   final response = await http.get(
     Uri.parse('${Constants.baseURI}/albums?query=$query'),
+    headers: {
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    return List<SpotifyAlbum>.from(
+        json.decode(response.body).map((x) => SpotifyAlbum.fromJson(x)));
+  } else {
+    return null;
+  }
+}
+
+Future<List<SpotifyAlbum>?> getMostPopularAlbums(String timespan) async {
+  const String tag = '[getMostPopularAlbums]';
+
+  safePrint('$tag timespan: $timespan');
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? "";
+
+  final response = await http.get(
+    Uri.parse('${Constants.baseURI}/albums?timespan=$timespan'),
     headers: {
       'Authorization': 'Bearer $token',
     },

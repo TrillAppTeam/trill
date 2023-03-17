@@ -6,7 +6,7 @@ import 'package:trill/api/albums.dart';
 import 'package:trill/constants.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/albums_row.dart';
-import 'package:trill/widgets/horizontal_albums_row.dart';
+import 'package:trill/widgets/hardcoded_albums_row.dart';
 
 import '../widgets/news_card.dart';
 
@@ -68,8 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 20),
+              // TODO: Let user pick daily/weekly/monthly/yearly/all
               AlbumsRow(
-                title: 'Popular Albums This Month',
+                title: 'Popular Albums',
                 albums: List<SpotifyAlbum>.from(
                   json
                       .decode(Constants.speakNowAlbums)
@@ -86,14 +87,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              HorizontalAlbumsRow(
+              HardcodedAlbumsRow(
                   title: "Hello, Grammys", albums: Constants.grammyList),
               const Text(
                 'Explore the 2023 Grammy nominees for Album of the Year!',
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
-              HorizontalAlbumsRow(
+              HardcodedAlbumsRow(
                   title: "Trill Team Favorites", albums: Constants.trillList),
               const Text(
                 'Our team\'s top picks.',

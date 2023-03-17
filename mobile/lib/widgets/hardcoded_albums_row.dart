@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:trill/api/albums.dart';
 import 'package:trill/pages/album_details.dart';
 
-class HorizontalAlbumsRow extends StatefulWidget {
+class HardcodedAlbumsRow extends StatefulWidget {
   final String title;
-  final List<GrammyAlbum> albums;
+  final List<HardcodedAlbum> albums;
   String? emptyText;
 
-  HorizontalAlbumsRow({
+  HardcodedAlbumsRow({
     Key? key,
     required this.title,
     required this.albums,
@@ -15,10 +14,10 @@ class HorizontalAlbumsRow extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<HorizontalAlbumsRow> createState() => _HorizontalAlbumsRowState();
+  State<HardcodedAlbumsRow> createState() => _HardcodedAlbumsRowState();
 }
 
-class _HorizontalAlbumsRowState extends State<HorizontalAlbumsRow> {
+class _HardcodedAlbumsRowState extends State<HardcodedAlbumsRow> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -45,7 +44,7 @@ class _HorizontalAlbumsRowState extends State<HorizontalAlbumsRow> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    ...widget.albums.map((GrammyAlbum album) {
+                    ...widget.albums.map((HardcodedAlbum album) {
                       return InkWell(
                         onTap: () {
                           Navigator.push(
@@ -75,11 +74,11 @@ class _HorizontalAlbumsRowState extends State<HorizontalAlbumsRow> {
   }
 }
 
-class GrammyAlbum {
+class HardcodedAlbum {
   final String image;
   final String id;
 
-  const GrammyAlbum({
+  const HardcodedAlbum({
     required this.image,
     required this.id,
   });
