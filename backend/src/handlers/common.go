@@ -32,7 +32,7 @@ func InitContext(ctx context.Context, db *gorm.DB) (context.Context, *gorm.DB, e
 func ParseMultipartRequest(req *events.APIGatewayV2HTTPRequest) (*multipart.Form, error) {
 	mediaType, params, err := mime.ParseMediaType(req.Headers["content-type"])
 	if err != nil {
-		return nil, err
+		return nil, errors.New("error parsing content-type header")
 	}
 	if mediaType != "multipart/form-data" {
 		return nil, errors.New("invalid media type")
@@ -45,5 +45,11 @@ func ParseMultipartRequest(req *events.APIGatewayV2HTTPRequest) (*multipart.Form
 	body := bytes.NewReader([]byte(req.Body))
 	multipartReader := multipart.NewReader(body, boundary)
 
-	return multipartReader.ReadForm(0)
+	form, err := multipartReader.ReadForm(0)
+	if err != nil {
+		// temp response for debugging
+		return nil, errors.New(fmt.Sprintf("Error when reading form: %s\n\nboundary:\n%s\n\nencoded body:\n%s", err.Error(), boundary, req.Body))
+	}
+
+	return form, nil
 }
