@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"mime/multipart"
 	"strings"
 	"trill/src/handlers"
 	"trill/src/models"
@@ -127,9 +131,63 @@ func update(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	if err = views.UnmarshalUser(ctx, req.Body, user); err != nil {
-		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
-	} else if err = models.UpdateUser(ctx, user); err != nil {
+	parts := strings.Split(req.Headers["content-type"], "boundary=")
+	if len(parts) < 2 {
+		// temp response body
+		var headers string
+		for k, v := range req.Headers {
+			headers += fmt.Sprintf("%s: %s\n", k, v)
+		}
+		return Response{StatusCode: 400, Body: fmt.Sprintf("Missing boundary from content-type header\n\n%s", headers), Headers: views.DefaultHeaders}, nil
+	}
+	boundary := parts[1]
+	mr := multipart.NewReader(bytes.NewReader([]byte(req.Body)), boundary)
+
+	for {
+		part, err := mr.NextPart()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			// temp response body
+			return Response{StatusCode: 400, Body: fmt.Sprintf("error reading multipart body: %s\n\nboundary: %s\n\nbody:\n%s", err.Error(), boundary, req.Body), Headers: views.DefaultHeaders}, nil
+		}
+		switch part.FormName() {
+		case "nickname":
+			nicknameBytes, err := ioutil.ReadAll(part)
+			if err != nil {
+				return Response{StatusCode: 400, Body: fmt.Sprintf("error reading nickname field: %s", err.Error()), Headers: views.DefaultHeaders}, nil
+			}
+			user.Nickname = string(nicknameBytes)
+		case "bio":
+			bioBytes, err := ioutil.ReadAll(part)
+			if err != nil {
+				return Response{StatusCode: 400, Body: fmt.Sprintf("error reading bio field: %s", err.Error()), Headers: views.DefaultHeaders}, nil
+			}
+			user.Bio = string(bioBytes)
+		case "profilePicture":
+			profilePictureBytes, err := ioutil.ReadAll(part)
+			if err != nil {
+				return Response{StatusCode: 400, Body: fmt.Sprintf("error reading profilePicture field: %s", err.Error()), Headers: views.DefaultHeaders}, nil
+			}
+			user.ProfilePicture = string(profilePictureBytes)
+			// sess := session.Must(session.NewSession())
+			// s3Client := s3.New(sess, aws.NewConfig().WithRegion("us-west-2"))
+			// key := fmt.Sprintf("profilePictures/%s.png", username)
+			// _, err = s3Client.PutObject(&s3.PutObjectInput{
+			// 	Bucket: aws.String("your-s3-bucket-name"),
+			// 	Key:    aws.String(key),
+			// 	Body:   bytes.NewReader(profilePicture),
+			// })
+			// if err != nil {
+			// 	return Response{StatusCode: 500, Body: fmt.Sprintf("error uploading profilePicture to S3: %s", err.Error()), Headers: views.DefaultHeaders}, nil
+			// }
+			// profilePictureURL = fmt.Sprintf("https://your-s3-bucket-name.s3-us-west-2.amazonaws.com/%s", key)
+			// user.ProfilePicture = string(profilePictureURL)
+		}
+	}
+
+	if err = models.UpdateUser(ctx, user); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
