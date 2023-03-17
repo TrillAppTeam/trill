@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
+import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/constants.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/hardcoded_albums_row.dart';
 
 import '../widgets/news_card.dart';
+import 'album_details.dart';
 
 class HomeScreen extends StatefulWidget {
   final String nickname;
@@ -21,6 +23,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late String _nickname;
+  String _selectedRange = 'weekly';
+  List<SpotifyAlbum> _albums = [];
 
   @override
   void initState() {
@@ -68,15 +72,66 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              // TODO: Let user pick daily/weekly/monthly/yearly/all
-              AlbumsRow(
-                title: 'Popular Albums',
-                albums: List<SpotifyAlbum>.from(
-                  json
-                      .decode(Constants.speakNowAlbums)
-                      .map((x) => SpotifyAlbum.fromJson(x)),
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Popular Albums Globally',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  DropdownButton<String>(
+                    value: _selectedRange,
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'daily',
+                        child: Text('Daily'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'weekly',
+                        child: Text('Weekly'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'monthly',
+                        child: Text('Monthly'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'yearly',
+                        child: Text('Yearly'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'all',
+                        child: Text('All Time'),
+                      ),
+                    ],
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selectedRange = value!;
+                        _buildPopularAlbums();
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.arrow_drop_down,
+                      color: Color(0xFF3FBCF4),
+                    ),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: const TextStyle(
+                      color: Color(0xFF3FBCF4),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    underline: Container(
+                      height: 2,
+                      color: const Color(0xFF3FBCF4),
+                    ),
+                    dropdownColor: const Color(0xFF1A1B29),
+                  ),
+                ],
               ),
+              _buildPopularAlbums(),
               const SizedBox(height: 20),
               AlbumsRow(
                 title: 'Popular Albums Among Friends',
@@ -122,6 +177,78 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPopularAlbums() {
+    return FutureBuilder<List<SpotifyAlbum>?>(
+      future: getMostPopularAlbums(_selectedRange),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting &&
+            (_albums == null || _albums!.isEmpty)) {
+          return _buildAlbumRowWithLoading();
+        }
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          _albums = snapshot.data!;
+          return _buildAlbumRow();
+        }
+        return _buildNoReviewsMessage();
+      },
+    );
+  }
+
+  Widget _buildAlbumRowWithLoading() {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+
+  Widget _buildNoReviewsMessage() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: Center(
+        child: Text(
+          'No activity in the selected time period.',
+          style: TextStyle(
+            color: Color(0xFF3FBCF4),
+            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAlbumRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ..._albums.take(4).map((SpotifyAlbum album) {
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AlbumDetailsScreen(
+                    albumID: album.id,
+                  ),
+                ),
+              );
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(3),
+              child: Image.network(
+                album.images[0].url,
+                width: 75,
+              ),
+            ),
+          );
+        }),
+        ...List.filled(
+          4 - _albums.length.clamp(0, 4),
+          Container(width: 75),
+        ),
+      ],
     );
   }
 }
