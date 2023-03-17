@@ -2,10 +2,9 @@ import { Link } from "react-router-dom";
 
 const AvatarComp = (props) =>{
     const { profile_picture, username, size} = props.user;
-    console.log(props)
     return (
         <div className="tooltip" data-tip={username}>
-            <div className="avatar placeholder">
+            <div className="avatar placeholder pb-1">
                 <div className={`bg-neutral-focus text-white rounded-full ring-2 ring-trillBlue hover:ring-white w-${size} h-${size}`}>
                     { profile_picture ? 
                         <img src={ profile_picture } />

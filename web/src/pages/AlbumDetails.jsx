@@ -24,7 +24,8 @@ function AlbumDetails() {
     const { name, year, artist, img, link, id } = state;
     const currentUser = localStorage.getItem("username");
 
-    const { isLoading, data, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    console.log(id)
+    const { isLoading, data: myReview, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
     const { data: reviewFromFriends } = useQuery([`reviews?sort=newest&albumID=${id}&following=true`]);
     const { data: popularGlobal, refetch: refetchPopularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
     const { data: recentGlobal, refetch: refetchRecentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
@@ -35,8 +36,8 @@ function AlbumDetails() {
     const { data: listenLater, refetch: refetchListenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
     useEffect(() => {
-        setReviewText(data?.data.review_text);
-    }, [data?.data]);
+        setReviewText(myReview?.data.review_text);
+    }, [myReview?.data]);
     
     const addOrUpdateReview = useMutation(review => { 
         return axios.put(`https://api.trytrill.com/main/reviews?albumID=${id}`, review, 
@@ -221,11 +222,11 @@ function AlbumDetails() {
 
             <div className="pt-10">
                 <Titles title="Your Review" />
-                {data && !isEditing
+                {myReview && !isEditing
                 ?   <>  
                         <div className="flex flex-row justify-between">
                             <div className="justify-left">
-                                <AlbumDetailsReview review={data.data} />
+                                <AlbumDetailsReview review={myReview.data} />
                             </div>
                             
                             <button 
@@ -240,7 +241,8 @@ function AlbumDetails() {
                 : 
                     <>
                         <div className="flex flex-row p-5">
-                            <Avatar user={{ profile_picture: data?.data.profile_picture, username: currentUser, size: "12" }} />
+                            {console.log(myReview)}
+                            <Avatar user={{ profile_picture: myReview?.data.user.profile_picture, username: currentUser, size: "12" }} />
                             <div className="flex flex-col pl-5 w-full justify-between">
                                 {/* Profile Picture, Rating, and Listen Date */}
                                 <p className="text-gray-500 pb-2">Review by
@@ -248,7 +250,7 @@ function AlbumDetails() {
                                 </p>                                    
                                 
                                 {isLoading ? null : <ReactStars
-                                    key={data?.data.id}
+                                    key={myReview?.data.id}
                                     count={5}
                                     onChange={ratingChanged}
                                     size={30}
@@ -257,9 +259,8 @@ function AlbumDetails() {
                                     halfIcon={<i className="fa fa-star-half-alt"></i>}
                                     fullIcon={<i className="fa fa-star"></i>}
                                     activeColor="#ffd700"
-                                    value={data?.data.rating / 2 || rating}
+                                    value={myReview?.data.rating / 2 || rating}
                                 />}
-
                                 <textarea 
                                     rows="3" 
                                     placeholder="This album is..." 
@@ -277,9 +278,9 @@ function AlbumDetails() {
                                             setIsEditing(false);
                                         }}
                                         >
-                                        {data ? "Save" : "Add Review"}
+                                        {myReview ? "Save" : "Add Review"}
                                     </button>
-                                    {data ? (
+                                    {myReview ? (
                                         <button 
                                             type="button" 
                                             className="py-1 mr-3 w-24 text-sm mt-3 font-bold rounded-md text-gray-900 bg-red-900 hover:text-white"
