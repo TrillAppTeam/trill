@@ -30,10 +30,10 @@ import { QueryClient, QueryClientProvider} from "@tanstack/react-query";
 // Define a default query function that will receive the query key
 const defaultQueryFn = async ({ queryKey }) => {
   const data = await axios.get(`https://api.trytrill.com/main/${queryKey}`, { headers: {
-      'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
+      'Authorization' : `Bearer ${sessionStorage.getItem('access_token')}`
     }}).then((res) => {
       return res;
-  }).catch((err) => {return null});
+  }).catch(() => {return null});
   return data;
 }
 

@@ -24,7 +24,7 @@ function classNames(...classes) {
 function Navbar() {
   const {error, data} = useQuery({ queryKey: ['users'] });
   if (data)
-    localStorage.setItem("username", data.data.username);
+    sessionStorage.setItem("username", data.data.username);
   
   return (
 

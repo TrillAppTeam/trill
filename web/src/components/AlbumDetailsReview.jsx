@@ -15,7 +15,7 @@ function AlbumDetailsReview(props) {
 
     const like = useMutation(() => { 
         return axios.put(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, {}, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -25,7 +25,7 @@ function AlbumDetailsReview(props) {
     });
     const unlike = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })

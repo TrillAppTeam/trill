@@ -6,12 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from 'axios';
 
 function Home() {
-    window.onbeforeunload = function() {
-        if (localStorage.getItem('access_token')) {
-            localStorage.clear();
-          }
-    }
-
     const navigate = useNavigate();
     const { isLoading } = useQuery(['fetchToken'], () => 
         axios({
@@ -26,14 +20,14 @@ function Home() {
                 code: (window.location.href).split('=')[1],
                 redirect_uri: 'https://www.trytrill.com/home',
             }}).then((res) => {
-                localStorage.setItem('access_token', res.data.access_token);
+                sessionStorage.setItem('access_token', res.data.access_token);
                 return res;
             }).catch((error) => {navigate("/"); return error;}),
-        { enabled: !localStorage.getItem('access_token'), refetchOnWindowFocus: false});
+        { enabled: !sessionStorage.getItem('access_token'), refetchOnWindowFocus: false});
 
     return (
         <div className="bg-trillPurple min-h-screen flex flex-col">
-            {isLoading && !localStorage.getItem('access_token') ? <Loading/> : <>
+            {isLoading && !sessionStorage.getItem('access_token') ? <Loading/> : <>
                 <Navbar />
                 {/* Page Content */}
                 <div className="flex-grow">
