@@ -73,14 +73,17 @@ function Discover() {
 
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
-                {friendsDataLoading ? "Loading..." :  
-                    friendsData?.data.slice(0, 2).map((review, index, array) => (
-                        <div key={review.review_id}>
-                            <Review review={review} />
-                            {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
-                        </div>
-                    ))
-                }
+                <div  className="max-w-6xl">
+                    {friendsDataLoading ? "Loading..." :  
+                        friendsData?.data.slice(0, 2).map((review, index, array) => (
+                            <div key={review.review_id}>
+                                <Review review={review} />
+                                {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                            </div>
+                        ))
+                    }
+                </div>
+               
             </section>
 
             <section className="pt-14"> 
