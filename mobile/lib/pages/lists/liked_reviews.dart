@@ -12,7 +12,7 @@ class LikedReviewsScreen extends StatefulWidget {
 
 class _LikedReviewsScreenState extends State<LikedReviewsScreen> {
   bool _isLoading = false;
-  List<Review>? _reviews;
+  List<DetailedReview>? _reviews;
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _LikedReviewsScreenState extends State<LikedReviewsScreen> {
   }
 
   Widget _buildReviews() {
-    return FutureBuilder<List<Review>?>(
+    return FutureBuilder<List<DetailedReview>?>(
       future: getReviews('popular'),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&

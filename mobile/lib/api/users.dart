@@ -153,9 +153,9 @@ class PublicUser extends User {
       bio: json['bio'],
       nickname: json['nickname'],
       profilePic: json['profile_picture'],
-      requestorFollows: json['requestor_follows'],
-      followsRequestor: json['follows_requestor'],
-      reviewCount: json['review_count'],
+      requestorFollows: json['requestor_follows'] ?? false,
+      followsRequestor: json['follows_requestor'] ?? false,
+      reviewCount: json['review_count'] ?? 0,
     );
   }
 }
@@ -190,9 +190,9 @@ class PrivateUser extends PublicUser {
       email: json['email'],
       nickname: json['nickname'],
       profilePic: json['profile_picture'],
-      requestorFollows: json['requestor_follows'],
-      followsRequestor: json['follows_requestor'],
-      reviewCount: json['review_count'],
+      requestorFollows: json['requestor_follows'] ?? false,
+      followsRequestor: json['follows_requestor'] ?? false,
+      reviewCount: json['review_count'] ?? 0,
     );
   }
 }

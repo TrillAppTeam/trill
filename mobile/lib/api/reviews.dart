@@ -73,7 +73,7 @@ Future<List<Review>?> getAlbumReviews(
 }
 
 /// Get all reviews from a user - returns for current user if not specified
-Future<List<Review>?> getReviews(String sort, [String? username]) async {
+Future<List<DetailedReview>?> getReviews(String sort, [String? username]) async {
   const String tag = '[getReviews]';
 
   safePrint('$tag username: ${username ?? 'null'}; sort: $sort');
@@ -96,14 +96,14 @@ Future<List<Review>?> getReviews(String sort, [String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<Review>.from(
-        json.decode(response.body).map((x) => Review.fromJson(x)));
+    return List<DetailedReview>.from(
+        json.decode(response.body).map((x) => DetailedReview.fromJson(x)));
   } else {
     return null;
   }
 }
 
-Future<List<Review>?> getFriendsFeed() async {
+Future<List<DetailedReview>?> getFriendsFeed() async {
   const String tag = '[getFriendsFeed]';
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -119,8 +119,8 @@ Future<List<Review>?> getFriendsFeed() async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<Review>.from(
-        json.decode(response.body).map((x) => Review.fromJson(x)));
+    return List<DetailedReview>.from(
+        json.decode(response.body).map((x) => DetailedReview.fromJson(x)));
   } else {
     return null;
   }
@@ -184,11 +184,6 @@ class Review {
   final DateTime updatedAt;
   int likes;
   bool isLiked;
-  final String albumName;
-  final String albumId;
-  final String albumReleaseDate;
-  final List<SpotifyArtist> artists;
-  final List<SpotifyImage> images;
 
   Review({
     required this.reviewID,
@@ -201,18 +196,62 @@ class Review {
     required this.updatedAt,
     required this.likes,
     required this.isLiked,
+  });
+
+  factory Review.fromJson(Map<String, dynamic> json) {
+    return Review(
+      reviewID: json['review_id'],
+      username: json['user']['username'],
+      profilePicture: json['user']['profile_picture'],
+      albumID: json['album_id'],
+      rating: json['rating'],
+      reviewText: json['review_text'].trim(),
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
+      likes: json['likes'],
+      isLiked: json['requestor_liked'],
+    );
+  }
+}
+
+class DetailedReview extends Review {
+  final String albumName;
+  final String albumId;
+  final String albumReleaseDate;
+  final List<SpotifyArtist> artists;
+  final List<SpotifyImage> images;
+
+  DetailedReview({
+    required int reviewID,
+    required String username,
+    required String profilePicture,
+    required String albumID,
+    required int rating,
+    required String reviewText,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required int likes,
+    required bool isLiked,
     required this.albumName,
     required this.albumId,
     required this.albumReleaseDate,
     required this.artists,
     required this.images,
-  });
+  }) : super(
+    reviewID: reviewID,
+    username: username,
+    profilePicture: profilePicture,
+    albumID: albumID,
+    rating: rating,
+    reviewText: reviewText,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    likes: likes,
+    isLiked: isLiked,
+  );
 
-  // Perhaps not ideal
-  // Didn't use SpotifyAlbum class for now because of all the extra required fields
-  // not present in this API response
-  factory Review.fromJson(Map<String, dynamic> json) {
-    return Review(
+  factory DetailedReview.fromJson(Map<String, dynamic> json) {
+    return DetailedReview(
       reviewID: json['review_id'],
       username: json['user']['username'],
       profilePicture: json['user']['profile_picture'],

@@ -18,7 +18,7 @@ class DetailedReviewTile extends StatefulWidget {
     this.onDelete,
   }) : super(key: key);
 
-  final Review review;
+  final DetailedReview review;
   final void Function(bool) onLiked;
 
   bool isMyReview;

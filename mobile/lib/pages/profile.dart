@@ -35,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false;
 
   String _selectedSort = 'popular';
-  List<Review>? _reviews;
+  List<DetailedReview>? _reviews;
 
   @override
   void initState() {
@@ -217,16 +217,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text(
-              "5",
-              style: TextStyle(
+              _user.reviewCount.toString(),
+              style: const TextStyle(
                 fontSize: 20,
                 color: Color(0xFFBC6AAB),
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
+            const Text(
               "Reviews",
               style: TextStyle(fontSize: 11),
             )
@@ -372,7 +372,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildReviews() {
-    return FutureBuilder<List<Review>?>(
+    return FutureBuilder<List<DetailedReview>?>(
       future: getReviews(_selectedSort, _user.username),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
