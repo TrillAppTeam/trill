@@ -22,9 +22,8 @@ function AlbumDetails() {
 
     const { state } = useLocation();
     const { name, year, artist, img, link, id } = state;
-    const currentUser = localStorage.getItem("username");
+    const currentUser = sessionStorage.getItem("username");
 
-    console.log(id)
     const { isLoading, data: myReview, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
     const { data: reviewFromFriends } = useQuery([`reviews?sort=newest&albumID=${id}&following=true`]);
     const { data: popularGlobal, refetch: refetchPopularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
@@ -42,7 +41,7 @@ function AlbumDetails() {
     const addOrUpdateReview = useMutation(review => { 
         return axios.put(`https://api.trytrill.com/main/reviews?albumID=${id}`, review, 
             { headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`,
                 'Content-Type': 'application/json'
                 }
             })
@@ -61,7 +60,7 @@ function AlbumDetails() {
 
     const deleteReview = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/reviews?albumID=${id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -77,7 +76,7 @@ function AlbumDetails() {
 
     const addFavoriteAlbum = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, {}, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -88,7 +87,7 @@ function AlbumDetails() {
 
     const deleteFavoriteAlbum = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -99,7 +98,7 @@ function AlbumDetails() {
 
     const addListenLater = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/listenlateralbums?albumID=${id}`, {}, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -110,7 +109,7 @@ function AlbumDetails() {
 
     const deleteListenLater = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/listenlateralbums?albumID=${id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -241,7 +240,6 @@ function AlbumDetails() {
                 : 
                     <>
                         <div className="flex flex-row p-5">
-                            {console.log(myReview)}
                             <Avatar user={{ profile_picture: myReview?.data.user.profile_picture, username: currentUser, size: "12" }} />
                             <div className="flex flex-col pl-5 w-full justify-between">
                                 {/* Profile Picture, Rating, and Listen Date */}

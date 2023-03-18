@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Loading"
 
 function ListenLater() {
-    const currentUser = localStorage.getItem("username");
+    const currentUser = sessionStorage.getItem("username");
     const { isLoading, data: listenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
     return (

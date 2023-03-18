@@ -29,7 +29,7 @@ function Profile() {
     
     const follow = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, {}, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -40,7 +40,7 @@ function Profile() {
 
     const unfollow = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
             .then((res) => {
                 return res;
             })
@@ -51,7 +51,7 @@ function Profile() {
 
     useEffect(() => {
         followers?.data?.map((follower) => {
-            if (follower.username.includes(localStorage.getItem('username'))) {
+            if (follower.username.includes(sessionStorage.getItem('username'))) {
                 setIsFollowing(true);
             } else {
                 setIsFollowing(false);

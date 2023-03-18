@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Loading"
 
 function MyReviews() {
-    const currentUser = localStorage.getItem("username");
+    const currentUser = sessionStorage.getItem("username");
     const { isLoading, data: myReviews } = useQuery([`reviews?username=${currentUser}&sort=newest`]);
 
     return (

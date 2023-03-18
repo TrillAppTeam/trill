@@ -11,7 +11,7 @@ function Settings() {
     const update = useMutation(upUser => {
       return axios.put('https://api.trytrill.com/main/users', upUser, { headers: {
         'Content-Type': 'application/json',
-        'Authorization' : `Bearer ${localStorage.getItem('access_token')}`}})
+        'Authorization' : `Bearer ${sessionStorage.getItem('access_token')}`}})
         .then((res) => {
           setIsSuccess(true);
           console.log(res);
