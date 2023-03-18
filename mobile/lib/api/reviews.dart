@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/constants.dart';
 
+import 'albums.dart';
+
 /// Get an album review from a user - returns for current user if not specified
 Future<Review?> getReview(String albumID, [String? username]) async {
   const String tag = '[getReview]';
@@ -182,6 +184,11 @@ class Review {
   final DateTime updatedAt;
   int likes;
   bool isLiked;
+  final String albumName;
+  final String albumId;
+  final String albumReleaseDate;
+  final List<SpotifyArtist> artists;
+  final List<SpotifyImage> images;
 
   Review({
     required this.reviewID,
@@ -194,8 +201,16 @@ class Review {
     required this.updatedAt,
     required this.likes,
     required this.isLiked,
+    required this.albumName,
+    required this.albumId,
+    required this.albumReleaseDate,
+    required this.artists,
+    required this.images,
   });
 
+  // Perhaps not ideal
+  // Didn't use SpotifyAlbum class for now because of all the extra required fields
+  // not present in this API response
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       reviewID: json['review_id'],
@@ -208,6 +223,13 @@ class Review {
       updatedAt: DateTime.parse(json['updated_at']),
       likes: json['likes'],
       isLiked: json['requestor_liked'],
+      albumName: json['album']['name'],
+      albumId: json['album']['id'],
+      albumReleaseDate: json['album']['release_date'],
+      artists: List<SpotifyArtist>.from(
+          json['album']['artists'].map((x) => SpotifyArtist.fromJson(x))),
+      images: List<SpotifyImage>.from(
+          json['album']['images'].map((x) => SpotifyImage.fromJson(x))),
     );
   }
 }

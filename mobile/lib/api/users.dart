@@ -129,12 +129,18 @@ class User {
 // Used for profile pages
 class PublicUser extends User {
   final String nickname;
+  bool requestorFollows;
+  bool followsRequestor;
+  final int reviewCount;
 
-  const PublicUser({
+  PublicUser({
     required String username,
     required String bio,
     required String profilePic,
     required this.nickname,
+    required this.requestorFollows,
+    required this.followsRequestor,
+    required this.reviewCount
   }) : super(
           username: username,
           bio: bio,
@@ -147,6 +153,9 @@ class PublicUser extends User {
       bio: json['bio'],
       nickname: json['nickname'],
       profilePic: json['profile_picture'],
+      requestorFollows: json['requestor_follows'],
+      followsRequestor: json['follows_requestor'],
+      reviewCount: json['review_count'],
     );
   }
 }
@@ -155,17 +164,23 @@ class PublicUser extends User {
 class PrivateUser extends PublicUser {
   final String email;
 
-  const PrivateUser({
+  PrivateUser({
     required String username,
     required String bio,
     required String nickname,
     required String profilePic,
+    required bool requestorFollows,
+    required bool followsRequestor,
+    required int reviewCount,
     required this.email,
   }) : super(
           username: username,
           bio: bio,
           nickname: nickname,
           profilePic: profilePic,
+          requestorFollows: requestorFollows,
+          followsRequestor: followsRequestor,
+          reviewCount: reviewCount
         );
 
   factory PrivateUser.fromJson(Map<String, dynamic> json) {
@@ -175,6 +190,9 @@ class PrivateUser extends PublicUser {
       email: json['email'],
       nickname: json['nickname'],
       profilePic: json['profile_picture'],
+      requestorFollows: json['requestor_follows'],
+      followsRequestor: json['follows_requestor'],
+      reviewCount: json['review_count'],
     );
   }
 }

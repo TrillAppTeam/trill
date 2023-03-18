@@ -120,6 +120,9 @@ class _MainPageState extends State<MainPage> {
                     nickname: user.nickname,
                     profilePic: user.profilePic,
                     email: _user.email,
+                    requestorFollows: user.requestorFollows,
+                    followsRequestor: user.followsRequestor,
+                    reviewCount: _user.reviewCount,
                   );
                 }),
             // IndexedStack keeps the states of each page

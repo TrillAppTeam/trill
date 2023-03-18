@@ -179,9 +179,8 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            // todo: set album id
-            builder: (context) => const AlbumDetailsScreen(
-              albumID: '3xFXzriygSZ63hRXMHdZti',
+            builder: (context) => AlbumDetailsScreen(
+              albumID: widget.review.albumId,
             ),
           ),
         );
@@ -189,7 +188,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(3),
         child: Image.network(
-          'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
+          widget.review.images[0].url,
           width: 60,
           height: 60,
         ),
@@ -228,17 +227,17 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
         );
       },
       child: Row(
-        children: const [
+        children: [
           Text(
-            'Harry\'s House',
-            style: TextStyle(
+            widget.review.albumName,
+            style: const TextStyle(
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.bold,
               fontSize: 16,
               color: Color(0xFFEEEEEE),
             ),
           ),
-          Text(' - Harry Styles'),
+          Text(' - ${widget.review.artists[0].name}'),
         ],
       ),
     );
