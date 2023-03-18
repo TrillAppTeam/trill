@@ -18,7 +18,7 @@ Future<List<SpotifyAlbum>?> getListenLaters([String? username]) async {
   String token = prefs.getString('token') ?? "";
 
   final response = await http.get(
-    Uri.parse('${Constants.baseURI}/listenlateralbums?username=$username'),
+    Uri.parse('${Constants.baseURI}/listenlateralbums'),
     headers: {
       'Authorization': 'Bearer $token',
     },
