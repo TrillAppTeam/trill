@@ -73,7 +73,7 @@ function Discover() {
 
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
-                <div  className="max-w-6xl">
+                <div  className="max-w-6xl mx-auto">
                     {friendsDataLoading ? "Loading..." :  
                         friendsData?.data.slice(0, 2).map((review, index, array) => (
                             <div key={review.review_id}>
