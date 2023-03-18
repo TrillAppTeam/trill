@@ -7,6 +7,8 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -54,6 +56,17 @@ func InitCognitoClient(ctx context.Context) (*CognitoClient, error) {
 		secrets.CognitoAppClientId,
 		secrets.CognitoUserPoolId,
 	}, nil
+}
+
+func InitS3Client(ctx context.Context) (*s3.Client, error) {
+	cfg, err := config.LoadDefaultConfig(
+		ctx, config.WithRegion("us-east-1"),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return s3.NewFromConfig(cfg), nil
 }
 
 func (e *HTTPError) Error() string {

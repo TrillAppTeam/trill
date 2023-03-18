@@ -73,7 +73,7 @@ func get(ctx context.Context, req Request) (Response, error) {
 		return *resp, nil
 	}
 
-	reviewStats, err := models.GetReviewStats(ctx, album.ID, requestor)
+	reviewStats, err := models.GetAlbumReviewStats(ctx, album.ID, requestor)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
