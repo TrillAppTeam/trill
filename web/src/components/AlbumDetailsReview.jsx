@@ -70,7 +70,7 @@ function AlbumDetailsReview(props) {
                     </div>
 
                      {/* Review */}
-                     <p className="text-md">{review_text}</p>
+                     <p className="text-md text-white">{review_text}</p>
                         <div className="flex flex-row gap-2 text-gray-500 text-sm">
 
                             <div
