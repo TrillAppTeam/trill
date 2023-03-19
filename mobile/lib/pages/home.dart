@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SizedBox(height: 5),
               _buildPopularAlbums(),
-              const SizedBox(height: 20),
+              /*const SizedBox(height: 20),
               AlbumsRow(
                 title: 'Popular Albums Among Friends',
                 albums: List<SpotifyAlbum>.from(
@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       .decode(Constants.speakNowAlbums)
                       .map((x) => SpotifyAlbum.fromJson(x)),
                 ),
-              ),
+              ),*/
               const SizedBox(height: 20),
               HardcodedAlbumsRow(
                   title: "Hello, Grammys", albums: Constants.grammyList),

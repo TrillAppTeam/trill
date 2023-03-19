@@ -106,8 +106,13 @@ class SpotifyAlbum {
   final String label;
   final int popularity;
   final List<SpotifyArtist> artists;
+  final int? averageRating;
+  final int? numRatings;
+  final bool? requestorReviewed;
+  final bool? requestorFavorited;
+  final bool? inListenLater;
 
-  const SpotifyAlbum({
+  SpotifyAlbum({
     required this.albumType,
     required this.externalURLs,
     required this.href,
@@ -121,6 +126,11 @@ class SpotifyAlbum {
     required this.label,
     required this.popularity,
     required this.artists,
+    this.averageRating,
+    this.numRatings,
+    this.requestorReviewed,
+    this.requestorFavorited,
+    this.inListenLater,
   });
 
   factory SpotifyAlbum.fromJson(Map<String, dynamic> json) {
@@ -140,6 +150,11 @@ class SpotifyAlbum {
       popularity: json['popularity'],
       artists: List<SpotifyArtist>.from(
           json['artists'].map((x) => SpotifyArtist.fromJson(x))),
+      averageRating: ((json['average_rating'] ?? 0)).round(),
+      numRatings: json['num_ratings'] ?? 0,
+      requestorReviewed: json['requestor_reviewed'] ?? false,
+      requestorFavorited: json['requestor_favorited'] ?? false,
+      inListenLater: json['in_listen_later'] ?? false,
     );
   }
 }

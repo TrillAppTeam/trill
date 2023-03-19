@@ -72,7 +72,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       });
     }
 
-    final globalReviews =
+    /*final globalReviews =
         await getAlbumReviews(_selectedSort, widget.albumID, false);
     if (globalReviews != null) {
       setState(() {
@@ -96,7 +96,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
           _isInListenLater = true;
         });
       }
-    }
+    }*/
 
     final album = await getSpotifyAlbum(widget.albumID);
     if (album != null) {
@@ -131,7 +131,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                     const SizedBox(height: 5),
                     _buildAlbumButtons(),
                     _buildReviewDetails(),
-                    if (!_isReviewed)
+                    if (!(_album.requestorReviewed ?? false))
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -220,11 +220,10 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    // todo: get average rating
-                    const ReviewRatingBar(rating: 7, size: 20),
+                    ReviewRatingBar(rating: (_album.averageRating ?? 0), size: 20),
                     const SizedBox(width: 5),
                     Text(
-                      '(${_numReviews.toString()})',
+                      '(${(_album.numRatings ?? 0).toString()})',
                       style: const TextStyle(
                         color: Color(0xFFCCCCCC),
                       ),
@@ -245,7 +244,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       children: [
         FavoriteButton(
           albumID: widget.albumID,
-          isFavorited: _isFavorited,
+          isFavorited: (_album.requestorFavorited ?? false),
           onError: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -260,7 +259,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         ),
         ListenLaterButton(
           albumID: widget.albumID,
-          isInListenLater: _isInListenLater,
+          isInListenLater: (_album.inListenLater ?? false),
         ),
       ],
     );
@@ -343,10 +342,15 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     return NewReview(onCreate: (rating, reviewText) async {
       final success =
           await createOrUpdateReview(widget.albumID, rating, reviewText);
+      final album = await getSpotifyAlbum(widget.albumID);
       if (success) {
         setState(() {
-          _isReviewed = true;
           _buildReviews();
+          if (album != null) {
+            setState(() {
+              _album = album;
+            });
+          }
         });
       }
     });
@@ -377,9 +381,15 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                       final success = await createOrUpdateReview(
                           widget.albumID, rating, reviewText);
                       if (success) {
+                        final album = await getSpotifyAlbum(widget.albumID);
                         setState(() {
                           review.rating = rating;
                           review.reviewText = reviewText;
+                          if (album != null) {
+                            setState(() {
+                              _album = album;
+                            });
+                          }
                         });
                       }
                     }
@@ -389,9 +399,15 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   widget.albumID,
                 );
                 if (success) {
+                  final album = await getSpotifyAlbum(widget.albumID);
                   setState(() {
                     reviews.removeAt(index);
                     _isReviewed = false;
+                    if (album != null) {
+                      setState(() {
+                        _album = album;
+                      });
+                    }
                   });
                 }
               },
