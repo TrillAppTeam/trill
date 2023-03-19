@@ -31,7 +31,7 @@ Future<List<User>?> searchUsers(String query) async {
   }
 }
 
-Future<PublicUser?> getPublicUser([String? username]) async {
+Future<DetailedUser?> getDetailedUser([String? username]) async {
   const String tag = '[getPublicUser]';
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,34 +50,13 @@ Future<PublicUser?> getPublicUser([String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return PublicUser.fromJson(jsonDecode(response.body));
+    return DetailedUser.fromJson(jsonDecode(response.body));
   } else {
     return null;
   }
 }
 
-Future<PrivateUser?> getPrivateUser() async {
-  const String tag = '[getPrivateUser]';
-
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString('token') ?? "";
-
-  final response = await http.get(
-    Uri.parse('${Constants.baseURI}/users'),
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-  );
-
-  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
-
-  if (response.statusCode == 200) {
-    return PrivateUser.fromJson(jsonDecode(response.body));
-  } else {
-    return null;
-  }
-}
-
+// todo: update to new api
 Future<bool> updateCurrUser(
     {String? bio, String? profilePic, String? nickname}) async {
   const String tag = '[updateCurrUser]';
@@ -105,94 +84,68 @@ Future<bool> updateCurrUser(
   return response.statusCode == 200;
 }
 
-// Used for search results
+/// Used for search results
 class User {
   final String username;
+  final String nickname;
   final String bio;
-  final String profilePic;
+  final String profilePicURL;
 
   const User({
     required this.username,
+    required this.nickname,
     required this.bio,
-    required this.profilePic,
+    required this.profilePicURL,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       username: json['username'],
+      nickname: json['nickname'],
       bio: json['bio'],
-      profilePic: json['profile_picture'],
+      profilePicURL: json['profile_picture'],
     );
   }
 }
 
-// Used for profile pages
-class PublicUser extends User {
-  final String nickname;
+/// Used for profile pages
+class DetailedUser extends User {
+  final List<User> following;
+  final List<User> followers;
   bool requestorFollows;
   bool followsRequestor;
   final int reviewCount;
 
-  PublicUser({
+  DetailedUser({
     required String username,
+    required String nickname,
     required String bio,
-    required String profilePic,
-    required this.nickname,
+    required String profilePicURL,
+    required this.following,
+    required this.followers,
     required this.requestorFollows,
     required this.followsRequestor,
-    required this.reviewCount
+    required this.reviewCount,
   }) : super(
           username: username,
-          bio: bio,
-          profilePic: profilePic,
-        );
-
-  factory PublicUser.fromJson(Map<String, dynamic> json) {
-    return PublicUser(
-      username: json['username'],
-      bio: json['bio'],
-      nickname: json['nickname'],
-      profilePic: json['profile_picture'],
-      requestorFollows: json['requestor_follows'] ?? false,
-      followsRequestor: json['follows_requestor'] ?? false,
-      reviewCount: json['review_count'] ?? 0,
-    );
-  }
-}
-
-// username, email, and nickname are stored in shared preferences
-class PrivateUser extends PublicUser {
-  final String email;
-
-  PrivateUser({
-    required String username,
-    required String bio,
-    required String nickname,
-    required String profilePic,
-    required bool requestorFollows,
-    required bool followsRequestor,
-    required int reviewCount,
-    required this.email,
-  }) : super(
-          username: username,
-          bio: bio,
           nickname: nickname,
-          profilePic: profilePic,
-          requestorFollows: requestorFollows,
-          followsRequestor: followsRequestor,
-          reviewCount: reviewCount
+          bio: bio,
+          profilePicURL: profilePicURL,
         );
 
-  factory PrivateUser.fromJson(Map<String, dynamic> json) {
-    return PrivateUser(
+  factory DetailedUser.fromJson(Map<String, dynamic> json) {
+    return DetailedUser(
       username: json['username'],
       bio: json['bio'],
-      email: json['email'],
       nickname: json['nickname'],
-      profilePic: json['profile_picture'],
-      requestorFollows: json['requestor_follows'] ?? false,
-      followsRequestor: json['follows_requestor'] ?? false,
-      reviewCount: json['review_count'] ?? 0,
+      profilePicURL: json['profile_picture'],
+      following:
+          List<User>.from(json['following'].map((x) => User.fromJson(x))),
+      followers:
+          List<User>.from(json['followers'].map((x) => User.fromJson(x))),
+      requestorFollows: json['requestor_follows'],
+      followsRequestor: json['follows_requestor'],
+      reviewCount: json['review_count'],
     );
   }
 }

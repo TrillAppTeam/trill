@@ -13,7 +13,7 @@ import 'package:trill/widgets/follow_button.dart';
 import '../api/follows.dart';
 
 class Sidebar extends StatefulWidget {
-  final PrivateUser user;
+  final DetailedUser user;
   final Function onUserUpdated;
 
   const Sidebar({
@@ -27,7 +27,7 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-  late PublicUser _user;
+  late DetailedUser _user;
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _SidebarState extends State<Sidebar> {
   }
 
   Future<void> _fetchUserDetails() async {
-    final user = await getPublicUser();
+    final user = await getDetailedUser();
     setState(() {
       _user = user!;
     });
@@ -131,7 +131,7 @@ class _SidebarState extends State<Sidebar> {
                     builder: (context) => EditProfileScreen(
                       initialBio: _user.bio,
                       initialNickname: _user.nickname,
-                      initialProfilePic: _user.profilePic,
+                      initialProfilePic: _user.profilePicURL,
                       onUserChanged: () async {
                         await _fetchUserDetails();
                         widget.onUserUpdated(_user);

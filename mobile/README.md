@@ -20,10 +20,9 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
 Test on physical device
 
 API
-- Implement profile pics APIs
-- Change follow APIs to reflect new changes
-- Add listen later APIs once merged
-- Implement missing APIs as they are completed
+- Profile pic API
+- Set default profile picture
+- Add pagination
 
 UI!!
 - Copy web for everything

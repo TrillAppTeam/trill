@@ -178,7 +178,7 @@ class _ReviewTileState extends State<ReviewTile> {
             context,
             MaterialPageRoute(
               builder: (context) => ProfileScreen(
-                username: widget.review.username,
+                username: widget.review.user.username,
               ),
             ),
           );
@@ -220,14 +220,14 @@ class _ReviewTileState extends State<ReviewTile> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ProfileScreen(
-                    username: widget.review.username,
+                    username: widget.review.user.username,
                   ),
                 ),
               );
             }
           },
           child: Text(
-            widget.review.username,
+            widget.review.user.username,
             style: const TextStyle(
               color: Color(0xFF3FBCF4),
               fontWeight: FontWeight.w900,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
+import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 import '../../widgets/follow_user_button.dart';
 import '../profile.dart';
@@ -21,7 +22,7 @@ class FollowsScreen extends StatefulWidget {
 class _FollowsScreenState extends State<FollowsScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  late Follow _userResults;
+  late List<User> _userResults;
   bool _isLoading = false;
 
   @override
@@ -40,7 +41,7 @@ class _FollowsScreenState extends State<FollowsScreen>
       _isLoading = true;
     });
 
-    Follow? userResults;
+    List<User>? userResults;
     if (_tabController!.index == 1) {
       userResults = await getFollowers(widget.username);
     } else {
@@ -76,48 +77,49 @@ class _FollowsScreenState extends State<FollowsScreen>
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-        onRefresh: _fetchUserDetails,
-        backgroundColor: const Color(0xFF1A1B29),
-        color: const Color(0xFF3FBCF4),
-        child: ListView.builder(
-          itemCount: _userResults.users.length,
-          itemBuilder: (BuildContext context, int index) {
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfileScreen(
-                      username: _userResults.users[index].username,
+              onRefresh: _fetchUserDetails,
+              backgroundColor: const Color(0xFF1A1B29),
+              color: const Color(0xFF3FBCF4),
+              child: ListView.builder(
+                itemCount: _userResults.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileScreen(
+                            username: _userResults[index].username,
+                          ),
+                        ),
+                      );
+                    },
+                    child: ListTile(
+                      title: Text(
+                        (_userResults[index].username),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text((_userResults[index].nickname)),
+                      leading: const CircleAvatar(
+                        radius: 32,
+                        backgroundImage: NetworkImage(
+                          'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
+                        ),
+                      ),
+                      trailing: _tabController!.index == 0
+                          ? FollowUserButton(
+                              username: _userResults[index].username,
+                              isFollowing: true,
+                            )
+                          : Icon(
+                              Icons.arrow_forward_outlined,
+                              color: Colors.white.withOpacity(0.2),
+                            ),
                     ),
-                  ),
-                );
-              },
-              child: ListTile(
-                title: Text(
-                  (_userResults.users[index].username),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text((_userResults.users[index].nickname)),
-                leading: const CircleAvatar(
-                  radius: 32,
-                  backgroundImage: NetworkImage(
-                    'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
-                  ),
-                ),
-                trailing: _tabController!.index == 0
-                    ? FollowUserButton(
-                  username: _userResults.users[index].username,
-                  isFollowing: true,
-                )
-                    : Icon(
-                  Icons.arrow_forward_outlined,
-                  color: Colors.white.withOpacity(0.2),
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ),
+            ),
     );
-  }}
+  }
+}

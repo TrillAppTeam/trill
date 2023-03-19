@@ -30,7 +30,7 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
       _isLoading = true;
     });
 
-    final listenLaterAlbums = await getListenLaters();
+    final listenLaterAlbums = await getListenLaterAlbums();
 
     if (listenLaterAlbums != null) {
       setState(() {
@@ -53,45 +53,43 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
       body: _isLoading
           ? const LoadingScreen()
           : (_listenLaterAlbums == null || _listenLaterAlbums.isEmpty)
-          ? Row(
-              children: const [
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      'No listen later albums. Add some albums to listen later to see them here!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        fontSize: 36
+              ? Row(
+                  children: const [
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          'No listen later albums. Add some albums to listen later to see them here!',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic, fontSize: 36),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            )
-          : RefreshIndicator(
-              onRefresh: _fetchListenLater,
-              backgroundColor: const Color(0xFF1A1B29),
-              color: const Color(0xFF3FBCF4),
-              child: ListView.builder(
-                itemCount: _listenLaterAlbums.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AlbumDetailsScreen(
-                            albumID: _listenLaterAlbums[index].id,
-                          ),
-                        ),
+                  ],
+                )
+              : RefreshIndicator(
+                  onRefresh: _fetchListenLater,
+                  backgroundColor: const Color(0xFF1A1B29),
+                  color: const Color(0xFF3FBCF4),
+                  child: ListView.builder(
+                    itemCount: _listenLaterAlbums.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AlbumDetailsScreen(
+                                albumID: _listenLaterAlbums[index].id,
+                              ),
+                            ),
+                          );
+                        },
+                        child: AlbumRow(album: _listenLaterAlbums[index]),
                       );
                     },
-                    child: AlbumRow(album: _listenLaterAlbums[index]),
-                  );
-                },
-              ),
-            ),
+                  ),
+                ),
     );
   }
 }

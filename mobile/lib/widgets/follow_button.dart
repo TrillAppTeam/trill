@@ -35,7 +35,7 @@ class _FollowButtonState extends State<FollowButton> {
         ),
       ),
       child: Center(
-        child: FutureBuilder<Follow?>(
+        child: FutureBuilder<List<User>?>(
           future: widget.followType == FollowType.following
               ? getFollowing(widget.username)
               : getFollowers(widget.username),
@@ -43,7 +43,7 @@ class _FollowButtonState extends State<FollowButton> {
             safePrint(snapshot.connectionState);
             safePrint(snapshot.hasData);
             if (snapshot.hasData) {
-              String followCount = snapshot.data!.users.length.toString();
+              String followCount = snapshot.data!.length.toString();
               return RichText(
                 text: TextSpan(
                   text: widget.followType == FollowType.following

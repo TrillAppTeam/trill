@@ -24,7 +24,7 @@ class _MainPageState extends State<MainPage> {
   late SharedPreferences _prefs;
   bool _userInfoSet = false;
 
-  late PrivateUser _user;
+  late DetailedUser _user;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _MainPageState extends State<MainPage> {
     await fetchAuthSession();
     await getCognitoUser();
 
-    _user = (await getPrivateUser())!;
+    _user = (await getDetailedUser())!;
     _screens = [
       HomeScreen(
         nickname: _user.nickname,
@@ -113,17 +113,8 @@ class _MainPageState extends State<MainPage> {
             appBar: AppBar(backgroundColor: const Color(0xFF374151)),
             drawer: Sidebar(
                 user: _user,
-                onUserUpdated: (PublicUser user) {
-                  _user = PrivateUser(
-                    username: user.username,
-                    bio: user.bio,
-                    nickname: user.nickname,
-                    profilePic: user.profilePic,
-                    email: _user.email,
-                    requestorFollows: user.requestorFollows,
-                    followsRequestor: user.followsRequestor,
-                    reviewCount: _user.reviewCount,
-                  );
+                onUserUpdated: (DetailedUser user) {
+                  _user = user;
                 }),
             // IndexedStack keeps the states of each page
             body: IndexedStack(

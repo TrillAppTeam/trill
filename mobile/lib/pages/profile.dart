@@ -29,7 +29,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late SharedPreferences _prefs;
-  late PublicUser _user;
+  late DetailedUser _user;
 
   bool _isLoggedIn = false;
   bool _isLoading = false;
@@ -52,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String loggedInUser = _prefs.getString('username') ?? "";
     _isLoggedIn = loggedInUser == widget.username;
 
-    final user = await getPublicUser(widget.username);
+    final user = await getDetailedUser(widget.username);
 
     setState(() {
       _user = user!;

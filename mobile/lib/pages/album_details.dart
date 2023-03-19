@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
-import 'package:trill/api/favorite_albums.dart';
-import 'package:trill/api/listen_later.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/favorite_button.dart';
@@ -23,20 +21,14 @@ class AlbumDetailsScreen extends StatefulWidget {
 
 class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     with TickerProviderStateMixin {
-  late SpotifyAlbum _album;
+  late DetailedSpotifyAlbum _album;
 
   List<Review>? _globalReviews;
-  int _numReviews = 0;
-
   List<Review>? _followingReviews;
   List<Review>? _myReviews;
 
   String _selectedSort = 'popular';
   bool _isLoading = true;
-
-  bool _isFavorited = false;
-  bool _isInListenLater = false;
-  bool _isReviewed = false;
 
   late String _loggedInUser = "";
 
@@ -63,40 +55,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       _followingReviews = null;
       _myReviews = null;
     });
-
-    // these should really be done through the apis tbh
-    final myReview = await getReview(widget.albumID);
-    if (myReview != null) {
-      setState(() {
-        _isReviewed = true;
-      });
-    }
-
-    /*final globalReviews =
-        await getAlbumReviews(_selectedSort, widget.albumID, false);
-    if (globalReviews != null) {
-      setState(() {
-        _numReviews = globalReviews.length;
-      });
-    }
-
-    final favoriteAlbums = await getFavoriteAlbums() ?? [];
-    for (int i = 0; i < favoriteAlbums.length; i++) {
-      if (favoriteAlbums[i].id == widget.albumID) {
-        setState(() {
-          _isFavorited = true;
-        });
-      }
-    }
-
-    final listenLaterAlbums = await getListenLaters() ?? [];
-    for (int i = 0; i < listenLaterAlbums.length; i++) {
-      if (listenLaterAlbums[i].id == widget.albumID) {
-        setState(() {
-          _isInListenLater = true;
-        });
-      }
-    }*/
 
     final album = await getSpotifyAlbum(widget.albumID);
     if (album != null) {
@@ -131,7 +89,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                     const SizedBox(height: 5),
                     _buildAlbumButtons(),
                     _buildReviewDetails(),
-                    if (!(_album.requestorReviewed ?? false))
+                    if (!_album.isReviewed)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -220,10 +178,13 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    ReviewRatingBar(rating: (_album.averageRating ?? 0), size: 20),
+                    ReviewRatingBar(
+                      rating: _album.averageRating,
+                      size: 20,
+                    ),
                     const SizedBox(width: 5),
                     Text(
-                      '(${(_album.numRatings ?? 0).toString()})',
+                      _album.numRatings.toString(),
                       style: const TextStyle(
                         color: Color(0xFFCCCCCC),
                       ),
@@ -244,7 +205,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       children: [
         FavoriteButton(
           albumID: widget.albumID,
-          isFavorited: (_album.requestorFavorited ?? false),
+          isFavorited: _album.isFavorited,
           onError: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -259,7 +220,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         ),
         ListenLaterButton(
           albumID: widget.albumID,
-          isInListenLater: (_album.inListenLater ?? false),
+          isInListenLater: _album.inListenLater,
         ),
       ],
     );
@@ -375,8 +336,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   review.isLiked = isLiked;
                 });
               },
-              isMyReview: _loggedInUser == review.username,
-              onUpdate: _loggedInUser == review.username
+              isMyReview: _loggedInUser == review.user.username,
+              onUpdate: _loggedInUser == review.user.username
                   ? (rating, reviewText) async {
                       final success = await createOrUpdateReview(
                           widget.albumID, rating, reviewText);
@@ -402,7 +363,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   final album = await getSpotifyAlbum(widget.albumID);
                   setState(() {
                     reviews.removeAt(index);
-                    _isReviewed = false;
+                    _album.isReviewed = false;
                     if (album != null) {
                       setState(() {
                         _album = album;

@@ -7,13 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/constants.dart';
 
-/// If no username is passed, get listen laters for logged in user
-Future<List<SpotifyAlbum>?> getListenLaters([String? username]) async {
+Future<List<SpotifyAlbum>?> getListenLaterAlbums() async {
   const String tag = '[getListenLaters]';
   final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-  username ??= prefs.getString('username');
-  safePrint('$tag username: $username');
 
   String token = prefs.getString('token') ?? "";
 
@@ -34,7 +30,7 @@ Future<List<SpotifyAlbum>?> getListenLaters([String? username]) async {
   }
 }
 
-Future<bool> ListenLater(String albumID) async {
+Future<bool> addListenLater(String albumID) async {
   const String tag = '[addListenLater]';
 
   safePrint('$tag albumID: $albumID');
@@ -54,7 +50,7 @@ Future<bool> ListenLater(String albumID) async {
   return response.statusCode == 201;
 }
 
-Future<bool> unListenLater(String albumID) async {
+Future<bool> deleteListenLater(String albumID) async {
   const String tag = '[deleteListenLater]';
 
   safePrint('$tag albumID: $albumID');

@@ -180,7 +180,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
           context,
           MaterialPageRoute(
             builder: (context) => AlbumDetailsScreen(
-              albumID: widget.review.albumId,
+              albumID: widget.review.albumID,
             ),
           ),
         );
@@ -188,7 +188,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(3),
         child: Image.network(
-          widget.review.images[0].url,
+          widget.review.album.images[0].url,
           width: 60,
           height: 60,
         ),
@@ -229,7 +229,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
       child: Row(
         children: [
           Text(
-            widget.review.albumName,
+            widget.review.album.name,
             style: const TextStyle(
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.bold,
@@ -237,7 +237,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
               color: Color(0xFFEEEEEE),
             ),
           ),
-          Text(' - ${widget.review.artists[0].name}'),
+          Text(' - ${widget.review.album.artists[0].name}'),
         ],
       ),
     );
@@ -276,7 +276,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
             context,
             MaterialPageRoute(
               builder: (context) => ProfileScreen(
-                username: widget.review.username,
+                username: widget.review.user.username,
               ),
             ),
           );
@@ -292,7 +292,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
           ),
           const SizedBox(width: 5),
           Text(
-            widget.review.username,
+            widget.review.user.username,
             style: const TextStyle(
               color: Color(0xFF3FBCF4),
               fontWeight: FontWeight.w900,

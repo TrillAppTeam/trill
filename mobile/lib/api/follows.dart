@@ -8,7 +8,7 @@ import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 
 /// If no username is passed, get followers for logged in user
-Future<Follow?> getFollowers([String? username]) async {
+Future<List<User>?> getFollowers([String? username]) async {
   const String tag = '[getFollowers]';
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -28,14 +28,15 @@ Future<Follow?> getFollowers([String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return Follow.fromJson(jsonDecode(response.body));
+    return List<User>.from(
+        json.decode(response.body).map((x) => User.fromJson(x)));
   } else {
     return null;
   }
 }
 
 /// If no username is passed, get following for logged in user
-Future<Follow?> getFollowing([String? username]) async {
+Future<List<User>?> getFollowing([String? username]) async {
   const String tag = '[getFollowing]';
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -55,7 +56,8 @@ Future<Follow?> getFollowing([String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return Follow.fromJson(jsonDecode(response.body));
+    return List<User>.from(
+        json.decode(response.body).map((x) => User.fromJson(x)));
   } else {
     return null;
   }
@@ -99,22 +101,4 @@ Future<bool> unfollow(String userToUnfollow) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 200;
-}
-
-// Followee follows the following
-class Follow {
-  final List<PublicUser> users;
-
-  const Follow({
-    required this.users,
-  });
-
-  factory Follow.fromJson(List<dynamic> json) {
-    final users = json
-        .map((userJson) => PublicUser.fromJson(userJson as Map<String, dynamic>))
-        .toList();
-    return Follow(
-      users: users
-    );
-  }
 }
