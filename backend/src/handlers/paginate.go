@@ -10,13 +10,9 @@ import (
 
 var (
 	ErrorLimitParse   error = errors.New("failed to parse limit")
-	ErrorLimitTooHigh error = fmt.Errorf("maximum limit of %d exceeded", maxLimit)
+	ErrorLimitTooHigh error = fmt.Errorf("maximum limit of %d exceeded", models.PAGINATE_DEFAULT_LIMIT)
 	ErrorPage         error = errors.New("failed to parse page")
 	// ErrorSort  error = errors.New("failed to parse sort")
-)
-
-var (
-	maxLimit int = 20
 )
 
 type PaginateError struct {
@@ -40,7 +36,7 @@ func GetPaginateFromRequest(ctx context.Context, req Request) (*models.Paginate,
 			if err != nil {
 				return nil, PaginateError{Err: ErrorLimitParse}
 			}
-			if limit > maxLimit {
+			if limit > models.PAGINATE_DEFAULT_LIMIT {
 				return nil, PaginateError{Err: ErrorLimitTooHigh}
 			}
 		case "page":

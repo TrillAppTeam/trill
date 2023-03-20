@@ -219,6 +219,12 @@ paths:
       - name: following
         in: query
         type: boolean
+      - name: limit
+        in: query
+        type: integer
+      - name: page
+        in: query
+        type: integer
       responses:
         200:
           description: success
