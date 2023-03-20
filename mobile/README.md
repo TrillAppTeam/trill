@@ -22,12 +22,17 @@ Test on physical device
 API
 - Profile pic API
   - Need to redo edit profile page first
+- Review text on updating after creating
+- Scroll on all reviews
+- Edit user text and numbers on follow/unfollow
+- Preventing favoriting if more than 4
 
 UI!!
 - Copy web for everything
 - Loading page
 - Fix overflowing review tiles
 - Dropdown UIs
+- Horizontal listview for global reviews
 - Animations for everything (e.g. fading out when something is deleted, swipe to delete listen later)
 - Refresh user page when navigating back from some pages
 
