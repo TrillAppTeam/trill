@@ -152,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               !_isLoggedIn
                   ? FollowUserButton(
                       username: _user.username,
-                      isFollowing: true,
+                      isFollowing: _user.requestorFollows,
                     )
                   : EditProfileButton(
                       user: _user,
@@ -171,13 +171,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          _user.nickname,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.w900,
-          ),
+        Row(
+          children: [
+            Text(
+              _user.nickname,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(width: 10),
+            if (!_isLoggedIn && _user.followsRequestor)
+              Text(
+                '•  Follows you',
+                style: TextStyle(
+                  color: Colors.grey[400],
+                  fontSize: 15,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: 5),
         Text(
