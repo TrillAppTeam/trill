@@ -113,15 +113,23 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         appBar: AppBar(),
         body: _isLoading
             ? const LoadingScreen()
-            : NestedScrollView(
-                controller: _scrollController,
-                headerSliverBuilder: (context, value) {
-                  return [
-                    SliverToBoxAdapter(child: _buildStaticWidgets()),
-                  ];
+            : GestureDetector(
+                onTap: () {
+                  final FocusScopeNode currentScope = FocusScope.of(context);
+                  if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
                 },
-                body: _buildReviews(),
+                child: NestedScrollView(
+                  controller: _scrollController,
+                  headerSliverBuilder: (context, value) {
+                    return [
+                      SliverToBoxAdapter(child: _buildStaticWidgets()),
+                    ];
+                  },
+                  body: _buildReviews(),
               ),
+        ),
       ),
     );
   }
