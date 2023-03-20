@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final String initialNickname;
@@ -22,6 +25,7 @@ class EditProfileScreen extends StatefulWidget {
 class _EditProfileScreenState extends State<EditProfileScreen> {
   String _bio = "";
   String _nickname = "";
+  XFile? _profilePic;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -110,6 +114,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     });
                   },
                 ),
+                const SizedBox(height: 50),
+                CircleAvatar(
+                  backgroundImage: _profilePic != null
+                  // TODO: Change null image (will never be used but Dart demands it)
+                      ? FileImage(File(_profilePic?.path ?? "images/DierksBentleyTest.jpg"))
+                      : NetworkImage(widget.initialProfilePic) as ImageProvider,
+                  radius: 80.0,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _selectProfilePic,
+                  child: const Text('Edit Profile Picture'),
+                ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _updateUser,
@@ -121,5 +138,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _selectProfilePic() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profilePic = pickedFile;
+      });
+    }
   }
 }
