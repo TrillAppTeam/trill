@@ -80,12 +80,12 @@ class _SidebarState extends State<Sidebar> {
               children: [
                 const Spacer(),
                 FollowButton(
-                  username: _user.username,
+                  user: _user,
                   followType: FollowType.following,
                 ),
                 const Spacer(flex: 2),
                 FollowButton(
-                  username: _user.username,
+                  user: _user,
                   followType: FollowType.follower,
                 ),
                 const Spacer(),
@@ -127,9 +127,7 @@ class _SidebarState extends State<Sidebar> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => EditProfileScreen(
-                      initialBio: _user.bio,
-                      initialNickname: _user.nickname,
-                      initialProfilePic: _user.profilePicURL,
+                      initialUser: _user,
                       onUserChanged: () async {
                         await _fetchUserDetails();
                         widget.onUserUpdated(_user);

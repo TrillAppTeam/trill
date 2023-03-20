@@ -5,16 +5,12 @@ import 'package:trill/api/users.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  final String initialNickname;
-  final String initialBio;
-  final String initialProfilePic;
+  final User initialUser;
   final Function onUserChanged;
 
   const EditProfileScreen({
     super.key,
-    required this.initialNickname,
-    required this.initialBio,
-    required this.initialProfilePic,
+    required this.initialUser,
     required this.onUserChanged,
   });
 
@@ -33,8 +29,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _bio = widget.initialBio;
-    _nickname = widget.initialNickname;
+    _bio = widget.initialUser.bio;
+    _nickname = widget.initialUser.nickname;
   }
 
   void _updateUser() async {
@@ -78,7 +74,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               children: [
                 const SizedBox(height: 20),
                 TextFormField(
-                  initialValue: widget.initialNickname,
+                  initialValue: widget.initialUser.nickname,
                   decoration: InputDecoration(
                     labelText: 'Nickname',
                     labelStyle: const TextStyle(color: Colors.white),
@@ -100,7 +96,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  initialValue: widget.initialBio,
+                  initialValue: widget.initialUser.bio,
                   decoration: InputDecoration(
                     labelText: 'Biography',
                     labelStyle: const TextStyle(color: Colors.white),
@@ -120,7 +116,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       // TODO: Change null image (will never be used but Dart demands it)
                       ? FileImage(File(
                           _profilePic?.path ?? "images/DierksBentleyTest.jpg"))
-                      : NetworkImage(widget.initialProfilePic) as ImageProvider,
+                      : NetworkImage(widget.initialUser.profilePicURL)
+                          as ImageProvider,
                   radius: 80.0,
                 ),
                 const SizedBox(height: 20),

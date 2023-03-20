@@ -1,3 +1,4 @@
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
@@ -7,6 +8,7 @@ import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/detailed_review_tile.dart';
+import 'package:trill/widgets/edit_profile_button.dart';
 import 'package:trill/widgets/follow_button.dart';
 import 'package:trill/widgets/follow_user_button.dart';
 import 'package:trill/widgets/profile_pic.dart';
@@ -60,25 +62,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const LoadingScreen()
-        : RefreshIndicator(
-            onRefresh: _fetchUserDetails,
-            backgroundColor: const Color(0xFF1A1B29),
-            color: const Color(0xFF3FBCF4),
-            child: Scaffold(
+    return Scaffold(
+      backgroundColor: const Color(0xFF1A1B29),
+      appBar: _isLoggedIn ? null : AppBar(),
+      body: _isLoading
+          ? const LoadingScreen()
+          : RefreshIndicator(
+              onRefresh: _fetchUserDetails,
               backgroundColor: const Color(0xFF1A1B29),
-              appBar: _isLoggedIn ? null : AppBar(),
-              body: SingleChildScrollView(
+              color: const Color(0xFF3FBCF4),
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SizedBox(height: 15),
-                    _buildUserDetails(),
-                    const SizedBox(height: 15),
-                    _buildFollows(),
-                    const SizedBox(height: 15),
-                    _buildUserStats(),
-                    const SizedBox(height: 15),
+                    _buildUserInfo(),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: FutureBuilder<List<SpotifyAlbum>?>(
@@ -109,17 +105,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
-          );
+    );
+  }
+
+  Padding _buildUserInfo() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30,
+        vertical: 15,
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              ProfilePic(
+                user: _user,
+                radius: 40,
+                fontSize: 24,
+              ),
+              const SizedBox(width: 30),
+              _buildUserStats(),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildUserDetails(),
+              !_isLoggedIn
+                  ? FollowUserButton(
+                      username: _user.username,
+                      isFollowing: true,
+                    )
+                  : EditProfileButton(
+                      user: _user,
+                      onUserChanged: () async {
+                        await _fetchUserDetails();
+                      },
+                    ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildUserDetails() {
     return Column(
       children: [
-        ProfilePic(
-          user: _user,
-          radius: 40,
-          fontSize: 24,
-        ),
         Text(
           _user.nickname,
           style: const TextStyle(
@@ -143,98 +176,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildFollows() {
+  Widget _buildUserStats() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         FollowButton(
-          username: widget.username,
+          user: _user,
           followType: FollowType.following,
         ),
         SizedBox(
           width: (_isLoggedIn ? 30 : 20),
         ),
         FollowButton(
-          username: widget.username,
+          user: _user,
           followType: FollowType.follower,
         ),
         SizedBox(
           width: (_isLoggedIn ? 0 : 20),
-        ),
-        if (!_isLoggedIn)
-          FollowUserButton(
-            username: _user.username,
-            isFollowing: true,
-          ),
-      ],
-    );
-  }
-
-  Widget _buildUserStats() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "455",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Total Albums",
-              style: TextStyle(fontSize: 11),
-            )
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "3",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Color(0xFFBC6AAB),
-                  fontWeight: FontWeight.bold),
-            ),
-            Text("Albums This Month", style: TextStyle(fontSize: 11))
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "30",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Listen Laters",
-              style: TextStyle(fontSize: 11),
-            )
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _user.reviewCount.toString(),
-              style: const TextStyle(
-                fontSize: 20,
-                color: Color(0xFFBC6AAB),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const Text(
-              "Reviews",
-              style: TextStyle(fontSize: 11),
-            )
-          ],
         ),
       ],
     );

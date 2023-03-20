@@ -113,7 +113,9 @@ class _MainPageState extends State<MainPage> {
             drawer: Sidebar(
                 user: _user,
                 onUserUpdated: (DetailedUser user) {
-                  _user = user;
+                  setState(() {
+                    _user = user;
+                  });
                 }),
             // IndexedStack keeps the states of each page
             body: IndexedStack(
