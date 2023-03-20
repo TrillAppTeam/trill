@@ -39,9 +39,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void _updateUser() async {
     if (_formKey.currentState!.validate()) {
       final success = await updateCurrUser(
-        bio: _bio,
-        profilePic: "",
         nickname: _nickname,
+        bio: _bio,
       );
 
       if (success) {

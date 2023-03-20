@@ -6,6 +6,7 @@ import 'package:trill/pages/album_details.dart';
 import 'package:trill/pages/profile.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
+import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
 class DetailedReviewTile extends StatefulWidget {
@@ -90,70 +91,74 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
   Widget build(BuildContext context) {
     return ListTile(
       leading: _buildAlbumImage(context),
-      trailing: PopupMenuButton<String>(
-        onSelected: (value) => _handleMenuClick(value),
-        itemBuilder: (context) => [
-          if (widget.isMyReview)
-            PopupMenuItem<String>(
-              value: 'edit',
-              child: Row(
-                children: const [
-                  Icon(
-                    Icons.edit_outlined,
-                    color: Color(0xFFCCCCCC),
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    'Edit',
-                    style: TextStyle(
+      trailing: SizedBox(
+        width: 30,
+        child: PopupMenuButton<String>(
+          onSelected: (value) => _handleMenuClick(value),
+          itemBuilder: (context) => [
+            if (widget.isMyReview)
+              PopupMenuItem<String>(
+                value: 'edit',
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.edit_outlined,
                       color: Color(0xFFCCCCCC),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 5),
+                    Text(
+                      'Edit',
+                      style: TextStyle(
+                        color: Color(0xFFCCCCCC),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          if (widget.isMyReview)
-            PopupMenuItem<String>(
-              value: 'delete',
-              child: Row(
-                children: const [
-                  Icon(
-                    Icons.delete_outline,
-                    color: Color(0xFFAA2222),
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    'Delete',
-                    style: TextStyle(
+            if (widget.isMyReview)
+              PopupMenuItem<String>(
+                value: 'delete',
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.delete_outline,
                       color: Color(0xFFAA2222),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 5),
+                    Text(
+                      'Delete',
+                      style: TextStyle(
+                        color: Color(0xFFAA2222),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          PopupMenuItem<String>(
-            value: 'report',
-            child: Row(
-              children: const [
-                Icon(
-                  Icons.flag_outlined,
-                  color: Color(0xFFAA2222),
+            if (!widget.isMyReview)
+              PopupMenuItem<String>(
+                value: 'report',
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.flag_outlined,
+                      color: Color(0xFFAA2222),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      'Report',
+                      style: TextStyle(
+                        color: Color(0xFFAA2222),
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 5),
-                Text(
-                  'Report',
-                  style: TextStyle(
-                    color: Color(0xFFAA2222),
-                  ),
-                ),
-              ],
-            ),
+              ),
+          ],
+          color: const Color(0xFF1A1B29),
+          icon: const Icon(
+            Icons.more_vert,
+            color: Colors.grey,
           ),
-        ],
-        color: const Color(0xFF1A1B29),
-        icon: const Icon(
-          Icons.more_vert,
-          color: Colors.grey,
         ),
       ),
       title: _buildRatingBar(),
@@ -180,7 +185,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
           context,
           MaterialPageRoute(
             builder: (context) => AlbumDetailsScreen(
-              albumID: widget.review.albumId,
+              albumID: widget.review.albumID,
             ),
           ),
         );
@@ -188,7 +193,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(3),
         child: Image.network(
-          widget.review.images[0].url,
+          widget.review.album.images[0].url,
           width: 60,
           height: 60,
         ),
@@ -229,7 +234,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
       child: Row(
         children: [
           Text(
-            widget.review.albumName,
+            widget.review.album.name,
             style: const TextStyle(
               fontStyle: FontStyle.italic,
               fontWeight: FontWeight.bold,
@@ -237,7 +242,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
               color: Color(0xFFEEEEEE),
             ),
           ),
-          Text(' - ${widget.review.artists[0].name}'),
+          Text(' - ${widget.review.album.artists[0].name}'),
         ],
       ),
     );
@@ -276,7 +281,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
             context,
             MaterialPageRoute(
               builder: (context) => ProfileScreen(
-                username: widget.review.username,
+                username: widget.review.user.username,
               ),
             ),
           );
@@ -284,15 +289,15 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
       },
       child: Row(
         children: [
-          const CircleAvatar(
-            backgroundImage: NetworkImage(
-              'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
-            ),
+          ProfilePic(
+            user: widget.review.user,
             radius: 10,
+            fontSize: 10,
+            borderWidth: 1,
           ),
           const SizedBox(width: 5),
           Text(
-            widget.review.username,
+            widget.review.user.username,
             style: const TextStyle(
               color: Color(0xFF3FBCF4),
               fontWeight: FontWeight.w900,

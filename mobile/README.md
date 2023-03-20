@@ -20,16 +20,16 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
 Test on physical device
 
 API
-- Implement profile pics APIs
-- Change follow APIs to reflect new changes
-- Add listen later APIs once merged
-- Implement missing APIs as they are completed
+- Profile pic API
+- Set default profile picture
+- Add pagination
+- Prevent adding to listen later when reviewed
 
 UI!!
 - Copy web for everything
 - Loading page
-- Default profile picture like web
 - Fix overflowing review tiles
+- Animations for everything (e.g. fading out when something is deleted)
 
 Remember to clean database before demo to avoid crashes lol
 

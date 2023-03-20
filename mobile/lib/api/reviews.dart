@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 
 import 'albums.dart';
@@ -73,7 +74,8 @@ Future<List<Review>?> getAlbumReviews(
 }
 
 /// Get all reviews from a user - returns for current user if not specified
-Future<List<DetailedReview>?> getReviews(String sort, [String? username]) async {
+Future<List<DetailedReview>?> getReviews(String sort,
+    [String? username]) async {
   const String tag = '[getReviews]';
 
   safePrint('$tag username: ${username ?? 'null'}; sort: $sort');
@@ -175,8 +177,7 @@ Future<bool> deleteReview(String albumID) async {
 
 class Review {
   final int reviewID;
-  final String username;
-  final String profilePicture;
+  final User user;
   final String albumID;
   int rating;
   String reviewText;
@@ -187,8 +188,7 @@ class Review {
 
   Review({
     required this.reviewID,
-    required this.username,
-    required this.profilePicture,
+    required this.user,
     required this.albumID,
     required this.rating,
     required this.reviewText,
@@ -201,8 +201,7 @@ class Review {
   factory Review.fromJson(Map<String, dynamic> json) {
     return Review(
       reviewID: json['review_id'],
-      username: json['user']['username'],
-      profilePicture: json['user']['profile_picture'],
+      user: User.fromJson(json['user']),
       albumID: json['album_id'],
       rating: json['rating'],
       reviewText: json['review_text'].trim(),
@@ -215,16 +214,11 @@ class Review {
 }
 
 class DetailedReview extends Review {
-  final String albumName;
-  final String albumId;
-  final String albumReleaseDate;
-  final List<SpotifyArtist> artists;
-  final List<SpotifyImage> images;
+  final SpotifyAlbum album;
 
   DetailedReview({
     required int reviewID,
-    required String username,
-    required String profilePicture,
+    required User user,
     required String albumID,
     required int rating,
     required String reviewText,
@@ -232,29 +226,23 @@ class DetailedReview extends Review {
     required DateTime updatedAt,
     required int likes,
     required bool isLiked,
-    required this.albumName,
-    required this.albumId,
-    required this.albumReleaseDate,
-    required this.artists,
-    required this.images,
+    required this.album,
   }) : super(
-    reviewID: reviewID,
-    username: username,
-    profilePicture: profilePicture,
-    albumID: albumID,
-    rating: rating,
-    reviewText: reviewText,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-    likes: likes,
-    isLiked: isLiked,
-  );
+          reviewID: reviewID,
+          user: user,
+          albumID: albumID,
+          rating: rating,
+          reviewText: reviewText,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          likes: likes,
+          isLiked: isLiked,
+        );
 
   factory DetailedReview.fromJson(Map<String, dynamic> json) {
     return DetailedReview(
       reviewID: json['review_id'],
-      username: json['user']['username'],
-      profilePicture: json['user']['profile_picture'],
+      user: User.fromJson(json['user']),
       albumID: json['album_id'],
       rating: json['rating'],
       reviewText: json['review_text'].trim(),
@@ -262,13 +250,7 @@ class DetailedReview extends Review {
       updatedAt: DateTime.parse(json['updated_at']),
       likes: json['likes'],
       isLiked: json['requestor_liked'],
-      albumName: json['album']['name'],
-      albumId: json['album']['id'],
-      albumReleaseDate: json['album']['release_date'],
-      artists: List<SpotifyArtist>.from(
-          json['album']['artists'].map((x) => SpotifyArtist.fromJson(x))),
-      images: List<SpotifyImage>.from(
-          json['album']['images'].map((x) => SpotifyImage.fromJson(x))),
+      album: SpotifyAlbum.fromJson(json['album']),
     );
   }
 }

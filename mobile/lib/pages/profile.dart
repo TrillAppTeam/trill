@@ -9,6 +9,7 @@ import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/detailed_review_tile.dart';
 import 'package:trill/widgets/follow_button.dart';
 import 'package:trill/widgets/follow_user_button.dart';
+import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/ratings_row.dart';
 
 import 'package:trill/widgets/review_row.dart';
@@ -29,7 +30,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late SharedPreferences _prefs;
-  late PublicUser _user;
+  late DetailedUser _user;
 
   bool _isLoggedIn = false;
   bool _isLoading = false;
@@ -52,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String loggedInUser = _prefs.getString('username') ?? "";
     _isLoggedIn = loggedInUser == widget.username;
 
-    final user = await getPublicUser(widget.username);
+    final user = await getDetailedUser(widget.username);
 
     setState(() {
       _user = user!;
@@ -117,9 +118,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildUserDetails() {
     return Column(
       children: [
-        const CircleAvatar(
-          backgroundImage: AssetImage("images/gerber.jpg"),
-          radius: 40.0,
+        ProfilePic(
+          user: _user,
+          radius: 40,
+          fontSize: 24,
         ),
         Text(
           _user.nickname,

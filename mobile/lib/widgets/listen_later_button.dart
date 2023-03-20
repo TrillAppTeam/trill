@@ -30,16 +30,18 @@ class _ListenLaterButtonState extends State<ListenLaterButton> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        if (_isInListenLater) {   final success = await unListenLater(widget.albumID);
+        if (_isInListenLater) {
+          final success = await deleteListenLater(widget.albumID);
           if (success) {
             setState(() {
               _isInListenLater = false;
             });
           } else {
-            safePrint('Failed to remove album ${widget.albumID} from listen later');
+            safePrint(
+                'Failed to remove album ${widget.albumID} from listen later');
           }
         } else {
-          final success = await ListenLater(widget.albumID);
+          final success = await addListenLater(widget.albumID);
           if (success) {
             setState(() {
               _isInListenLater = true;
