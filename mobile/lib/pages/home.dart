@@ -127,15 +127,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 5),
               _buildPopularAlbums(),
-              /*const SizedBox(height: 20),
-              AlbumsRow(
-                title: 'Popular Albums Among Friends',
-                albums: List<SpotifyAlbum>.from(
-                  json
-                      .decode(Constants.speakNowAlbums)
-                      .map((x) => SpotifyAlbum.fromJson(x)),
-                ),
-              ),*/
               const SizedBox(height: 20),
               HardcodedAlbumsRow(
                   title: "Hello, Grammys", albums: Constants.grammyList),
@@ -175,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // TODO: turn into horizontal listview to scroll
   Widget _buildPopularAlbums() {
     return FutureBuilder<List<SpotifyAlbum>?>(
       future: getMostPopularAlbums(_selectedRange),

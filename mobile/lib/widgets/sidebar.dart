@@ -105,12 +105,12 @@ class _SidebarState extends State<Sidebar> {
                     ),
                     title: const Text('Liked Reviews'),
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LikedReviewsScreen(),
-                        ),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => const LikedReviewsScreen(),
+                      //   ),
+                      // );
                     },
                   ),
                   ListTile(

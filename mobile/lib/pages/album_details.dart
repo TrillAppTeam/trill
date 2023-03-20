@@ -33,17 +33,23 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   late User _loggedInUser;
 
   late TabController _tabController;
+  late ScrollController _scrollController;
+  bool fixedScroll = false;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(_smoothScrollToTop);
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
     _initialFetch();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -78,6 +84,24 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     _fetchAlbumDetails();
   }
 
+  _scrollListener() {
+    if (fixedScroll) {
+      _scrollController.jumpTo(0);
+    }
+  }
+
+  _smoothScrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(microseconds: 300),
+      curve: Curves.ease,
+    );
+
+    setState(() {
+      fixedScroll = _tabController.index == 2;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
@@ -89,47 +113,53 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         appBar: AppBar(),
         body: _isLoading
             ? const LoadingScreen()
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 12),
-                    _buildAlbumDetails(),
-                    const SizedBox(height: 5),
-                    _buildAlbumButtons(),
-                    _buildReviewDetails(),
-                    if (!_album.isReviewed)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 20),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 15),
-                            child: Text(
-                              'Add your review:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          _buildWriteReview(),
-                          const Divider(
-                            color: Colors.grey,
-                            thickness: 2,
-                          ),
-                        ],
-                      ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.75,
-                      child: _buildReviews(),
-                    ),
-                  ],
-                ),
+            : NestedScrollView(
+                controller: _scrollController,
+                headerSliverBuilder: (context, value) {
+                  return [
+                    SliverToBoxAdapter(child: _buildStaticWidgets()),
+                  ];
+                },
+                body: _buildReviews(),
               ),
       ),
+    );
+  }
+
+  Column _buildStaticWidgets() {
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        _buildAlbumDetails(),
+        const SizedBox(height: 5),
+        _buildAlbumButtons(),
+        _buildReviewDetails(),
+        if (!_album.isReviewed)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              const Padding(
+                padding: EdgeInsets.only(left: 15),
+                child: Text(
+                  'Add your review:',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              _buildWriteReview(),
+              const Divider(
+                color: Colors.grey,
+                thickness: 2,
+              ),
+            ],
+          ),
+        const SizedBox(height: 12),
+      ],
     );
   }
 
@@ -330,7 +360,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
 
   Widget _buildReviewList(List<Review> reviews) {
     return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const ClampingScrollPhysics(),
       itemBuilder: (context, index) {
         final review = reviews[index];
         return Column(
