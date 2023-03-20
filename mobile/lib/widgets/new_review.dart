@@ -1,18 +1,16 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
-import 'package:trill/api/reviews.dart';
-import 'package:trill/pages/profile.dart';
-import 'package:trill/widgets/expandable_text.dart';
-import 'package:trill/widgets/like_button.dart';
+import 'package:trill/api/users.dart';
+import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
 class NewReview extends StatefulWidget {
   NewReview({
     Key? key,
+    required this.user,
     required this.onCreate,
   }) : super(key: key);
 
+  final User user;
   final void Function(int, String) onCreate;
 
   @override
@@ -36,10 +34,10 @@ class _NewReviewState extends State<NewReview> {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const CircleAvatar(
-        backgroundImage: NetworkImage(
-          'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
-        ),
+      leading: ProfilePic(
+        user: widget.user,
+        radius: 24,
+        fontSize: 18,
       ),
       title: ReviewRatingBar(
         rating: 0,

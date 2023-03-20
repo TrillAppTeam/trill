@@ -28,8 +28,8 @@ API
 UI!!
 - Copy web for everything
 - Loading page
-- Default profile picture like web
 - Fix overflowing review tiles
+- Animations for everything (e.g. fading out when something is deleted)
 
 Remember to clean database before demo to avoid crashes lol
 

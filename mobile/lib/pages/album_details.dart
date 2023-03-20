@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/api/reviews.dart';
+import 'package:trill/api/users.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/favorite_button.dart';
 import 'package:trill/widgets/listen_later_button.dart';
@@ -30,7 +30,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   String _selectedSort = 'popular';
   bool _isLoading = true;
 
-  late String _loggedInUser = "";
+  late User _loggedInUser;
 
   late TabController _tabController;
 
@@ -38,8 +38,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _fetchAlbumDetails();
-    _getLoggedInUser();
+    _initialFetch();
   }
 
   @override
@@ -65,9 +64,18 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     }
   }
 
-  void _getLoggedInUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    _loggedInUser = prefs.getString('username') ?? "";
+  void _initialFetch() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final loggedInUser = await getDetailedUser();
+    if (loggedInUser != null) {
+      setState(() {
+        _loggedInUser = loggedInUser;
+      });
+    }
+    _fetchAlbumDetails();
   }
 
   @override
@@ -300,21 +308,23 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   }
 
   Widget _buildWriteReview() {
-    return NewReview(onCreate: (rating, reviewText) async {
-      final success =
-          await createOrUpdateReview(widget.albumID, rating, reviewText);
-      final album = await getSpotifyAlbum(widget.albumID);
-      if (success) {
-        setState(() {
-          _buildReviews();
-          if (album != null) {
+    return NewReview(
+        user: _loggedInUser,
+        onCreate: (rating, reviewText) async {
+          final success =
+              await createOrUpdateReview(widget.albumID, rating, reviewText);
+          final album = await getSpotifyAlbum(widget.albumID);
+          if (success) {
             setState(() {
-              _album = album;
+              _buildReviews();
+              if (album != null) {
+                setState(() {
+                  _album = album;
+                });
+              }
             });
           }
         });
-      }
-    });
   }
 
   Widget _buildReviewList(List<Review> reviews) {
@@ -336,8 +346,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   review.isLiked = isLiked;
                 });
               },
-              isMyReview: _loggedInUser == review.user.username,
-              onUpdate: _loggedInUser == review.user.username
+              isMyReview: _loggedInUser.username == review.user.username,
+              onUpdate: _loggedInUser.username == review.user.username
                   ? (rating, reviewText) async {
                       final success = await createOrUpdateReview(
                           widget.albumID, rating, reviewText);
