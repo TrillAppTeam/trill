@@ -76,8 +76,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   children: [
                     _buildUserInfo(),
+                    const Divider(
+                      color: Colors.grey,
+                      height: 2,
+                      thickness: 1,
+                    ),
+                    const SizedBox(height: 15),
                     Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: FutureBuilder<List<SpotifyAlbum>?>(
                         future: getFavoriteAlbums(_user.username),
                         builder: (context, snapshot) {
@@ -93,13 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 15),
-                    const Divider(
-                      color: Colors.grey,
-                      height: 2,
-                      thickness: 2,
-                    ),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     _buildReviewDetails(),
                     _buildReviews(),
                   ],
@@ -131,6 +131,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildUserDetails(),
+              const SizedBox(height: 10),
               !_isLoggedIn
                   ? FollowUserButton(
                       username: _user.username,

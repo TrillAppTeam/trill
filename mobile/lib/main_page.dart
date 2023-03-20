@@ -19,6 +19,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
+  String _title = 'Home';
   late List<Widget> _screens;
 
   late SharedPreferences _prefs;
@@ -109,7 +110,9 @@ class _MainPageState extends State<MainPage> {
           )
         : Scaffold(
             backgroundColor: const Color(0xFF1A1B29),
-            appBar: AppBar(),
+            appBar: AppBar(
+              title: Text(_title),
+            ),
             drawer: Sidebar(
                 user: _user,
                 onUserUpdated: (DetailedUser user) {
@@ -144,6 +147,20 @@ class _MainPageState extends State<MainPage> {
                   setState(() {
                     _currentIndex = index;
                   });
+                  switch (index) {
+                    case 0:
+                      _title = 'Home';
+                      break;
+                    case 1:
+                      _title = 'Search';
+                      break;
+                    case 2:
+                      _title = 'Friends Feed';
+                      break;
+                    case 3:
+                      _title = 'My Profile';
+                      break;
+                  }
                 },
                 items: const [
                   BottomNavigationBarItem(
