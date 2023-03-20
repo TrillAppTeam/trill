@@ -5,6 +5,7 @@ import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
+import 'package:trill/pages/edit_profile.dart';
 import 'package:trill/pages/lists/follows.dart';
 import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/detailed_review_tile.dart';
@@ -115,10 +116,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           Row(
             children: [
-              ProfilePic(
-                user: _user,
-                radius: 40,
-                fontSize: 24,
+              InkWell(
+                onTap: () {
+                  if (_isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(
+                          initialUser: _user,
+                          onUserChanged: () async {
+                            await _fetchUserDetails();
+                          },
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: ProfilePic(
+                  user: _user,
+                  radius: 40,
+                  fontSize: 24,
+                ),
               ),
               const SizedBox(width: 15),
               _buildUserStats(),

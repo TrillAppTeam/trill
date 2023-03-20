@@ -29,8 +29,14 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFF1A1B29),
         fontFamily: 'Source Sans Pro',
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF374151),
+        appBarTheme: AppBarTheme(
+          backgroundColor: const Color(0xFF374151),
+          titleTextStyle: TextStyle(
+            color: Colors.grey[200],
+            fontSize: 20,
+            fontFamily: 'Source Sans Pro',
+            fontWeight: FontWeight.bold,
+          ),
         ),
         textTheme: const TextTheme(
           displayLarge: TextStyle(

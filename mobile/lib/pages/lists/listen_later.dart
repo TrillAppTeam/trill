@@ -52,19 +52,20 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
       body: _isLoading
           ? const LoadingScreen()
           : _listenLaterAlbums.isEmpty
-              ? Row(
-                  children: const [
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'No listen later albums. Add some albums to listen later to see them here!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontStyle: FontStyle.italic, fontSize: 36),
-                        ),
-                      ),
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 32,
+                    horizontal: 12,
+                  ),
+                  child: Text(
+                    'No listen later albums. Add some albums to listen later to see them here!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 18,
+                      color: Colors.grey[400],
                     ),
-                  ],
+                  ),
                 )
               : RefreshIndicator(
                   onRefresh: _fetchListenLater,

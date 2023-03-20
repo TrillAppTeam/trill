@@ -51,10 +51,26 @@ class _SidebarState extends State<Sidebar> {
             const SizedBox(height: 75),
             Container(
               padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
-              child: ProfilePic(
-                user: _user,
-                radius: 48,
-                fontSize: 32,
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EditProfileScreen(
+                        initialUser: _user,
+                        onUserChanged: () async {
+                          await _fetchUserDetails();
+                          widget.onUserUpdated(_user);
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: ProfilePic(
+                  user: _user,
+                  radius: 48,
+                  fontSize: 32,
+                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -78,67 +94,79 @@ class _SidebarState extends State<Sidebar> {
             ),
             const SizedBox(height: 20),
             _buildUserStats(),
-            const SizedBox(height: 30),
-            ListTile(
-              leading:
-                  const Icon(Icons.rate_review_outlined, color: Colors.white),
-              title: const Text('Liked Reviews'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LikedReviewsScreen(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.format_list_bulleted_outlined,
-                  color: Colors.white),
-              title: const Text('Listen Later'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const ListenLaterScreen(),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 50),
-            ListTile(
-              leading: const Icon(Icons.edit_outlined, color: Colors.white),
-              title: const Text('Edit Profile'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EditProfileScreen(
-                      initialUser: _user,
-                      onUserChanged: () async {
-                        await _fetchUserDetails();
-                        widget.onUserUpdated(_user);
-                      },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(15, 30, 0, 0),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(
+                      Icons.favorite_outline,
+                      color: Colors.white,
                     ),
+                    title: const Text('Liked Reviews'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LikedReviewsScreen(),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout_outlined, color: Colors.white),
-              title: const Text('Log Out'),
-              onTap: () {
-                Amplify.Auth.signOut().then(
-                  (_) {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Login(),
-                      ),
-                    );
-                  },
-                );
-              },
+                  ListTile(
+                    leading: const Icon(
+                      Icons.bookmark_border,
+                      color: Colors.white,
+                    ),
+                    title: const Text('Listen Later'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ListenLaterScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 50),
+                  ListTile(
+                    leading:
+                        const Icon(Icons.edit_outlined, color: Colors.white),
+                    title: const Text('Edit Profile'),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => EditProfileScreen(
+                            initialUser: _user,
+                            onUserChanged: () async {
+                              await _fetchUserDetails();
+                              widget.onUserUpdated(_user);
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  ListTile(
+                    leading:
+                        const Icon(Icons.logout_outlined, color: Colors.white),
+                    title: const Text('Sign Out'),
+                    onTap: () {
+                      Amplify.Auth.signOut().then(
+                        (_) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const Login(),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
