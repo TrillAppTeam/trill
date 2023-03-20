@@ -29,6 +29,9 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         scaffoldBackgroundColor: const Color(0xFF1A1B29),
         fontFamily: 'Source Sans Pro',
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF374151),
+        ),
         textTheme: const TextTheme(
           displayLarge: TextStyle(
             debugLabel: 'whiteMountainView displayLarge',
