@@ -17,7 +17,7 @@ function AlbumWithStars (props) {
 
     return(
         <div>
-            <Album album={{...album, size: "100"}}/> 
+            <Album album={{...album, size: "150"}}/> 
 
             <div className="flex flex-row justify-between text-sm pt-1 text-gray-400">
                 <Stars rating={rating} />
