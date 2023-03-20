@@ -1,12 +1,6 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
-import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/constants.dart';
-import 'package:trill/pages/loading_screen.dart';
-import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/hardcoded_albums_row.dart';
 
 import '../widgets/news_card.dart';
@@ -131,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 5),
+              const SizedBox(height: 5),
               _buildPopularAlbums(),
               /*const SizedBox(height: 20),
               AlbumsRow(
@@ -186,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
       future: getMostPopularAlbums(_selectedRange),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
-            (_albums == null || _albums!.isEmpty)) {
+            _albums.isEmpty) {
           return _buildAlbumRowWithLoading();
         }
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {

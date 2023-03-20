@@ -1,4 +1,3 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/pages/loading_screen.dart';
@@ -6,7 +5,7 @@ import '../../api/listen_later.dart';
 import '../../widgets/album_row.dart';
 import '../album_details.dart';
 
-// todo: swipe or click edit button to delete listen later
+// TODO: swipe or click edit button to delete listen later
 
 class ListenLaterScreen extends StatefulWidget {
   const ListenLaterScreen({super.key});
@@ -52,7 +51,7 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
       ),
       body: _isLoading
           ? const LoadingScreen()
-          : (_listenLaterAlbums == null || _listenLaterAlbums.isEmpty)
+          : _listenLaterAlbums.isEmpty
               ? Row(
                   children: const [
                     Expanded(

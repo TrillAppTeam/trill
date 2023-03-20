@@ -10,10 +10,7 @@ import 'package:trill/widgets/detailed_review_tile.dart';
 import 'package:trill/widgets/follow_button.dart';
 import 'package:trill/widgets/follow_user_button.dart';
 import 'package:trill/widgets/profile_pic.dart';
-import 'package:trill/widgets/ratings_row.dart';
 
-import 'package:trill/widgets/review_row.dart';
-import 'package:trill/widgets/review_tile.dart';
 import 'loading_screen.dart';
 
 class ProfileScreen extends StatefulWidget {

@@ -35,7 +35,6 @@ class _LikeButtonState extends State<LikeButton> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // todo: implement like functionality
         IconButton(
           constraints: const BoxConstraints(),
           padding: EdgeInsets.zero,

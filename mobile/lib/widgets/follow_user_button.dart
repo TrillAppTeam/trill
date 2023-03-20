@@ -2,8 +2,6 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
 
-import '../api/follows.dart';
-
 class FollowUserButton extends StatefulWidget {
   final String username;
   final bool isFollowing;

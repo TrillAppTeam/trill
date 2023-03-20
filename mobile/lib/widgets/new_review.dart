@@ -4,7 +4,7 @@ import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
 class NewReview extends StatefulWidget {
-  NewReview({
+  const NewReview({
     Key? key,
     required this.user,
     required this.onCreate,

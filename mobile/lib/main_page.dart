@@ -102,7 +102,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    // todo: set trill loading screen if user info not set
     return !_userInfoSet
         ? const Scaffold(
             backgroundColor: Color(0xFF1A1B29),

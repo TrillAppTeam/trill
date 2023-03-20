@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:trill/api/likes.dart';
 import '../../api/reviews.dart';
 import '../../widgets/detailed_review_tile.dart';
 
