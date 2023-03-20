@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/constants.dart';
@@ -56,33 +58,72 @@ Future<DetailedUser?> getDetailedUser([String? username]) async {
   }
 }
 
-// todo: update to new api
+// idk what file type we need so we can change it
 Future<bool> updateCurrUser(
-    {String? bio, String? profilePic, String? nickname}) async {
+    {String? nickname, String? bio, File? profilePic}) async {
   const String tag = '[updateCurrUser]';
 
   safePrint(
-      '$tag bio: ${bio ?? 'null'}; profilePic: ${profilePic ?? 'null'}; nickname: ${nickname ?? 'null'}');
+      '$tag bio: ${bio ?? 'null'}; profilePic: ${profilePic != null ? profilePic.path : 'null'}; nickname: ${nickname ?? 'null'}');
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token') ?? "";
 
-  final response = await http.put(
+  final request = http.MultipartRequest(
+    'PUT',
     Uri.parse('${Constants.baseURI}/users'),
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-    body: jsonEncode(<String, dynamic>{
-      if (bio != null) 'bio': bio,
-      if (profilePic != null) 'profile_picture': profilePic,
-      if (nickname != null) 'nickname': nickname,
-    }),
   );
 
-  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
+  request.headers.addAll({
+    'Authorization': 'Bearer $token',
+  });
+
+  if (nickname != null) {
+    request.fields['nickname'] = nickname;
+  }
+  if (bio != null) {
+    request.fields['bio'] = bio;
+  }
+  // will prob need to change constructor here; not tested
+  if (profilePic != null) {
+    request.files.add(
+        http.MultipartFile.fromBytes('file', await profilePic.readAsBytes()));
+  }
+
+  final response = await request.send();
+  final body = await response.stream.transform(utf8.decoder).join();
+
+  safePrint('$tag Status: ${response.statusCode}; Body: $body');
 
   return response.statusCode == 200;
 }
+
+// Future<bool> updateCurrUser(
+//     {String? bio, String? profilePic, String? nickname}) async {
+//   const String tag = '[updateCurrUser]';
+
+//   safePrint(
+//       '$tag bio: ${bio ?? 'null'}; profilePic: ${profilePic ?? 'null'}; nickname: ${nickname ?? 'null'}');
+
+//   final SharedPreferences prefs = await SharedPreferences.getInstance();
+//   String token = prefs.getString('token') ?? "";
+
+//   final response = await http.put(
+//     Uri.parse('${Constants.baseURI}/users'),
+//     headers: {
+//       'Authorization': 'Bearer $token',
+//     },
+//     body: jsonEncode(<String, dynamic>{
+//       if (bio != null) 'bio': bio,
+//       if (profilePic != null) 'profile_picture': profilePic,
+//       if (nickname != null) 'nickname': nickname,
+//     }),
+//   );
+
+//   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
+
+//   return response.statusCode == 200;
+// }
 
 // this is dumb lol
 String validateProfilePicURL(String profilePicURL) {
