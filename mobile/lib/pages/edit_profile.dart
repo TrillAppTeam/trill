@@ -23,6 +23,7 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  final picker = ImagePicker();
   String _bio = "";
   String _nickname = "";
   XFile? _profilePic;
@@ -116,8 +117,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 const SizedBox(height: 50),
                 CircleAvatar(
                   backgroundImage: _profilePic != null
-                  // TODO: Change null image (will never be used but Dart demands it)
-                      ? FileImage(File(_profilePic?.path ?? "images/DierksBentleyTest.jpg"))
+                      // TODO: Change null image (will never be used but Dart demands it)
+                      ? FileImage(File(
+                          _profilePic?.path ?? "images/DierksBentleyTest.jpg"))
                       : NetworkImage(widget.initialProfilePic) as ImageProvider,
                   radius: 80.0,
                 ),
@@ -140,7 +142,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Future<void> _selectProfilePic() async {
-    final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
