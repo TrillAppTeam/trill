@@ -9,6 +9,7 @@ import 'package:trill/pages/lists/liked_reviews.dart';
 import 'package:trill/pages/lists/listen_later.dart';
 import 'package:trill/pages/login.dart';
 import 'package:trill/widgets/follow_button.dart';
+import 'package:trill/widgets/profile_pic.dart';
 
 import '../api/follows.dart';
 
@@ -53,35 +54,10 @@ class _SidebarState extends State<Sidebar> {
             const SizedBox(height: 75),
             Container(
               padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color(0xFF3FBCF4),
-                    width: 2,
-                  ),
-                ),
-                child: CircleAvatar(
-                  radius: 48,
-                  backgroundColor: const Color(0xFF111318),
-                  child: _user.profilePicURL.isNotEmpty
-                      ? CircleAvatar(
-                          radius: 48,
-                          backgroundColor: const Color(0xFF111318),
-                          backgroundImage: NetworkImage(
-                            _user.profilePicURL,
-                          ),
-                        )
-                      : Center(
-                          child: Text(
-                            _user.username.substring(0, 1).toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 32,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                ),
+              child: ProfilePic(
+                user: _user,
+                radius: 48,
+                fontSize: 32,
               ),
             ),
             const SizedBox(height: 10),

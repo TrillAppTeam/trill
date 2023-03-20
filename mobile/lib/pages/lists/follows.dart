@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trill/api/follows.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
+import 'package:trill/widgets/profile_pic.dart';
 import '../../widgets/follow_user_button.dart';
 import '../profile.dart';
 
@@ -100,39 +101,7 @@ class _FollowsScreenState extends State<FollowsScreen>
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text('@${_userResults[index].username}'),
-                      leading: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: const Color(0xFF3FBCF4),
-                            width: 2,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: 32,
-                          backgroundColor: const Color(0xFF111318),
-                          child: _userResults[index].profilePicURL.isNotEmpty
-                              ? CircleAvatar(
-                                  radius: 32,
-                                  backgroundColor: const Color(0xFF111318),
-                                  backgroundImage: NetworkImage(
-                                    _userResults[index].profilePicURL,
-                                  ),
-                                )
-                              : Center(
-                                  child: Text(
-                                    _userResults[index]
-                                        .username
-                                        .substring(0, 1)
-                                        .toUpperCase(),
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                        ),
-                      ),
+                      leading: ProfilePic(user: _userResults[index]),
                       trailing: _tabController!.index == 0
                           ? FollowUserButton(
                               username: _userResults[index].username,

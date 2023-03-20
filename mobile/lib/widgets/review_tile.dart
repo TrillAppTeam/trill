@@ -5,6 +5,7 @@ import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/profile.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
+import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
 class ReviewTile extends StatefulWidget {
@@ -185,35 +186,10 @@ class _ReviewTileState extends State<ReviewTile> {
           );
         }
       },
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: const Color(0xFF3FBCF4),
-            width: 2,
-          ),
-        ),
-        child: CircleAvatar(
-          radius: 24,
-          backgroundColor: const Color(0xFF111318),
-          child: widget.review.user.profilePicURL.isNotEmpty
-              ? CircleAvatar(
-                  radius: 24,
-                  backgroundColor: const Color(0xFF111318),
-                  backgroundImage: NetworkImage(
-                    widget.review.user.profilePicURL,
-                  ),
-                )
-              : Center(
-                  child: Text(
-                    widget.review.user.username.substring(0, 1).toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-        ),
+      child: ProfilePic(
+        user: widget.review.user,
+        radius: 24,
+        fontSize: 18,
       ),
     );
   }

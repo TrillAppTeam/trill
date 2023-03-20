@@ -9,6 +9,7 @@ import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/detailed_review_tile.dart';
 import 'package:trill/widgets/follow_button.dart';
 import 'package:trill/widgets/follow_user_button.dart';
+import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/ratings_row.dart';
 
 import 'package:trill/widgets/review_row.dart';
@@ -117,35 +118,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildUserDetails() {
     return Column(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: const Color(0xFF3FBCF4),
-              width: 2,
-            ),
-          ),
-          child: CircleAvatar(
-            radius: 40,
-            backgroundColor: const Color(0xFF111318),
-            child: _user.profilePicURL.isNotEmpty
-                ? CircleAvatar(
-                    radius: 40,
-                    backgroundColor: const Color(0xFF111318),
-                    backgroundImage: NetworkImage(
-                      _user.profilePicURL,
-                    ),
-                  )
-                : Center(
-                    child: Text(
-                      _user.username.substring(0, 1).toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-          ),
+        ProfilePic(
+          user: _user,
+          radius: 40,
+          fontSize: 24,
         ),
         Text(
           _user.nickname,

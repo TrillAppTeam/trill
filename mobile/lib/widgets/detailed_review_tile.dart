@@ -6,6 +6,7 @@ import 'package:trill/pages/album_details.dart';
 import 'package:trill/pages/profile.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
+import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
 class DetailedReviewTile extends StatefulWidget {
@@ -285,37 +286,11 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
       },
       child: Row(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFF3FBCF4),
-                width: 1,
-              ),
-            ),
-            child: CircleAvatar(
-              radius: 10,
-              backgroundColor: const Color(0xFF111318),
-              child: widget.review.user.profilePicURL.isNotEmpty
-                  ? CircleAvatar(
-                      radius: 10,
-                      backgroundColor: const Color(0xFF111318),
-                      backgroundImage: NetworkImage(
-                        widget.review.user.profilePicURL,
-                      ),
-                    )
-                  : Center(
-                      child: Text(
-                        widget.review.user.username
-                            .substring(0, 1)
-                            .toUpperCase(),
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-            ),
+          ProfilePic(
+            user: widget.review.user,
+            radius: 10,
+            fontSize: 10,
+            borderWidth: 1,
           ),
           const SizedBox(width: 5),
           Text(

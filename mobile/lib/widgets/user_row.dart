@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
+import 'package:trill/widgets/profile_pic.dart';
 
 class UserRow extends StatelessWidget {
   const UserRow({
@@ -16,36 +17,7 @@ class UserRow extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: const Color(0xFF3FBCF4),
-                width: 2,
-              ),
-            ),
-            child: CircleAvatar(
-              radius: 32,
-              backgroundColor: const Color(0xFF111318),
-              child: _user.profilePicURL.isNotEmpty
-                  ? CircleAvatar(
-                      radius: 32,
-                      backgroundColor: const Color(0xFF111318),
-                      backgroundImage: NetworkImage(
-                        _user.profilePicURL,
-                      ),
-                    )
-                  : Center(
-                      child: Text(
-                        _user.username.substring(0, 1).toUpperCase(),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-            ),
-          ),
+          ProfilePic(user: _user),
           const SizedBox(width: 16),
           Flexible(
             child: Column(
