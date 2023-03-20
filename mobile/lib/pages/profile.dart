@@ -1,4 +1,3 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
@@ -83,13 +82,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(height: 15),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: FutureBuilder<List<SpotifyAlbum>?>(
                         future: getFavoriteAlbums(_user.username),
                         builder: (context, snapshot) {
                           return AlbumsRow(
                             title: _isLoggedIn
-                                ? 'Your Favorite Albums'
+                                ? 'My Favorite Albums'
                                 : '${_user.nickname}\'s Favorite Albums',
                             albums: snapshot.hasData ? snapshot.data! : [],
                             emptyText: _isLoggedIn
@@ -241,9 +240,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Reviews',
-                style: TextStyle(
+              Text(
+                _isLoggedIn ? 'My Reviews' : '${_user.nickname}\'s Reviews',
+                style: const TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
                 ),

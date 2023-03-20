@@ -21,13 +21,15 @@ Test on physical device
 
 API
 - Profile pic API
+  - Need to redo edit profile page first
 - Add pagination
-- Prevent adding to listen later when reviewed
+  - Prob stretch goal tbh
 
 UI!!
 - Copy web for everything
 - Loading page
 - Fix overflowing review tiles
+- Dropdown UIs
 - Animations for everything (e.g. fading out when something is deleted, swipe to delete listen later)
 
 Bugs:
