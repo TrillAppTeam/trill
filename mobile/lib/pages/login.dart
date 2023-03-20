@@ -24,7 +24,9 @@ class _LoginState extends State<Login> {
 
   void _logOut() async {
     try {
-      await Amplify.Auth.signOut();
+      await Amplify.Auth.signOut(
+        options: const SignOutOptions(globalSignOut: true),
+      );
     } catch (e) {
       safePrint(e);
     }

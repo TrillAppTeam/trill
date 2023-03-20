@@ -153,7 +153,11 @@ class _SidebarState extends State<Sidebar> {
                         const Icon(Icons.logout_outlined, color: Colors.white),
                     title: const Text('Sign Out'),
                     onTap: () {
-                      Amplify.Auth.signOut().then(
+                      // TODO: Remove global sign out here and in sidebar signout
+                      //  if hosted UI is removed from app
+                      Amplify.Auth.signOut(
+                        options: const SignOutOptions(globalSignOut: true),
+                      ).then(
                         (_) {
                           Navigator.pushReplacement(
                             context,
