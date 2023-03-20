@@ -61,15 +61,16 @@ class _FollowUserButtonState extends State<FollowUserButton> {
         width: 80,
         height: 28,
         decoration: BoxDecoration(
-          color: _isFollowing ? Colors.red : Colors.green,
-          borderRadius: BorderRadius.circular(30.0),
+          color:
+              _isFollowing ? const Color(0xFF3FBCF4) : const Color(0xFF374151),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Center(
           child: Text(
-            _isFollowing ? 'Unfollow' : 'Follow',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
+            _isFollowing ? 'UNFOLLOW' : 'FOLLOW',
+            style: TextStyle(
+              color: _isFollowing ? Colors.black : Colors.white,
+              fontWeight: FontWeight.w900,
               fontSize: 12.0,
             ),
           ),

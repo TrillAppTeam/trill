@@ -6,6 +6,7 @@ import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
+import 'package:trill/pages/lists/follows.dart';
 import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/detailed_review_tile.dart';
 import 'package:trill/widgets/edit_profile_button.dart';
@@ -110,10 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Padding _buildUserInfo() {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 30,
-        vertical: 15,
-      ),
+      padding: const EdgeInsets.fromLTRB(30, 15, 15, 15),
       child: Column(
         children: [
           Row(
@@ -123,13 +121,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 radius: 40,
                 fontSize: 24,
               ),
-              const SizedBox(width: 30),
+              const SizedBox(width: 15),
               _buildUserStats(),
             ],
           ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildUserDetails(),
               !_isLoggedIn
@@ -152,23 +151,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildUserDetails() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           _user.nickname,
           style: const TextStyle(
-            color: Colors.blue,
+            color: Colors.white,
             fontSize: 20,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w900,
           ),
         ),
-        Text('@${_user.username}'),
+        const SizedBox(height: 5),
+        Text(
+          '@${_user.username}',
+          style: TextStyle(
+            color: Colors.grey[400],
+            fontStyle: FontStyle.italic,
+          ),
+        ),
         if (_user.bio.isNotEmpty)
           Column(
             children: [
-              const SizedBox(height: 5),
+              const SizedBox(height: 10),
               Text(
                 _user.bio,
-                style: const TextStyle(fontSize: 12),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[500],
+                ),
               ),
             ],
           ),
@@ -177,24 +187,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildUserStats() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FollowButton(
-          user: _user,
-          followType: FollowType.following,
-        ),
-        SizedBox(
-          width: (_isLoggedIn ? 30 : 20),
-        ),
-        FollowButton(
-          user: _user,
-          followType: FollowType.follower,
-        ),
-        SizedBox(
-          width: (_isLoggedIn ? 0 : 20),
-        ),
-      ],
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          UserStatButton(
+            name: 'Albums',
+            stat: _user.reviewCount,
+            onTap: () {},
+          ),
+          UserStatButton(
+            name: 'Following',
+            stat: _user.following.length,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FollowsScreen(
+                    username: _user.username,
+                    followType: FollowType.following,
+                  ),
+                ),
+              );
+            },
+          ),
+          UserStatButton(
+            name: 'Followers',
+            stat: _user.followers.length,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FollowsScreen(
+                    username: _user.username,
+                    followType: FollowType.follower,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 

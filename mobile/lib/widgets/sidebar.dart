@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 import 'package:trill/pages/edit_profile.dart';
+import 'package:trill/pages/lists/follows.dart';
 import 'package:trill/pages/lists/liked_reviews.dart';
 import 'package:trill/pages/lists/listen_later.dart';
 import 'package:trill/pages/login.dart';
@@ -76,21 +77,7 @@ class _SidebarState extends State<Sidebar> {
               ],
             ),
             const SizedBox(height: 20),
-            Row(
-              children: [
-                const Spacer(),
-                FollowButton(
-                  user: _user,
-                  followType: FollowType.following,
-                ),
-                const Spacer(flex: 2),
-                FollowButton(
-                  user: _user,
-                  followType: FollowType.follower,
-                ),
-                const Spacer(),
-              ],
-            ),
+            _buildUserStats(),
             const SizedBox(height: 30),
             ListTile(
               leading:
@@ -156,6 +143,49 @@ class _SidebarState extends State<Sidebar> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildUserStats() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        UserStatButton(
+          name: 'Albums',
+          stat: _user.reviewCount,
+          onTap: () {},
+        ),
+        UserStatButton(
+          name: 'Following',
+          stat: _user.following.length,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FollowsScreen(
+                  username: _user.username,
+                  followType: FollowType.following,
+                ),
+              ),
+            );
+          },
+        ),
+        UserStatButton(
+          name: 'Followers',
+          stat: _user.followers.length,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FollowsScreen(
+                  username: _user.username,
+                  followType: FollowType.follower,
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

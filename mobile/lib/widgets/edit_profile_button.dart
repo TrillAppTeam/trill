@@ -34,18 +34,18 @@ class _EditProfileButtonState extends State<EditProfileButton> {
         );
       },
       child: Container(
-        width: 80,
+        width: 100,
         height: 28,
         decoration: BoxDecoration(
           color: const Color(0xFF374151),
-          borderRadius: BorderRadius.circular(30.0),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: const Center(
           child: Text(
-            'Edit Profile',
+            'EDIT PROFILE',
             style: TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w900,
               fontSize: 12.0,
             ),
           ),

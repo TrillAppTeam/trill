@@ -1,59 +1,57 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:trill/api/users.dart';
-import 'package:trill/api/follows.dart';
-import 'package:trill/constants.dart';
-import 'package:trill/pages/lists/follows.dart';
 
-class FollowButton extends StatefulWidget {
-  final DetailedUser user;
-  final FollowType followType;
+class UserStatButton extends StatelessWidget {
+  final String name;
+  final int stat;
+  final Function onTap;
 
-  const FollowButton({
+  const UserStatButton({
     super.key,
-    required this.user,
-    required this.followType,
+    required this.name,
+    required this.stat,
+    required this.onTap,
   });
 
-  @override
-  State<FollowButton> createState() => _FollowButtonState();
-}
-
-class _FollowButtonState extends State<FollowButton> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FollowsScreen(
-              username: widget.user.username,
-              followType: widget.followType,
-            ),
-          ),
-        );
+        onTap();
       },
       child: Container(
-        padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           border: Border.all(
-            color: const Color(0xFFBC6AAB),
-            width: 1,
+            color: const Color(0xFF374151),
+            width: 2,
           ),
           borderRadius: const BorderRadius.all(
-            Radius.circular(30),
+            Radius.circular(10),
           ),
         ),
-        child: Center(
-          child: Text(
-            widget.followType == FollowType.following
-                ? 'Following: ${widget.user.following.length}'
-                : 'Followers: ${widget.user.followers.length}',
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+        child: SizedBox(
+          height: 70,
+          width: 70,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  stat.toString(),
+                  style: const TextStyle(
+                    color: Color(0xFF3FBCF4),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  name,
+                  style: TextStyle(
+                    color: Colors.grey[100],
+                    fontSize: 13,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
