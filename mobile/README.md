@@ -22,8 +22,6 @@ Test on physical device
 API
 - Profile pic API
   - Need to redo edit profile page first
-- Add pagination
-  - Prob stretch goal tbh
 
 UI!!
 - Copy web for everything
@@ -39,3 +37,4 @@ UI!!
 - Link to Spotify album url and open up album in Spotify app
   - Web has this but it's much hard/maybe impossible on mobile
 - Easier way to delete listen later and favorite albums
+- Add pagination

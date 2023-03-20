@@ -1,5 +1,6 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/album_details.dart';
@@ -231,18 +232,42 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
           ),
         );
       },
-      child: Row(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            widget.review.album.name,
-            style: const TextStyle(
-              fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-              color: Color(0xFFEEEEEE),
+          Flexible(
+            fit: FlexFit.loose,
+            child: Text(
+              widget.review.album.name,
+              style: const TextStyle(
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Color(0xFFEEEEEE),
+              ),
             ),
           ),
-          Text(' - ${widget.review.album.artists[0].name}'),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              Text(
+                widget.review.album.artists
+                    .map((artist) => artist.name)
+                    .join(", "),
+                style: const TextStyle(
+                  color: Color(0xFFCCCCCC),
+                ),
+              ),
+              const SizedBox(width: 5),
+              Text(
+                DateFormat('yyyy').format(widget.review.album.releaseDate),
+                style: const TextStyle(
+                  color: Color(0xFF999999),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
