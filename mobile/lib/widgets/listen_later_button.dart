@@ -6,11 +6,13 @@ import '../api/listen_later.dart';
 class ListenLaterButton extends StatefulWidget {
   final String albumID;
   final bool isInListenLater;
+  final bool isReviewed;
 
   const ListenLaterButton({
     super.key,
     required this.albumID,
     required this.isInListenLater,
+    required this.isReviewed,
   });
 
   @override
@@ -28,6 +30,29 @@ class _ListenLaterButtonState extends State<ListenLaterButton> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isReviewed) {
+      return Container(
+        width: 180,
+        height: 30,
+        decoration: BoxDecoration(
+          color: const Color(0xFF585B79),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: Center(
+            child: Text(
+              'ALREADY REVIEWED',
+              style: TextStyle(
+                color: Colors.grey[400],
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
     return InkWell(
       onTap: () async {
         if (_isInListenLater) {

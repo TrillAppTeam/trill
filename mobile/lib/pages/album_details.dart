@@ -229,6 +229,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         ListenLaterButton(
           albumID: widget.albumID,
           isInListenLater: _album.inListenLater,
+          isReviewed: _album.isReviewed,
         ),
       ],
     );

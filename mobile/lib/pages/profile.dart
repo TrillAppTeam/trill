@@ -129,11 +129,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         Text('@${_user.username}'),
-        const SizedBox(height: 5),
-        Text(
-          _user.bio,
-          style: const TextStyle(fontSize: 12),
-        ),
+        if (_user.bio.isNotEmpty)
+          Column(
+            children: [
+              const SizedBox(height: 5),
+              Text(
+                _user.bio,
+                style: const TextStyle(fontSize: 12),
+              ),
+            ],
+          ),
       ],
     );
   }
