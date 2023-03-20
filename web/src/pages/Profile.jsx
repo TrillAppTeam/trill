@@ -36,7 +36,7 @@ function Profile() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refetchFollowing(); refetchFollowers();}});
+    }, {onSuccess: () => {setIsFollowing(true); refetchFollowing(); refetchFollowers();}});
 
     const unfollow = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, 
@@ -47,18 +47,11 @@ function Profile() {
             .catch((err) => {
                 console.log(err);
             })
-    }, {onSuccess: () => {refetchFollowing(); refetchFollowers();}});
+    }, {onSuccess: () => {setIsFollowing(false); refetchFollowing(); refetchFollowers();}});
 
     useEffect(() => {
-        followers?.data?.map((follower) => {
-            if (follower.username.includes(sessionStorage.getItem('username'))) {
-                setIsFollowing(true);
-            } else {
-                setIsFollowing(false);
-            }
-        });
-
-    }, [followers?.data]);
+        setIsFollowing(userData?.data.requestor_follows);
+    }, [userData?.data]);
     
     const handleFollow = () => {
         follow.mutate();
