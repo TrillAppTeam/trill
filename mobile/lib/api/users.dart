@@ -84,6 +84,13 @@ Future<bool> updateCurrUser(
   return response.statusCode == 200;
 }
 
+// this is dumb lol
+String validateProfilePicURL(String profilePicURL) {
+  return profilePicURL.startsWith('https://trill-content.s3.amazonaws.com')
+      ? profilePicURL
+      : "";
+}
+
 /// Used for search results
 class User {
   final String username;
@@ -103,7 +110,7 @@ class User {
       username: json['username'],
       nickname: json['nickname'],
       bio: json['bio'],
-      profilePicURL: json['profile_picture'],
+      profilePicURL: validateProfilePicURL(json['profile_picture']),
     );
   }
 }
@@ -138,7 +145,7 @@ class DetailedUser extends User {
       username: json['username'],
       bio: json['bio'],
       nickname: json['nickname'],
-      profilePicURL: json['profile_picture'],
+      profilePicURL: validateProfilePicURL(json['profile_picture']),
       following:
           List<User>.from(json['following'].map((x) => User.fromJson(x))),
       followers:

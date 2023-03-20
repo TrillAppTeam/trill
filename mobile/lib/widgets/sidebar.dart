@@ -53,9 +53,35 @@ class _SidebarState extends State<Sidebar> {
             const SizedBox(height: 75),
             Container(
               padding: const EdgeInsets.fromLTRB(100, 0, 100, 0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(1000.0),
-                child: Image.asset("images/gerber.jpg", fit: BoxFit.cover),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color(0xFF3FBCF4),
+                    width: 2,
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 48,
+                  backgroundColor: const Color(0xFF111318),
+                  child: _user.profilePicURL.isNotEmpty
+                      ? CircleAvatar(
+                          radius: 48,
+                          backgroundColor: const Color(0xFF111318),
+                          backgroundImage: NetworkImage(
+                            _user.profilePicURL,
+                          ),
+                        )
+                      : Center(
+                          child: Text(
+                            _user.username.substring(0, 1).toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 32,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                ),
               ),
             ),
             const SizedBox(height: 10),

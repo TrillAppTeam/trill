@@ -117,9 +117,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _buildUserDetails() {
     return Column(
       children: [
-        const CircleAvatar(
-          backgroundImage: AssetImage("images/gerber.jpg"),
-          radius: 40.0,
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            border: Border.all(
+              color: const Color(0xFF3FBCF4),
+              width: 2,
+            ),
+          ),
+          child: CircleAvatar(
+            radius: 40,
+            backgroundColor: const Color(0xFF111318),
+            child: _user.profilePicURL.isNotEmpty
+                ? CircleAvatar(
+                    radius: 40,
+                    backgroundColor: const Color(0xFF111318),
+                    backgroundImage: NetworkImage(
+                      _user.profilePicURL,
+                    ),
+                  )
+                : Center(
+                    child: Text(
+                      _user.username.substring(0, 1).toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+          ),
         ),
         Text(
           _user.nickname,

@@ -23,6 +23,7 @@ API
 - Profile pic API
 - Set default profile picture
 - Add pagination
+- Prevent adding to listen later when reviewed
 
 UI!!
 - Copy web for everything

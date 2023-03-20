@@ -130,24 +130,25 @@ class _ReviewTileState extends State<ReviewTile> {
                 ],
               ),
             ),
-          PopupMenuItem<String>(
-            value: 'report',
-            child: Row(
-              children: const [
-                Icon(
-                  Icons.flag_outlined,
-                  color: Color(0xFFAA2222),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  'Report',
-                  style: TextStyle(
+          if (!widget.isMyReview)
+            PopupMenuItem<String>(
+              value: 'report',
+              child: Row(
+                children: const [
+                  Icon(
+                    Icons.flag_outlined,
                     color: Color(0xFFAA2222),
                   ),
-                ),
-              ],
+                  SizedBox(width: 5),
+                  Text(
+                    'Report',
+                    style: TextStyle(
+                      color: Color(0xFFAA2222),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
         color: const Color(0xFF1A1B29),
         icon: const Icon(
@@ -184,9 +185,34 @@ class _ReviewTileState extends State<ReviewTile> {
           );
         }
       },
-      child: const CircleAvatar(
-        backgroundImage: NetworkImage(
-          'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: const Color(0xFF3FBCF4),
+            width: 2,
+          ),
+        ),
+        child: CircleAvatar(
+          radius: 24,
+          backgroundColor: const Color(0xFF111318),
+          child: widget.review.user.profilePicURL.isNotEmpty
+              ? CircleAvatar(
+                  radius: 24,
+                  backgroundColor: const Color(0xFF111318),
+                  backgroundImage: NetworkImage(
+                    widget.review.user.profilePicURL,
+                  ),
+                )
+              : Center(
+                  child: Text(
+                    widget.review.user.username.substring(0, 1).toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
         ),
       ),
     );
