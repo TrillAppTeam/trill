@@ -90,71 +90,74 @@ class _ReviewTileState extends State<ReviewTile> {
   Widget build(BuildContext context) {
     return ListTile(
       leading: _buildProfilePic(context),
-      trailing: PopupMenuButton<String>(
-        onSelected: (value) => _handleMenuClick(value),
-        itemBuilder: (context) => [
-          if (widget.isMyReview)
-            PopupMenuItem<String>(
-              value: 'edit',
-              child: Row(
-                children: const [
-                  Icon(
-                    Icons.edit_outlined,
-                    color: Color(0xFFCCCCCC),
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    'Edit',
-                    style: TextStyle(
+      trailing: SizedBox(
+        width: 30,
+        child: PopupMenuButton<String>(
+          onSelected: (value) => _handleMenuClick(value),
+          itemBuilder: (context) => [
+            if (widget.isMyReview)
+              PopupMenuItem<String>(
+                value: 'edit',
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.edit_outlined,
                       color: Color(0xFFCCCCCC),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 5),
+                    Text(
+                      'Edit',
+                      style: TextStyle(
+                        color: Color(0xFFCCCCCC),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          if (widget.isMyReview)
-            PopupMenuItem<String>(
-              value: 'delete',
-              child: Row(
-                children: const [
-                  Icon(
-                    Icons.delete_outline,
-                    color: Color(0xFFAA2222),
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    'Delete',
-                    style: TextStyle(
+            if (widget.isMyReview)
+              PopupMenuItem<String>(
+                value: 'delete',
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.delete_outline,
                       color: Color(0xFFAA2222),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 5),
+                    Text(
+                      'Delete',
+                      style: TextStyle(
+                        color: Color(0xFFAA2222),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          if (!widget.isMyReview)
-            PopupMenuItem<String>(
-              value: 'report',
-              child: Row(
-                children: const [
-                  Icon(
-                    Icons.flag_outlined,
-                    color: Color(0xFFAA2222),
-                  ),
-                  SizedBox(width: 5),
-                  Text(
-                    'Report',
-                    style: TextStyle(
+            if (!widget.isMyReview)
+              PopupMenuItem<String>(
+                value: 'report',
+                child: Row(
+                  children: const [
+                    Icon(
+                      Icons.flag_outlined,
                       color: Color(0xFFAA2222),
                     ),
-                  ),
-                ],
+                    SizedBox(width: 5),
+                    Text(
+                      'Report',
+                      style: TextStyle(
+                        color: Color(0xFFAA2222),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-        ],
-        color: const Color(0xFF1A1B29),
-        icon: const Icon(
-          Icons.more_vert,
-          color: Colors.grey,
+          ],
+          color: const Color(0xFF1A1B29),
+          icon: const Icon(
+            Icons.more_vert,
+            color: Colors.grey,
+          ),
         ),
       ),
       title: _buildRatingBar(),
