@@ -85,7 +85,7 @@ function Review(props) {
                         <Avatar user={{ profile_picture: profile_picture, username: username, size: "6" }} />
                         <Stars rating={ rating } />
                         
-                        <p className="text-sm text-gray-500 my-auto">Listened to by
+                        <p className="text-md text-gray-500">Reviewed by
                             <Link to={`/User/Profile/${username}`}>
                                 <span className="text-trillBlue hover:text-white"> @{username} </span>
                             </Link>
