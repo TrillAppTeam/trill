@@ -74,7 +74,9 @@ function Review(props) {
                     {/* Album Name and Album Year */}
                     <div className="flex flex-row gap-4">
                         <h1 className="text-xl text-gray-200">
-                            <span className="font-bold italic">{album.name} </span> 
+                        <Link to="/User/AlbumDetails" state={{name: album.name, year: album.release_date, artist: album.artists, img: album.images, link: album.external_urls.spotify, id: album.id }}>
+                            <span className="font-bold italic hover:text-violet-300">{album.name} </span> 
+                        </Link>
                             - {album.artists[0].name}
                         </h1>
                         <h1 className="text-xl text-gray-500">{album.release_date.split("-")[0]}</h1>
@@ -85,7 +87,7 @@ function Review(props) {
                         <Avatar user={{ profile_picture: profile_picture, username: username, size: "6" }} />
                         <Stars rating={ rating } />
                         
-                        <p className="text-sm text-gray-500 my-auto">Listened to by
+                        <p className="text-md text-gray-500">Reviewed by
                             <Link to={`/User/Profile/${username}`}>
                                 <span className="text-trillBlue hover:text-white"> @{username} </span>
                             </Link>
