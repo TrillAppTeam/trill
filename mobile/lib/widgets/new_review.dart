@@ -20,11 +20,18 @@ class NewReview extends StatefulWidget {
 class _NewReviewState extends State<NewReview> {
   int _editingRating = 0;
   final TextEditingController _reviewTextController = TextEditingController();
+  final FocusNode _reviewFocusNode = FocusNode();
 
   @override
   void dispose() {
     _reviewTextController.dispose();
+    _reviewFocusNode.dispose();
     super.dispose();
+  }
+
+  void _cancelEditing() {
+    _reviewTextController.clear();
+    _reviewFocusNode.unfocus();
   }
 
   void _saveEditing() {
@@ -58,6 +65,15 @@ class _NewReviewState extends State<NewReview> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
+                  onPressed: _cancelEditing,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.grey,
+                    padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
+                  ),
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 10),
+                ElevatedButton(
                   onPressed: _saveEditing,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 5),
@@ -79,6 +95,7 @@ class _NewReviewState extends State<NewReview> {
         const SizedBox(height: 5),
         TextFormField(
           controller: _reviewTextController,
+          focusNode: _reviewFocusNode,
           decoration: const InputDecoration(
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.all(

@@ -34,7 +34,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
 
   late TabController _tabController;
   late ScrollController _scrollController;
-  bool fixedScroll = false;
 
   @override
   void initState() {
@@ -42,7 +41,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_smoothScrollToTop);
     _scrollController = ScrollController();
-    _scrollController.addListener(_scrollListener);
     _initialFetch();
   }
 
@@ -84,22 +82,12 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     _fetchAlbumDetails();
   }
 
-  _scrollListener() {
-    if (fixedScroll) {
-      _scrollController.jumpTo(0);
-    }
-  }
-
   _smoothScrollToTop() {
     _scrollController.animateTo(
       0,
       duration: const Duration(microseconds: 300),
       curve: Curves.ease,
     );
-
-    setState(() {
-      fixedScroll = _tabController.index == 2;
-    });
   }
 
   @override
