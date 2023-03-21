@@ -128,61 +128,39 @@ function Profile() {
 
             {/* Recent Reviews: Last 2 reviews from the user */}
             <Titles title="Recent Reviews"/>
-                {reviewsNew?.data?.length > 0 ? (
-                <>
-                    {reviewsNew?.data?.slice(0, 2).map((review, index, array) => (
+                {reviewsNew?.data?.slice(0, 2).map((review, index, array) => (
                     <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
-                    ))}
-                </>
-                ) : (
-                    <h1 className="italic text-trillBlue">No reviews yet.</h1>
-                )}
-            <div className="pb-10" />
+                ))} 
+                <div className="pb-10" /> 
 
-           {/* Popular Reviews: Two most popular reviews by likes, by the user */}
+            {/* Popular Reviews: Two most popular reviews by likes, by the user */}
             <Titles title="Popular Reviews"/>
-                {reviewsPopular?.data?.length > 0 ? (
-                <>
-                    {reviewsPopular?.data?.slice(0, 2).map((review, index, array) => (
+                {reviewsPopular?.data?.slice(0, 2).map((review, index, array) => (
                     <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
                     </div>
-                    ))}
-                </>
-                ) : (
-                    <h1 className="italic text-trillBlue">No reviews yet.</h1>
-                )}
-            <div className="pb-10" />
-
+                ))}
+                <div className="pb-10" /> 
 
             {/* Following: Avatars of people the user follows */}
             <Titles title="Following"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
-                {following?.data.length > 0 ? (
-                    <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-2 flex-wrap">
                     {following?.data.map(user => {return <Avatar key={user.username} user={{profile_picture: user.profile_picture, username: user.username, size: '11'}}/>})}
-                    </div>
-                ) : (
-                    <h1 className="italic text-trillBlue">No following.</h1>
-                )}
+                </div>
             </div>
 
-           {/* Followers: Avatars of people that follow the user */}
+            {/* Followers: Avatars of people that follow the user */}
             <Titles title="Followers"/>
             <div className="flex flex-col justify-center items-left max-w-5xl pb-10">
-                {followers?.data.length > 0 ? (
-                    <div className="flex gap-2 flex-wrap">
+                <div className="flex gap-2 flex-wrap">
                     {followers?.data.map(user => {return <Avatar key={user.username} user={{profile_picture: user.profile_picture, username: user.username, size: '11'}}/>})}
-                    </div>
-                ) : (
-                    <h1 className="italic text-trillBlue">No followers.</h1>
-                )}
+                </div>
             </div>
-
         </div>}
         </>
     );

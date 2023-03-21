@@ -49,9 +49,9 @@ function Discover() {
                 <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
                     {popularGlobalWeeklyLoading
                         ? "Loading..."  
-                        : popularGlobalWeeklyData?.data?.slice(0, 8).map((album) => (
+                        : popularGlobalWeeklyData?.data?.map((album) => (
                             <div key={album.id}>
-                                <Album album={{...album, size:"200"}}/>
+                                <Album album={album} />
                             </div>
                         ))
                     }
