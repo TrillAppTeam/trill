@@ -36,7 +36,6 @@ function AlbumDetails() {
     const { data: listenLater, refetch: refetchListenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
     // Toast 
-    const [isSuccess, setIsSuccess] = useState(false);
     const [dismissed, setDismissed] = useState(true);
     const handleDismiss = () => {
         setDismissed(true);
@@ -73,7 +72,7 @@ function AlbumDetails() {
     }, {
         onSuccess: () => {refetchFavoriteAlbums();},
         onSettled: () => {setTimeout(() => {setDismissed(true);}, 100000);},
-        onError: () => {setIsSuccess(false);}
+        onError: () => {setDismissed(false);}
     });
 
     const deleteFavoriteAlbum = useMutation(() => { 
@@ -108,7 +107,6 @@ function AlbumDetails() {
 
     const addToFavoriteAlbums = () => {
         addFavoriteAlbum.mutate();
-        setDismissed(false);
     }
 
     const removeFromFavoriteAlbums = () => {
