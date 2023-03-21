@@ -26,22 +26,10 @@ function Review(props) {
     const like = useMutation(() => { 
         return axios.put(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, {}, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
     });
     const unlike = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
     });
 
     const dateTimeObj = DateTime.fromISO(updated_at ? updated_at : created_at);

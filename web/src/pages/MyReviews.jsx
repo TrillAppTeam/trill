@@ -10,7 +10,7 @@ function MyReviews() {
     const currentUser = sessionStorage.getItem("username");
     const { data: userData } = useQuery([`users?username=${currentUser}`]);
     const { isLoading, data: myReviews } = useQuery([`reviews?username=${currentUser}&sort=newest`]);
-    const { data: myReviewsPageTwo } = useQuery([`reviews?username=${currentUser}&sort=newest&page=2`], {enabled: userData?.data?.review_count >= 20});
+    const { data: myReviewsPageTwo } = useQuery([`reviews?username=${currentUser}&sort=newest&page=2`], {enabled: userData?.review_count >= 20});
 
     return (
         <div className="max-w-6xl mx-auto pb-10">           
@@ -20,17 +20,17 @@ function MyReviews() {
                     ?   <Loading />
                     :   <>
                         
-                            { Array.isArray(myReviews?.data) 
+                            { Array.isArray(myReviews) 
                                 ?   <>                                        
-                                        <Titles title={`You have reviewed ${userData?.data.review_count} albums`}/>
+                                        <Titles title={`You have reviewed ${userData?.review_count} albums`}/>
 
                                         <div className="text-white flex flex-row flex-wrap justify-left gap-4 max-w-6xl mx-auto">
-                                            {myReviews.data.map((review) => (
+                                            {myReviews.map((review) => (
                                                 <AlbumWithStars album={{review}} />
                                             ))}
 
-                                            {myReviewsPageTwo?.data 
-                                                ?  myReviewsPageTwo.data.map((review) => (
+                                            {myReviewsPageTwo 
+                                                ?  myReviewsPageTwo.map((review) => (
                                                     <AlbumWithStars album={{review}} />
                                                 ))
                                                 : null

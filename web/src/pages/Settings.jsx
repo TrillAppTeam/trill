@@ -11,25 +11,15 @@ function Settings() {
     const [isSuccess, setIsSuccess] = useState(false);
     const [dismissed, setDismissed] = useState(true);
     const [profPic, setProfPic] = useState(null);
-    const { data: userData } = useQuery(['users'], {onSuccess: (data) => {setProfPic(data.data.profile_picture)}});
+    const { data: userData } = useQuery(['users'], {onSuccess: (data) => {setProfPic(data.profile_picture)}});
   
     const update = useMutation(upUser => {
       return axios.put('https://api.trytrill.com/main/users', upUser, { headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization' : `Bearer ${sessionStorage.getItem('access_token')}`}})
-        .then((res) => {
-          setIsSuccess(true);
-          console.log(res);
-        })
-        .catch((err) => {
-          setIsSuccess(false);
-          console.log(err);
-        })
-        .finally(() => {
-          setTimeout(() => {
-            setDismissed(true);
-          }, 7000);
-        }); 
+    }, {
+      onSettled: () => {setTimeout(() => {setDismissed(true)}, 7000);},
+      onError: () => {setIsSuccess(false)}
     });
 
     const updateUser = (event) => {
@@ -44,6 +34,7 @@ function Settings() {
         requestBody.append('profilePicture', formData.get('file-upload'));
 
         update.mutate(requestBody);
+        setIsSuccess(true);
       }
       setDismissed(false);
     };
@@ -93,7 +84,7 @@ function Settings() {
                             id="name"
                             className="block w-full flex-1 rounded-lg border-gray-300 focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
                             placeholder="Taylor"
-                            defaultValue={userData?.data.nickname}
+                            defaultValue={userData?.nickname}
                           />
                         </div>
                       </div>
@@ -110,7 +101,7 @@ function Settings() {
                           rows={3}
                           className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
                           placeholder="My life, through music."
-                          defaultValue={userData?.data.bio}
+                          defaultValue={userData?.bio}
                         />
                       </div>
                     </div>
@@ -124,7 +115,7 @@ function Settings() {
                           {/* <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
                           </svg> */}
-                          <Avatar user={{ profile_picture: profPic, username: userData?.data.username, size: "12", linkDisabled: true }} />
+                          <Avatar user={{ profile_picture: profPic, username: userData?.username, size: "12", linkDisabled: true }} />
                         </span>
                         <div className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-bold leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-trillBlue">
                             <label

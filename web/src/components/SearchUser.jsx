@@ -18,7 +18,7 @@ function SearchUser(props) {
 
                 <div className="flex flex-col pl-10">
                     <h1 className="font-bold text-gray-200 text-lg">{username}</h1>
-                    <h1 className="text-sm">{followers?.data.length} Followers, Following {following?.data.length}</h1>
+                    <h1 className="text-sm">{followers?.length} Followers, Following {following?.length}</h1>
                 </div>
 
             </div>

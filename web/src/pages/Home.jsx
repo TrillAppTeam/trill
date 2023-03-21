@@ -19,11 +19,13 @@ function Home() {
                 client_id: '126gi8rqrvn4rbv1kt7ef714oa',
                 code: (window.location.href).split('=')[1],
                 redirect_uri: 'https://www.trytrill.com/home',
-            }}).then((res) => {
-                sessionStorage.setItem('access_token', res.data.access_token);
-                return res;
-            }).catch((error) => {navigate("/"); return error;}),
-        { enabled: !sessionStorage.getItem('access_token'), refetchOnWindowFocus: false});
+            }}),
+        {   
+            onSuccess: (res) => {sessionStorage.setItem('access_token', res.data.access_token);}, 
+            onError: () => {navigate("/");},
+            enabled: !sessionStorage.getItem('access_token'),
+            refetchOnWindowFocus: false
+        });
 
     return (
         <div className="bg-trillPurple min-h-screen flex flex-col">

@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios"
 
@@ -25,7 +25,7 @@ function AlbumDetails() {
     const { name, year, artist, img, link, id } = state;
     const currentUser = sessionStorage.getItem("username");
 
-    const { isLoading, data: myReview, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    const { isLoading, data: myReview, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`], {onSuccess: (data) => {setReviewText(data.review_text)}});
     const { data: reviewFromFriends } = useQuery([`reviews?sort=newest&albumID=${id}&following=true`]);
     const { data: popularGlobal, refetch: refetchPopularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
     const { data: recentGlobal, refetch: refetchRecentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
@@ -35,12 +35,7 @@ function AlbumDetails() {
     const { data: favoriteAlbums, refetch: refetchFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
     const { data: listenLater, refetch: refetchListenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
-    useEffect(() => {
-        setReviewText(myReview?.data.review_text);
-    }, [myReview?.data]);
-
     // Toast 
-    const [isSuccess, setIsSuccess] = useState(false);
     const [dismissed, setDismissed] = useState(true);
     const handleDismiss = () => {
         setDismissed(true);
@@ -54,83 +49,45 @@ function AlbumDetails() {
                 'Content-Type': 'application/json'
                 }
             })
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }, {onSuccess: () => {
-        refetchReview();
-        refetchAlbumStats();
-        refetchPopularGlobal();
-        refetchRecentGlobal();
+        }, {onSuccess: () => {
+            refetchReview();
+            refetchAlbumStats();
+            refetchPopularGlobal();
+            refetchRecentGlobal();
     }} );
 
     const deleteReview = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/reviews?albumID=${id}`, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }, {onSuccess: () => {
-        refetchReview();
-        refetchAlbumStats();
-        refetchPopularGlobal();
-        refetchRecentGlobal();
+        }, {onSuccess: () => {
+            refetchReview();
+            refetchAlbumStats();
+            refetchPopularGlobal();
+            refetchRecentGlobal();
     }} );
 
     const addFavoriteAlbum = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, {}, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                setIsSuccess(false);
-                console.log(err);
-            })
-            .finally(() => {
-                setTimeout(() => {
-                    setDismissed(true);
-                }, 100000);
-            }); 
-    }, {onSuccess: () => {refetchFavoriteAlbums();}} );
+    }, {
+        onSuccess: () => {refetchFavoriteAlbums();},
+        onSettled: () => {setTimeout(() => {setDismissed(true);}, 100000);},
+        onError: () => {setDismissed(false);}
+    });
 
     const deleteFavoriteAlbum = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
     }, {onSuccess: () => {refetchFavoriteAlbums();}} );
 
     const addListenLater = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/listenlateralbums?albumID=${id}`, {}, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            }) 
     }, {onSuccess: () => {refetchListenLater();}} );
 
     const deleteListenLater = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/listenlateralbums?albumID=${id}`, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
     }, {onSuccess: () => {refetchListenLater();}} );
 
     const ratingChanged = (newRating) => {
@@ -150,7 +107,6 @@ function AlbumDetails() {
 
     const addToFavoriteAlbums = () => {
         addFavoriteAlbum.mutate();
-        setDismissed(false);
     }
 
     const removeFromFavoriteAlbums = () => {
@@ -179,7 +135,7 @@ function AlbumDetails() {
                                 </div>
                             }
 
-                            {Array.isArray(favoriteAlbums?.data) && favoriteAlbums?.data.some((album) => album.id === id) ? (
+                            {Array.isArray(favoriteAlbums) && favoriteAlbums?.some((album) => album.id === id) ? (
                                 <button 
                                     className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
                                     onClick={removeFromFavoriteAlbums}
@@ -195,7 +151,7 @@ function AlbumDetails() {
                                 </button>
                             )}
 
-                            {Array.isArray(listenLater?.data) && listenLater?.data.some((album) => album.id === id) ? (
+                            {Array.isArray(listenLater) && listenLater?.some((album) => album.id === id) ? (
                                 <button 
                                     className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
                                     onClick={removeFromListenLater}
@@ -204,10 +160,10 @@ function AlbumDetails() {
                                 </button>
                             ) : (
                                 <button 
-                                    className={albumStats?.data?.requestor_reviewed ? "btn btn-xs text-gray-400 bg-gray-800 hover:bg-gray-800 cursor-not-allowed mt-2" : "btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2" }
+                                    className={albumStats?.requestor_reviewed ? "btn btn-xs text-gray-400 bg-gray-800 hover:bg-gray-800 cursor-not-allowed mt-2" : "btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2" }
                                     onClick={addToListenLater}
                                 >
-                                    {albumStats?.data?.requestor_reviewed ? "Already Reviewed" : "Add to Listen Later"}
+                                    {albumStats?.requestor_reviewed ? "Already Reviewed" : "Add to Listen Later"}
                                 </button>
                             )}
                            
@@ -242,8 +198,8 @@ function AlbumDetails() {
 
                 <div className="max-w-[450px]">
                     <AvgReviews reviewStats={{
-                        average: albumStats?.data?.average_rating, 
-                        numRatings: albumStats?.data?.num_ratings
+                        average: albumStats?.average_rating, 
+                        numRatings: albumStats?.num_ratings
                     }} />
                 </div>
                
@@ -256,7 +212,7 @@ function AlbumDetails() {
                 ?   <>  
                         <div className="flex flex-row justify-between">
                             <div className="justify-left">
-                                <AlbumDetailsReview review={myReview.data} />
+                                <AlbumDetailsReview review={myReview} />
                             </div>
                             
                             <button 
@@ -271,7 +227,7 @@ function AlbumDetails() {
                 : 
                     <>
                         <div className="flex flex-row p-5">
-                            <Avatar user={{ profile_picture: myReview?.data.user.profile_picture, username: currentUser, size: "12" }} />
+                            <Avatar user={{ profile_picture: myReview?.user.profile_picture, username: currentUser, size: "12" }} />
                             <div className="flex flex-col pl-5 w-full justify-between">
                                 {/* Profile Picture, Rating, and Listen Date */}
                                 <p className="text-gray-500 pb-2">Review by
@@ -279,7 +235,7 @@ function AlbumDetails() {
                                 </p>                                    
                                 
                                 {isLoading ? null : <ReactStars
-                                    key={myReview?.data.id}
+                                    key={myReview?.id}
                                     count={5}
                                     onChange={ratingChanged}
                                     size={30}
@@ -288,7 +244,7 @@ function AlbumDetails() {
                                     halfIcon={<i className="fa fa-star-half-alt"></i>}
                                     fullIcon={<i className="fa fa-star"></i>}
                                     activeColor="#ffd700"
-                                    value={myReview?.data.rating / 2 || rating}
+                                    value={myReview?.rating / 2 || rating}
                                 />}
                                 <textarea 
                                     rows="3" 
@@ -346,9 +302,9 @@ function AlbumDetails() {
                 
                 <div className="pt-10">
                     <Titles title="Reviews From Friends" />
-                    {reviewFromFriends?.data.length == 0 ? <h1 className="italic text-violet-300">Your friends haven't reviewed this album yet.</h1> : null}
+                    {reviewFromFriends?.length == 0 ? <h1 className="italic text-violet-300">Your friends haven't reviewed this album yet.</h1> : null}
 
-                    {reviewFromFriends?.data.slice(0, 2).map((review, index, array) => (
+                    {reviewFromFriends?.slice(0, 2).map((review, index, array) => (
                         <div key={index}>
                             <AlbumDetailsReview review={review} />
                             {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
@@ -359,9 +315,9 @@ function AlbumDetails() {
 
                 <div className="pt-10">
                     <Titles title="Popular Reviews Globally" />
-                    {popularGlobal?.data.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
+                    {popularGlobal?.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
                     
-                    {popularGlobal?.data.slice(0, 2).map((review, index, array) => (
+                    {popularGlobal?.slice(0, 2).map((review, index, array) => (
                         <div key={index}>
                             <AlbumDetailsReview review={review} />
                             {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
@@ -371,9 +327,9 @@ function AlbumDetails() {
 
                 <div className="pt-10">
                     <Titles title="Recent Reviews Globally" />
-                    {recentGlobal?.data.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
+                    {recentGlobal?.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
 
-                    {recentGlobal?.data.slice(0, 2).map((review, index, array) => (
+                    {recentGlobal?.slice(0, 2).map((review, index, array) => (
                         <div key={index}>
                             <AlbumDetailsReview review={review} />
                             {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
