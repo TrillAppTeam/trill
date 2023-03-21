@@ -7,7 +7,6 @@ import axios from 'axios';
 // Pages
 import FriendsFeed from './pages/FriendsFeed';
 import ListenLater from './pages/ListenLater';
-import ListAlbums from './pages/ListAlbums';
 import Error from './pages/Error';
 import Discover from './pages/Discover';
 import Home from './pages/Home';
@@ -89,11 +88,6 @@ const router = createBrowserRouter([
       {
         path: "Results",
         element: <SearchResults />,
-        errorElement: <Error />
-      },
-      {
-        path: "More",
-        element: <ListAlbums />,
         errorElement: <Error />
       },
       {

@@ -61,12 +61,15 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
                 <div className="text-white flex flex-row justify-left gap-5 max-w-6xl mx-auto">
-                    {friendsDataLoading ? "Loading..." :  
-                        friendsData?.data.slice(0, 10).map((review) => (
+                    {friendsDataLoading 
+                    ? "Loading..." 
+                    :  Array.isArray(friendsData)  
+                        ? friendsData?.data.slice(0, 10).map((review) => (
                             <div key={review.review_id}>
                                 <NoTextAlbumReview review={review} />
                             </div>
                         ))
+                        : <h1 className="italic text-trillBlue">You don't follow anyone yet! Search for users to start.</h1>
                     }
                 </div>
             </section>
@@ -74,13 +77,16 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
                 <div  className="text-white max-w-6xl mx-auto">
-                    {friendsDataLoading ? "Loading..." :  
-                        friendsData?.data.slice(0, 2).map((review, index, array) => (
-                            <div key={review.review_id}>
-                                <Review review={review} />
-                                {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
-                            </div>
-                        ))
+                    {friendsDataLoading 
+                    ? "Loading..." 
+                    :  Array.isArray(friendsData) 
+                        ?   friendsData?.data.slice(0, 2).map((review, index, array) => (
+                                <div key={review.review_id}>
+                                    <Review review={review} />
+                                    {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                                </div>
+                            ))
+                        :   <h1 className="italic text-trillBlue">You don't follow anyone yet! Search for users to start.</h1>
                     }
                 </div>
                
