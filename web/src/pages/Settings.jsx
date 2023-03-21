@@ -17,19 +17,10 @@ function Settings() {
       return axios.put('https://api.trytrill.com/main/users', upUser, { headers: {
         'Content-Type': 'multipart/form-data',
         'Authorization' : `Bearer ${sessionStorage.getItem('access_token')}`}})
-        .then((res) => {
-          setIsSuccess(true);
-          console.log(res);
-        })
-        .catch((err) => {
-          setIsSuccess(false);
-          console.log(err);
-        })
-        .finally(() => {
-          setTimeout(() => {
-            setDismissed(true);
-          }, 7000);
-        }); 
+    }, {
+      onSuccess: () => {setIsSuccess(true)},
+      onSettled: () => {setTimeout(() => {setDismissed(true)}, 7000);},
+      onError: () => {setIsSuccess(false)}
     });
 
     const updateUser = (event) => {

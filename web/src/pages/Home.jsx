@@ -22,8 +22,8 @@ function Home() {
             }}).then((res) => {
                 sessionStorage.setItem('access_token', res.data.access_token);
                 return res;
-            }).catch((error) => {navigate("/"); return error;}),
-        { enabled: !sessionStorage.getItem('access_token'), refetchOnWindowFocus: false});
+            }),
+        { onError: () => {navigate("/");}, enabled: !sessionStorage.getItem('access_token'), refetchOnWindowFocus: false});
 
     return (
         <div className="bg-trillPurple min-h-screen flex flex-col">

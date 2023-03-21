@@ -38,9 +38,7 @@ function classNames(...classes) {
 }
 
 function Navbar() {
-  const {error, data} = useQuery({ queryKey: ['users'] });
-  if (data)
-    sessionStorage.setItem("username", data.data.username);
+  const {error, data} = useQuery(['users'], {onSuccess: (data) => {sessionStorage.setItem("username", data.data.username)}});
   
   return (
 

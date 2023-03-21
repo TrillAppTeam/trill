@@ -30,23 +30,11 @@ function Profile() {
     const follow = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, {}, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
     }, {onSuccess: () => {setIsFollowing(true); refetchFollowing(); refetchFollowers();}});
 
     const unfollow = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/follows?username=${userData?.data.username}`, 
             { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
     }, {onSuccess: () => {setIsFollowing(false); refetchFollowing(); refetchFollowers();}});
     
     const handleFollow = () => {

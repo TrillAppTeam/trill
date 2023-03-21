@@ -32,7 +32,7 @@ const defaultQueryFn = async ({ queryKey }) => {
       'Authorization' : `Bearer ${sessionStorage.getItem('access_token')}`
     }}).then((res) => {
       return res;
-  }).catch(() => {return null});
+  });
   return data;
 }
 
@@ -42,8 +42,10 @@ const queryClient = new QueryClient({
     queries: {
       queryFn: defaultQueryFn,
       refetchOnWindowFocus: false,
+      retry: false,
     },
   },
+  logger: {error: () => {}}
 })
 
 const router = createBrowserRouter([

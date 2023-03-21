@@ -27,7 +27,7 @@ const grammyNews = {
 }
 
 function Discover() {
-    const { isLoading, data } = useQuery({ queryKey: ['users'] });
+    const { isLoading, data } = useQuery(['users']);
     const { isLoading: friendsDataLoading, data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
     const { isLoading: popularGlobalWeeklyLoading, data: popularGlobalWeeklyData, error: popularGlobalWeeklyError } = useQuery([`albums?timespan=weekly`]);
     const { isLoading: popularGlobalAllTimeLoading, data: popularGlobalAllTimeData, error: popularGlobalAllTimeError } = useQuery([`albums?timespan=all`]);
