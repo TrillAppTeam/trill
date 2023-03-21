@@ -38,7 +38,7 @@ function classNames(...classes) {
 }
 
 function Navbar() {
-  const {error, data} = useQuery(['users'], {onSuccess: (data) => {sessionStorage.setItem("username", data.data.username)}});
+  const {error, data} = useQuery(['users'], {onSuccess: (data) => {sessionStorage.setItem("username", data.username)}});
   
   return (
 
@@ -100,7 +100,7 @@ function Navbar() {
                   <div>
                     <Menu.Button className="flex rounded-full pt-1">
                       <span className="sr-only">Open user menu</span>
-                      <Avatar user={{ profile_picture: data?.data.profile_picture, username: data?.data.username, size: "11", linkDisabled: true }} />
+                      <Avatar user={{ profile_picture: data?.profile_picture, username: data?.username, size: "11", linkDisabled: true }} />
 
                     </Menu.Button>
                   </div>
@@ -118,7 +118,7 @@ function Navbar() {
                         {({ active }) => (
                           <Link to='Profile'
                             className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
-                            state={{username: data?.data.username}}
+                            state={{username: data?.username}}
                             onClick={() => resetLinks()}
                           >
                             Profile

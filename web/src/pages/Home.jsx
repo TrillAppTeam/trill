@@ -20,7 +20,7 @@ function Home() {
                 code: (window.location.href).split('=')[1],
                 redirect_uri: 'https://www.trytrill.com/home',
             }}).then((res) => {
-                sessionStorage.setItem('access_token', res.data.access_token);
+                sessionStorage.setItem('access_token', res.access_token);
                 return res;
             }),
         { onError: () => {navigate("/");}, enabled: !sessionStorage.getItem('access_token'), refetchOnWindowFocus: false});
