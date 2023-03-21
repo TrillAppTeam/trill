@@ -195,8 +195,6 @@ function AlbumDetails() {
                                 </button>
                             )}
 
-
-
                             {Array.isArray(listenLater?.data) && listenLater?.data.some((album) => album.id === id) ? (
                                 <button 
                                     className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
@@ -212,14 +210,12 @@ function AlbumDetails() {
                                     {albumStats?.data?.requestor_reviewed ? "Already Reviewed" : "Add to Listen Later"}
                                 </button>
                             )}
-
-
                            
                     </div>
                     
-                    <div className="pl-10 flex flex-row gap-10">
+                    <div className="pl-10 flex flex-row gap-10 max-w-[450px]">
                         <div className="flex flex-col">
-                            <h1 className="text-4xl text-gray-200 font-bold italic mr-5">{name}</h1>
+                            <h1 className="text-3xl text-gray-200 font-bold italic mr-5">{name}</h1>
                             <h1 className="text-3xl text-gray-600">{year.split('-')[0]}</h1>
                             <p className="text-xl pt-1 pb-2">by {artist[0].name}</p>
                             
@@ -243,11 +239,14 @@ function AlbumDetails() {
                         </div>
                     </div>
                 </div>    
-                
-                <AvgReviews reviewStats={{
-                    average: albumStats?.data?.average_rating, 
-                    numRatings: albumStats?.data?.num_ratings
-                }} />
+
+                <div className="max-w-[450px]">
+                    <AvgReviews reviewStats={{
+                        average: albumStats?.data?.average_rating, 
+                        numRatings: albumStats?.data?.num_ratings
+                    }} />
+                </div>
+               
                 
             </div>
 
