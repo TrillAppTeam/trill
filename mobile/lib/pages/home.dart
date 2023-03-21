@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/constants.dart';
-import 'package:trill/widgets/hardcoded_albums_row.dart';
+import 'package:trill/widgets/scrollable_albums_row.dart';
 
 import '../widgets/news_card.dart';
 import 'album_details.dart';
@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late String _nickname;
   String _selectedRange = 'weekly';
-  List<SpotifyAlbum> _albums = [];
+  List<SpotifyAlbum> _popularAlbums = [];
 
   @override
   void initState() {
@@ -128,14 +128,14 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 5),
               _buildPopularAlbums(),
               const SizedBox(height: 20),
-              HardcodedAlbumsRow(
+              ScrollableAlbumsRow(
                   title: "Hello, Grammys", albums: Constants.grammyList),
               const Text(
                 'Explore the 2023 Grammy nominees for Album of the Year!',
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 20),
-              HardcodedAlbumsRow(
+              ScrollableAlbumsRow(
                   title: "Trill Team Favorites", albums: Constants.trillList),
               const Text(
                 'Our team\'s top picks.',
@@ -166,18 +166,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // TODO: turn into horizontal listview to scroll
   Widget _buildPopularAlbums() {
     return FutureBuilder<List<SpotifyAlbum>?>(
       future: getMostPopularAlbums(_selectedRange),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
-            _albums.isEmpty) {
+            _popularAlbums.isEmpty) {
           return _buildAlbumRowWithLoading();
         }
         if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-          _albums = snapshot.data!;
-          return _buildAlbumRow();
+          _popularAlbums = snapshot.data!;
+          return ScrollableAlbumsRow(albums: _popularAlbums);
         }
         return _buildNoReviewsMessage();
       },
@@ -203,39 +202,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildAlbumRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        ..._albums.take(4).map((SpotifyAlbum album) {
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AlbumDetailsScreen(
-                    albumID: album.id,
-                  ),
-                ),
-              );
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(3),
-              child: Image.network(
-                album.images[0].url,
-                width: 75,
-              ),
-            ),
-          );
-        }),
-        ...List.filled(
-          4 - _albums.length.clamp(0, 4),
-          Container(width: 75),
-        ),
-      ],
     );
   }
 }

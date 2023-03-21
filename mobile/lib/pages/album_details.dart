@@ -128,8 +128,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                     ];
                   },
                   body: _buildReviews(),
+                ),
               ),
-        ),
       ),
     );
   }
@@ -230,7 +230,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                     ),
                     const SizedBox(width: 5),
                     Text(
-                      _album.numRatings.toString(),
+                      '(${_album.numRatings})',
                       style: const TextStyle(
                         color: Color(0xFFCCCCCC),
                       ),

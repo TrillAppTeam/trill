@@ -202,24 +202,15 @@ class SpotifyImage {
 }
 
 class SpotifyArtist {
-  final String id;
   final String name;
-  final String type;
-  final String uri;
 
   const SpotifyArtist({
-    required this.id,
     required this.name,
-    required this.type,
-    required this.uri,
   });
 
   factory SpotifyArtist.fromJson(Map<String, dynamic> json) {
     return SpotifyArtist(
-      id: json['id'],
       name: json['name'],
-      type: json['type'],
-      uri: json['uri'],
     );
   }
 }
