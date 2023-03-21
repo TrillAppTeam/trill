@@ -18,7 +18,6 @@ function Settings() {
         'Content-Type': 'multipart/form-data',
         'Authorization' : `Bearer ${sessionStorage.getItem('access_token')}`}})
     }, {
-      onSuccess: () => {setIsSuccess(true)},
       onSettled: () => {setTimeout(() => {setDismissed(true)}, 7000);},
       onError: () => {setIsSuccess(false)}
     });
@@ -35,6 +34,7 @@ function Settings() {
         requestBody.append('profilePicture', formData.get('file-upload'));
 
         update.mutate(requestBody);
+        setIsSuccess(true);
       }
       setDismissed(false);
     };
