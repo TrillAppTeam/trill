@@ -28,7 +28,6 @@ UI!!
 - Loading page
 - Fix overflowing review tiles
 - Dropdown UIs
-- Horizontal listview for global reviews
 - Animations for everything (e.g. fading out when something is deleted, swipe to delete listen later)
 - Refresh user page when navigating back from some pages
 

@@ -86,7 +86,8 @@ Future<bool> updateCurrUser(
   // will prob need to change constructor here; not tested
   if (profilePic != null) {
     request.files.add(
-        http.MultipartFile.fromBytes('file', await profilePic.readAsBytes()));
+      http.MultipartFile.fromBytes('file', await profilePic.readAsBytes()),
+    );
   }
 
   final response = await request.send();
