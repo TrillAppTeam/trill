@@ -4,13 +4,18 @@ import axios from "axios";
 
 // Components
 import Toast from "../components/Toast";
+import Avatar from "../components/Avatar";
 
 function Settings() {
-    const {isLoading, data: userData, error: userError} = useQuery(['users']);
+    // Toast 
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [dismissed, setDismissed] = useState(true);
+    const [profPic, setProfPic] = useState(null);
+    const { data: userData } = useQuery(['users'], {onSuccess: (data) => {setProfPic(data.data.profile_picture)}});
   
     const update = useMutation(upUser => {
       return axios.put('https://api.trytrill.com/main/users', upUser, { headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
         'Authorization' : `Bearer ${sessionStorage.getItem('access_token')}`}})
         .then((res) => {
           setIsSuccess(true);
@@ -28,20 +33,28 @@ function Settings() {
     });
 
     const updateUser = (event) => {
-      const user = userData?.data;
       event.preventDefault();
       const formData = new FormData(event.target);
+      if (formData.get('file-upload').size > 8388608) {
+        setIsSuccess(false);
+      } else {
+        const requestBody = new FormData();
+        requestBody.append('nickname', formData.get('name'));
+        requestBody.append('bio', formData.get('bio'));
+        requestBody.append('profilePicture', formData.get('file-upload'));
 
-      update.mutate({...user, nickname: formData.get('name'), bio: formData.get('bio')});
+        update.mutate(requestBody);
+      }
       setDismissed(false);
     };
 
-    // Toast 
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [dismissed, setDismissed] = useState(true);
     const handleDismiss = () => {
       setDismissed(true);
     };
+
+    const handleUpload = (event) => {
+      setProfPic(URL.createObjectURL(event.target.files[0]));
+    }
 
     return (
         <div>
@@ -106,9 +119,11 @@ function Settings() {
                       <label className="block text-sm font-bold text-gray-100">Profile Picture</label>
                       <div className="mt-1 flex items-center">
                         <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
-                          <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
+                          {/* Commented this out in case you want to use it later Ashley */}
+                          {/* <svg className="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-                          </svg>
+                          </svg> */}
+                          <Avatar user={{ profile_picture: profPic, username: userData?.data.username, size: "12", linkDisabled: true }} />
                         </span>
                         <div className="ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-bold leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-trillBlue">
                             <label
@@ -116,7 +131,7 @@ function Settings() {
                               className="relative cursor-pointer rounded-md font-bold text-gray-900 focus-within:outline-none  hover:text-blue-500 mx-auto"
                             >
                               <span>Upload a file</span>
-                              <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                              <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleUpload}/>
                             </label>
                           </div>
                       </div>
