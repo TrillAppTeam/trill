@@ -189,7 +189,7 @@ class _SidebarState extends State<Sidebar> {
         ),
         UserStatButton(
           name: 'Following',
-          stat: _user.following.length,
+          stat: _user.following,
           onTap: () {
             Navigator.push(
               context,
@@ -204,7 +204,7 @@ class _SidebarState extends State<Sidebar> {
         ),
         UserStatButton(
           name: 'Followers',
-          stat: _user.followers.length,
+          stat: _user.followers,
           onTap: () {
             Navigator.push(
               context,

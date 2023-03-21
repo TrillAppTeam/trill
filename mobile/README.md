@@ -22,10 +22,6 @@ Test on physical device
 API
 - Profile pic API
   - Need to redo edit profile page first
-- Review text on updating after creating
-- Scroll on all reviews
-- Edit user text and numbers on follow/unfollow
-- Preventing favoriting if more than 4
 
 UI!!
 - Copy web for everything

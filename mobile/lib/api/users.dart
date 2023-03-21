@@ -157,8 +157,8 @@ class User {
 
 /// Used for profile pages
 class DetailedUser extends User {
-  final List<User> following;
-  final List<User> followers;
+  int following;
+  int followers;
   bool requestorFollows;
   bool followsRequestor;
   final int reviewCount;
@@ -186,10 +186,10 @@ class DetailedUser extends User {
       bio: json['bio'],
       nickname: json['nickname'],
       profilePicURL: validateProfilePicURL(json['profile_picture']),
-      following:
-          List<User>.from(json['following'].map((x) => User.fromJson(x))),
-      followers:
-          List<User>.from(json['followers'].map((x) => User.fromJson(x))),
+      following: List<User>.from(json['following'].map((x) => User.fromJson(x)))
+          .length,
+      followers: List<User>.from(json['followers'].map((x) => User.fromJson(x)))
+          .length,
       requestorFollows: json['requestor_follows'],
       followsRequestor: json['follows_requestor'],
       reviewCount: json['review_count'],
