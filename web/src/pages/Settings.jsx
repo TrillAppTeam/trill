@@ -117,6 +117,7 @@ function Settings() {
 
                     <div className="pb-10">
                       <label className="block text-sm font-bold text-gray-100">Profile Picture</label>
+                      <p className="text-sm text-gray-200">Maximum upload file size: 8 MB</p>
                       <div className="mt-1 flex items-center">
                         <span className="inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100">
                           {/* Commented this out in case you want to use it later Ashley */}
