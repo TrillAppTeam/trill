@@ -20,7 +20,7 @@ function Profile() {
     const paramString = user ? `?username=${user}` : '';
 
     const [ isFollowing, setIsFollowing ] = useState(false);
-    const { isLoading, data: userData} = useQuery([`users${paramString}`]);
+    const { isLoading, data: userData} = useQuery([`users${paramString}`], {onSuccess: (data) => {setIsFollowing(data.data.requestor_follows);}});
     const { data: following, refetch: refetchFollowing } = useQuery([`follows?type=getFollowing&username=${userData?.data.username}`], {enabled: !!userData});
     const { data: followers, refetch: refetchFollowers } = useQuery([`follows?type=getFollowers&username=${userData?.data.username}`], {enabled: !!userData});
     const { data: reviewsNew } = useQuery([`reviews?sort=newest&username=${userData?.data.username}`], {enabled: !!userData});
@@ -48,10 +48,6 @@ function Profile() {
                 console.log(err);
             })
     }, {onSuccess: () => {setIsFollowing(false); refetchFollowing(); refetchFollowers();}});
-
-    useEffect(() => {
-        setIsFollowing(userData?.data.requestor_follows);
-    }, [userData?.data]);
     
     const handleFollow = () => {
         follow.mutate();
