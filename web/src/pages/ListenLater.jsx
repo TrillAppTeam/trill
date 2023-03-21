@@ -23,7 +23,7 @@ function ListenLater() {
 
                                         <div className="text-white flex flex-row flex-wrap justify-left gap-4 max-w-6xl mx-auto">
                                             {listenLater.data.map((listenLater) => (
-                                                <Album album={{...listenLater, size: "130"}} />
+                                                <Album album={{...listenLater, size: "100"}} />
                                             ))}
                                         </div>
                                     </>
