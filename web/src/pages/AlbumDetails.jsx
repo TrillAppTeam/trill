@@ -8,6 +8,7 @@ import AvgReviews from "../components/AvgReviews";
 import Titles from "../components/Titles";
 import Avatar from "../components/Avatar"
 import AlbumDetailsReview from "../components/AlbumDetailsReview";
+import Toast from "../components/Toast";
 
 // Utils
 import ReactStars from "react-rating-stars-component";
@@ -37,6 +38,14 @@ function AlbumDetails() {
     useEffect(() => {
         setReviewText(myReview?.data.review_text);
     }, [myReview?.data]);
+
+    // Toast 
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [dismissed, setDismissed] = useState(true);
+    const handleDismiss = () => {
+        setDismissed(true);
+    };
+    
     
     const addOrUpdateReview = useMutation(review => { 
         return axios.put(`https://api.trytrill.com/main/reviews?albumID=${id}`, review, 
@@ -81,8 +90,14 @@ function AlbumDetails() {
                 return res;
             })
             .catch((err) => {
+                setIsSuccess(false);
                 console.log(err);
             })
+            .finally(() => {
+                setTimeout(() => {
+                    setDismissed(true);
+                }, 100000);
+            }); 
     }, {onSuccess: () => {refetchFavoriteAlbums();}} );
 
     const deleteFavoriteAlbum = useMutation(() => { 
@@ -104,7 +119,7 @@ function AlbumDetails() {
             })
             .catch((err) => {
                 console.log(err);
-            })
+            }) 
     }, {onSuccess: () => {refetchListenLater();}} );
 
     const deleteListenLater = useMutation(() => { 
@@ -135,6 +150,7 @@ function AlbumDetails() {
 
     const addToFavoriteAlbums = () => {
         addFavoriteAlbum.mutate();
+        setDismissed(false);
     }
 
     const removeFromFavoriteAlbums = () => {
@@ -172,7 +188,7 @@ function AlbumDetails() {
                                 </button>
                             ) : (
                                 <button 
-                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2"
+                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2 w-full"
                                     onClick={addToFavoriteAlbums}
                                 >
                                     Add to Favorite Albums
@@ -194,28 +210,43 @@ function AlbumDetails() {
                                     {albumStats?.data?.requestor_reviewed ? "Already Reviewed" : "Add to Listen Later"}
                                 </button>
                             )}
+                           
                     </div>
                     
-                    <div className="pl-10 flex flex-row gap-10">
+                    <div className="pl-10 flex flex-row gap-10 max-w-[450px]">
                         <div className="flex flex-col">
-                            <h1 className="text-4xl text-gray-200 font-bold italic mr-5">{name}</h1>
+                            <h1 className="text-3xl text-gray-200 font-bold italic mr-5">{name}</h1>
                             <h1 className="text-3xl text-gray-600">{year.split('-')[0]}</h1>
                             <p className="text-xl pt-1 pb-2">by {artist[0].name}</p>
                             
                             <div className="tooltip" data-tip="Open Spotify">
                                 <a href={link} target="_blank">
-                                    <img src={SpotifySVG} style={{ width: 25, height: 25 }} className="self-center" />
+                                    <img src={SpotifySVG} style={{ width: 25, height: 25 }} className="self-center mb-10" />
                                 </a>
                             </div>
+
+                            {!dismissed && (
+                                <div className="max-w-[350px]">
+                                <Toast toast={{
+                                    message: "Maximum favorite albums count of 4 reached. Remove an album from your profile to add more!", 
+                                    type: "error", 
+                                    onDismiss: handleDismiss}} 
+                                />
+                                </div>
+                            )}
+                            
 
                         </div>
                     </div>
                 </div>    
-                
-                <AvgReviews reviewStats={{
-                    average: albumStats?.data?.average_rating, 
-                    numRatings: albumStats?.data?.num_ratings
-                }} />
+
+                <div className="max-w-[450px]">
+                    <AvgReviews reviewStats={{
+                        average: albumStats?.data?.average_rating, 
+                        numRatings: albumStats?.data?.num_ratings
+                    }} />
+                </div>
+               
                 
             </div>
 
