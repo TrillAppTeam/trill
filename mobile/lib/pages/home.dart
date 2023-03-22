@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       'Explore the 2023 Grammy nominees for Album of the Year!',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF94a3b8),
                       ),
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       'Our team\'s top picks.',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF94a3b8),
                       ),
