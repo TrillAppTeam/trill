@@ -59,7 +59,6 @@ class NewsCard extends StatelessWidget {
                       body,
                       style: const TextStyle(
                         fontSize: 14,
-                        fontWeight: FontWeight.w900,
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF94a3b8),
                       ),
