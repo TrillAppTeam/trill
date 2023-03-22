@@ -26,7 +26,13 @@ class _AlbumsRowState extends State<AlbumsRow> {
       children: [
         Text(
           widget.title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+            letterSpacing: .6,
+            color: Colors.grey[300],
+          ),
         ),
         const SizedBox(height: 15),
         widget.albums.isEmpty
@@ -34,8 +40,9 @@ class _AlbumsRowState extends State<AlbumsRow> {
                 children: [
                   Text(
                     widget.emptyText ?? '',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontStyle: FontStyle.italic,
+                      color: Colors.grey[400],
                     ),
                   ),
                 ],
@@ -56,7 +63,7 @@ class _AlbumsRowState extends State<AlbumsRow> {
                         );
                       },
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(3),
+                        borderRadius: BorderRadius.circular(2),
                         child: Image.network(
                           album.images[0].url,
                           width: 75,

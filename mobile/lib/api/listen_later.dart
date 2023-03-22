@@ -23,8 +23,9 @@ Future<List<SpotifyAlbum>?> getListenLaterAlbums() async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<SpotifyAlbum>.from(
-        json.decode(response.body).map((x) => SpotifyAlbum.fromJson(x)));
+    return List<SpotifyAlbum>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => SpotifyAlbum.fromJson(x)));
   } else {
     return null;
   }

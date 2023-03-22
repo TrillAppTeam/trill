@@ -4,7 +4,6 @@ import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 import 'package:trill/pages/edit_profile.dart';
 import 'package:trill/pages/lists/follows.dart';
-import 'package:trill/pages/lists/liked_reviews.dart';
 import 'package:trill/pages/lists/listen_later.dart';
 import 'package:trill/pages/login.dart';
 import 'package:trill/widgets/follow_button.dart';

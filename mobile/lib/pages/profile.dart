@@ -75,51 +75,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   FocusManager.instance.primaryFocus?.unfocus();
                 }
               },
-            child: RefreshIndicator(
-              onRefresh: _fetchUserDetails,
-              backgroundColor: const Color(0xFF1A1B29),
-              color: const Color(0xFF3FBCF4),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildUserInfo(),
-                    const Divider(
-                      color: Colors.grey,
-                      height: 2,
-                      thickness: 1,
-                    ),
-                    const SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: FutureBuilder<List<SpotifyAlbum>?>(
-                        future: getFavoriteAlbums(_user.username),
-                        builder: (context, snapshot) {
-                          return AlbumsRow(
-                            title: _isLoggedIn
-                                ? 'My Favorite Albums'
-                                : '${_user.nickname}\'s Favorite Albums',
-                            albums: snapshot.hasData ? snapshot.data! : [],
-                            emptyText: _isLoggedIn
-                                ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
-                                : 'No favorite albums yet',
-                          );
-                        },
+              child: RefreshIndicator(
+                onRefresh: _fetchUserDetails,
+                backgroundColor: const Color(0xFF1A1B29),
+                color: const Color(0xFF3FBCF4),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildUserInfo(),
+                      Divider(
+                        color: Colors.grey[700],
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    _buildReviewDetails(),
-                    _buildReviews(),
-                  ],
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: FutureBuilder<List<SpotifyAlbum>?>(
+                          future: getFavoriteAlbums(_user.username),
+                          builder: (context, snapshot) {
+                            return AlbumsRow(
+                              title: _isLoggedIn
+                                  ? 'My Favorite Albums'
+                                  : '${_user.nickname}\'s Favorite Albums',
+                              albums: snapshot.hasData ? snapshot.data! : [],
+                              emptyText: _isLoggedIn
+                                  ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
+                                  : 'No favorite albums yet',
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Divider(
+                        color: Colors.grey[700],
+                      ),
+                      _buildReviewDetails(),
+                      _buildReviews(),
+                    ],
+                  ),
                 ),
               ),
             ),
-      ),
     );
   }
 
   Padding _buildUserInfo() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(30, 15, 15, 15),
+      padding: const EdgeInsets.fromLTRB(24, 15, 24, 8),
       child: Column(
         children: [
           Row(
@@ -181,6 +182,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
             ],
           ),
+          if (_user.bio.isNotEmpty) const SizedBox(height: 12),
+          if (_user.bio.isNotEmpty)
+            Wrap(
+              children: [
+                Text(
+                  _user.bio,
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 15,
+                    letterSpacing: .2,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );
@@ -194,10 +210,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             Text(
               _user.nickname,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: Colors.grey[200],
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
+                letterSpacing: .5,
               ),
             ),
             const SizedBox(width: 10),
@@ -218,21 +235,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: TextStyle(
             color: Colors.grey[400],
             fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            letterSpacing: .3,
           ),
         ),
-        if (_user.bio.isNotEmpty)
-          Column(
-            children: [
-              const SizedBox(height: 10),
-              Text(
-                _user.bio,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[500],
-                ),
-              ),
-            ],
-          ),
       ],
     );
   }
@@ -284,7 +291,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildReviewDetails() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -293,9 +300,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 _isLoggedIn ? 'My Reviews' : '${_user.nickname}\'s Reviews',
-                style: const TextStyle(
-                  fontSize: 20.0,
+                style: TextStyle(
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: .6,
+                  color: Colors.grey[300],
                 ),
               ),
               DropdownButton<String>(
@@ -325,7 +335,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Color(0xFF3FBCF4),
                 ),
                 iconSize: 24,
-                elevation: 16,
+                elevation: 3,
                 style: const TextStyle(
                   color: Color(0xFF3FBCF4),
                   fontSize: 16,
@@ -335,7 +345,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 2,
                   color: const Color(0xFF3FBCF4),
                 ),
-                dropdownColor: const Color(0xFF1A1B29),
+                dropdownColor: const Color(0xFF222331),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                ),
               ),
             ],
           ),
@@ -345,49 +358,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildReviewList() {
-    return ListView.builder(
+    return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
+      separatorBuilder: (context, index) {
+        return Divider(
+          color: Colors.grey[700],
+        );
+      },
       itemBuilder: (context, index) {
         final review = _reviews![index];
-        return Column(
-          children: [
-            index == 0
-                ? const SizedBox(height: 10)
-                : const Divider(
-                    color: Colors.grey,
-                  ),
-            DetailedReviewTile(
-              review: review,
-              onLiked: (isLiked) {
-                setState(() {
-                  review.isLiked = isLiked;
-                });
-              },
-              isMyReview: _isLoggedIn,
-              onUpdate: _isLoggedIn
-                  ? (rating, reviewText) async {
-                      final success = await createOrUpdateReview(
-                          review.albumID, rating, reviewText);
-                      if (success) {
-                        setState(() {
-                          review.rating = rating;
-                          review.reviewText = reviewText;
-                        });
-                      }
-                    }
-                  : (rating, reviewText) {},
-              onDelete: () async {
-                final success = await deleteReview(
-                  review.albumID,
-                );
-                if (success) {
-                  setState(() {
-                    _reviews!.removeAt(index);
-                  });
+        return DetailedReviewTile(
+          review: review,
+          onLiked: (isLiked) {
+            setState(() {
+              review.isLiked = isLiked;
+            });
+          },
+          isMyReview: _isLoggedIn,
+          onUpdate: _isLoggedIn
+              ? (rating, reviewText) async {
+                  final success = await createOrUpdateReview(
+                      review.albumID, rating, reviewText);
+                  if (success) {
+                    setState(() {
+                      review.rating = rating;
+                      review.reviewText = reviewText;
+                    });
+                  }
                 }
-              },
-            ),
-          ],
+              : (rating, reviewText) {},
+          onDelete: () async {
+            final success = await deleteReview(
+              review.albumID,
+            );
+            if (success) {
+              setState(() {
+                _reviews!.removeAt(index);
+              });
+            }
+          },
         );
       },
       itemCount: _reviews!.length,

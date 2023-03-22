@@ -81,7 +81,7 @@ class _ListenLaterButtonState extends State<ListenLaterButton> {
         height: 30,
         decoration: BoxDecoration(
           color: _isInListenLater
-              ? const Color(0xFFAA2222)
+              ? const Color(0xFF3FBCF4)
               : const Color(0xFF383B59),
           borderRadius: BorderRadius.circular(10),
         ),
@@ -92,10 +92,11 @@ class _ListenLaterButtonState extends State<ListenLaterButton> {
               _isInListenLater
                   ? 'REMOVE FROM LISTEN LATER'
                   : 'ADD TO LISTEN LATER',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: _isInListenLater ? Colors.black : Colors.grey[200],
                 fontWeight: FontWeight.bold,
-                fontSize: 12,
+                fontSize: _isInListenLater ? 11.5 : 12,
+                letterSpacing: .2,
               ),
             ),
           ),

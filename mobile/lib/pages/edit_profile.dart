@@ -97,101 +97,101 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                Container(
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        buildNameField(),
-                        const SizedBox(height: 30),
-                        buildBioField(),
-                        const SizedBox(height: 30),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Profile Picture',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      buildNameField(),
+                      const SizedBox(height: 30),
+                      buildBioField(),
+                      const SizedBox(height: 30),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Profile Picture',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
-                            const SizedBox(height: 3),
-                            Text(
-                              'Maximum upload file size: 8 MB',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Colors.grey[400],
-                              ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            'Maximum upload file size: 8 MB',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey[400],
                             ),
-                            const SizedBox(height: 10),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                CircleAvatar(
-                                  backgroundImage: _profilePic != null
-                                      ? FileImage(
-                                      File(_profilePic?.path ?? "images/DierksBentleyTest.jpg"))
-                                      : NetworkImage(widget.initialUser.profilePicURL) as ImageProvider,
-                                  radius: 32.0,
-                                  backgroundColor: Colors.grey[100],
-                                ),
-                                const SizedBox(width: 15),
-                                Expanded(
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      await _selectImageSource(context);
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      foregroundColor: Colors.grey[700],
-                                      backgroundColor: Colors.white,
-                                      elevation: 2.0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(5.0),
-                                        side: BorderSide(
-                                          color: Colors.grey[300]!,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 10,
-                                        horizontal: 15,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.upload_file,
-                                            color: Colors.grey[900],
-                                            size: 16,
-                                          ),
-                                          const SizedBox(width: 5),
-                                          Text(
-                                            'Upload a file',
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.grey[900],
-                                            ),
-                                          ),
-                                        ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircleAvatar(
+                                backgroundImage: _profilePic != null
+                                    ? FileImage(File(_profilePic?.path ??
+                                        "images/DierksBentleyTest.jpg"))
+                                    : NetworkImage(
+                                            widget.initialUser.profilePicURL)
+                                        as ImageProvider,
+                                radius: 32.0,
+                                backgroundColor: Colors.grey[100],
+                              ),
+                              const SizedBox(width: 15),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    await _selectImageSource(context);
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.grey[700],
+                                    backgroundColor: Colors.white,
+                                    elevation: 2.0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      side: BorderSide(
+                                        color: Colors.grey[300]!,
+                                        width: 1.0,
                                       ),
                                     ),
                                   ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 15,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.upload_file,
+                                          color: Colors.grey[900],
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          'Upload a file',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey[900],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 30),
-                        _buildSaveButton(),
-                      ],
-                    ),
-
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      _buildSaveButton(),
+                    ],
                   ),
                 ),
               ],
@@ -223,100 +223,94 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   Column buildBioField() {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Bio',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[100],
-            ),
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(
+        'Bio',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey[100],
+        ),
+      ),
+      const SizedBox(height: 8),
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Colors.grey.shade300,
           ),
-          const SizedBox(height: 8),
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.grey.shade300,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TextFormField(
+            initialValue: widget.initialUser.bio,
+            maxLines: 3,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: 'My life, through music.',
+              hintStyle: TextStyle(
+                color: Colors.grey[400],
+                fontSize: 14,
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextFormField(
-                initialValue: widget.initialUser.bio,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'My life, through music.',
-                  hintStyle: TextStyle(
-                    color: Colors.grey[400],
-                    fontSize: 14,
-                  ),
-                ),
-                keyboardType: TextInputType.multiline,
-                onChanged: (value) {
-                  setState(() {
-                    _bio = value;
-                  });
-                },
-              ),
-            ),
+            keyboardType: TextInputType.multiline,
+            onChanged: (value) {
+              setState(() {
+                _bio = value;
+              });
+            },
           ),
-        ]
-    );
+        ),
+      ),
+    ]);
   }
 
   Column buildNameField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Name',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[100],
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text(
+        'Name',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey[100],
+        ),
+      ),
+      const SizedBox(height: 8),
+      Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: Colors.grey.shade300,
           ),
         ),
-        const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(
-              color: Colors.grey.shade300,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: TextFormField(
-              initialValue: widget.initialUser.nickname,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Taylor',
-                hintStyle: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 14,
-                ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: TextFormField(
+            initialValue: widget.initialUser.nickname,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: 'Taylor',
+              hintStyle: TextStyle(
+                color: Colors.grey[400],
+                fontSize: 14,
               ),
-              keyboardType: TextInputType.multiline,
-              onChanged: (value) {
-                setState(() {
-                  _nickname = value;
-                });
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a nickname';
-                }
-                return null;
-              },
             ),
+            keyboardType: TextInputType.multiline,
+            onChanged: (value) {
+              setState(() {
+                _nickname = value;
+              });
+            },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a nickname';
+              }
+              return null;
+            },
           ),
         ),
-      ]
-    );
+      ),
+    ]);
   }
 
   Future<void> _selectProfilePicFromCamera() async {
@@ -351,7 +345,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       builder: (BuildContext context) {
         return SimpleDialog(
           backgroundColor: Colors.black,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           title: const Text("Select a source"),
           children: [
             SimpleDialogOption(

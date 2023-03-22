@@ -24,7 +24,8 @@ Future<DetailedSpotifyAlbum?> getSpotifyAlbum(String albumID) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return DetailedSpotifyAlbum.fromJson(jsonDecode(response.body));
+    return DetailedSpotifyAlbum.fromJson(
+        jsonDecode(utf8.decode(response.bodyBytes)));
   } else {
     return null;
   }
@@ -48,8 +49,9 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<SpotifyAlbum>.from(
-        json.decode(response.body).map((x) => SpotifyAlbum.fromJson(x)));
+    return List<SpotifyAlbum>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => SpotifyAlbum.fromJson(x)));
   } else {
     return null;
   }
@@ -73,8 +75,9 @@ Future<List<SpotifyAlbum>?> getMostPopularAlbums(String timespan) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<SpotifyAlbum>.from(
-        json.decode(response.body).map((x) => SpotifyAlbum.fromJson(x)));
+    return List<SpotifyAlbum>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => SpotifyAlbum.fromJson(x)));
   } else if (response.statusCode == 204) {
     return [];
   } else {
