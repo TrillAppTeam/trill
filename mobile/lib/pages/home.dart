@@ -153,11 +153,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                     _buildPopularAlbums(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
                     ScrollableAlbumsRow(
                       title: "Hello, Grammys",
                       albums: Constants.grammyList,
                     ),
+                    const SizedBox(height: 10),
                     const Text(
                       'Explore the 2023 Grammy nominees for Album of the Year!',
                       style: TextStyle(
@@ -168,8 +169,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 30),
                     ScrollableAlbumsRow(
-                        title: "Trill Team Favorites",
-                        albums: Constants.trillList),
+                      title: "Trill Team Favorites",
+                      albums: Constants.trillList,
+                    ),
+                    const SizedBox(height: 10),
                     const Text(
                       'Our team\'s top picks.',
                       style: TextStyle(
