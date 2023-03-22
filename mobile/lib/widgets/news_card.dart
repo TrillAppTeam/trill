@@ -50,6 +50,7 @@ class NewsCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
+                      color: Color(0xFFcbd5e1),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -59,6 +60,7 @@ class NewsCard extends StatelessWidget {
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
                       fontStyle: FontStyle.italic,
+                      color: Color(0xFF94a3b8),
                     ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
