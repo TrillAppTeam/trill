@@ -57,7 +57,7 @@ class _FavoriteButtonState extends State<FavoriteButton> {
         height: 30,
         decoration: BoxDecoration(
           color:
-              _isFavorited ? const Color(0xFFAA2222) : const Color(0xFF383B59),
+              _isFavorited ? const Color(0xFF3FBCF4) : const Color(0xFF383B59),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
@@ -65,10 +65,11 @@ class _FavoriteButtonState extends State<FavoriteButton> {
           child: Center(
             child: Text(
               _isFavorited ? 'REMOVE FROM FAVORITES' : 'ADD TO FAVORITES',
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: _isFavorited ? Colors.black : Colors.grey[200],
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
+                letterSpacing: .2,
               ),
             ),
           ),

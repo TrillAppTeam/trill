@@ -28,6 +28,7 @@ class UserRow extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -50,11 +51,15 @@ class UserRow extends StatelessWidget {
                         ),
                       ),
                     const SizedBox(width: 8),
-                    Text(
-                      _user.bio,
-                      style: TextStyle(color: Colors.grey[400]),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    SizedBox(
+                      width: 150,
+                      child: Text(
+                        _user.bio,
+                        style: TextStyle(color: Colors.grey[400]),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                      ),
                     ),
                   ],
                 ),

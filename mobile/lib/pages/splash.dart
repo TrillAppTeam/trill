@@ -56,7 +56,8 @@ class SplashScreen extends StatelessWidget {
                         'Tell your friends what\'s good.',
                         style: TextStyle(
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.italic,
                           height: 1.5,
                         ),
                         textAlign: TextAlign.center,

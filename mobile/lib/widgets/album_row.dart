@@ -34,7 +34,7 @@ class AlbumRow extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Row(
+                Wrap(
                   children: [
                     Text(
                       _album.artists.map((artist) => artist.name).join(", "),

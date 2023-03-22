@@ -33,7 +33,7 @@ Future<Review?> getReview(String albumID, [String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return Review.fromJson(jsonDecode(response.body));
+    return Review.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
   } else if (response.statusCode == 204) {
     safePrint('$tag No content; returning null');
     return null;
@@ -66,8 +66,9 @@ Future<List<Review>?> getAlbumReviews(
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<Review>.from(
-        json.decode(response.body).map((x) => Review.fromJson(x)));
+    return List<Review>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => Review.fromJson(x)));
   } else {
     return null;
   }
@@ -98,8 +99,9 @@ Future<List<DetailedReview>?> getReviews(String sort,
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<DetailedReview>.from(
-        json.decode(response.body).map((x) => DetailedReview.fromJson(x)));
+    return List<DetailedReview>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => DetailedReview.fromJson(x)));
   } else {
     return null;
   }
@@ -121,8 +123,9 @@ Future<List<DetailedReview>?> getFriendsFeed() async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<DetailedReview>.from(
-        json.decode(response.body).map((x) => DetailedReview.fromJson(x)));
+    return List<DetailedReview>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => DetailedReview.fromJson(x)));
   } else {
     return null;
   }

@@ -5,7 +5,6 @@ import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/scrollable_albums_row.dart';
 
 import '../widgets/news_card.dart';
-import 'album_details.dart';
 
 class HomeScreen extends StatefulWidget {
   final String nickname;

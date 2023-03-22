@@ -68,20 +68,3 @@ Future<bool> unlikeReview(int reviewID) async {
 
   return response.statusCode == 200;
 }
-
-class Like {
-  final String username;
-  final int reviewID;
-
-  const Like({
-    required this.username,
-    required this.reviewID,
-  });
-
-  factory Like.fromJson(Map<String, dynamic> json) {
-    return Like(
-      username: json['username'],
-      reviewID: json['review_id'],
-    );
-  }
-}

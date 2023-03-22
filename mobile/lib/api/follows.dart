@@ -28,8 +28,9 @@ Future<List<User>?> getFollowers([String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<User>.from(
-        json.decode(response.body).map((x) => User.fromJson(x)));
+    return List<User>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => User.fromJson(x)));
   } else {
     return null;
   }
@@ -56,8 +57,9 @@ Future<List<User>?> getFollowing([String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<User>.from(
-        json.decode(response.body).map((x) => User.fromJson(x)));
+    return List<User>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => User.fromJson(x)));
   } else {
     return null;
   }
