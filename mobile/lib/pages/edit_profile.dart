@@ -38,6 +38,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final success = await updateCurrUser(
         nickname: _nickname,
         bio: _bio,
+        profilePic: _profilePic,
       );
 
       if (success) {
@@ -122,7 +123,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _selectProfilePic,
+                  onPressed: () async {
+                    await _selectImageSource(context);
+                  },
                   child: const Text('Edit Profile Picture'),
                 ),
                 const SizedBox(height: 20),
@@ -138,12 +141,76 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
-  Future<void> _selectProfilePic() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _profilePic = pickedFile;
-      });
+  Future<void> _selectProfilePicFromCamera() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.camera, // Set default to camera
+    );
+    if (pickedFile == null) {
+      return;
     }
+
+    setState(() {
+      _profilePic = XFile(pickedFile.path);
+    });
+  }
+
+  Future<void> _selectProfilePicFromGallery() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (pickedFile == null) {
+      return;
+    }
+
+    setState(() {
+      _profilePic = XFile(pickedFile.path);
+    });
+  }
+
+  Future<void> _selectImageSource(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: const Text("Select a source"),
+          children: [
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _selectProfilePicFromGallery();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  children: const [
+                    Icon(Icons.photo_library, color: Colors.blue),
+                    SizedBox(width: 16),
+                    Text("Gallery", style: TextStyle(fontSize: 16)),
+                  ],
+                ),
+              ),
+            ),
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _selectProfilePicFromCamera();
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  children: const [
+                    Icon(Icons.camera_alt, color: Colors.blue),
+                    SizedBox(width: 16),
+                    Text("Camera", style: TextStyle(fontSize: 16)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
