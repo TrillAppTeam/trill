@@ -270,7 +270,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                 'Reviews',
                 style: TextStyle(
                   fontSize: 21,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900,
                   fontStyle: FontStyle.italic,
                   letterSpacing: .6,
                   color: Colors.grey[300],
@@ -307,7 +307,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                 style: const TextStyle(
                   color: Color(0xFF3FBCF4),
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900,
                 ),
                 underline: Container(
                   height: 2,
@@ -429,7 +429,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         style: TextStyle(
           color: Color(0xFF3FBCF4),
           fontSize: 16.0,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w900,
         ),
       ),
     );

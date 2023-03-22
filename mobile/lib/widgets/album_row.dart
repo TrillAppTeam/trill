@@ -30,7 +30,8 @@ class AlbumRow extends StatelessWidget {
                   _album.name,
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
                 const SizedBox(height: 4),
