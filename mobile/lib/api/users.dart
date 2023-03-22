@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/constants.dart';
 
@@ -59,7 +60,7 @@ Future<DetailedUser?> getDetailedUser([String? username]) async {
 
 // idk what file type we need so we can change it
 Future<bool> updateCurrUser(
-    {String? nickname, String? bio, File? profilePic}) async {
+    {String? nickname, String? bio, XFile? profilePic}) async {
   const String tag = '[updateCurrUser]';
 
   safePrint(
@@ -74,6 +75,7 @@ Future<bool> updateCurrUser(
   );
 
   request.headers.addAll({
+    'Content-Type': 'multipart/form-data',
     'Authorization': 'Bearer $token',
   });
 
@@ -85,9 +87,8 @@ Future<bool> updateCurrUser(
   }
   // will prob need to change constructor here; not tested
   if (profilePic != null) {
-    request.files.add(
-      http.MultipartFile.fromBytes('file', await profilePic.readAsBytes()),
-    );
+    final file = await http.MultipartFile.fromPath('profilePicture', profilePic.path);
+    request.files.add(file);
   }
 
   final response = await request.send();

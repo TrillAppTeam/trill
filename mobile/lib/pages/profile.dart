@@ -68,7 +68,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: _isLoggedIn ? null : AppBar(),
       body: _isLoading
           ? const LoadingScreen()
-          : RefreshIndicator(
+          : GestureDetector(
+              onTap: () {
+                final FocusScopeNode currentScope = FocusScope.of(context);
+                if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                }
+              },
+            child: RefreshIndicator(
               onRefresh: _fetchUserDetails,
               backgroundColor: const Color(0xFF1A1B29),
               color: const Color(0xFF3FBCF4),
@@ -106,6 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
             ),
+      ),
     );
   }
 
@@ -219,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 _user.bio,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 14,
                   color: Colors.grey[500],
                 ),
               ),
