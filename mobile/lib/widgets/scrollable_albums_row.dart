@@ -22,7 +22,11 @@ class ScrollableAlbumsRow extends StatelessWidget {
         if (title != null)
           Text(
             title!,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 20,
+              color: Color(0xFFcbd5e1),
+            ),
           ),
         if (title != null) const SizedBox(height: 15),
         albums.isEmpty
