@@ -180,8 +180,8 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
                   widget.review.album.name,
                   style: const TextStyle(
                     fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 18,
                     color: Color(0xFFEEEEEE),
                   ),
                 ),
