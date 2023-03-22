@@ -302,11 +302,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text(
                 _isLoggedIn ? 'My Reviews' : '${_user.nickname}\'s Reviews',
                 style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
                   letterSpacing: .6,
-                  color: Colors.grey[300],
+                  color: Color(0xFFcbd5e1),
                 ),
               ),
               DropdownButton<String>(
