@@ -180,9 +180,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   _album.name,
                   style: const TextStyle(
                     fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
                     fontStyle: FontStyle.italic,
-                    letterSpacing: .5,
                   ),
                 ),
                 const SizedBox(height: 8.0),
