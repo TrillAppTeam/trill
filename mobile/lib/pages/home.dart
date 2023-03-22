@@ -66,13 +66,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontWeight: FontWeight.w900,
                             ),
                           ),
-                          Text(
+                          GradientText(
                             ' $_nickname.',
                             style: const TextStyle(
                               color: Colors.blue,
                               fontSize: 30,
                               fontWeight: FontWeight.w900,
                             ),
+                            gradient: LinearGradient(colors: [
+                              Color(0xFF60a5fa),
+                              Color(0xFF5eead4),
+                            ]),
                           ),
                         ],
                       ),
@@ -94,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Text(
                           'Popular Albums Globally',
                           style: TextStyle(
-                            fontSize: 20.0,
+                            fontSize: 18.0,
                             fontWeight: FontWeight.w900,
                             color: Color(0xFFcbd5e1),
                           ),
@@ -137,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           elevation: 16,
                           style: const TextStyle(
                             color: Color(0xFF3FBCF4),
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: FontWeight.w900,
                           ),
                           underline: Container(
@@ -148,7 +152,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 5),
                     _buildPopularAlbums(),
                     const SizedBox(height: 20),
                     ScrollableAlbumsRow(
@@ -180,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Recent News',
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
-                        fontSize: 20,
+                        fontSize: 18,
                         color: Color(0xFFcbd5e1),
                       ),
                     ),
@@ -243,6 +246,29 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class GradientText extends StatelessWidget {
+  const GradientText(
+    this.text, {
+    required this.gradient,
+    this.style,
+  });
+
+  final String text;
+  final TextStyle? style;
+  final Gradient gradient;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) => gradient.createShader(
+        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+      ),
+      child: Text(text, style: style),
     );
   }
 }

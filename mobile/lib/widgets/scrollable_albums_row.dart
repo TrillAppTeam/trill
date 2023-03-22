@@ -24,7 +24,7 @@ class ScrollableAlbumsRow extends StatelessWidget {
             title!,
             style: const TextStyle(
               fontWeight: FontWeight.w900,
-              fontSize: 20,
+              fontSize: 18,
               color: Color(0xFFcbd5e1),
             ),
           ),
