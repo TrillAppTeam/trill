@@ -36,7 +36,7 @@ function NoTextAlbumReview(props) {
                         
                         <div className="tooltip" data-tip={username}>
                             <Link to={`/User/Profile/${username}`}>
-                                <p className="text-md text-gray-300 pl-2 pt-1 font-bold hover:text-trillBlue line-clamp-1 truncate">{username.length > 8 ? username.slice(0, 8) + '...' : username}</p>
+                                <p className="text-md text-gray-300 pl-2 pt-1 font-bold hover:text-trillBlue line-clamp-1 truncate">{username.length > 6 ? username.slice(0, 6) + '...' : username}</p>
                             </Link>
                         </div>
                     </div>
