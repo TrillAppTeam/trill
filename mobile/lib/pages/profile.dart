@@ -301,10 +301,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 _isLoggedIn ? 'My Reviews' : '${_user.nickname}\'s Reviews',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w900,
-                  letterSpacing: .6,
                   color: Color(0xFFcbd5e1),
                 ),
               ),
