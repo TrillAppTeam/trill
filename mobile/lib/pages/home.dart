@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Welcome back,',
                           style: TextStyle(
                             fontSize: 30,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
                         Text(
@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(
                             color: Colors.blue,
                             fontSize: 30,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
                       ],
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Here\'s what the world has been listening to.',
                       style: TextStyle(
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Popular Albums Globally',
                           style: TextStyle(
                             fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w900,
                           ),
                         ),
                         DropdownButton<String>(
@@ -132,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: const TextStyle(
                             color: Color(0xFF3FBCF4),
                             fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w900,
                           ),
                           underline: Container(
                             height: 2,
@@ -149,7 +149,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: "Hello, Grammys", albums: Constants.grammyList),
                     const Text(
                       'Explore the 2023 Grammy nominees for Album of the Year!',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     ScrollableAlbumsRow(
@@ -157,13 +160,18 @@ class _HomeScreenState extends State<HomeScreen> {
                         albums: Constants.trillList),
                     const Text(
                       'Our team\'s top picks.',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const Text(
                       'Recent News',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 20,
+                      ),
                     ),
                     const SizedBox(height: 20),
                     NewsCard(
@@ -217,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(
             color: Color(0xFF3FBCF4),
             fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w900,
           ),
         ),
       ),
