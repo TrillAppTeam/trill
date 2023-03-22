@@ -55,24 +55,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        const Text(
-                          'Welcome back,',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w900,
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Welcome back,',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
-                        ),
-                        Text(
-                          ' $_nickname.',
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w900,
+                          Text(
+                            ' $_nickname.',
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 10),
                     const Text(
@@ -82,8 +85,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontWeight: FontWeight.w900,
                         fontStyle: FontStyle.italic,
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -179,6 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontSize: 20,
                         color: Color(0xFFcbd5e1),
                       ),
+                    ),
+                    Divider(
+                      color: Colors.grey[700],
                     ),
                     const SizedBox(height: 20),
                     NewsCard(

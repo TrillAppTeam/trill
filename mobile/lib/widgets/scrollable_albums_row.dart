@@ -28,7 +28,9 @@ class ScrollableAlbumsRow extends StatelessWidget {
               color: Color(0xFFcbd5e1),
             ),
           ),
-        if (title != null) const SizedBox(height: 15),
+        Divider(
+          color: Colors.grey[700],
+        ),
         albums.isEmpty
             ? Row(
                 children: [
