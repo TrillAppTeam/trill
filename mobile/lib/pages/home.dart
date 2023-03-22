@@ -166,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Color(0xFF94a3b8),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     ScrollableAlbumsRow(
                         title: "Trill Team Favorites",
                         albums: Constants.trillList),
@@ -178,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: Color(0xFF94a3b8),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     const Text(
                       'Recent News',
                       style: TextStyle(

@@ -185,6 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (_user.bio.isNotEmpty) const SizedBox(height: 12),
           if (_user.bio.isNotEmpty)
             Wrap(
+              alignment: WrapAlignment.start,
               children: [
                 Text(
                   _user.bio,
