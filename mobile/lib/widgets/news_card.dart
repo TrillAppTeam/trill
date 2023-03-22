@@ -7,7 +7,12 @@ class NewsCard extends StatelessWidget {
   final String imgLink;
   final String body;
 
-  const NewsCard({super.key, required this.title, required this.newsLink, required this.imgLink, required this.body});
+  const NewsCard(
+      {super.key,
+      required this.title,
+      required this.newsLink,
+      required this.imgLink,
+      required this.body});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +21,7 @@ class NewsCard extends StatelessWidget {
         launchUrl(Uri.parse(newsLink));
       },
       child: Card(
-        color: Colors.grey[700],
+        color: Color(0xFF334155),
         shadowColor: Colors.grey[900],
         elevation: 5.0,
         margin: const EdgeInsets.only(bottom: 10.0),
@@ -43,15 +48,17 @@ class NewsCard extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
                   const SizedBox(height: 10),
                   Text(
                     body,
                     style: const TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w900,
+                      fontStyle: FontStyle.italic,
                     ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
