@@ -83,7 +83,7 @@ function Profile() {
                             }
                         </div>
                         <h1 className="text-xl text-gray-400 italic">@{userData?.username}</h1>
-                        <h2 className="text-xl pt-2 text-gray-500">{userData?.bio}</h2>
+                        <h2 className="text-xl pt-2 text-gray-500 max-w-sm whitespace-normal break-words">{userData?.bio}</h2>
                     </div>
                 </div>
               
@@ -105,9 +105,7 @@ function Profile() {
                                 : <h1 className="italic text-trillBlue">No favorite albums.</h1>
                             }
                         </div>
-                </div>
-                
-                {/* <AvgReviews /> */}
+                </div>                
             </div>
 
             {/* Recent Reviews: Last 2 reviews from the user */}
