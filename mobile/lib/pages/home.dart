@@ -80,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
+                        fontStyle: FontStyle.italic,
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -91,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.w900,
+                            color: Color(0xFFcbd5e1),
                           ),
                         ),
                         DropdownButton<String>(
@@ -146,12 +148,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildPopularAlbums(),
                     const SizedBox(height: 20),
                     ScrollableAlbumsRow(
-                        title: "Hello, Grammys", albums: Constants.grammyList),
+                      title: "Hello, Grammys",
+                      albums: Constants.grammyList,
+                    ),
                     const Text(
                       'Explore the 2023 Grammy nominees for Album of the Year!',
                       style: TextStyle(
                         fontSize: 16,
                         fontStyle: FontStyle.italic,
+                        color: Color(0xFF94a3b8),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -163,6 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontStyle: FontStyle.italic,
+                        color: Color(0xFF94a3b8),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -171,6 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 20,
+                        color: Color(0xFFcbd5e1),
                       ),
                     ),
                     const SizedBox(height: 20),
