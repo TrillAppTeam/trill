@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:trill/api/albums.dart';
 import 'package:trill/constants.dart';
 import 'package:trill/pages/loading_screen.dart';
+import 'package:trill/widgets/gradient_text.dart';
 import 'package:trill/widgets/scrollable_albums_row.dart';
 
 import '../widgets/news_card.dart';
@@ -51,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: const Color(0xFF3FBCF4),
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -59,11 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
+                          Text(
                             'Welcome back,',
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.w900,
+                              color: Colors.grey[200],
                             ),
                           ),
                           GradientText(
@@ -73,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               fontSize: 30,
                               fontWeight: FontWeight.w900,
                             ),
-                            gradient: LinearGradient(colors: [
+                            gradient: const LinearGradient(colors: [
                               Color(0xFF60a5fa),
                               Color(0xFF5eead4),
                             ]),
@@ -81,17 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Here\'s what the world has been listening to.',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
-                        fontStyle: FontStyle.italic,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 25),
+                    const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -138,17 +130,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Color(0xFF3FBCF4),
                           ),
                           iconSize: 24,
-                          elevation: 16,
+                          elevation: 3,
                           style: const TextStyle(
                             color: Color(0xFF3FBCF4),
-                            fontSize: 14,
+                            fontSize: 16,
                             fontWeight: FontWeight.w900,
                           ),
                           underline: Container(
                             height: 2,
                             color: const Color(0xFF3FBCF4),
                           ),
-                          dropdownColor: const Color(0xFF1A1B29),
+                          dropdownColor: const Color(0xFF222331),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(5),
+                          ),
                         ),
                       ],
                     ),
@@ -160,9 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'Explore the 2023 Grammy nominees for Album of the Year!',
+                      'The 2023 Album of the Year Grammy nominees!',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF94a3b8),
                       ),
@@ -176,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text(
                       'Our team\'s top picks.',
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 15,
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF94a3b8),
                       ),
@@ -192,6 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Divider(
                       color: Colors.grey[700],
+                      thickness: 2,
                     ),
                     const SizedBox(height: 20),
                     NewsCard(
@@ -249,29 +245,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class GradientText extends StatelessWidget {
-  const GradientText(
-    this.text, {
-    required this.gradient,
-    this.style,
-  });
-
-  final String text;
-  final TextStyle? style;
-  final Gradient gradient;
-
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      blendMode: BlendMode.srcIn,
-      shaderCallback: (bounds) => gradient.createShader(
-        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-      ),
-      child: Text(text, style: style),
     );
   }
 }

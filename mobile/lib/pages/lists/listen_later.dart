@@ -85,7 +85,12 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
                             ),
                           );
                         },
-                        child: AlbumRow(album: _listenLaterAlbums[index]),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                          child: AlbumRow(album: _listenLaterAlbums[index]),
+                        ),
                       );
                     },
                   ),

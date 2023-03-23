@@ -32,6 +32,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late SharedPreferences _prefs;
   late DetailedUser _user;
 
+  String? _loggedInUsername;
   bool _isLoggedIn = false;
   bool _isLoading = false;
 
@@ -51,6 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     _prefs = await SharedPreferences.getInstance();
     String loggedInUser = _prefs.getString('username') ?? "";
+    _loggedInUsername = loggedInUser;
     _isLoggedIn = loggedInUser == widget.username;
 
     final user = await getDetailedUser(widget.username);
@@ -99,7 +101,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               albums: snapshot.hasData ? snapshot.data! : [],
                               emptyText: _isLoggedIn
                                   ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
-                                  : 'No favorite albums yet',
+                                  : 'No favorite albums yet.',
                             );
                           },
                         ),
@@ -122,6 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 15, 24, 8),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -185,7 +188,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (_user.bio.isNotEmpty) const SizedBox(height: 12),
           if (_user.bio.isNotEmpty)
             Wrap(
-              alignment: WrapAlignment.start,
               children: [
                 Text(
                   _user.bio,
@@ -264,6 +266,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 MaterialPageRoute(
                   builder: (context) => FollowsScreen(
                     username: _user.username,
+                    loggedInUsername: _loggedInUsername ?? '',
                     followType: FollowType.following,
                   ),
                 ),
@@ -279,6 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 MaterialPageRoute(
                   builder: (context) => FollowsScreen(
                     username: _user.username,
+                    loggedInUsername: _loggedInUsername ?? '',
                     followType: FollowType.follower,
                   ),
                 ),
@@ -301,10 +305,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 _isLoggedIn ? 'My Reviews' : '${_user.nickname}\'s Reviews',
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w900,
-                  color: Color(0xFFcbd5e1),
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: .6,
+                  color: Colors.grey[300],
                 ),
               ),
               DropdownButton<String>(

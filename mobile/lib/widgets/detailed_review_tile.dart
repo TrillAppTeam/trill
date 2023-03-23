@@ -154,7 +154,7 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(2),
               border: Border.all(
-                color: Color(0xFF6b7280)!,
+                color: const Color(0xFF6b7280),
                 width: 2,
               ),
             ),
@@ -174,10 +174,10 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
               Container(
                 constraints: const BoxConstraints(maxWidth: 250),
                 child: Text(
+                  widget.review.album.name,
                   overflow: TextOverflow.fade,
                   maxLines: 1,
                   softWrap: false,
-                  widget.review.album.name,
                   style: const TextStyle(
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w900,
@@ -190,30 +190,24 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
               Row(
                 children: [
                   Container(
-                    constraints: const BoxConstraints(maxWidth: 250),
-                    child: RichText(
-                      overflow: TextOverflow.fade,
+                    constraints: const BoxConstraints(maxWidth: 200),
+                    child: Text(
+                      widget.review.album.artists
+                          .map((artist) => artist.name)
+                          .join(", "),
+                      overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       softWrap: false,
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: widget.review.album.artists.map((artist) => artist.name).join(", "),
-                            style: const TextStyle(
-                              color: Color(0xFFCCCCCC),
-                              fontSize: 16,
-                              letterSpacing: .2,
-                            ),
-                          ),
-                          TextSpan(
-                            text: "  ${DateFormat('yyyy').format(widget.review.album.releaseDate)}",
-                            style: const TextStyle(
-                              color: Color(0xFF999999),
-                              letterSpacing: .3,
-                            ),
-                          ),
-                        ],
+                      style: const TextStyle(
+                        color: Color(0xFFCCCCCC),
                       ),
+                    ),
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    DateFormat('yyyy').format(widget.review.album.releaseDate),
+                    style: const TextStyle(
+                      color: Color(0xFF999999),
                     ),
                   ),
                 ],

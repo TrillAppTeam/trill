@@ -22,7 +22,7 @@ class AlbumRow extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(2),
               border: Border.all(
-                color: Color(0xFF6b7280)!,
+                color: const Color(0xFF6b7280),
                 width: 2,
               ),
             ),
@@ -41,8 +41,10 @@ class AlbumRow extends StatelessWidget {
               children: [
                 Text(
                   _album.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 17,
                     fontWeight: FontWeight.w900,
                     fontStyle: FontStyle.italic,
                   ),

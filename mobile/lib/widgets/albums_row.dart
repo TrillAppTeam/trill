@@ -64,11 +64,10 @@ class _AlbumsRowState extends State<AlbumsRow> {
                         );
                       },
                       child: Container(
-                        width: 85,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(2),
                           border: Border.all(
-                            color: const Color(0xFF6b7280)!,
+                            color: const Color(0xFF6b7280),
                             width: 2,
                           ),
                         ),
@@ -76,8 +75,8 @@ class _AlbumsRowState extends State<AlbumsRow> {
                           borderRadius: BorderRadius.circular(2),
                           child: Image.network(
                             album.images[0].url,
-                            width: 80,
-                            height: 80,
+                            width: 75,
+                            height: 75,
                             fit: BoxFit.cover,
                           ),
                         ),

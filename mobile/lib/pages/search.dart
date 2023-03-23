@@ -74,15 +74,15 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: TextFormField(
+                        child: TextField(
                           controller: _searchController,
                           decoration: InputDecoration(
-                            focusedBorder: const OutlineInputBorder(
-                              borderRadius: BorderRadius.all(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(10),
                               ),
                               borderSide: BorderSide(
-                                color: Color(0xFF3FBCF4),
+                                color: Colors.grey[600]!,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
@@ -96,6 +96,11 @@ class _SearchScreenState extends State<SearchScreen> {
                             contentPadding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 12,
+                            ),
+                            hintText: 'Search...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 14,
                             ),
                           ),
                           onChanged: (query) {
@@ -179,6 +184,13 @@ class _SearchScreenState extends State<SearchScreen> {
                               if (_searchType == "albums") {
                                 return InkWell(
                                   onTap: () {
+                                    final FocusScopeNode currentScope =
+                                        FocusScope.of(context);
+                                    if (!currentScope.hasPrimaryFocus &&
+                                        currentScope.hasFocus) {
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                    }
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -194,6 +206,13 @@ class _SearchScreenState extends State<SearchScreen> {
                               } else if (_searchType == "users") {
                                 return InkWell(
                                   onTap: () {
+                                    final FocusScopeNode currentScope =
+                                        FocusScope.of(context);
+                                    if (!currentScope.hasPrimaryFocus &&
+                                        currentScope.hasFocus) {
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                    }
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
