@@ -34,6 +34,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _updateUser() async {
+    final FocusScopeNode currentScope =
+    FocusScope.of(context);
+    if (!currentScope.hasPrimaryFocus &&
+        currentScope.hasFocus) {
+      FocusManager.instance.primaryFocus
+          ?.unfocus();
+    }
+    
     if (_formKey.currentState!.validate()) {
       final success = await updateCurrUser(
         nickname: _nickname,
