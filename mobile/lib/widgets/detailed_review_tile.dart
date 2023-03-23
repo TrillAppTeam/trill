@@ -189,19 +189,31 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
               const SizedBox(height: 5),
               Row(
                 children: [
-                  Text(
-                    widget.review.album.artists
-                        .map((artist) => artist.name)
-                        .join(", "),
-                    style: const TextStyle(
-                      color: Color(0xFFCCCCCC),
-                    ),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    DateFormat('yyyy').format(widget.review.album.releaseDate),
-                    style: const TextStyle(
-                      color: Color(0xFF999999),
+                  Container(
+                    constraints: const BoxConstraints(maxWidth: 250),
+                    child: RichText(
+                      overflow: TextOverflow.fade,
+                      maxLines: 1,
+                      softWrap: false,
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: widget.review.album.artists.map((artist) => artist.name).join(", "),
+                            style: const TextStyle(
+                              color: Color(0xFFCCCCCC),
+                              fontSize: 16,
+                              letterSpacing: .2,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "  ${DateFormat('yyyy').format(widget.review.album.releaseDate)}",
+                            style: const TextStyle(
+                              color: Color(0xFF999999),
+                              letterSpacing: .3,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

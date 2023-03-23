@@ -26,7 +26,7 @@ class _AlbumsRowState extends State<AlbumsRow> {
       children: [
         Text(
           widget.title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w900,
             color: Color(0xFFcbd5e1),
@@ -35,12 +35,15 @@ class _AlbumsRowState extends State<AlbumsRow> {
         const SizedBox(height: 15),
         widget.albums.isEmpty
             ? Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    widget.emptyText ?? '',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      color: Colors.grey[400],
+                  Flexible(
+                    child: Text(
+                      widget.emptyText ?? '',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey[400],
+                      ),
                     ),
                   ),
                 ],
@@ -65,7 +68,7 @@ class _AlbumsRowState extends State<AlbumsRow> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(2),
                           border: Border.all(
-                            color: Color(0xFF6b7280)!,
+                            color: const Color(0xFF6b7280)!,
                             width: 2,
                           ),
                         ),
