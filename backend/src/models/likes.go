@@ -23,6 +23,20 @@ func GetLikes(ctx context.Context, reviewID string) (*[]Like, error) {
 	}
 }
 
+func GetLikesFromUser(ctx context.Context, username string) (*[]Like, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var likes []Like
+	if err := db.Where("username = ?", username).Find(&likes).Error; err != nil {
+		return nil, err
+	} else {
+		return &likes, nil
+	}
+}
+
 func CreateLike(ctx context.Context, like *Like) error {
 	if db, err := GetDBFromContext(ctx); err != nil {
 		return err

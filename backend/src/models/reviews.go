@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 	"time"
 
 	"gorm.io/gorm"
@@ -52,7 +53,7 @@ func GetReview(ctx context.Context, username string, albumID string) (*Review, e
 	}
 }
 
-func GetReviews(ctx context.Context, review *Review, following *[]User, paginate *Paginate) (*[]Review, error) {
+func GetReviews(ctx context.Context, review *Review, following *[]User, likes *[]Like, paginate *Paginate) (*[]Review, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -75,10 +76,17 @@ func GetReviews(ctx context.Context, review *Review, following *[]User, paginate
 		}
 		query[fmt.Sprintf("%susername", prepend)] = usernames
 	}
+	if likes != nil {
+		reviewIDs := make([]string, len(*likes))
+		for i, l := range *likes {
+			reviewIDs[i] = strconv.Itoa(l.ReviewID)
+		}
+		query[fmt.Sprintf("%sreview_id", prepend)] = reviewIDs
+	}
 
 	if len(review.AlbumID) != 0 {
 		query[fmt.Sprintf("%salbum_id", prepend)] = review.AlbumID
-	} else if len(review.Username) != 0 && following == nil {
+	} else if len(review.Username) != 0 && following == nil && likes == nil {
 		query[fmt.Sprintf("%susername", prepend)] = review.Username
 	}
 
