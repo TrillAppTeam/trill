@@ -17,9 +17,22 @@ class AlbumRow extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(3),
-            child: Image.network(_album.images[0].url, width: 80, height: 80),
+          Container(
+            width: 85,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              border: Border.all(
+                color: Color(0xFF6b7280)!,
+                width: 2,
+              ),
+            ),
+            child: ClipRRect(
+              child: Image.network(
+                _album.images[0].url,
+                width: 80,
+                height: 80,
+              ),
+            ),
           ),
           const SizedBox(width: 16),
           Flexible(
@@ -30,7 +43,8 @@ class AlbumRow extends StatelessWidget {
                   _album.name,
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
                 const SizedBox(height: 4),

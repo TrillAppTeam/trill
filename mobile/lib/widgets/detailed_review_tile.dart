@@ -149,12 +149,21 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
       },
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(2),
-            child: Image.network(
-              widget.review.album.images[0].url,
-              width: 50,
-              height: 50,
+          Container(
+            width: 54,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              border: Border.all(
+                color: Color(0xFF6b7280)!,
+                width: 2,
+              ),
+            ),
+            child: ClipRRect(
+              child: Image.network(
+                widget.review.album.images[0].url,
+                width: 50,
+                height: 50,
+              ),
             ),
           ),
           const SizedBox(width: 10),
@@ -171,8 +180,8 @@ class _DetailedReviewTileState extends State<DetailedReviewTile> {
                   widget.review.album.name,
                   style: const TextStyle(
                     fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 18,
                     color: Color(0xFFEEEEEE),
                   ),
                 ),

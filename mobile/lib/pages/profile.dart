@@ -185,6 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (_user.bio.isNotEmpty) const SizedBox(height: 12),
           if (_user.bio.isNotEmpty)
             Wrap(
+              alignment: WrapAlignment.start,
               children: [
                 Text(
                   _user.bio,
@@ -300,12 +301,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 _isLoggedIn ? 'My Reviews' : '${_user.nickname}\'s Reviews',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                  letterSpacing: .6,
-                  color: Colors.grey[300],
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: Color(0xFFcbd5e1),
                 ),
               ),
               DropdownButton<String>(

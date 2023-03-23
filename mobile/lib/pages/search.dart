@@ -151,7 +151,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         style: const TextStyle(
                           color: Color(0xFF3FBCF4),
                           fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w900,
                         ),
                         underline: Container(
                           height: 2,
