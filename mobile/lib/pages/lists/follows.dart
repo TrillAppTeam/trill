@@ -8,11 +8,13 @@ import '../profile.dart';
 
 class FollowsScreen extends StatefulWidget {
   final String username;
+  final String loggedInUsername;
   final FollowType followType;
 
   const FollowsScreen({
     super.key,
     required this.username,
+    required this.loggedInUsername,
     required this.followType,
   });
 
@@ -67,6 +69,7 @@ class _FollowsScreenState extends State<FollowsScreen>
             Tab(text: 'Following'),
             Tab(text: 'Followers'),
           ],
+          labelColor: Colors.grey[200],
           onTap: (index) {
             setState(() {
               _tabController!.index = index;
@@ -86,14 +89,17 @@ class _FollowsScreenState extends State<FollowsScreen>
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProfileScreen(
-                            username: _userResults[index].username,
+                      if (widget.loggedInUsername !=
+                          _userResults[index].username) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfileScreen(
+                              username: _userResults[index].username,
+                            ),
                           ),
-                        ),
-                      );
+                        );
+                      }
                     },
                     child: ListTile(
                       title: Text(
@@ -102,7 +108,8 @@ class _FollowsScreenState extends State<FollowsScreen>
                       ),
                       subtitle: Text('@${_userResults[index].username}'),
                       leading: ProfilePic(user: _userResults[index]),
-                      trailing: _tabController!.index == 0
+                      trailing: _tabController!.index == 0 &&
+                              widget.loggedInUsername == widget.username
                           ? FollowUserButton(
                               username: _userResults[index].username,
                               isFollowing: true,

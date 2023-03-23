@@ -21,7 +21,7 @@ class NewsCard extends StatelessWidget {
         launchUrl(Uri.parse(newsLink));
       },
       child: Card(
-        color: Color(0xFF334155),
+        color: const Color(0xFF334155),
         shadowColor: Colors.grey[900],
         elevation: 5.0,
         margin: const EdgeInsets.only(bottom: 15.0),
@@ -48,7 +48,7 @@ class NewsCard extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 18,
+                      fontSize: 17,
                       fontWeight: FontWeight.w900,
                       color: Color(0xFFcbd5e1),
                     ),
@@ -59,6 +59,7 @@ class NewsCard extends StatelessWidget {
                       body,
                       style: const TextStyle(
                         fontSize: 14,
+                        fontWeight: FontWeight.w500,
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF94a3b8),
                       ),

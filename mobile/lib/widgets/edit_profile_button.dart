@@ -40,11 +40,11 @@ class _EditProfileButtonState extends State<EditProfileButton> {
           color: const Color(0xFF374151),
           borderRadius: BorderRadius.circular(5),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
             'EDIT PROFILE',
             style: TextStyle(
-              color: Colors.white,
+              color: Colors.grey[200],
               fontWeight: FontWeight.w900,
               fontSize: 12.0,
             ),

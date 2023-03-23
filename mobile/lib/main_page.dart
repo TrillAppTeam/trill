@@ -162,27 +162,31 @@ class _MainPageState extends State<MainPage> {
                       _title = 'My Profile';
                       break;
                   }
+                  final FocusScopeNode currentScope = FocusScope.of(context);
+                  if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
                 },
                 items: const [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined),
                     activeIcon: Icon(Icons.home),
-                    label: '____',
+                    label: 'Home',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.search_outlined),
                     activeIcon: Icon(Icons.search),
-                    label: '____',
+                    label: 'Search',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.people_alt_outlined),
                     activeIcon: Icon(Icons.people_alt),
-                    label: '____',
+                    label: 'Friends Feed',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.person_outline_outlined),
                     activeIcon: Icon(Icons.person),
-                    label: '____',
+                    label: 'My Profile',
                   ),
                 ],
               ),
