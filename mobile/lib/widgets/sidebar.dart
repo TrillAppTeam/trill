@@ -7,6 +7,7 @@ import 'package:trill/pages/lists/follows.dart';
 import 'package:trill/pages/lists/listen_later.dart';
 import 'package:trill/pages/login.dart';
 import 'package:trill/widgets/follow_button.dart';
+import 'package:trill/widgets/gradient_text.dart';
 import 'package:trill/widgets/profile_pic.dart';
 
 class Sidebar extends StatefulWidget {
@@ -85,12 +86,22 @@ class _SidebarState extends State<Sidebar> {
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
                       ),
-                      gradient: LinearGradient(colors: [
+                      gradient: const LinearGradient(colors: [
                         Color(0xFF60a5fa),
                         Color(0xFF5eead4),
                       ]),
                     ),
-                    Text('@${_user.username}'),
+                    const SizedBox(height: 2),
+                    Text(
+                      '@${_user.username}',
+                      style: TextStyle(
+                        color: Colors.grey[400],
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                        letterSpacing: .3,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -102,11 +113,18 @@ class _SidebarState extends State<Sidebar> {
               child: Column(
                 children: [
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.favorite_outline,
-                      color: Colors.white,
+                      color: Colors.grey[300],
                     ),
-                    title: const Text('Liked Reviews'),
+                    title: Text(
+                      'Liked Reviews',
+                      style: TextStyle(
+                        color: Colors.grey[300],
+                        fontSize: 16,
+                        letterSpacing: .3,
+                      ),
+                    ),
                     onTap: () {
                       // Navigator.push(
                       //   context,
@@ -117,11 +135,18 @@ class _SidebarState extends State<Sidebar> {
                     },
                   ),
                   ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                       Icons.bookmark_border,
-                      color: Colors.white,
+                      color: Colors.grey[300],
                     ),
-                    title: const Text('Listen Later'),
+                    title: Text(
+                      'Listen Later',
+                      style: TextStyle(
+                        color: Colors.grey[300],
+                        fontSize: 16,
+                        letterSpacing: .3,
+                      ),
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -133,9 +158,15 @@ class _SidebarState extends State<Sidebar> {
                   ),
                   const SizedBox(height: 50),
                   ListTile(
-                    leading:
-                        const Icon(Icons.edit_outlined, color: Colors.white),
-                    title: const Text('Edit Profile'),
+                    leading: Icon(Icons.edit_outlined, color: Colors.grey[300]),
+                    title: Text(
+                      'Edit Profile',
+                      style: TextStyle(
+                        color: Colors.grey[300],
+                        fontSize: 16,
+                        letterSpacing: .3,
+                      ),
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -153,8 +184,15 @@ class _SidebarState extends State<Sidebar> {
                   ),
                   ListTile(
                     leading:
-                        const Icon(Icons.logout_outlined, color: Colors.white),
-                    title: const Text('Sign Out'),
+                        Icon(Icons.logout_outlined, color: Colors.grey[300]),
+                    title: Text(
+                      'Sign Out',
+                      style: TextStyle(
+                        color: Colors.grey[300],
+                        fontSize: 16,
+                        letterSpacing: .3,
+                      ),
+                    ),
                     onTap: () {
                       // TODO: Remove global sign out here and in sidebar signout
                       //  if hosted UI is removed from app
@@ -199,6 +237,7 @@ class _SidebarState extends State<Sidebar> {
               MaterialPageRoute(
                 builder: (context) => FollowsScreen(
                   username: _user.username,
+                  loggedInUsername: _user.username,
                   followType: FollowType.following,
                 ),
               ),
@@ -214,6 +253,7 @@ class _SidebarState extends State<Sidebar> {
               MaterialPageRoute(
                 builder: (context) => FollowsScreen(
                   username: _user.username,
+                  loggedInUsername: _user.username,
                   followType: FollowType.follower,
                 ),
               ),
@@ -221,29 +261,6 @@ class _SidebarState extends State<Sidebar> {
           },
         ),
       ],
-    );
-  }
-}
-
-class GradientText extends StatelessWidget {
-  const GradientText(
-    this.text, {
-    required this.gradient,
-    this.style,
-  });
-
-  final String text;
-  final TextStyle? style;
-  final Gradient gradient;
-
-  @override
-  Widget build(BuildContext context) {
-    return ShaderMask(
-      blendMode: BlendMode.srcIn,
-      shaderCallback: (bounds) => gradient.createShader(
-        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
-      ),
-      child: Text(text, style: style),
     );
   }
 }

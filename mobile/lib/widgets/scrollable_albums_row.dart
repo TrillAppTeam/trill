@@ -30,6 +30,7 @@ class ScrollableAlbumsRow extends StatelessWidget {
           ),
         Divider(
           color: Colors.grey[700],
+          thickness: 2,
         ),
         albums.isEmpty
             ? Row(
@@ -43,7 +44,7 @@ class ScrollableAlbumsRow extends StatelessWidget {
                 ],
               )
             : SizedBox(
-                height: 79,
+                height: 100,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: albums.length,
@@ -62,18 +63,18 @@ class ScrollableAlbumsRow extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        height: 75,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(2),
                           border: Border.all(
-                            color: Color(0xFF6b7280),
+                            color: const Color(0xFF6b7280),
                             width: 2,
                           ),
                         ),
                         child: ClipRRect(
                           child: Image.network(
                             albums[index].images[0].url,
-                            width: 75,
+                            width: 96,
+                            height: 96,
                           ),
                         ),
                       ),

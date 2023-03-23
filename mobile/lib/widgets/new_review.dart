@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/users.dart';
-import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
 class NewReview extends StatefulWidget {
