@@ -52,8 +52,8 @@ class _NewReviewState extends State<NewReview> {
           child: Text(
             'Share your thoughts on this album:',
             style: TextStyle(
-              color: Colors.grey[400],
-              fontWeight: FontWeight.w400,
+              color: Colors.grey[300],
+              fontWeight: FontWeight.w500,
               fontStyle: FontStyle.italic,
               letterSpacing: .4,
             ),
@@ -67,7 +67,7 @@ class _NewReviewState extends State<NewReview> {
               const SizedBox(height: 10),
               ReviewRatingBar(
                 rating: _isEditing ? _editingRating : 0,
-                size: 20,
+                size: 28,
                 isStatic: false,
                 onRatingUpdate: (rating) {
                   _editingRating = ((rating * 2).ceil().toInt());
