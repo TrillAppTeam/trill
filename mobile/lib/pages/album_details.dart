@@ -185,25 +185,29 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Row(
-                  children: [
-                    Text(
-                      _album.artists.map((artist) => artist.name).join(", "),
-                      style: const TextStyle(
-                        color: Color(0xFFCCCCCC),
-                        fontSize: 16,
-                        letterSpacing: .2,
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: _album.artists
+                            .map((artist) => artist.name)
+                            .join(", "),
+                        style: const TextStyle(
+                          color: Color(0xFFCCCCCC),
+                          fontSize: 16,
+                          letterSpacing: .2,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      DateFormat('yyyy').format(_album.releaseDate),
-                      style: const TextStyle(
-                        color: Color(0xFF999999),
-                        letterSpacing: .3,
+                      const TextSpan(text: '  '),
+                      TextSpan(
+                        text: DateFormat('yyyy').format(_album.releaseDate),
+                        style: const TextStyle(
+                          color: Color(0xFF999999),
+                          letterSpacing: .3,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Row(
