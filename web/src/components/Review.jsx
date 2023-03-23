@@ -65,7 +65,7 @@ function Review(props) {
                         <Link to="/User/AlbumDetails" state={{name: album.name, year: album.release_date, artist: album.artists, img: album.images, link: album.external_urls.spotify, id: album.id }}>
                             <span className="font-bold italic hover:text-violet-300">{album.name} </span> 
                         </Link>
-                            - {album.artists[0].name}
+                            - {album.artists ? album.artists[0].name : "No Artist"}
                         </h1>
                         <h1 className="text-xl text-gray-500">{album.release_date.split("-")[0]}</h1>
                     </div>
