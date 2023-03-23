@@ -26,7 +26,11 @@ class _AlbumsRowState extends State<AlbumsRow> {
       children: [
         Text(
           widget.title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w900,
+            color: Color(0xFFcbd5e1),
+          ),
         ),
         const SizedBox(height: 15),
         widget.albums.isEmpty
@@ -34,8 +38,9 @@ class _AlbumsRowState extends State<AlbumsRow> {
                 children: [
                   Text(
                     widget.emptyText ?? '',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontStyle: FontStyle.italic,
+                      color: Colors.grey[400],
                     ),
                   ),
                 ],
@@ -55,11 +60,23 @@ class _AlbumsRowState extends State<AlbumsRow> {
                           ),
                         );
                       },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(3),
-                        child: Image.network(
-                          album.images[0].url,
-                          width: 75,
+                      child: Container(
+                        width: 85,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                          border: Border.all(
+                            color: Color(0xFF6b7280)!,
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(2),
+                          child: Image.network(
+                            album.images[0].url,
+                            width: 80,
+                            height: 80,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     );

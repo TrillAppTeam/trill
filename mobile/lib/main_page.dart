@@ -129,7 +129,7 @@ class _MainPageState extends State<MainPage> {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFBC6AAB).withOpacity(.2),
+                    color: const Color(0xFF3FBCF4).withOpacity(.2),
                     blurRadius: 15,
                   ),
                 ],
@@ -137,9 +137,10 @@ class _MainPageState extends State<MainPage> {
               child: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: const Color(0xFF1A1B29),
-                selectedItemColor: const Color(0xFFBC6AAB),
+                selectedItemColor: const Color(0xFF3FBCF4),
                 unselectedItemColor: const Color(0xFF888888),
                 showUnselectedLabels: false,
+                showSelectedLabels: false,
                 iconSize: 30,
                 elevation: 10,
                 currentIndex: _currentIndex,

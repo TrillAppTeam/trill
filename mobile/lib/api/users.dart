@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -26,8 +25,9 @@ Future<List<User>?> searchUsers(String query) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<User>.from(
-        json.decode(response.body).map((x) => User.fromJson(x)));
+    return List<User>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => User.fromJson(x)));
   } else {
     return null;
   }
@@ -52,7 +52,7 @@ Future<DetailedUser?> getDetailedUser([String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return DetailedUser.fromJson(jsonDecode(response.body));
+    return DetailedUser.fromJson(jsonDecode(utf8.decode(response.bodyBytes)));
   } else {
     return null;
   }
@@ -87,7 +87,8 @@ Future<bool> updateCurrUser(
   }
   // will prob need to change constructor here; not tested
   if (profilePic != null) {
-    final file = await http.MultipartFile.fromPath('profilePicture', profilePic.path);
+    final file =
+        await http.MultipartFile.fromPath('profilePicture', profilePic.path);
     request.files.add(file);
   }
 
@@ -126,10 +127,10 @@ Future<bool> updateCurrUser(
 //   return response.statusCode == 200;
 // }
 
-// this is dumb lol
+// replacing https with http to fix emulator issue with loading images
 String validateProfilePicURL(String profilePicURL) {
   return profilePicURL.startsWith('https://trill-content.s3.amazonaws.com')
-      ? profilePicURL
+      ? profilePicURL.replaceFirst('https', 'http')
       : "";
 }
 

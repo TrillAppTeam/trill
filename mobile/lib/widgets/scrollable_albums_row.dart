@@ -22,9 +22,15 @@ class ScrollableAlbumsRow extends StatelessWidget {
         if (title != null)
           Text(
             title!,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 18,
+              color: Color(0xFFcbd5e1),
+            ),
           ),
-        if (title != null) const SizedBox(height: 15),
+        Divider(
+          color: Colors.grey[700],
+        ),
         albums.isEmpty
             ? Row(
                 children: [
@@ -37,7 +43,7 @@ class ScrollableAlbumsRow extends StatelessWidget {
                 ],
               )
             : SizedBox(
-                height: 100,
+                height: 79,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemCount: albums.length,
@@ -55,11 +61,20 @@ class ScrollableAlbumsRow extends StatelessWidget {
                           ),
                         );
                       },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(3),
-                        child: Image.network(
-                          albums[index].images[0].url,
-                          width: 75,
+                      child: Container(
+                        height: 75,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                          border: Border.all(
+                            color: Color(0xFF6b7280),
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          child: Image.network(
+                            albums[index].images[0].url,
+                            width: 75,
+                          ),
                         ),
                       ),
                     );

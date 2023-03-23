@@ -5,7 +5,6 @@ import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/scrollable_albums_row.dart';
 
 import '../widgets/news_card.dart';
-import 'album_details.dart';
 
 class HomeScreen extends StatefulWidget {
   final String nickname;
@@ -56,42 +55,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        const Text(
-                          'Welcome back,',
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Welcome back,',
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
-                        ),
-                        Text(
-                          ' $_nickname.',
-                          style: const TextStyle(
-                            color: Colors.blue,
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
+                          GradientText(
+                            ' $_nickname.',
+                            style: const TextStyle(
+                              color: Colors.blue,
+                              fontSize: 30,
+                              fontWeight: FontWeight.w900,
+                            ),
+                            gradient: LinearGradient(colors: [
+                              Color(0xFF60a5fa),
+                              Color(0xFF5eead4),
+                            ]),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 10),
                     const Text(
                       'Here\'s what the world has been listening to.',
                       style: TextStyle(
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w900,
+                        fontStyle: FontStyle.italic,
                       ),
+                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text(
                           'Popular Albums Globally',
                           style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFFcbd5e1),
                           ),
                         ),
                         DropdownButton<String>(
@@ -132,8 +141,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           elevation: 16,
                           style: const TextStyle(
                             color: Color(0xFF3FBCF4),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w900,
                           ),
                           underline: Container(
                             height: 2,
@@ -143,28 +152,46 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 5),
                     _buildPopularAlbums(),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
                     ScrollableAlbumsRow(
-                        title: "Hello, Grammys", albums: Constants.grammyList),
+                      title: "Hello, Grammys",
+                      albums: Constants.grammyList,
+                    ),
+                    const SizedBox(height: 10),
                     const Text(
                       'Explore the 2023 Grammy nominees for Album of the Year!',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                        color: Color(0xFF94a3b8),
+                      ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     ScrollableAlbumsRow(
-                        title: "Trill Team Favorites",
-                        albums: Constants.trillList),
+                      title: "Trill Team Favorites",
+                      albums: Constants.trillList,
+                    ),
+                    const SizedBox(height: 10),
                     const Text(
                       'Our team\'s top picks.',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontStyle: FontStyle.italic,
+                        color: Color(0xFF94a3b8),
+                      ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 30),
                     const Text(
                       'Recent News',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 18,
+                        color: Color(0xFFcbd5e1),
+                      ),
+                    ),
+                    Divider(
+                      color: Colors.grey[700],
                     ),
                     const SizedBox(height: 20),
                     NewsCard(
@@ -218,10 +245,33 @@ class _HomeScreenState extends State<HomeScreen> {
           style: TextStyle(
             color: Color(0xFF3FBCF4),
             fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w900,
           ),
         ),
       ),
+    );
+  }
+}
+
+class GradientText extends StatelessWidget {
+  const GradientText(
+    this.text, {
+    required this.gradient,
+    this.style,
+  });
+
+  final String text;
+  final TextStyle? style;
+  final Gradient gradient;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) => gradient.createShader(
+        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+      ),
+      child: Text(text, style: style),
     );
   }
 }
