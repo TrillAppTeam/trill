@@ -76,7 +76,7 @@ class _LikedReviewsScreenState extends State<LikedReviewsScreen> {
       padding: EdgeInsets.symmetric(vertical: 16),
       child: Center(
         child: Text(
-          'No reviews yet',
+          'No reviews yet.',
           style: TextStyle(
             color: Color(0xFF3FBCF4),
             fontSize: 16.0,

@@ -99,10 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           value: _selectedRange,
                           items: const [
                             DropdownMenuItem(
-                              value: 'daily',
-                              child: Text('Daily'),
-                            ),
-                            DropdownMenuItem(
                               value: 'weekly',
                               child: Text('Weekly'),
                             ),
