@@ -287,7 +287,7 @@ class _ReviewTileState extends State<ReviewTile> {
         const SizedBox(width: 5),
         Text(
           // ${timeago.format(DateTime.now().subtract(DateTime.now().difference(review.updatedAt)))}
-          widget.review.updatedAt != widget.review.createdAt ? '(edited)' : "",
+          (widget.review.updatedAt.difference(widget.review.createdAt)).inSeconds.abs() > 3 ? '(edited)' : "",
           style: const TextStyle(
             color: Colors.grey,
             fontStyle: FontStyle.italic,

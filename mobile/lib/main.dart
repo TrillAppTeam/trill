@@ -39,7 +39,10 @@ class _MyAppState extends State<MyApp> {
             letterSpacing: .5,
           ),
         ),
-        dividerTheme: const DividerThemeData(thickness: 1),
+        dividerTheme: DividerThemeData(
+          thickness: .7,
+          color: Colors.grey[700],
+        ),
         textTheme: TextTheme(
           displayLarge: TextStyle(
             debugLabel: 'whiteMountainView displayLarge',

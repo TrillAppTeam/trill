@@ -35,12 +35,15 @@ class _AlbumsRowState extends State<AlbumsRow> {
         const SizedBox(height: 15),
         widget.albums.isEmpty
             ? Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    widget.emptyText ?? '',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      color: Colors.grey[400],
+                  Flexible(
+                    child: Text(
+                      widget.emptyText ?? '',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey[400],
+                      ),
                     ),
                   ),
                 ],

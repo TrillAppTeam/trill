@@ -100,8 +100,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   : '${_user.nickname}\'s Favorite Albums',
                               albums: snapshot.hasData ? snapshot.data! : [],
                               emptyText: _isLoggedIn
-                                  ? 'Add your favorite albums to display on your profile!'
-                                  : 'No favorite albums yet',
+                                  ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
+                                  : 'No favorite albums yet.',
                             );
                           },
                         ),
