@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:trill/api/albums.dart';
-import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/pages/loading_screen.dart';
+import '../../api/listen_later.dart';
 import '../../widgets/album_row.dart';
 import '../album_details.dart';
 
-// todo: swipe or click edit button to delete listen later
+// TODO: swipe or click edit button to delete listen later
 
 class ListenLaterScreen extends StatefulWidget {
   const ListenLaterScreen({super.key});
@@ -15,7 +15,7 @@ class ListenLaterScreen extends StatefulWidget {
 }
 
 class _ListenLaterScreenState extends State<ListenLaterScreen> {
-  late List<SpotifyAlbum> _favoriteAlbums;
+  late List<SpotifyAlbum> _listenLaterAlbums = [];
   bool _isLoading = false;
 
   @override
@@ -29,14 +29,17 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
       _isLoading = true;
     });
 
-    final favoriteAlbums = await getFavoriteAlbums();
+    final listenLaterAlbums = await getListenLaterAlbums();
 
-    if (favoriteAlbums != null) {
+    if (listenLaterAlbums != null) {
       setState(() {
-        _favoriteAlbums = favoriteAlbums;
-        _isLoading = false;
+        _listenLaterAlbums = listenLaterAlbums;
       });
     }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   @override
@@ -48,29 +51,50 @@ class _ListenLaterScreenState extends State<ListenLaterScreen> {
       ),
       body: _isLoading
           ? const LoadingScreen()
-          : RefreshIndicator(
-              onRefresh: _fetchListenLater,
-              backgroundColor: const Color(0xFF1A1B29),
-              color: const Color(0xFF3FBCF4),
-              child: ListView.builder(
-                itemCount: _favoriteAlbums.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => AlbumDetailsScreen(
-                            albumID: _favoriteAlbums[index].id,
+          : _listenLaterAlbums.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 32,
+                    horizontal: 12,
+                  ),
+                  child: Text(
+                    'No listen later albums. Add some albums to listen later to see them here!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      fontSize: 18,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                )
+              : RefreshIndicator(
+                  onRefresh: _fetchListenLater,
+                  backgroundColor: const Color(0xFF1A1B29),
+                  color: const Color(0xFF3FBCF4),
+                  child: ListView.builder(
+                    itemCount: _listenLaterAlbums.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => AlbumDetailsScreen(
+                                albumID: _listenLaterAlbums[index].id,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
                           ),
+                          child: AlbumRow(album: _listenLaterAlbums[index]),
                         ),
                       );
                     },
-                    child: AlbumRow(album: _favoriteAlbums[index]),
-                  );
-                },
-              ),
-            ),
+                  ),
+                ),
     );
   }
 }

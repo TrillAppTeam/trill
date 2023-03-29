@@ -1,69 +1,59 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:trill/api/follows.dart';
-import 'package:trill/constants.dart';
-import 'package:trill/pages/lists/follows.dart';
 
-class FollowButton extends StatefulWidget {
-  final String username;
-  final FollowType followType;
+class UserStatButton extends StatelessWidget {
+  final String name;
+  final int stat;
+  final Function onTap;
 
-  const FollowButton({
+  const UserStatButton({
     super.key,
-    required this.username,
-    required this.followType,
+    required this.name,
+    required this.stat,
+    required this.onTap,
   });
 
   @override
-  State<FollowButton> createState() => _FollowButtonState();
-}
-
-class _FollowButtonState extends State<FollowButton> {
-  @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: const Color(0xFFBC6AAB),
-          width: 1,
+    return InkWell(
+      onTap: () {
+        onTap();
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: const Color(0xFF374151),
+            width: 2,
+          ),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(10),
+          ),
         ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(30),
-        ),
-      ),
-      child: Center(
-        child: FutureBuilder<Follow?>(
-          future: widget.followType == FollowType.following
-              ? getFollowing(widget.username)
-              : getFollowers(widget.username),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              String followCount = snapshot.data!.users.length.toString();
-              return RichText(
-                text: TextSpan(
-                  text: widget.followType == FollowType.following
-                      ? 'Following: $followCount'
-                      : 'Followers: $followCount',
+        child: SizedBox(
+          height: 70,
+          width: 70,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  stat.toString(),
                   style: const TextStyle(
-                      fontSize: 12, fontWeight: FontWeight.bold),
-                  recognizer: TapGestureRecognizer()
-                    // should make the tap on the actual button and not the text
-                    ..onTap = () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FollowsScreen(
-                              username: widget.username,
-                              followType: widget.followType,
-                            ),
-                          ),
-                        ),
+                    color: Color(0xFF3FBCF4),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              );
-            } else {
-              return const Text('Loading');
-            }
-          },
+                const SizedBox(height: 4),
+                Text(
+                  name,
+                  style: TextStyle(
+                    color: Colors.grey[100],
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

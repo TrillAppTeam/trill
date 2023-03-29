@@ -1,11 +1,20 @@
 import { Link } from "react-router-dom"
 
 function Album(props) {
-    const {images: img, name, release_date: year, artists, external_urls: spotifyLink, size, id} = props.album;
+    const {
+        images: img, 
+        name, 
+        release_date: year, 
+        artists, 
+        external_urls: spotifyLink, 
+        size, 
+        id
+    } = props.album;
+
     return (
         <div className="relative transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105">
-            <Link to="/User/AlbumDetails" state={{name: name, year: year, artist: artists, img: img, link: spotifyLink.spotify, id: id}}>
-                { img[0] ? 
+            <Link to="/User/AlbumDetails" state={{name: name, year: year, artist: artists, img: img, link: spotifyLink.spotify, id: id }}>
+                { img && img[0] ? 
                     <div>
                         {/* Album Art */}
                         <img className="ring-2 ring-gray-500" src={img[0]?.url} width={size} height={size} />

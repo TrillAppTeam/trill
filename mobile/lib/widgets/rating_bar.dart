@@ -23,10 +23,12 @@ class ReviewRatingBar extends StatelessWidget {
       minRating: 1,
       allowHalfRating: true,
       itemSize: size,
+      updateOnDrag: !isStatic,
+      unratedColor: isStatic ? Colors.grey[800] : Colors.grey,
       itemBuilder: (context, index) {
-        return Icon(
+        return const Icon(
           Icons.star,
-          color: isStatic ? Colors.white : Colors.yellow,
+          color: Color(0xFF3FBCF4),
         );
       },
       onRatingUpdate: isStatic ? (rating) {} : onRatingUpdate!,

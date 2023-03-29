@@ -4,10 +4,11 @@ import 'dart:convert';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
 
 /// If no username is passed, get followers for logged in user
-Future<Follow?> getFollowers([String? username]) async {
+Future<List<User>?> getFollowers([String? username]) async {
   const String tag = '[getFollowers]';
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -27,14 +28,16 @@ Future<Follow?> getFollowers([String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return Follow.fromJson(jsonDecode(response.body));
+    return List<User>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => User.fromJson(x)));
   } else {
     return null;
   }
 }
 
 /// If no username is passed, get following for logged in user
-Future<Follow?> getFollowing([String? username]) async {
+Future<List<User>?> getFollowing([String? username]) async {
   const String tag = '[getFollowing]';
   final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -54,7 +57,9 @@ Future<Follow?> getFollowing([String? username]) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return Follow.fromJson(jsonDecode(response.body));
+    return List<User>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => User.fromJson(x)));
   } else {
     return null;
   }
@@ -98,19 +103,4 @@ Future<bool> unfollow(String userToUnfollow) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   return response.statusCode == 200;
-}
-
-// Followee follows the following
-class Follow {
-  final List<String> users;
-
-  const Follow({
-    required this.users,
-  });
-
-  factory Follow.fromJson(Map<String, dynamic> json) {
-    return Follow(
-      users: List<String>.from(json['users']),
-    );
-  }
 }

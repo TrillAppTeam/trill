@@ -56,89 +56,119 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () {
-          final FocusScopeNode currentScope = FocusScope.of(context);
-          if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
-            FocusManager.instance.primaryFocus?.unfocus();
-          }
-        },
-        child: SafeArea(
+    return GestureDetector(
+      onTap: () {
+        final FocusScopeNode currentScope = FocusScope.of(context);
+        if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
           child: Container(
             padding: const EdgeInsets.fromLTRB(10, 20, 10, 10),
             child: Column(
               children: [
-                const Text(
-                  'Search',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.grey[600]!,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              borderSide: BorderSide(
+                                color: Colors.grey[800]!,
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            hintText: 'Search...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey[400],
+                              fontSize: 14,
+                            ),
+                          ),
+                          onChanged: (query) {
+                            _searchTimer?.cancel();
+                            _searchTimer = Timer(
+                                const Duration(milliseconds: 500),
+                                _fetchResults);
+                          },
+                          onEditingComplete: () {
+                            final FocusScopeNode currentScope =
+                                FocusScope.of(context);
+                            if (!currentScope.hasPrimaryFocus &&
+                                currentScope.hasFocus) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            }
+                            _fetchResults();
+                          },
+                          autofocus: false,
+                          style: TextStyle(
+                            color: Colors.grey[200],
+                            fontSize: 16,
+                            letterSpacing: .2,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      DropdownButton<String>(
+                        value: _searchType,
+                        onChanged: (String? value) {
+                          setState(() {
+                            _searchType = value!;
+                            _albumResults = null;
+                            _userResults = null;
+                            _searchController.clear();
+                          });
+                        },
+                        items: const [
+                          DropdownMenuItem(
+                            value: 'albums',
+                            child: Text('Albums'),
+                          ),
+                          DropdownMenuItem(
+                            value: 'users',
+                            child: Text('Users'),
+                          ),
+                        ],
+                        icon: const Icon(
+                          Icons.arrow_drop_down,
+                          color: Color(0xFF3FBCF4),
+                        ),
+                        iconSize: 24,
+                        elevation: 3,
+                        style: const TextStyle(
+                          color: Color(0xFF3FBCF4),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                        ),
+                        underline: Container(
+                          height: 2,
+                          color: const Color(0xFF3FBCF4),
+                        ),
+                        dropdownColor: const Color(0xFF222331),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter search query',
-                          border: OutlineInputBorder(),
-                        ),
-                        onChanged: (query) {
-                          _searchTimer?.cancel();
-                          _searchTimer = Timer(
-                              const Duration(milliseconds: 500), _fetchResults);
-                        },
-                        onEditingComplete: () {
-                          final FocusScopeNode currentScope =
-                              FocusScope.of(context);
-                          if (!currentScope.hasPrimaryFocus &&
-                              currentScope.hasFocus) {
-                            FocusManager.instance.primaryFocus?.unfocus();
-                          }
-                          _fetchResults();
-                        },
-                      ),
-                    ),
-                    DropdownButton<String>(
-                      value: _searchType,
-                      onChanged: (String? value) {
-                        setState(() {
-                          _searchType = value!;
-                          _albumResults = null;
-                          _userResults = null;
-                          _searchController.clear();
-                        });
-                      },
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'albums',
-                          child: Text('Albums'),
-                        ),
-                        DropdownMenuItem(
-                          value: 'users',
-                          child: Text('Users'),
-                        ),
-                      ],
-                      icon: const Icon(
-                        Icons.arrow_drop_down,
-                        color: Color(0xFF3FBCF4),
-                      ),
-                      iconSize: 24,
-                      elevation: 16,
-                      style: const TextStyle(
-                        color: Color(0xFF3FBCF4),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      underline: Container(
-                        height: 2,
-                        color: const Color(0xFF3FBCF4),
-                      ),
-                      dropdownColor: const Color(0xFF1A1B29),
-                    ),
-                  ],
                 ),
                 Expanded(
                   child: _isLoading
@@ -154,6 +184,13 @@ class _SearchScreenState extends State<SearchScreen> {
                               if (_searchType == "albums") {
                                 return InkWell(
                                   onTap: () {
+                                    final FocusScopeNode currentScope =
+                                        FocusScope.of(context);
+                                    if (!currentScope.hasPrimaryFocus &&
+                                        currentScope.hasFocus) {
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                    }
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -169,6 +206,13 @@ class _SearchScreenState extends State<SearchScreen> {
                               } else if (_searchType == "users") {
                                 return InkWell(
                                   onTap: () {
+                                    final FocusScopeNode currentScope =
+                                        FocusScope.of(context);
+                                    if (!currentScope.hasPrimaryFocus &&
+                                        currentScope.hasFocus) {
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                    }
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(

@@ -19,12 +19,13 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
+  String _title = 'Home';
   late List<Widget> _screens;
 
   late SharedPreferences _prefs;
   bool _userInfoSet = false;
 
-  late PrivateUser _user;
+  late DetailedUser _user;
 
   @override
   void initState() {
@@ -40,7 +41,7 @@ class _MainPageState extends State<MainPage> {
     await fetchAuthSession();
     await getCognitoUser();
 
-    _user = (await getPrivateUser())!;
+    _user = (await getDetailedUser())!;
     _screens = [
       HomeScreen(
         nickname: _user.nickname,
@@ -102,7 +103,6 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    // todo: set trill loading screen if user info not set
     return !_userInfoSet
         ? const Scaffold(
             backgroundColor: Color(0xFF1A1B29),
@@ -110,17 +110,15 @@ class _MainPageState extends State<MainPage> {
           )
         : Scaffold(
             backgroundColor: const Color(0xFF1A1B29),
-            appBar: AppBar(backgroundColor: const Color(0xFF374151)),
+            appBar: AppBar(
+              title: Text(_title),
+            ),
             drawer: Sidebar(
                 user: _user,
-                onUserUpdated: (PublicUser user) {
-                  _user = PrivateUser(
-                    username: user.username,
-                    bio: user.bio,
-                    nickname: user.nickname,
-                    profilePic: user.profilePic,
-                    email: _user.email,
-                  );
+                onUserUpdated: (DetailedUser user) {
+                  setState(() {
+                    _user = user;
+                  });
                 }),
             // IndexedStack keeps the states of each page
             body: IndexedStack(
@@ -131,7 +129,7 @@ class _MainPageState extends State<MainPage> {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFBC6AAB).withOpacity(.2),
+                    color: const Color(0xFF3FBCF4).withOpacity(.2),
                     blurRadius: 15,
                   ),
                 ],
@@ -139,9 +137,10 @@ class _MainPageState extends State<MainPage> {
               child: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: const Color(0xFF1A1B29),
-                selectedItemColor: const Color(0xFFBC6AAB),
+                selectedItemColor: const Color(0xFF3FBCF4),
                 unselectedItemColor: const Color(0xFF888888),
                 showUnselectedLabels: false,
+                showSelectedLabels: false,
                 iconSize: 30,
                 elevation: 10,
                 currentIndex: _currentIndex,
@@ -149,27 +148,45 @@ class _MainPageState extends State<MainPage> {
                   setState(() {
                     _currentIndex = index;
                   });
+                  switch (index) {
+                    case 0:
+                      _title = 'Home';
+                      break;
+                    case 1:
+                      _title = 'Search';
+                      break;
+                    case 2:
+                      _title = 'Friends Feed';
+                      break;
+                    case 3:
+                      _title = 'My Profile';
+                      break;
+                  }
+                  final FocusScopeNode currentScope = FocusScope.of(context);
+                  if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
                 },
                 items: const [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.home_outlined),
                     activeIcon: Icon(Icons.home),
-                    label: '____',
+                    label: 'Home',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.search_outlined),
                     activeIcon: Icon(Icons.search),
-                    label: '____',
+                    label: 'Search',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.people_alt_outlined),
                     activeIcon: Icon(Icons.people_alt),
-                    label: '____',
+                    label: 'Friends Feed',
                   ),
                   BottomNavigationBarItem(
                     icon: Icon(Icons.person_outline_outlined),
                     activeIcon: Icon(Icons.person),
-                    label: '____',
+                    label: 'My Profile',
                   ),
                 ],
               ),

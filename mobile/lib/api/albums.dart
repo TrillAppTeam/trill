@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/constants.dart';
 
-Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
+Future<DetailedSpotifyAlbum?> getSpotifyAlbum(String albumID) async {
   const String tag = '[getSpotifyAlbum]';
 
   safePrint('$tag albumID: $albumID');
@@ -15,7 +15,7 @@ Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
   String token = prefs.getString('token') ?? "";
 
   final response = await http.get(
-    Uri.parse('${Constants.baseURI}/album?albumID=$albumID'),
+    Uri.parse('${Constants.baseURI}/albums?albumID=$albumID'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -24,7 +24,8 @@ Future<SpotifyAlbum?> getSpotifyAlbum(String albumID) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return SpotifyAlbum.fromJson(jsonDecode(response.body));
+    return DetailedSpotifyAlbum.fromJson(
+        jsonDecode(utf8.decode(response.bodyBytes)));
   } else {
     return null;
   }
@@ -48,8 +49,37 @@ Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
   safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return List<SpotifyAlbum>.from(
-        json.decode(response.body).map((x) => SpotifyAlbum.fromJson(x)));
+    return List<SpotifyAlbum>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => SpotifyAlbum.fromJson(x)));
+  } else {
+    return null;
+  }
+}
+
+Future<List<SpotifyAlbum>?> getMostPopularAlbums(String timespan) async {
+  const String tag = '[getMostPopularAlbums]';
+
+  safePrint('$tag timespan: $timespan');
+
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String token = prefs.getString('token') ?? "";
+
+  final response = await http.get(
+    Uri.parse('${Constants.baseURI}/albums?timespan=$timespan'),
+    headers: {
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    return List<SpotifyAlbum>.from(json
+        .decode(utf8.decode(response.bodyBytes))
+        .map((x) => SpotifyAlbum.fromJson(x)));
+  } else if (response.statusCode == 204) {
+    return [];
   } else {
     return null;
   }
@@ -67,54 +97,75 @@ DateTime parseReleaseDate(String releaseDate) {
   }
 }
 
+// removed unused fields
 class SpotifyAlbum {
-  final String albumType;
-  final SpotifyExternalURLs externalURLs;
-  final String href;
-  final String id;
-  final List<SpotifyImage> images;
   final String name;
+  final String id;
   final DateTime releaseDate;
-  final String type;
-  final String uri;
-  final List<String> genres;
-  final String label;
-  final int popularity;
   final List<SpotifyArtist> artists;
+  final List<SpotifyImage> images;
 
   const SpotifyAlbum({
-    required this.albumType,
-    required this.externalURLs,
-    required this.href,
-    required this.id,
-    required this.images,
     required this.name,
+    required this.id,
     required this.releaseDate,
-    required this.type,
-    required this.uri,
-    required this.genres,
-    required this.label,
-    required this.popularity,
     required this.artists,
+    required this.images,
   });
 
   factory SpotifyAlbum.fromJson(Map<String, dynamic> json) {
     return SpotifyAlbum(
-      albumType: json['album_type'],
-      externalURLs: SpotifyExternalURLs.fromJson(json['external_urls']),
-      href: json['href'],
-      id: json['id'],
-      images: List<SpotifyImage>.from(
-          json['images'].map((x) => SpotifyImage.fromJson(x))),
       name: json['name'],
+      id: json['id'],
       releaseDate: parseReleaseDate(json['release_date']),
-      type: json['type'],
-      uri: json['uri'],
-      genres: List<String>.from(json['genres'] ?? []),
-      label: json['label'],
-      popularity: json['popularity'],
       artists: List<SpotifyArtist>.from(
           json['artists'].map((x) => SpotifyArtist.fromJson(x))),
+      images: List<SpotifyImage>.from(
+          json['images'].map((x) => SpotifyImage.fromJson(x))),
+    );
+  }
+}
+
+class DetailedSpotifyAlbum extends SpotifyAlbum {
+  int averageRating;
+  int numRatings;
+  bool isReviewed;
+  bool isFavorited;
+  bool inListenLater;
+
+  DetailedSpotifyAlbum({
+    required String name,
+    required String id,
+    required DateTime releaseDate,
+    required List<SpotifyArtist> artists,
+    required List<SpotifyImage> images,
+    required this.averageRating,
+    required this.numRatings,
+    required this.isReviewed,
+    required this.isFavorited,
+    required this.inListenLater,
+  }) : super(
+          name: name,
+          id: id,
+          releaseDate: releaseDate,
+          artists: artists,
+          images: images,
+        );
+
+  factory DetailedSpotifyAlbum.fromJson(Map<String, dynamic> json) {
+    return DetailedSpotifyAlbum(
+      name: json['name'],
+      id: json['id'],
+      releaseDate: parseReleaseDate(json['release_date']),
+      artists: List<SpotifyArtist>.from(
+          json['artists'].map((x) => SpotifyArtist.fromJson(x))),
+      images: List<SpotifyImage>.from(
+          json['images'].map((x) => SpotifyImage.fromJson(x))),
+      averageRating: json['average_rating'].round(),
+      numRatings: json['num_ratings'],
+      isReviewed: json['requestor_reviewed'],
+      isFavorited: json['requestor_favorited'],
+      inListenLater: json['in_listen_later'],
     );
   }
 }
@@ -154,24 +205,15 @@ class SpotifyImage {
 }
 
 class SpotifyArtist {
-  final String id;
   final String name;
-  final String type;
-  final String uri;
 
   const SpotifyArtist({
-    required this.id,
     required this.name,
-    required this.type,
-    required this.uri,
   });
 
   factory SpotifyArtist.fromJson(Map<String, dynamic> json) {
     return SpotifyArtist(
-      id: json['id'],
       name: json['name'],
-      type: json['type'],
-      uri: json['uri'],
     );
   }
 }

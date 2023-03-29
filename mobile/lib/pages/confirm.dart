@@ -64,15 +64,15 @@ class _ConfirmState extends State<ConfirmScreen> {
 
   void _showSnackBar(
       BuildContext context, String error, Color backgroundColor) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        backgroundColor: backgroundColor,
-        content: Text(
-          error,
-          style: const TextStyle(fontSize: 15),
-        ),
-      ),
-    );
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   SnackBar(
+    //     backgroundColor: backgroundColor,
+    //     content: Text(
+    //       error,
+    //       style: const TextStyle(fontSize: 15),
+    //     ),
+    //   ),
+    // );
   }
 
   @override

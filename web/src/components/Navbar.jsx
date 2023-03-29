@@ -11,20 +11,34 @@ import Avatar from "./Avatar"
 import Search from "./Search"
 import { useQuery } from "@tanstack/react-query";
 
+const currentPath = window.location.pathname;
+
 const navigation = [
-  { name: 'Discover', link: '', current: true },
-  { name: 'Friends Feed', link: 'FriendsFeed', current: false },
-  { name: 'Listen Later', link: 'ListenLater', current: false },
+  { name: 'Discover', link: '', current: currentPath === '/' },
+  { name: 'Friends Feed', link: 'FriendsFeed', current: currentPath === '/FriendsFeed' },
+  { name: 'Listen Later', link: 'ListenLater', current: currentPath === '/ListenLater' },
 ]
+
+function handleLinkClick(clickedItem) {
+  // Set the `current` property to true for the clicked link
+  navigation.forEach((navItem) => {
+    navItem.current = navItem.name === clickedItem.name;
+  });
+}
+
+function resetLinks() {
+  navigation.forEach((navItem) => {
+    navItem.current = false;
+  });
+}
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 function Navbar() {
-  const {error, data} = useQuery({ queryKey: ['users'] });
-  if (data)
-    localStorage.setItem("username", data.data.username);
+  const {error, data} = useQuery(['users'], {onSuccess: (data) => {sessionStorage.setItem("username", data.username)}});
   
   return (
 
@@ -66,8 +80,9 @@ function Navbar() {
                     {navigation.map((item) => (
                       <Link to={item.link}
                         key={item.name}
-                        className= 'font-bold text-gray-200 hover:bg-gray-600 hover:text-trillBlue px-3 py-2 rounded-md text-md'
+                        className= {`font-bold hover:bg-gray-600 px-3 py-2 rounded-md text-md ${item.current ? "text-trillBlue" : "text-gray-200"}`}
                         aria-current={item.current ? 'page' : undefined}
+                        onClick={() => handleLinkClick(item)}
                       >
                         {item.name}
                       </Link>
@@ -83,10 +98,9 @@ function Navbar() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
-                    <Menu.Button className="flex rounded-full">
+                    <Menu.Button className="flex rounded-full pt-1">
                       <span className="sr-only">Open user menu</span>
-                      {/* User Profile Picture */}
-                      <Avatar user={{ profilePic: null, username: data?.data.username, size: "11", linkDisabled: true }} />
+                      <Avatar user={{ profile_picture: data?.profile_picture, username: data?.username, size: "11", linkDisabled: true }} />
 
                     </Menu.Button>
                   </div>
@@ -104,7 +118,8 @@ function Navbar() {
                         {({ active }) => (
                           <Link to='Profile'
                             className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
-                            state={{username: data?.data.username}}
+                            state={{username: data?.username}}
+                            onClick={() => resetLinks()}
                           >
                             Profile
                           </Link>
@@ -114,6 +129,7 @@ function Navbar() {
                         {({ active }) => (
                           <Link to='MyReviews'
                             className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
+                            onClick={() => resetLinks()}
                           >
                             My Reviews
                           </Link>
@@ -123,6 +139,7 @@ function Navbar() {
                         {({ active }) => (
                           <Link to='/'
                             className={classNames(active ? 'bg-gray-700' : '', 'block px-4 py-2 text-sm text-gray-200 font-bold')}
+                            onClick={() => resetLinks()}
                           >
                             Sign out
                           </Link>

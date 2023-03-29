@@ -11,7 +11,7 @@ class FriendsFeedScreen extends StatefulWidget {
 }
 
 class _FriendsFeedScreenState extends State<FriendsFeedScreen> {
-  late List<Review> _reviews;
+  late List<DetailedReview> _reviews;
   bool _isLoading = true;
 
   @override

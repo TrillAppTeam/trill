@@ -3,11 +3,15 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import axios from 'axios';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+import { QueryClient, QueryClientProvider} from "@tanstack/react-query";
 
 // Pages
 import FriendsFeed from './pages/FriendsFeed';
 import ListenLater from './pages/ListenLater';
-import ListAlbums from './pages/ListAlbums';
 import Error from './pages/Error';
 import Discover from './pages/Discover';
 import Home from './pages/Home';
@@ -19,21 +23,11 @@ import AlbumDetails from './pages/AlbumDetails';
 import SearchResults from './pages/SearchResults';
 import MyReviews from './pages/MyReviews';
 
-
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
-
-import { QueryClient, QueryClientProvider} from "@tanstack/react-query";
-
 // Define a default query function that will receive the query key
 const defaultQueryFn = async ({ queryKey }) => {
-  const data = await axios.get(`https://api.trytrill.com/main/${queryKey}`, { headers: {
-      'Authorization' : `Bearer ${localStorage.getItem('access_token')}`
-    }}).then((res) => {
-      return res;
-  }).catch((err) => {return null});
+  const { data } = await axios.get(`https://api.trytrill.com/main/${queryKey}`, { headers: {
+      'Authorization' : `Bearer ${sessionStorage.getItem('access_token')}`
+    }});
   return data;
 }
 
@@ -43,8 +37,10 @@ const queryClient = new QueryClient({
     queries: {
       queryFn: defaultQueryFn,
       refetchOnWindowFocus: false,
+      retry: false,
     },
   },
+  logger: {error: () => {}}
 })
 
 const router = createBrowserRouter([
@@ -89,11 +85,6 @@ const router = createBrowserRouter([
       {
         path: "Results",
         element: <SearchResults />,
-        errorElement: <Error />
-      },
-      {
-        path: "More",
-        element: <ListAlbums />,
         errorElement: <Error />
       },
       {

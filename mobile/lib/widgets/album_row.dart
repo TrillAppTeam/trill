@@ -17,9 +17,22 @@ class AlbumRow extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(3),
-            child: Image.network(_album.images[0].url, width: 80, height: 80),
+          Container(
+            width: 85,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(2),
+              border: Border.all(
+                color: const Color(0xFF6b7280),
+                width: 2,
+              ),
+            ),
+            child: ClipRRect(
+              child: Image.network(
+                _album.images[0].url,
+                width: 80,
+                height: 80,
+              ),
+            ),
           ),
           const SizedBox(width: 16),
           Flexible(
@@ -28,28 +41,35 @@ class AlbumRow extends StatelessWidget {
               children: [
                 Text(
                   _album.name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
                 const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Text(
-                      _album.artists.map((artist) => artist.name).join(", "),
-                      style: const TextStyle(
-                        color: Color(0xFFCCCCCC),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: _album.artists.map((artist) => artist.name).join(", "),
+                        style: const TextStyle(
+                          color: Color(0xFFCCCCCC),
+                          fontSize: 16,
+                          letterSpacing: .2,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      DateFormat('yyyy').format(_album.releaseDate),
-                      style: const TextStyle(
-                        color: Colors.grey,
+                      TextSpan(
+                        text: "  ${DateFormat('yyyy').format(_album.releaseDate)}",
+                        style: const TextStyle(
+                          color: Color(0xFF999999),
+                          letterSpacing: .3,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

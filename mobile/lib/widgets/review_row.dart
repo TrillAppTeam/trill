@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
@@ -36,10 +35,11 @@ class _ReviewRowState extends State<ReviewRow> {
   void _toggleLike() {
     setState(() {
       _isLiked = !_isLiked;
-      if (_isLiked == false)
+      if (_isLiked == false) {
         widget.likeCount--;
-      else
+      } else {
         widget.likeCount++;
+      }
     });
   }
 

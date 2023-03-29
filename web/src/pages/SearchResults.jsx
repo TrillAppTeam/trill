@@ -9,8 +9,8 @@ import SearchUser from "../components/SearchUser";
 function SearchResults() {
     const { state } = useLocation();
     const { query, type } = state;
-    const { isLoading: albumLoad, data: albumData, error: albumError } = useQuery([`albums?query=${query}`], {enabled: type === "Albums"});
-    const { isLoading: userLoad, data: userData, error: userError } = useQuery([`users?search=${query}`], {enabled: type === "Users"});
+    const { isLoading: albumLoad, data: albumData } = useQuery([`albums?query=${query}`], {enabled: type === "Albums"});
+    const { isLoading: userLoad, data: userData } = useQuery([`users?search=${query}`], {enabled: type === "Users"});
     
     return(
         <div className="max-w-4xl mx-auto pt-8">
@@ -18,12 +18,11 @@ function SearchResults() {
                 <div>
                     <Titles title={`Search Results for "${query}" in ${type}`} />
                     {userLoad ? <Loading /> :
-                        userData?.data.map(user => {
+                        userData?.map(user => {
                             return <>
-                                {console.log(user)}
                                 <SearchUser user={{
                                     username: user.username,
-                                    profilePic: user.profilePic,
+                                    profile_picture: user.profile_picture,
                                     size: "11"
                                 }}/>
                     
@@ -34,9 +33,9 @@ function SearchResults() {
                 </div> 
                 :
                 <div>
-                    <Titles title={`${albumData?.data.length == undefined ? "" : albumData?.data.length} Search Results for "${query}" in ${type}`} />
+                    <Titles title={`${albumData?.length == undefined ? "" : albumData?.length} Search Results for "${query}" in ${type}`} />
                     {albumLoad ? <Loading /> :
-                        albumData?.data.map(album => {
+                        albumData?.map(album => {
                             return <>
                                 <SearchAlbum album={album}/>
                                 

@@ -9,27 +9,17 @@ import Avatar from "../components/Avatar"
 import Stars from "../components/Stars"
 
 function AlbumDetailsReview(props) {
-    const { username, profilePic, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
+    const { user: {username}, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
+    const profile_picture = props.review.user.profile_picture
+
 
     const like = useMutation(() => { 
         return axios.put(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, {}, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
     });
     const unlike = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
     });
 
     const dateTimeObj = DateTime.fromISO(updated_at ? updated_at : created_at);
@@ -52,7 +42,7 @@ function AlbumDetailsReview(props) {
         <div className="max-w-6xl mx-auto">
 
             <div className="flex flex-row p-5">
-                <Avatar user={{ profilePic: profilePic, username: username, size: "12" }} />
+                <Avatar user={{ profile_picture: profile_picture, username: username, size: "12" }} />
 
                 <div className="flex flex-col pl-5 gap-4">
                     {/* Profile Picture, Rating, and Listen Date */}
@@ -68,7 +58,7 @@ function AlbumDetailsReview(props) {
                     </div>
 
                      {/* Review */}
-                     <p className="text-md">{review_text}</p>
+                     <p className="text-md text-gray-400">{review_text}</p>
                         <div className="flex flex-row gap-2 text-gray-500 text-sm">
 
                             <div

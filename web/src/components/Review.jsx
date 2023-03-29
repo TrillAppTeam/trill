@@ -10,9 +10,9 @@ import Avatar from "../components/Avatar";
 import Stars from "../components/Stars";
 
 function Review(props) {
-    
-    const { username, profilePic, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
+    const { user: {username}, created_at, updated_at, review_text, review_id, likes: likesConst, requestor_liked, rating } = props.review;
     const { images, name, release_date, artists, external_urls, id } = props.review.album;
+    const profile_picture = props.review.user.profile_picture
 
     const album = { 
         images,
@@ -25,23 +25,11 @@ function Review(props) {
 
     const like = useMutation(() => { 
         return axios.put(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, {}, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
     });
     const unlike = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/likes?reviewID=${review_id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
     });
 
     const dateTimeObj = DateTime.fromISO(updated_at ? updated_at : created_at);
@@ -74,18 +62,20 @@ function Review(props) {
                     {/* Album Name and Album Year */}
                     <div className="flex flex-row gap-4">
                         <h1 className="text-xl text-gray-200">
-                            <span className="font-bold italic">{album.name} </span> 
-                            - {album.artists[0].name}
+                        <Link to="/User/AlbumDetails" state={{name: album.name, year: album.release_date, artist: album.artists, img: album.images, link: album.external_urls.spotify, id: album.id }}>
+                            <span className="font-bold italic hover:text-violet-300">{album.name} </span> 
+                        </Link>
+                            - {album.artists ? album.artists[0].name : "No Artist"}
                         </h1>
                         <h1 className="text-xl text-gray-500">{album.release_date.split("-")[0]}</h1>
                     </div>
 
                     {/* Profile Picture, Rating, and Listen Date */}
                     <div className="flex flex-row gap-4">
-                        <Avatar user={{ profilePic: profilePic, username: username, size: "6" }} />
+                        <Avatar user={{ profile_picture: profile_picture, username: username, size: "6" }} />
                         <Stars rating={ rating } />
                         
-                        <p className="text-sm text-gray-500 my-auto">Listened to by
+                        <p className="text-md text-gray-500">Reviewed by
                             <Link to={`/User/Profile/${username}`}>
                                 <span className="text-trillBlue hover:text-white"> @{username} </span>
                             </Link>
@@ -96,7 +86,7 @@ function Review(props) {
                     </div>
 
                     {/* Review */}
-                    <p className="text-md">{review_text}</p>
+                    <p className="text-md text-gray-400">{review_text}</p>
                     <div className="flex flex-row gap-2 text-gray-500 text-sm">
 
                         <div

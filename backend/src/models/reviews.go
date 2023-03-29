@@ -178,7 +178,7 @@ func DeleteReview(ctx context.Context, review *Review) error {
 	return nil
 }
 
-func GetReviewStats(ctx context.Context, albumID string, requestor string) (*ReviewStats, error) {
+func GetAlbumReviewStats(ctx context.Context, albumID string, requestor string) (*ReviewStats, error) {
 	db, err := GetDBFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -197,6 +197,21 @@ func GetReviewStats(ctx context.Context, albumID string, requestor string) (*Rev
 	}
 
 	return reviewStats, nil
+}
+
+func GetUserReviewCount(ctx context.Context, username string) (int64, error) {
+	db, err := GetDBFromContext(ctx)
+	if err != nil {
+		return 0, err
+	}
+
+	var reviewCount int64
+	if err := db.Model(&Review{}).
+		Where("username = ?", username).Count(&reviewCount).Error; err != nil {
+		return 0, err
+	}
+
+	return reviewCount, nil
 }
 
 func RequestorReviewed(ctx context.Context, albumID string, requestor string) (bool, error) {

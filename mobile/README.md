@@ -20,18 +20,16 @@ In addition to in Cognito, you can view the Cognito User Pool under the `User Ma
 Test on physical device
 
 API
-- Implement profile pics APIs
-- Implement missing APIs as they are completed
+- Profile pic API
+  - Need to redo edit profile page first
 
 UI!!
 - Copy web for everything
 - Loading page
 - Fix overflowing review tiles
-
-Remember to clean database before demo to avoid crashes lol
-
-Bugs:
-- Can't scroll to the bottom of album details reviews because I put it in a sizedbox. When I don't put it in a sizedbox, the app crashes since the listview expands vertically infinitely. I have spent probably 15 hours trying to fix this over the past week and chatgpt can't fix it so I give up. It has to do with putting the listview in the tabbarview that changed the vertical constraints of the listview, since it worked fine before that, but no matter what i've tried i still get the same error
+- Dropdown UIs
+- Animations for everything (e.g. fading out when something is deleted, swipe to delete listen later)
+- Refresh user page when navigating back from some pages
 
 ---
 
@@ -40,3 +38,4 @@ Bugs:
 - Link to Spotify album url and open up album in Spotify app
   - Web has this but it's much hard/maybe impossible on mobile
 - Easier way to delete listen later and favorite albums
+- Add pagination

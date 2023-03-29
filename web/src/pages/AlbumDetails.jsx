@@ -1,5 +1,5 @@
 import { useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios"
 
@@ -8,6 +8,7 @@ import AvgReviews from "../components/AvgReviews";
 import Titles from "../components/Titles";
 import Avatar from "../components/Avatar"
 import AlbumDetailsReview from "../components/AlbumDetailsReview";
+import Toast from "../components/Toast";
 
 // Utils
 import ReactStars from "react-rating-stars-component";
@@ -22,88 +23,71 @@ function AlbumDetails() {
 
     const { state } = useLocation();
     const { name, year, artist, img, link, id } = state;
-    const currentUser = localStorage.getItem("username");
+    const currentUser = sessionStorage.getItem("username");
 
-    const { isLoading, data, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`]);
+    const { isLoading, data: myReview, refetch: refetchReview } = useQuery([`reviews?albumID=${id}&username=${currentUser}`], {onSuccess: (data) => {setReviewText(data.review_text)}});
     const { data: reviewFromFriends } = useQuery([`reviews?sort=newest&albumID=${id}&following=true`]);
-    const { data: popularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
-    const { data: recentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
+    const { data: popularGlobal, refetch: refetchPopularGlobal } = useQuery([`reviews?sort=popular&albumID=${id}`]);
+    const { data: recentGlobal, refetch: refetchRecentGlobal } = useQuery([`reviews?sort=newest&albumID=${id}`]);
+
+    const { data: albumStats, refetch: refetchAlbumStats } = useQuery([`albums?albumID=${id}`]);
 
     const { data: favoriteAlbums, refetch: refetchFavoriteAlbums } = useQuery([`favoritealbums?username=${currentUser}`]);
     const { data: listenLater, refetch: refetchListenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
-    useEffect(() => {
-        setReviewText(data?.data.review_text);
-    }, [data?.data]);
+    // Toast 
+    const [dismissed, setDismissed] = useState(true);
+    const handleDismiss = () => {
+        setDismissed(true);
+    };
+    
     
     const addOrUpdateReview = useMutation(review => { 
         return axios.put(`https://api.trytrill.com/main/reviews?albumID=${id}`, review, 
             { headers: {
-                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`,
                 'Content-Type': 'application/json'
                 }
             })
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }, {onSuccess: () => {refetchReview();}} );
+        }, {onSuccess: () => {
+            refetchReview();
+            refetchAlbumStats();
+            refetchPopularGlobal();
+            refetchRecentGlobal();
+    }} );
 
     const deleteReview = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/reviews?albumID=${id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }, {onSuccess: () => {refetchReview();}} );
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
+        }, {onSuccess: () => {
+            refetchReview();
+            refetchAlbumStats();
+            refetchPopularGlobal();
+            refetchRecentGlobal();
+    }} );
 
     const addFavoriteAlbum = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, {}, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-    }, {onSuccess: () => {refetchFavoriteAlbums();}} );
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
+    }, {
+        onSuccess: () => {refetchFavoriteAlbums();},
+        onSettled: () => {setTimeout(() => {setDismissed(true);}, 100000);},
+        onError: () => {setDismissed(false);}
+    });
 
     const deleteFavoriteAlbum = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/favoritealbums?albumID=${id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
     }, {onSuccess: () => {refetchFavoriteAlbums();}} );
 
     const addListenLater = useMutation(() => { 
         return axios.post(`https://api.trytrill.com/main/listenlateralbums?albumID=${id}`, {}, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
     }, {onSuccess: () => {refetchListenLater();}} );
 
     const deleteListenLater = useMutation(() => { 
         return axios.delete(`https://api.trytrill.com/main/listenlateralbums?albumID=${id}`, 
-            { headers: {'Authorization': `Bearer ${localStorage.getItem('access_token')}`}})
-            .then((res) => {
-                return res;
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+            { headers: {'Authorization': `Bearer ${sessionStorage.getItem('access_token')}`}})
     }, {onSuccess: () => {refetchListenLater();}} );
 
     const ratingChanged = (newRating) => {
@@ -151,7 +135,7 @@ function AlbumDetails() {
                                 </div>
                             }
 
-                            {Array.isArray(favoriteAlbums?.data) && favoriteAlbums?.data.some((album) => album.id === id) ? (
+                            {Array.isArray(favoriteAlbums) && favoriteAlbums?.some((album) => album.id === id) ? (
                                 <button 
                                     className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
                                     onClick={removeFromFavoriteAlbums}
@@ -160,14 +144,14 @@ function AlbumDetails() {
                                 </button>
                             ) : (
                                 <button 
-                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2"
+                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2 w-full"
                                     onClick={addToFavoriteAlbums}
                                 >
                                     Add to Favorite Albums
                                 </button>
                             )}
 
-                            {Array.isArray(listenLater?.data) && listenLater?.data.some((album) => album.id === id) ? (
+                            {Array.isArray(listenLater) && listenLater?.some((album) => album.id === id) ? (
                                 <button 
                                     className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
                                     onClick={removeFromListenLater}
@@ -176,39 +160,59 @@ function AlbumDetails() {
                                 </button>
                             ) : (
                                 <button 
-                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2"
+                                    className={albumStats?.requestor_reviewed ? "btn btn-xs text-gray-400 bg-gray-800 hover:bg-gray-800 cursor-not-allowed mt-2" : "btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2" }
                                     onClick={addToListenLater}
                                 >
-                                    Add to Listen Later
+                                    {albumStats?.requestor_reviewed ? "Already Reviewed" : "Add to Listen Later"}
                                 </button>
                             )}
+                           
                     </div>
                     
-                    <div className="pl-10 flex flex-row gap-10">
+                    <div className="pl-10 flex flex-row gap-10 max-w-[450px]">
                         <div className="flex flex-col">
-                            <h1 className="text-4xl text-gray-200 font-bold italic mr-5">{name}</h1>
+                            <h1 className="text-3xl text-gray-200 font-bold italic mr-5">{name}</h1>
                             <h1 className="text-3xl text-gray-600">{year.split('-')[0]}</h1>
                             <p className="text-xl pt-1 pb-2">by {artist[0].name}</p>
                             
                             <div className="tooltip" data-tip="Open Spotify">
                                 <a href={link} target="_blank">
-                                    <img src={SpotifySVG} style={{ width: 25, height: 25 }} className="self-center" />
+                                    <img src={SpotifySVG} style={{ width: 25, height: 25 }} className="self-center mb-10" />
                                 </a>
                             </div>
+
+                            {!dismissed && (
+                                <div className="max-w-[350px]">
+                                <Toast toast={{
+                                    message: "Maximum favorite albums count of 4 reached. Remove an album from your profile to add more!", 
+                                    type: "error", 
+                                    onDismiss: handleDismiss}} 
+                                />
+                                </div>
+                            )}
+                            
 
                         </div>
                     </div>
                 </div>    
-                <AvgReviews />
+
+                <div className="max-w-[450px]">
+                    <AvgReviews reviewStats={{
+                        average: albumStats?.average_rating, 
+                        numRatings: albumStats?.num_ratings
+                    }} />
+                </div>
+               
+                
             </div>
 
             <div className="pt-10">
                 <Titles title="Your Review" />
-                {data && !isEditing
+                {myReview && !isEditing
                 ?   <>  
                         <div className="flex flex-row justify-between">
                             <div className="justify-left">
-                                <AlbumDetailsReview review={data.data} />
+                                <AlbumDetailsReview review={myReview} />
                             </div>
                             
                             <button 
@@ -223,7 +227,7 @@ function AlbumDetails() {
                 : 
                     <>
                         <div className="flex flex-row p-5">
-                            <Avatar user={{ profilePic: null, username: currentUser, size: "12" }} />
+                            <Avatar user={{ profile_picture: myReview?.user.profile_picture, username: currentUser, size: "12" }} />
                             <div className="flex flex-col pl-5 w-full justify-between">
                                 {/* Profile Picture, Rating, and Listen Date */}
                                 <p className="text-gray-500 pb-2">Review by
@@ -231,7 +235,7 @@ function AlbumDetails() {
                                 </p>                                    
                                 
                                 {isLoading ? null : <ReactStars
-                                    key={data?.data.id}
+                                    key={myReview?.id}
                                     count={5}
                                     onChange={ratingChanged}
                                     size={30}
@@ -240,9 +244,8 @@ function AlbumDetails() {
                                     halfIcon={<i className="fa fa-star-half-alt"></i>}
                                     fullIcon={<i className="fa fa-star"></i>}
                                     activeColor="#ffd700"
-                                    value={data?.data.rating / 2 || rating}
+                                    value={myReview?.rating / 2 || rating}
                                 />}
-
                                 <textarea 
                                     rows="3" 
                                     placeholder="This album is..." 
@@ -260,9 +263,9 @@ function AlbumDetails() {
                                             setIsEditing(false);
                                         }}
                                         >
-                                        {data ? "Save" : "Add Review"}
+                                        {myReview ? "Save" : "Add Review"}
                                     </button>
-                                    {data ? (
+                                    {myReview ? (
                                         <button 
                                             type="button" 
                                             className="py-1 mr-3 w-24 text-sm mt-3 font-bold rounded-md text-gray-900 bg-red-900 hover:text-white"
@@ -299,9 +302,9 @@ function AlbumDetails() {
                 
                 <div className="pt-10">
                     <Titles title="Reviews From Friends" />
-                    {reviewFromFriends?.data.length == 0 ? <h1 className="italic text-violet-300">Your friends haven't reviewed this album yet.</h1> : null}
+                    {reviewFromFriends?.length == 0 ? <h1 className="italic text-violet-300">Your friends haven't reviewed this album yet.</h1> : null}
 
-                    {reviewFromFriends?.data.slice(0, 2).map((review, index, array) => (
+                    {reviewFromFriends?.slice(0, 2).map((review, index, array) => (
                         <div key={index}>
                             <AlbumDetailsReview review={review} />
                             {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
@@ -312,9 +315,9 @@ function AlbumDetails() {
 
                 <div className="pt-10">
                     <Titles title="Popular Reviews Globally" />
-                    {popularGlobal?.data.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
+                    {popularGlobal?.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
                     
-                    {popularGlobal?.data.slice(0, 2).map((review, index, array) => (
+                    {popularGlobal?.slice(0, 2).map((review, index, array) => (
                         <div key={index}>
                             <AlbumDetailsReview review={review} />
                             {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
@@ -324,9 +327,9 @@ function AlbumDetails() {
 
                 <div className="pt-10">
                     <Titles title="Recent Reviews Globally" />
-                    {recentGlobal?.data.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
+                    {recentGlobal?.length == 0 ? <h1 className="italic text-violet-300">No one has reviewed this album yet.</h1> : null}
 
-                    {recentGlobal?.data.slice(0, 2).map((review, index, array) => (
+                    {recentGlobal?.slice(0, 2).map((review, index, array) => (
                         <div key={index}>
                             <AlbumDetailsReview review={review} />
                             {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}

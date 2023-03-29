@@ -26,16 +26,24 @@ class _AlbumsRowState extends State<AlbumsRow> {
       children: [
         Text(
           widget.title,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w900,
+            color: Color(0xFFcbd5e1),
+          ),
         ),
         const SizedBox(height: 15),
         widget.albums.isEmpty
             ? Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    widget.emptyText ?? '',
-                    style: const TextStyle(
-                      fontStyle: FontStyle.italic,
+                  Flexible(
+                    child: Text(
+                      widget.emptyText ?? '',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey[400],
+                      ),
                     ),
                   ),
                 ],
@@ -55,11 +63,22 @@ class _AlbumsRowState extends State<AlbumsRow> {
                           ),
                         );
                       },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(3),
-                        child: Image.network(
-                          album.images[0].url,
-                          width: 75,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(2),
+                          border: Border.all(
+                            color: const Color(0xFF6b7280),
+                            width: 2,
+                          ),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(2),
+                          child: Image.network(
+                            album.images[0].url,
+                            width: 75,
+                            height: 75,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     );

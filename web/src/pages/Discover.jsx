@@ -27,9 +27,8 @@ const grammyNews = {
 }
 
 function Discover() {
-    const { isLoading, data } = useQuery({ queryKey: ['users'] });
+    const { isLoading, data } = useQuery(['users']);
     const { isLoading: friendsDataLoading, data: friendsData } = useQuery(['reviews?sort=newest&following=true']);
-    const { isLoading: recentGlobalDataLoading, data: recentGlobalData } = useQuery(['reviews?sort=newest']);
     const { isLoading: popularGlobalWeeklyLoading, data: popularGlobalWeeklyData, error: popularGlobalWeeklyError } = useQuery([`albums?timespan=weekly`]);
     const { isLoading: popularGlobalAllTimeLoading, data: popularGlobalAllTimeData, error: popularGlobalAllTimeError } = useQuery([`albums?timespan=all`]);
 
@@ -39,7 +38,7 @@ function Discover() {
             {/* Welcome Message */}
             <section>
                 <h1 className="font-bold text-3xl md:text-5xl text-white text-center pt-[20px]"> Welcome back,
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"> {data?.data.nickname}. </span><br/>
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"> {data?.nickname}. </span><br/>
                     <p className="italic text-white text-2xl md:text-4xl py-[15px]">Here's what the world has been listening to.</p>
                 </h1>
             </section>
@@ -47,12 +46,12 @@ function Discover() {
             {/* Album Discovery */}
             <section className="pt-14"> 
                 <Titles title="Popular Albums This Week - Globally"/>
-                <div className="text-white flex flex-row justify-center gap-4 max-w-6xl mx-auto">
+                <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
                     {popularGlobalWeeklyLoading
                         ? "Loading..."  
-                        : popularGlobalWeeklyData?.data?.map((album) => (
+                        : popularGlobalWeeklyData?.slice(0, 8).map((album) => (
                             <div key={album.id}>
-                                <Album album={album} />
+                                <Album album={{...album, size:"200"}}/>
                             </div>
                         ))
                     }
@@ -62,46 +61,42 @@ function Discover() {
             <section className="pt-14"> 
                 <Titles title="New From Friends"/>
                 <div className="text-white flex flex-row justify-left gap-5 max-w-6xl mx-auto">
-                    {friendsDataLoading ? "Loading..." :  
-                        friendsData?.data.slice(0, 10).map((review) => (
+                    {friendsDataLoading 
+                    ? "Loading..." 
+                    :  Array.isArray(friendsData)  
+                        ? friendsData?.slice(0, 10).map((review) => (
                             <div key={review.review_id}>
                                 <NoTextAlbumReview review={review} />
                             </div>
                         ))
+                        : <h1 className="italic text-trillBlue">You don't follow anyone yet! Search for users to start.</h1>
                     }
                 </div>
             </section>
 
             <section className="pt-14"> 
                 <Titles title="Reviews from Friends"/>
-                {friendsDataLoading ? "Loading..." :  
-                    friendsData?.data.slice(0, 2).map((review, index, array) => (
-                        <div key={review.review_id}>
-                            <Review review={review} />
-                            {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
-                        </div>
-                    ))
-                }
-            </section>
-
-            <section className="pt-14"> 
-                <Titles title="Recent Reviews - Globally"/>
-                <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
-                    {recentGlobalDataLoading ? "Loading..."  
-                        : recentGlobalData?.data.slice(0, 10).map((review) => (
-                            <div key={review.review_id}>
-                                <NoTextAlbumReview review={review} />
-                            </div>
-                          )) 
+                <div  className="text-white max-w-6xl mx-auto">
+                    {friendsDataLoading 
+                    ? "Loading..." 
+                    :  Array.isArray(friendsData) 
+                        ?   friendsData?.slice(0, 2).map((review, index, array) => (
+                                <div key={review.review_id}>
+                                    <Review review={review} />
+                                    {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                                </div>
+                            ))
+                        :   <h1 className="italic text-trillBlue">You don't follow anyone yet! Search for users to start.</h1>
                     }
                 </div>
+               
             </section>
 
             <section className="pt-14"> 
                 <Titles title="Popular Albums All Time - Globally"/>
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
                     {popularGlobalAllTimeLoading? "Loading..."  
-                        : popularGlobalAllTimeData?.data?.map((album) => (
+                        : popularGlobalAllTimeData?.map((album) => (
                             <Album album={album} />
                         ))
                     }
