@@ -27,7 +27,7 @@ func handler(ctx context.Context, req Request) (Response, error) {
 
 	switch req.RequestContext.HTTP.Method {
 	case "POST":
-		return follow(ctx, req)
+		return follow(initCtx, req)
 	case "GET":
 		if req.QueryStringParameters["type"] == "getFollowers" {
 			return getFollowers(initCtx, req)
@@ -38,7 +38,7 @@ func handler(ctx context.Context, req Request) (Response, error) {
 			return Response{StatusCode: 400, Body: err.Error()}, err
 		}
 	case "DELETE":
-		return unfollow(ctx, req)
+		return unfollow(initCtx, req)
 	default:
 		err := fmt.Errorf("HTTP Method '%s' not allowed", req.RequestContext.HTTP.Method)
 		return Response{StatusCode: 405, Body: err.Error()}, err

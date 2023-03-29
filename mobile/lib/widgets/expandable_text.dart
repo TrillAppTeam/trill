@@ -26,6 +26,11 @@ class _ExpandableTextState extends State<ExpandableText> {
         // don't write a review longer than 100 lines
         maxLines: isExpanded ? 100 : widget.maxLines,
         overflow: TextOverflow.ellipsis,
+        style: const TextStyle(
+          fontSize: 15,
+          letterSpacing: .2,
+          height: 1.3,
+        ),
       ),
     );
   }

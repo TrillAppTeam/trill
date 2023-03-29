@@ -5,6 +5,7 @@ import 'package:trill/api/reviews.dart';
 import 'package:trill/pages/profile.dart';
 import 'package:trill/widgets/expandable_text.dart';
 import 'package:trill/widgets/like_button.dart';
+import 'package:trill/widgets/profile_pic.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
 class ReviewTile extends StatefulWidget {
@@ -87,9 +88,53 @@ class _ReviewTileState extends State<ReviewTile> {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: _buildProfilePic(context),
-      trailing: PopupMenuButton<String>(
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: ListTile(
+        title: _buildTitle(),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _buildRatingBar(),
+                const SizedBox(width: 10),
+                _buildReviewDate(),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildText(),
+                  _buildBottom(),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Row _buildTitle() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _buildUserInfo(context),
+        _buildDropdown(),
+      ],
+    );
+  }
+
+  SizedBox _buildDropdown() {
+    return SizedBox(
+      width: 30,
+      child: PopupMenuButton<String>(
         onSelected: (value) => _handleMenuClick(value),
         itemBuilder: (context) => [
           if (widget.isMyReview)
@@ -130,63 +175,31 @@ class _ReviewTileState extends State<ReviewTile> {
                 ],
               ),
             ),
-          PopupMenuItem<String>(
-            value: 'report',
-            child: Row(
-              children: const [
-                Icon(
-                  Icons.flag_outlined,
-                  color: Color(0xFFAA2222),
-                ),
-                SizedBox(width: 5),
-                Text(
-                  'Report',
-                  style: TextStyle(
+          if (!widget.isMyReview)
+            PopupMenuItem<String>(
+              value: 'report',
+              child: Row(
+                children: const [
+                  Icon(
+                    Icons.flag_outlined,
                     color: Color(0xFFAA2222),
                   ),
-                ),
-              ],
+                  SizedBox(width: 5),
+                  Text(
+                    'Report',
+                    style: TextStyle(
+                      color: Color(0xFFAA2222),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
         ],
-        color: const Color(0xFF1A1B29),
+        color: const Color(0xFF222331),
+        elevation: 3,
         icon: const Icon(
           Icons.more_vert,
           color: Colors.grey,
-        ),
-      ),
-      title: _buildRatingBar(),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 5),
-          _buildUserRow(context),
-          const SizedBox(height: 8),
-          _buildText(),
-          _buildBottom(),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
-  }
-
-  InkWell _buildProfilePic(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (!widget.isMyReview) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProfileScreen(
-                username: widget.review.username,
-              ),
-            ),
-          );
-        }
-      },
-      child: const CircleAvatar(
-        backgroundImage: NetworkImage(
-          'https://media.tenor.com/z_hGCPQ_WvMAAAAd/pepew-twitch.gif',
         ),
       ),
     );
@@ -210,31 +223,60 @@ class _ReviewTileState extends State<ReviewTile> {
     }
   }
 
-  Row _buildUserRow(BuildContext context) {
+  Widget _buildUserInfo(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        if (!widget.isMyReview) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileScreen(
+                username: widget.review.user.username,
+              ),
+            ),
+          );
+        }
+      },
+      child: Row(
+        children: [
+          ProfilePic(
+            user: widget.review.user,
+            radius: 24,
+            fontSize: 17,
+            borderWidth: 1,
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.review.user.nickname,
+                style: TextStyle(
+                  color: Colors.grey[300],
+                  fontWeight: FontWeight.w900,
+                  fontSize: 17,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '@${widget.review.user.username}',
+                style: TextStyle(
+                  color: Colors.grey[500],
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.italic,
+                  fontSize: 15,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Row _buildReviewDate() {
     return Row(
       children: [
-        InkWell(
-          onTap: () {
-            if (!widget.isMyReview) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfileScreen(
-                    username: widget.review.username,
-                  ),
-                ),
-              );
-            }
-          },
-          child: Text(
-            widget.review.username,
-            style: const TextStyle(
-              color: Color(0xFF3FBCF4),
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ),
-        const SizedBox(width: 5),
         Text(
           timeago.format(
             DateTime.now().subtract(
@@ -245,7 +287,7 @@ class _ReviewTileState extends State<ReviewTile> {
         const SizedBox(width: 5),
         Text(
           // ${timeago.format(DateTime.now().subtract(DateTime.now().difference(review.updatedAt)))}
-          widget.review.updatedAt != widget.review.createdAt ? '(edited)' : "",
+          (widget.review.updatedAt.difference(widget.review.createdAt)).inSeconds.abs() > 3 ? '(edited)' : "",
           style: const TextStyle(
             color: Colors.grey,
             fontStyle: FontStyle.italic,
@@ -262,32 +304,37 @@ class _ReviewTileState extends State<ReviewTile> {
           const SizedBox(height: 5),
           TextFormField(
             controller: _reviewTextController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),
                 borderSide: BorderSide(
-                  color: Colors.grey,
+                  color: Colors.grey[600]!,
                 ),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),
                 borderSide: BorderSide(
-                  color: Colors.grey,
+                  color: Colors.grey[600]!,
                 ),
               ),
-              contentPadding: EdgeInsets.symmetric(
+              contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
-                vertical: 0,
+                vertical: 12,
               ),
             ),
             autofocus: false,
             maxLines: null,
             keyboardType: TextInputType.multiline,
-            style: const TextStyle(fontSize: 14),
+            style: TextStyle(
+              color: Colors.grey[400],
+              fontSize: 15,
+              letterSpacing: .2,
+              height: 1.3,
+            ),
           ),
           const SizedBox(height: 8),
         ],
@@ -295,11 +342,12 @@ class _ReviewTileState extends State<ReviewTile> {
     } else if (widget.review.reviewText.isNotEmpty) {
       return Column(
         children: [
+          const SizedBox(height: 5),
           ExpandableText(
             text: widget.review.reviewText,
             maxLines: 5,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 10),
         ],
       );
     } else {

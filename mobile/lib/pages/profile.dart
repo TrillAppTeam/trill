@@ -5,14 +5,15 @@ import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/api/reviews.dart';
 import 'package:trill/api/users.dart';
 import 'package:trill/constants.dart';
+import 'package:trill/pages/edit_profile.dart';
+import 'package:trill/pages/lists/follows.dart';
 import 'package:trill/widgets/albums_row.dart';
 import 'package:trill/widgets/detailed_review_tile.dart';
+import 'package:trill/widgets/edit_profile_button.dart';
 import 'package:trill/widgets/follow_button.dart';
 import 'package:trill/widgets/follow_user_button.dart';
-import 'package:trill/widgets/ratings_row.dart';
+import 'package:trill/widgets/profile_pic.dart';
 
-import 'package:trill/widgets/review_row.dart';
-import 'package:trill/widgets/review_tile.dart';
 import 'loading_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -29,13 +30,14 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   late SharedPreferences _prefs;
-  late PublicUser _user;
+  late DetailedUser _user;
 
+  String? _loggedInUsername;
   bool _isLoggedIn = false;
   bool _isLoading = false;
 
   String _selectedSort = 'popular';
-  List<Review>? _reviews;
+  List<DetailedReview>? _reviews;
 
   @override
   void initState() {
@@ -50,9 +52,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     _prefs = await SharedPreferences.getInstance();
     String loggedInUser = _prefs.getString('username') ?? "";
+    _loggedInUsername = loggedInUser;
     _isLoggedIn = loggedInUser == widget.username;
 
-    final user = await getPublicUser(widget.username);
+    final user = await getDetailedUser(widget.username);
 
     setState(() {
       _user = user!;
@@ -62,193 +65,252 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const LoadingScreen()
-        : RefreshIndicator(
-            onRefresh: _fetchUserDetails,
-            backgroundColor: const Color(0xFF1A1B29),
-            color: const Color(0xFF3FBCF4),
-            child: Scaffold(
-              backgroundColor: const Color(0xFF1A1B29),
-              appBar: _isLoggedIn ? null : AppBar(),
-              body: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    _buildUserDetails(),
-                    const SizedBox(height: 15),
-                    _buildFollows(),
-                    const SizedBox(height: 15),
-                    _buildUserStats(),
-                    const SizedBox(height: 15),
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: FutureBuilder<List<SpotifyAlbum>?>(
-                        future: getFavoriteAlbums(_user.username),
-                        builder: (context, snapshot) {
-                          return AlbumsRow(
-                            title: _isLoggedIn
-                                ? 'Your Favorite Albums'
-                                : '${_user.nickname}\'s Favorite Albums',
-                            albums: snapshot.hasData ? snapshot.data! : [],
-                            emptyText: _isLoggedIn
-                                ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
-                                : 'No favorite albums yet',
-                          );
-                        },
+    return Scaffold(
+      backgroundColor: const Color(0xFF1A1B29),
+      appBar: _isLoggedIn ? null : AppBar(),
+      body: _isLoading
+          ? const LoadingScreen()
+          : GestureDetector(
+              onTap: () {
+                final FocusScopeNode currentScope = FocusScope.of(context);
+                if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                }
+              },
+              child: RefreshIndicator(
+                onRefresh: _fetchUserDetails,
+                backgroundColor: const Color(0xFF1A1B29),
+                color: const Color(0xFF3FBCF4),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _buildUserInfo(),
+                      Divider(
+                        color: Colors.grey[700],
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    const Divider(
-                      color: Colors.grey,
-                      height: 2,
-                      thickness: 2,
-                    ),
-                    const SizedBox(height: 15),
-                    _buildReviewDetails(),
-                    _buildReviews(),
-                  ],
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        child: FutureBuilder<List<SpotifyAlbum>?>(
+                          future: getFavoriteAlbums(_user.username),
+                          builder: (context, snapshot) {
+                            return AlbumsRow(
+                              title: _isLoggedIn
+                                  ? 'My Favorite Albums'
+                                  : '${_user.nickname}\'s Favorite Albums',
+                              albums: snapshot.hasData ? snapshot.data! : [],
+                              emptyText: _isLoggedIn
+                                  ? 'No favorite albums yet. Add your favorite albums to display on your profile!'
+                                  : 'No favorite albums yet.',
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Divider(
+                        color: Colors.grey[700],
+                      ),
+                      _buildReviewDetails(),
+                      _buildReviews(),
+                    ],
+                  ),
                 ),
               ),
             ),
-          );
+    );
+  }
+
+  Padding _buildUserInfo() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 15, 24, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              InkWell(
+                onTap: () {
+                  if (_isLoggedIn) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfileScreen(
+                          initialUser: _user,
+                          onUserChanged: () async {
+                            await _fetchUserDetails();
+                          },
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: ProfilePic(
+                  user: _user,
+                  radius: 40,
+                  fontSize: 24,
+                ),
+              ),
+              const SizedBox(width: 15),
+              _buildUserStats(),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildUserDetails(),
+              const SizedBox(height: 10),
+              !_isLoggedIn
+                  ? FollowUserButton(
+                      username: _user.username,
+                      isFollowing: _user.requestorFollows,
+                      onFollowed: (followed) {
+                        if (followed) {
+                          setState(() {
+                            _user.followers += 1;
+                          });
+                        } else {
+                          setState(() {
+                            _user.followers -= 1;
+                          });
+                        }
+                      },
+                    )
+                  : EditProfileButton(
+                      user: _user,
+                      onUserChanged: () async {
+                        await _fetchUserDetails();
+                      },
+                    ),
+            ],
+          ),
+          if (_user.bio.isNotEmpty) const SizedBox(height: 12),
+          if (_user.bio.isNotEmpty)
+            Wrap(
+              children: [
+                Text(
+                  _user.bio,
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 15,
+                    letterSpacing: .2,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
+        ],
+      ),
+    );
   }
 
   Widget _buildUserDetails() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CircleAvatar(
-          backgroundImage: AssetImage("images/gerber.jpg"),
-          radius: 40.0,
+        Row(
+          children: [
+            Text(
+              _user.nickname,
+              style: TextStyle(
+                color: Colors.grey[200],
+                fontSize: 20,
+                fontWeight: FontWeight.w900,
+                letterSpacing: .5,
+              ),
+            ),
+            const SizedBox(width: 10),
+            if (!_isLoggedIn && _user.followsRequestor)
+              Text(
+                '•  Follows you',
+                style: TextStyle(
+                  color: Colors.grey[400],
+                  fontSize: 15,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+          ],
         ),
-        Text(
-          _user.nickname,
-          style: const TextStyle(
-            color: Colors.blue,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text('@${_user.username}'),
         const SizedBox(height: 5),
         Text(
-          _user.bio,
-          style: const TextStyle(fontSize: 12),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFollows() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        FollowButton(
-          username: widget.username,
-          followType: FollowType.following,
-        ),
-        SizedBox(
-          width: (_isLoggedIn ? 30 : 20),
-        ),
-        FollowButton(
-          username: widget.username,
-          followType: FollowType.follower,
-        ),
-        SizedBox(
-          width: (_isLoggedIn ? 0 : 20),
-        ),
-        if (!_isLoggedIn)
-          FollowUserButton(
-            username: _user.username,
-            isFollowing: true,
+          '@${_user.username}',
+          style: TextStyle(
+            color: Colors.grey[400],
+            fontStyle: FontStyle.italic,
+            fontWeight: FontWeight.w500,
+            fontSize: 16,
+            letterSpacing: .3,
           ),
+        ),
       ],
     );
   }
 
   Widget _buildUserStats() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "455",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Total Albums",
-              style: TextStyle(fontSize: 11),
-            )
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "3",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Color(0xFFBC6AAB),
-                  fontWeight: FontWeight.bold),
-            ),
-            Text("Albums This Month", style: TextStyle(fontSize: 11))
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "30",
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Listen Laters",
-              style: TextStyle(fontSize: 11),
-            )
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              "5",
-              style: TextStyle(
-                fontSize: 20,
-                color: Color(0xFFBC6AAB),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              "Reviews",
-              style: TextStyle(fontSize: 11),
-            )
-          ],
-        ),
-      ],
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          UserStatButton(
+            name: 'Albums',
+            stat: _user.reviewCount,
+            onTap: () {},
+          ),
+          UserStatButton(
+            name: 'Following',
+            stat: _user.following,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FollowsScreen(
+                    username: _user.username,
+                    loggedInUsername: _loggedInUsername ?? '',
+                    followType: FollowType.following,
+                  ),
+                ),
+              );
+            },
+          ),
+          UserStatButton(
+            name: 'Followers',
+            stat: _user.followers,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FollowsScreen(
+                    username: _user.username,
+                    loggedInUsername: _loggedInUsername ?? '',
+                    followType: FollowType.follower,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildReviewDetails() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'Reviews',
+              Text(
+                _isLoggedIn ? 'My Reviews' : '${_user.nickname}\'s Reviews',
                 style: TextStyle(
-                  fontSize: 20.0,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: .6,
+                  color: Colors.grey[300],
                 ),
               ),
               DropdownButton<String>(
@@ -278,7 +340,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Color(0xFF3FBCF4),
                 ),
                 iconSize: 24,
-                elevation: 16,
+                elevation: 3,
                 style: const TextStyle(
                   color: Color(0xFF3FBCF4),
                   fontSize: 16,
@@ -288,7 +350,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   height: 2,
                   color: const Color(0xFF3FBCF4),
                 ),
-                dropdownColor: const Color(0xFF1A1B29),
+                dropdownColor: const Color(0xFF222331),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                ),
               ),
             ],
           ),
@@ -298,49 +363,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildReviewList() {
-    return ListView.builder(
+    return ListView.separated(
       physics: const NeverScrollableScrollPhysics(),
+      separatorBuilder: (context, index) {
+        return Divider(
+          color: Colors.grey[700],
+        );
+      },
       itemBuilder: (context, index) {
         final review = _reviews![index];
-        return Column(
-          children: [
-            index == 0
-                ? const SizedBox(height: 10)
-                : const Divider(
-                    color: Colors.grey,
-                  ),
-            DetailedReviewTile(
-              review: review,
-              onLiked: (isLiked) {
-                setState(() {
-                  review.isLiked = isLiked;
-                });
-              },
-              isMyReview: _isLoggedIn,
-              onUpdate: _isLoggedIn
-                  ? (rating, reviewText) async {
-                      final success = await createOrUpdateReview(
-                          review.albumID, rating, reviewText);
-                      if (success) {
-                        setState(() {
-                          review.rating = rating;
-                          review.reviewText = reviewText;
-                        });
-                      }
-                    }
-                  : (rating, reviewText) {},
-              onDelete: () async {
-                final success = await deleteReview(
-                  review.albumID,
-                );
-                if (success) {
-                  setState(() {
-                    _reviews!.removeAt(index);
-                  });
+        return DetailedReviewTile(
+          review: review,
+          onLiked: (isLiked) {
+            setState(() {
+              review.isLiked = isLiked;
+            });
+          },
+          isMyReview: _isLoggedIn,
+          onUpdate: _isLoggedIn
+              ? (rating, reviewText) async {
+                  final success = await createOrUpdateReview(
+                      review.albumID, rating, reviewText);
+                  if (success) {
+                    setState(() {
+                      review.rating = rating;
+                      review.reviewText = reviewText;
+                    });
+                  }
                 }
-              },
-            ),
-          ],
+              : (rating, reviewText) {},
+          onDelete: () async {
+            final success = await deleteReview(
+              review.albumID,
+            );
+            if (success) {
+              setState(() {
+                _reviews!.removeAt(index);
+              });
+            }
+          },
         );
       },
       itemCount: _reviews!.length,
@@ -371,7 +432,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildReviews() {
-    return FutureBuilder<List<Review>?>(
+    return FutureBuilder<List<DetailedReview>?>(
       future: getReviews(_selectedSort, _user.username),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&

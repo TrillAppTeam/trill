@@ -15,12 +15,15 @@ function FriendsFeed() {
                 <>
                     <h1 className="font-bold text-3xl md:text-4xl text-white text-center pt-10 pb-10">Discover new songs together.</h1>
                     <Titles title="Friends Feed" />
-                    {data?.data.slice(0, 20).map((review, index, array) => (
-                        <div key={index}>
-                            <Review review={review} />
-                            {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
-                        </div>
-                    ))}                  
+                    { Array.isArray(data) 
+                        ? data?.slice(0, 20).map((review, index, array) => (
+                            <div key={index}>
+                                <Review review={review} />
+                                {index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
+                            </div>
+                        ))    
+                        : <h1 className="italic text-trillBlue">You don't follow anyone yet! Search for users to start.</h1>
+                    }           
                 </>
             }
             <div className="pb-20" />

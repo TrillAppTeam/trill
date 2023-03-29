@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// todo: change this to add trill logo and whatever other ui stuff
+// TODO: change this to add trill logo and whatever other ui stuff
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({
     Key? key,

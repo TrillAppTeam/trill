@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/api/albums.dart';
-import 'package:trill/api/favorite_albums.dart';
 import 'package:trill/api/reviews.dart';
+import 'package:trill/api/users.dart';
 import 'package:trill/pages/loading_screen.dart';
 import 'package:trill/widgets/favorite_button.dart';
 import 'package:trill/widgets/listen_later_button.dart';
@@ -22,36 +21,33 @@ class AlbumDetailsScreen extends StatefulWidget {
 
 class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     with TickerProviderStateMixin {
-  late SpotifyAlbum _album;
+  late DetailedSpotifyAlbum _album;
 
   List<Review>? _globalReviews;
-  int _numReviews = 0;
-
   List<Review>? _followingReviews;
   List<Review>? _myReviews;
 
   String _selectedSort = 'popular';
   bool _isLoading = true;
 
-  bool _isFavorited = false;
-  final bool _isInListenLater = false;
-  bool _isReviewed = false;
-
-  late String _loggedInUser = "";
+  late User _loggedInUser;
 
   late TabController _tabController;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _fetchAlbumDetails();
-    _getLoggedInUser();
+    _tabController.addListener(_smoothScrollToTop);
+    _scrollController = ScrollController();
+    _initialFetch();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -63,31 +59,6 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       _myReviews = null;
     });
 
-    // these should really be done through the apis tbh
-    final myReview = await getReview(widget.albumID);
-    if (myReview != null) {
-      setState(() {
-        _isReviewed = true;
-      });
-    }
-
-    final globalReviews =
-        await getAlbumReviews(_selectedSort, widget.albumID, false);
-    if (globalReviews != null) {
-      setState(() {
-        _numReviews = globalReviews.length;
-      });
-    }
-
-    final favoriteAlbums = await getFavoriteAlbums() ?? [];
-    for (int i = 0; i < favoriteAlbums.length; i++) {
-      if (favoriteAlbums[i].id == widget.albumID) {
-        setState(() {
-          _isFavorited = true;
-        });
-      }
-    }
-
     final album = await getSpotifyAlbum(widget.albumID);
     if (album != null) {
       setState(() {
@@ -97,14 +68,34 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
     }
   }
 
-  void _getLoggedInUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    _loggedInUser = prefs.getString('username') ?? "";
+  void _initialFetch() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    final loggedInUser = await getDetailedUser();
+    if (loggedInUser != null) {
+      setState(() {
+        _loggedInUser = loggedInUser;
+      });
+    }
+    _fetchAlbumDetails();
+  }
+
+  _smoothScrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(microseconds: 300),
+      curve: Curves.ease,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      notificationPredicate: (notification) {
+        return notification.depth == 2;
+      },
       onRefresh: _fetchAlbumDetails,
       backgroundColor: const Color(0xFF1A1B29),
       color: const Color(0xFF3FBCF4),
@@ -113,47 +104,52 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         appBar: AppBar(),
         body: _isLoading
             ? const LoadingScreen()
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    const SizedBox(height: 12),
-                    _buildAlbumDetails(),
-                    const SizedBox(height: 5),
-                    _buildAlbumButtons(),
-                    _buildReviewDetails(),
-                    if (!_isReviewed)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(height: 20),
-                          const Padding(
-                            padding: EdgeInsets.only(left: 15),
-                            child: Text(
-                              'Add your review:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          _buildWriteReview(),
-                          const Divider(
-                            color: Colors.grey,
-                            thickness: 2,
-                          ),
-                        ],
-                      ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.75,
-                      child: _buildReviews(),
-                    ),
-                  ],
+            : GestureDetector(
+                onTap: () {
+                  final FocusScopeNode currentScope = FocusScope.of(context);
+                  if (!currentScope.hasPrimaryFocus && currentScope.hasFocus) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  }
+                },
+                child: NestedScrollView(
+                  controller: _scrollController,
+                  headerSliverBuilder: (context, value) {
+                    return [
+                      SliverToBoxAdapter(child: _buildStaticWidgets()),
+                    ];
+                  },
+                  body: _buildReviews(),
                 ),
               ),
       ),
+    );
+  }
+
+  Column _buildStaticWidgets() {
+    return Column(
+      children: [
+        const SizedBox(height: 12),
+        _buildAlbumDetails(),
+        const SizedBox(height: 5),
+        _buildAlbumButtons(),
+        const SizedBox(height: 15),
+        Divider(
+          color: Colors.grey[700],
+        ),
+        _buildReviewDetails(),
+        if (!_album.isReviewed)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 20),
+              _buildWriteReview(),
+              Divider(
+                color: Colors.grey[700],
+              ),
+            ],
+          ),
+        const SizedBox(height: 12),
+      ],
     );
   }
 
@@ -168,7 +164,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(2),
               child: Image.network(
                 _album.images[0].url,
                 width: 120,
@@ -184,37 +180,45 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   _album.name,
                   style: const TextStyle(
                     fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w900,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
                 const SizedBox(height: 8.0),
-                Row(
-                  children: [
-                    Text(
-                      _album.artists.map((artist) => artist.name).join(", "),
-                      style: const TextStyle(
-                        color: Color(0xFFCCCCCC),
-                        fontSize: 16,
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: _album.artists
+                            .map((artist) => artist.name)
+                            .join(", "),
+                        style: const TextStyle(
+                          color: Color(0xFFCCCCCC),
+                          fontSize: 16,
+                          letterSpacing: .2,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 5),
-                    Text(
-                      DateFormat('yyyy').format(_album.releaseDate),
-                      style: const TextStyle(
-                        color: Color(0xFF999999),
+                      const TextSpan(text: '  '),
+                      TextSpan(
+                        text: DateFormat('yyyy').format(_album.releaseDate),
+                        style: const TextStyle(
+                          color: Color(0xFF999999),
+                          letterSpacing: .3,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    // todo: get average rating
-                    const ReviewRatingBar(rating: 7, size: 20),
+                    ReviewRatingBar(
+                      rating: _album.averageRating,
+                      size: 20,
+                    ),
                     const SizedBox(width: 5),
                     Text(
-                      '(${_numReviews.toString()})',
+                      '(${_album.numRatings})',
                       style: const TextStyle(
                         color: Color(0xFFCCCCCC),
                       ),
@@ -235,7 +239,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       children: [
         FavoriteButton(
           albumID: widget.albumID,
-          isFavorited: _isFavorited,
+          isFavorited: _album.isFavorited,
           onError: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -250,7 +254,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         ),
         ListenLaterButton(
           albumID: widget.albumID,
-          isInListenLater: _isInListenLater,
+          isInListenLater: _album.inListenLater,
+          isReviewed: _album.isReviewed,
         ),
       ],
     );
@@ -261,18 +266,18 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Reviews',
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 21,
+                  fontWeight: FontWeight.w900,
+                  fontStyle: FontStyle.italic,
+                  letterSpacing: .6,
+                  color: Colors.grey[300],
                 ),
               ),
               DropdownButton<String>(
@@ -302,23 +307,29 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   color: Color(0xFF3FBCF4),
                 ),
                 iconSize: 24,
-                elevation: 16,
+                elevation: 3,
                 style: const TextStyle(
                   color: Color(0xFF3FBCF4),
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900,
                 ),
                 underline: Container(
                   height: 2,
                   color: const Color(0xFF3FBCF4),
                 ),
-                dropdownColor: const Color(0xFF1A1B29),
+                dropdownColor: const Color(0xFF222331),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                ),
               ),
             ],
           ),
         ),
         TabBar(
           controller: _tabController,
+          labelStyle: const TextStyle(
+            letterSpacing: .8,
+          ),
           tabs: const [
             Tab(text: 'Global'),
             Tab(text: 'Following'),
@@ -330,63 +341,78 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   }
 
   Widget _buildWriteReview() {
-    return NewReview(onCreate: (rating, reviewText) async {
-      final success =
-          await createOrUpdateReview(widget.albumID, rating, reviewText);
-      if (success) {
-        setState(() {
-          _isReviewed = true;
-          _buildReviews();
+    return NewReview(
+        user: _loggedInUser,
+        onCreate: (rating, reviewText) async {
+          final success =
+              await createOrUpdateReview(widget.albumID, rating, reviewText);
+          final album = await getSpotifyAlbum(widget.albumID);
+          if (success) {
+            setState(() {
+              _buildReviews();
+              if (album != null) {
+                setState(() {
+                  _album = album;
+                });
+              }
+            });
+          }
         });
-      }
-    });
   }
 
   Widget _buildReviewList(List<Review> reviews) {
-    return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
+    return ListView.separated(
+      physics: const ClampingScrollPhysics(),
+      separatorBuilder: (context, index) {
+        return Divider(
+          color: Colors.grey[700],
+        );
+      },
       itemBuilder: (context, index) {
         final review = reviews[index];
-        return Column(
-          children: [
-            index == 0
-                ? Container()
-                : const Divider(
-                    color: Colors.grey,
-                  ),
-            ReviewTile(
-              review: review,
-              onLiked: (isLiked) {
-                setState(() {
-                  review.isLiked = isLiked;
-                });
-              },
-              isMyReview: _loggedInUser == review.username,
-              onUpdate: _loggedInUser == review.username
-                  ? (rating, reviewText) async {
-                      final success = await createOrUpdateReview(
-                          widget.albumID, rating, reviewText);
-                      if (success) {
+        return ReviewTile(
+          review: review,
+          onLiked: (isLiked) {
+            setState(() {
+              review.isLiked = isLiked;
+            });
+          },
+          isMyReview: _loggedInUser.username == review.user.username,
+          onUpdate: _loggedInUser.username == review.user.username
+              ? (rating, reviewText) async {
+                  final success = await createOrUpdateReview(
+                      widget.albumID, rating, reviewText);
+                  if (success) {
+                    final album = await getSpotifyAlbum(widget.albumID);
+                    setState(() {
+                      review.rating = rating;
+                      review.reviewText = reviewText;
+                      if (album != null) {
                         setState(() {
-                          review.rating = rating;
-                          review.reviewText = reviewText;
+                          _album = album;
                         });
                       }
-                    }
-                  : (rating, reviewText) {},
-              onDelete: () async {
-                final success = await deleteReview(
-                  widget.albumID,
-                );
-                if (success) {
+                    });
+                  }
+                }
+              : (rating, reviewText) {},
+          onDelete: () async {
+            final success = await deleteReview(
+              widget.albumID,
+            );
+            if (success) {
+              final album = await getSpotifyAlbum(widget.albumID);
+              setState(() {
+                reviews.removeAt(index);
+                _album.isReviewed = false;
+                if (album != null) {
                   setState(() {
-                    reviews.removeAt(index);
-                    _isReviewed = false;
+                    _album = album;
                   });
                 }
-              },
-            ),
-          ],
+              });
+            }
+          },
         );
       },
       itemCount: reviews.length,
@@ -407,7 +433,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         style: TextStyle(
           color: Color(0xFF3FBCF4),
           fontSize: 16.0,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w900,
         ),
       ),
     );

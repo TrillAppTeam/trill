@@ -3,12 +3,16 @@ package main
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"strings"
 	"trill/src/handlers"
 	"trill/src/models"
 	"trill/src/views"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
+
 	"gorm.io/gorm"
 )
 
@@ -104,7 +108,12 @@ func get(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	body, err = views.MarshalFullUser(ctx, user, privateCognitoUser, following, followers, requestorFollows, followsRequestor)
+	reviewCount, err := models.GetUserReviewCount(ctx, userToGet)
+	if err != nil {
+		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+	}
+
+	body, err = views.MarshalFullUser(ctx, user, privateCognitoUser, following, followers, requestorFollows, followsRequestor, reviewCount)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error()}, nil
 	}
@@ -115,6 +124,26 @@ func get(ctx context.Context, req Request) (Response, error) {
 		Headers:    views.DefaultHeaders,
 	}, nil
 }
+
+// func update(ctx context.Context, req Request) (Response, error) {
+// 	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
+// 	if !ok {
+// 		return Response{StatusCode: 500, Body: "failed to parse username", Headers: views.DefaultHeaders}, nil
+// 	}
+
+// 	user, err := models.GetUser(ctx, username)
+// 	if err != nil {
+// 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+// 	}
+
+// 	if err = views.UnmarshalUser(ctx, req.Body, user); err != nil {
+// 		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
+// 	} else if err = models.UpdateUser(ctx, user); err != nil {
+// 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+// 	}
+
+// 	return Response{StatusCode: 200, Body: "user updated successfully", Headers: views.DefaultHeaders}, nil
+// }
 
 func update(ctx context.Context, req Request) (Response, error) {
 	username, ok := req.RequestContext.Authorizer.Lambda["username"].(string)
@@ -127,9 +156,51 @@ func update(ctx context.Context, req Request) (Response, error) {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 
-	if err = views.UnmarshalUser(ctx, req.Body, user); err != nil {
-		return Response{StatusCode: 400, Body: fmt.Sprintf("invalid request body: %s, %s", err.Error(), req.Body), Headers: views.DefaultHeaders}, nil
-	} else if err = models.UpdateUser(ctx, user); err != nil {
+	form, err := handlers.ParseMultipartRequest(&req)
+	if err != nil {
+		return Response{
+			StatusCode: 400,
+			Body:       err.Error(),
+		}, nil
+	}
+
+	if bio, ok := form.Value["bio"]; ok {
+		user.Bio = bio[0]
+	}
+	if nickname, ok := form.Value["nickname"]; ok {
+		user.Nickname = nickname[0]
+	}
+	if profilePicture, ok := form.File["profilePicture"]; ok {
+		file, err := profilePicture[0].Open()
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		}
+		defer file.Close()
+
+		s3Client, err := models.InitS3Client(ctx)
+		if err != nil {
+			return Response{
+				StatusCode: 400,
+				Body:       "error creating s3 client",
+			}, nil
+		}
+
+		filePath := "profile-pictures/" + username + filepath.Ext(profilePicture[0].Filename)
+
+		_, err = s3Client.PutObject(ctx, &s3.PutObjectInput{
+			Bucket: aws.String("trill-content"),
+			Key:    aws.String(filePath),
+			Body:   file,
+		})
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		}
+
+		url := "https://trill-content.s3.amazonaws.com/" + filePath
+		user.ProfilePicture = url
+	}
+
+	if err = models.UpdateUser(ctx, user); err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 	}
 

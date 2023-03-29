@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../components/Loading"
 
 function ListenLater() {
-    const currentUser = localStorage.getItem("username");
+    const currentUser = sessionStorage.getItem("username");
     const { isLoading, data: listenLater } = useQuery([`listenlateralbums?username=${currentUser}`]);
 
     return (
@@ -17,13 +17,13 @@ function ListenLater() {
                 {isLoading 
                     ?   <Loading />
                     :   <>
-                            { Array.isArray(listenLater?.data) 
+                            { Array.isArray(listenLater) 
                                 ?   <>                                        
-                                        <Titles title={`You want to listen to ${listenLater?.data.length} albums`}/>
+                                        <Titles title={`You want to listen to ${listenLater?.length} albums`}/>
 
                                         <div className="text-white flex flex-row flex-wrap justify-left gap-4 max-w-6xl mx-auto">
-                                            {listenLater.data.map((listenLater) => (
-                                                <Album album={{...listenLater, size: "100"}} />
+                                            {listenLater.map((listenLater) => (
+                                                <Album album={{...listenLater, size: "130"}} />
                                             ))}
                                         </div>
                                     </>
