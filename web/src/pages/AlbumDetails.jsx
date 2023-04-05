@@ -173,7 +173,7 @@ function AlbumDetails() {
                         <div className="flex flex-col">
                             <h1 className="text-3xl text-gray-200 font-bold italic mr-5">{name}</h1>
                             <h1 className="text-3xl text-gray-600">{year.split('-')[0]}</h1>
-                            <p className="text-xl pt-1 pb-2">by {artist[0].name}</p>
+                            <p className="text-xl pt-1 pb-2 text-gray-400">by {artist[0].name}</p>
                             
                             <div className="tooltip" data-tip="Open Spotify">
                                 <a href={link} target="_blank">
