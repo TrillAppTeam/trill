@@ -59,7 +59,7 @@ function Profile() {
                             
                             {!user ? 
                                 <Link to="/User/Settings">
-                                    <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
+                                    <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black text-gray-400 mt-2">Edit Profile</button>
                                 </Link> 
                             : 
                                 <>
