@@ -82,8 +82,8 @@ function Settings() {
                             type="text"
                             name="name"
                             id="name"
-                            className="block w-full flex-1 rounded-lg border-gray-300 focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
-                            placeholder="Taylor"
+                            className="text-gray-400 block w-full flex-1 rounded-lg border-gray-300 focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
+                            placeholder="John Doe"
                             defaultValue={userData?.nickname}
                           />
                         </div>
@@ -99,7 +99,7 @@ function Settings() {
                           id="bio"
                           name="bio"
                           rows={3}
-                          className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
+                          className="text-gray-400 mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-trillBlue focus:ring-trillBlue sm:text-sm"
                           placeholder="My life, through music."
                           defaultValue={userData?.bio}
                         />
