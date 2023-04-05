@@ -112,7 +112,7 @@ function Profile() {
             <Titles title="Recent Reviews"/>
                 {reviewsNew?.length > 0 ? (
                 <>
-                    {reviewsNew?.slice(0, 2).map((review, index, array) => (
+                    {reviewsNew?.slice(0, 4).map((review, index, array) => (
                     <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
