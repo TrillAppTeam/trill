@@ -7,11 +7,11 @@ function NewsCard(props) {
                 <img src={imgLink} alt="Rolling Stones Article"/>
             </figure>
             <div className="card-body">
-                <h2 className="card-title">{title}</h2>
-                <p>{body}</p>
+                <h2 className="card-title text-gray-300">{title}</h2>
+                <p className="text-gray-400">{body}</p>
                 <div className="card-actions justify-start">
                     <a href={newsLink} target="_blank">
-                        <button className="btn btn-trillBlue" >Read More</button>
+                        <button className="btn btn-trillBlue text-gray-400 bg-gray-900" >Read More</button>
                     </a>
                 </div>
             </div>
