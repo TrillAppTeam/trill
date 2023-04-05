@@ -128,7 +128,7 @@ function Profile() {
             <Titles title="Popular Reviews"/>
                 {reviewsPopular?.length > 0 ? (
                 <>
-                    {reviewsPopular?.slice(0, 2).map((review, index, array) => (
+                    {reviewsPopular?.slice(0, 4).map((review, index, array) => (
                     <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
