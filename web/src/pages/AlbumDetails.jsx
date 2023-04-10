@@ -129,7 +129,10 @@ function AlbumDetails() {
                 <div className="flex flex-row">
                     <div className="flex flex-col">
                             { img[0] ? 
-                                <img src={img[0].url} alt="Album Image" width="260" height="260" />
+                                <div className="ring-gray-500 ring-2">
+                                    <img src={img[0].url} alt="Album Image" width="260" height="260" />
+                                </div>
+                                
                             : 
                                 <div className={`w-64 h-64 flex items-center justify-center text-gray-200 bg-gray-700 ring-2 ring-gray-500`}>
                                     <p className="text-xs text-center max-w-full line-clamp-2">{ name || "Click for album details" }</p>
@@ -138,14 +141,14 @@ function AlbumDetails() {
 
                             {Array.isArray(favoriteAlbums) && favoriteAlbums?.some((album) => album.id === id) ? (
                                 <button 
-                                    className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-2"
+                                    className="btn btn-xs bg-trillBlue text-black hover:bg-red-400 mt-3"
                                     onClick={removeFromFavoriteAlbums}
                                 >
                                     Remove From Favorite Albums
                                 </button>
                             ) : (
                                 <button 
-                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-2 w-full"
+                                    className="btn btn-xs text-gray-400 bg-[#383b59] hover:bg-green-500 hover:text-black mt-3 w-full"
                                     onClick={addToFavoriteAlbums}
                                 >
                                     Add to Favorite Albums
