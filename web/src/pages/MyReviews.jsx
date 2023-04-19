@@ -11,6 +11,8 @@ function MyReviews() {
     const { data: userData } = useQuery([`users?username=${currentUser}`]);
     const { isLoading, data: myReviews } = useQuery([`reviews?username=${currentUser}&sort=newest`]);
     const { data: myReviewsPageTwo } = useQuery([`reviews?username=${currentUser}&sort=newest&page=2`], {enabled: userData?.review_count >= 20});
+    const { data: myReviewsPageThree } = useQuery([`reviews?username=${currentUser}&sort=newest&page=3`], {enabled: userData?.review_count >= 40});
+
 
     return (
         <div className="max-w-6xl mx-auto pb-10">           
@@ -35,6 +37,13 @@ function MyReviews() {
                                                 ))
                                                 : null
                                             }
+
+                                            {myReviewsPageThree
+                                                ?  myReviewsPageThree.map((review) => (
+                                                    <AlbumWithStars album={{review}} />
+                                                ))
+                                                : null
+                                            }       
 
                                         </div>
                                     </>

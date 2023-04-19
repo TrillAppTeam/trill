@@ -59,7 +59,7 @@ function Profile() {
                             
                             {!user ? 
                                 <Link to="/User/Settings">
-                                    <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black mt-2">Edit Profile</button>
+                                    <button className="btn btn-xs bg-gray-700 hover:bg-trillBlue hover:text-black text-gray-400 mt-2">Edit Profile</button>
                                 </Link> 
                             : 
                                 <>
@@ -112,7 +112,7 @@ function Profile() {
             <Titles title="Recent Reviews"/>
                 {reviewsNew?.length > 0 ? (
                 <>
-                    {reviewsNew?.slice(0, 2).map((review, index, array) => (
+                    {reviewsNew?.slice(0, 4).map((review, index, array) => (
                     <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}
@@ -128,7 +128,7 @@ function Profile() {
             <Titles title="Popular Reviews"/>
                 {reviewsPopular?.length > 0 ? (
                 <>
-                    {reviewsPopular?.slice(0, 2).map((review, index, array) => (
+                    {reviewsPopular?.slice(0, 4).map((review, index, array) => (
                     <div key={review.review_id}>
                         <Review review={review} />
                         {array.length > 1 && index !== array.length - 1 && <div className="border-t border-gray-600 max-w-6xl mx-auto m-4" />}

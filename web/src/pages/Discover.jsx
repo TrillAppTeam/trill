@@ -49,11 +49,13 @@ function Discover() {
                 <div className="text-white flex flex-row justify-left gap-4 max-w-6xl mx-auto">
                     {popularGlobalWeeklyLoading
                         ? "Loading..."  
-                        : popularGlobalWeeklyData?.slice(0, 8).map((album) => (
-                            <div key={album.id}>
-                                <Album album={{...album, size:"200"}}/>
-                            </div>
-                        ))
+                        : Array.isArray(popularGlobalWeeklyData) 
+                            ? popularGlobalWeeklyData.slice(0, 8).map((album) => (
+                                <div key={album.id}>
+                                    <Album album={{...album, size:"200"}}/>
+                                </div>
+                            ))
+                            : <h1 className="italic text-trillBlue">No global reviews this week. Add your own today!</h1>
                     }
                 </div>
             </section>
