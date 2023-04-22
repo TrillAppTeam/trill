@@ -27,6 +27,8 @@ class _SearchScreenState extends State<SearchScreen> {
   bool _isLoading = false;
   Timer? _searchTimer;
 
+  final AlbumsApi api = AlbumsApi();
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -40,7 +42,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     if (_searchType == "albums") {
       List<SpotifyAlbum>? response =
-          await searchSpotifyAlbums(_searchController.text);
+          await api.searchSpotifyAlbums(_searchController.text);
       setState(() {
         _albumResults = response;
         _isLoading = false;

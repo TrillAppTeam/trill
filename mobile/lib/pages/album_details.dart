@@ -35,6 +35,8 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
   late TabController _tabController;
   late ScrollController _scrollController;
 
+  final AlbumsApi api = AlbumsApi();
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +61,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
       _myReviews = null;
     });
 
-    final album = await getSpotifyAlbum(widget.albumID);
+    final album = await api.getSpotifyAlbum(widget.albumID);
     if (album != null) {
       setState(() {
         _album = album;
@@ -346,7 +348,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
         onCreate: (rating, reviewText) async {
           final success =
               await createOrUpdateReview(widget.albumID, rating, reviewText);
-          final album = await getSpotifyAlbum(widget.albumID);
+          final album = await api.getSpotifyAlbum(widget.albumID);
           if (success) {
             setState(() {
               _buildReviews();
@@ -383,7 +385,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
                   final success = await createOrUpdateReview(
                       widget.albumID, rating, reviewText);
                   if (success) {
-                    final album = await getSpotifyAlbum(widget.albumID);
+                    final album = await api.getSpotifyAlbum(widget.albumID);
                     setState(() {
                       review.rating = rating;
                       review.reviewText = reviewText;
@@ -401,7 +403,7 @@ class _AlbumDetailsScreenState extends State<AlbumDetailsScreen>
               widget.albumID,
             );
             if (success) {
-              final album = await getSpotifyAlbum(widget.albumID);
+              final album = await api.getSpotifyAlbum(widget.albumID);
               setState(() {
                 reviews.removeAt(index);
                 _album.isReviewed = false;

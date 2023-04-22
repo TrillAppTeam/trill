@@ -6,96 +6,100 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:trill/constants.dart';
 
-Future<DetailedSpotifyAlbum?> getSpotifyAlbum(String albumID) async {
-  const String tag = '[getSpotifyAlbum]';
+class AlbumsApi {
 
-  safePrint('$tag albumID: $albumID');
+  Future<DetailedSpotifyAlbum?> getSpotifyAlbum(String albumID) async {
+    const String tag = '[getSpotifyAlbum]';
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString('token') ?? "";
+    safePrint('$tag albumID: $albumID');
 
-  final response = await http.get(
-    Uri.parse('${Constants.baseURI}/albums?albumID=$albumID'),
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-  );
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? "";
 
-  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
+    final response = await http.get(
+      Uri.parse('${Constants.baseURI}/albums?albumID=$albumID'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-  if (response.statusCode == 200) {
-    return DetailedSpotifyAlbum.fromJson(
-        jsonDecode(utf8.decode(response.bodyBytes)));
-  } else {
-    return null;
+    safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      return DetailedSpotifyAlbum.fromJson(
+          jsonDecode(utf8.decode(response.bodyBytes)));
+    } else {
+      return null;
+    }
   }
-}
 
-Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
-  const String tag = '[searchSpotifyAlbums]';
+  Future<List<SpotifyAlbum>?> searchSpotifyAlbums(String query) async {
+    const String tag = '[searchSpotifyAlbums]';
 
-  safePrint('$tag query: $query');
+    safePrint('$tag query: $query');
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString('token') ?? "";
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? "";
 
-  final response = await http.get(
-    Uri.parse('${Constants.baseURI}/albums?query=$query'),
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-  );
+    final response = await http.get(
+      Uri.parse('${Constants.baseURI}/albums?query=$query'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
+    safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
-  if (response.statusCode == 200) {
-    return List<SpotifyAlbum>.from(json
-        .decode(utf8.decode(response.bodyBytes))
-        .map((x) => SpotifyAlbum.fromJson(x)));
-  } else {
-    return null;
+    if (response.statusCode == 200) {
+      return List<SpotifyAlbum>.from(json
+          .decode(utf8.decode(response.bodyBytes))
+          .map((x) => SpotifyAlbum.fromJson(x)));
+    } else {
+      return null;
+    }
   }
-}
 
-Future<List<SpotifyAlbum>?> getMostPopularAlbums(String timespan) async {
-  const String tag = '[getMostPopularAlbums]';
+  Future<List<SpotifyAlbum>?> getMostPopularAlbums(String timespan) async {
+    const String tag = '[getMostPopularAlbums]';
 
-  safePrint('$tag timespan: $timespan');
+    safePrint('$tag timespan: $timespan');
 
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  String token = prefs.getString('token') ?? "";
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String token = prefs.getString('token') ?? "";
 
-  final response = await http.get(
-    Uri.parse('${Constants.baseURI}/albums?timespan=$timespan'),
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-  );
+    final response = await http.get(
+      Uri.parse('${Constants.baseURI}/albums?timespan=$timespan'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-  safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
+    safePrint('$tag Status: ${response.statusCode}; Body: ${response.body}');
 
-  if (response.statusCode == 200) {
-    return List<SpotifyAlbum>.from(json
-        .decode(utf8.decode(response.bodyBytes))
-        .map((x) => SpotifyAlbum.fromJson(x)));
-  } else if (response.statusCode == 204) {
-    return [];
-  } else {
-    return null;
-  }
-}
-
-DateTime parseReleaseDate(String releaseDate) {
-  try {
-    return DateTime.parse(releaseDate);
-  } catch (e) {
-    try {
-      return DateTime.parse('$releaseDate-01');
-    } catch (e) {
-      return DateTime.parse('$releaseDate-01-01');
+    if (response.statusCode == 200) {
+      return List<SpotifyAlbum>.from(json
+          .decode(utf8.decode(response.bodyBytes))
+          .map((x) => SpotifyAlbum.fromJson(x)));
+    } else if (response.statusCode == 204) {
+      return [];
+    } else {
+      return null;
     }
   }
 }
+
+  DateTime parseReleaseDate(String releaseDate) {
+    try {
+      return DateTime.parse(releaseDate);
+    } catch (e) {
+      try {
+        return DateTime.parse('$releaseDate-01');
+      } catch (e) {
+        return DateTime.parse('$releaseDate-01-01');
+      }
+    }
+  }
+
 
 // removed unused fields
 class SpotifyAlbum {

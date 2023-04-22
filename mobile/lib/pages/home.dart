@@ -22,6 +22,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<SpotifyAlbum>? _popularAlbums = [];
   bool _isLoading = true;
 
+  final AlbumsApi api = AlbumsApi();
+
   @override
   void initState() {
     super.initState();
@@ -35,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _popularAlbums = null;
     });
 
-    final popularAlbums = await getMostPopularAlbums(_selectedRange);
+    final popularAlbums = await api.getMostPopularAlbums(_selectedRange);
     setState(() {
       _popularAlbums = popularAlbums;
       _isLoading = false;
@@ -207,7 +209,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildPopularAlbums() {
     return FutureBuilder<List<SpotifyAlbum>?>(
-      future: getMostPopularAlbums(_selectedRange),
+      future: api.getMostPopularAlbums(_selectedRange),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting &&
             (_popularAlbums == null || _popularAlbums!.isEmpty)) {
