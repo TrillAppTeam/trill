@@ -10,12 +10,8 @@ import 'package:trill/widgets/review_tile.dart';
 import 'package:trill/widgets/rating_bar.dart';
 
 class MockImageProvider extends Mock implements ImageProvider {}
-class MyTypeFake extends Fake implements ImageConfiguration {}
 
 void main() {
-  setUpAll(() {
-    registerFallbackValue(MyTypeFake());
-  });
 
   group('ReviewTile', () {
     Review review = Review(
