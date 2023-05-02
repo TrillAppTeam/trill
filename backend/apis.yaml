@@ -198,7 +198,7 @@ paths:
       tags:
       - reviews
       operationId: getReview
-      description: __Specific to one album__ <br> • Current user's review for album - *albumID* (doesn't return array) <br> • Username's review for album - *albumID* and *username* (doesn't return array) <br> • Current user's followed user's reviews for album - *sort*, *albumID*, and *following*=*true* <br> • All reviews for album - *sort* and *albumID* <br><br> __All reviews__ <br> • All reviews by current user - *sort* <br> • All reviews by username - *sort* and *username* <br> • All reviews by current user's followed users - *sort*, and *following*=*true* <br><br> Any other combination will probably have unintended results.
+      description: __Specific to one album__ <br> • Current user's review for album - *albumID* (doesn't return array) <br> • Username's review for album - *albumID* and *username* (doesn't return array) <br> • Current user's followed user's reviews for album - *sort*, *albumID*, and *following*=*true* <br> • All reviews for album - *sort* and *albumID* <br><br> __All reviews__ <br> • All reviews by current user - *sort* <br> • All reviews by username - *sort* and *username* <br> • All reviews by current user's followed users - *sort*, and *following*=*true* <br> • All reviews by current user's liked reviews - *sort*, and *likes*=*true* <br><br> Any other combination will probably have unintended results.
       produces:
       - application/json
       security:
@@ -217,6 +217,9 @@ paths:
         in: query
         type: string
       - name: following
+        in: query
+        type: boolean
+      - name: likes
         in: query
         type: boolean
       - name: limit

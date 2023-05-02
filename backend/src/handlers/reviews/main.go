@@ -111,6 +111,9 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 	followingRaw := req.QueryStringParameters["following"]
 	following, _ := strconv.ParseBool(followingRaw)
 
+	likesRaw := req.QueryStringParameters["likes"]
+	likes, _ := strconv.ParseBool(likesRaw)
+
 	paginate, err := handlers.GetPaginateFromRequest(ctx, req)
 	if err != nil {
 		return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
@@ -135,13 +138,22 @@ func getReviews(ctx context.Context, req Request) (Response, error) {
 		}
 	}
 
+	var likedReviews *[]models.Like = nil
+	if likes {
+		var err error
+		likedReviews, err = models.GetLikesFromUser(ctx, requestor)
+		if err != nil {
+			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
+		}
+	}
+
 	var reviews *[]models.Review
 	switch paginate.Sort {
 	case
 		"newest",
 		"oldest",
 		"popular":
-		reviews, err = models.GetReviews(ctx, &reviewQuery, users, paginate)
+		reviews, err = models.GetReviews(ctx, &reviewQuery, users, likedReviews, paginate)
 		if err != nil {
 			return Response{StatusCode: 500, Body: err.Error(), Headers: views.DefaultHeaders}, nil
 		}
